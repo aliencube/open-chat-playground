@@ -8,11 +8,10 @@ git config --global pull.rebase false
 git config --global core.autocrlf input
 
 ## Install dev certs
-dotnet tool update -g linux-dev-certs
-dotnet linux-dev-certs install
+dotnet dev-certs https --trust
 
 ## Add .NET Aspire workload
-sudo dotnet workload update && sudo dotnet workload install aspire
+sudo dotnet workload uninstall aspire && sudo dotnet new install Aspire.ProjectTemplates
 
 # D2Coding Nerd Font
 # Uncomment the below to install the D2Coding Nerd Font
@@ -26,10 +25,6 @@ rm D2Coding.zip
 ## AZURE BICEP CLI ##
 # Uncomment the below to install Azure Bicep CLI.
 az bicep install
-
-## GitHub Copilot CLI ##
-# Uncomment the below to install Azure Bicep CLI.
-gh extension install github/gh-copilot
 
 ## AZURE DEV CLI ##
 # Uncomment the below to install Azure Dev CLI. Make sure you have installed Azure CLI and GitHub CLI

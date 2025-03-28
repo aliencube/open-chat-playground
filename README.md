@@ -1,13 +1,11 @@
-# Azure OpenAI Service Proxy
+# AI Open Chat Playground
 
-This provides a proxy server application of Azure OpenAI Service API that round-robins multiple Azure OpenAI Service instances.
+This provides a web UI for AI chat playground that is able to connect virtually any LLM from any platform.
 
 ## Prerequisites
 
-- [Azure Subscription](https://azure.microsoft.com/free)
-- [Azure OpenAI Subscription](https://aka.ms/oai/access)
-- [.NET SDK 8.0.300+](https://dotnet.microsoft.com/download/dotnet/8.0) + [Aspire workload](https://learn.microsoft.com/dotnet/aspire/fundamentals/setup-tooling)
-- [Visual Studio 2022 17.10+](https://visualstudio.microsoft.com/vs/) or [Visual Studio Code](https://code.visualstudio.com/) + [C# DevKit](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit)
+- [.NET SDK 9](https://dotnet.microsoft.com/download/dotnet/9.0)
+- [Visual Studio Code](https://code.visualstudio.com/) + [C# DevKit](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit)
 - [Docker Desktop](https://docs.docker.com/desktop/) or [Podman](https://podman.io/docs/installation)
 - [PowerShell 7.4+](https://learn.microsoft.com/powershell/scripting/install/installing-powershell)
 - [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd)
@@ -45,7 +43,7 @@ This provides a proxy server application of Azure OpenAI Service API that round-
 1. Fork this repository to your account and clone the forked repository to your local machine.
 
     ```bash
-    gh repo fork aliencube/azure-openai-sdk-proxy --clone --default-branch-only
+    gh repo fork aliencube/open-chat-playground --clone --default-branch-only
     ```
 
 1. Run the following commands in order to provision and deploy the app.
