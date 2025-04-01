@@ -1,103 +1,52 @@
 {
-  "name": "DevContainer for .NET",
-  "build": {
-    "dockerfile": "./Dockerfile",
-    "context": ".",
-    "args": {
-      "VARIANT": "8.0-noble"
-    }
-  },
+  "name": "Open Chat Playground",
+
+  "image": "mcr.microsoft.com/devcontainers/dotnet:8.0-noble",
 
   "features": {
-    // Uncomment the below to install .NET SDK
+    "ghcr.io/azure/azure-dev/azd:latest": {},
+    "ghcr.io/devcontainers/features/common-utils:latest": {},
     "ghcr.io/devcontainers/features/dotnet:latest": {
       "version": "9.0"
     },
-
-    // Uncomment the below to install Azure CLI
     "ghcr.io/devcontainers/features/azure-cli:latest": {
-      "version": "latest",
-      "extensions": "account,alias,containerapp,deploy-to-azure,subscription"
+      "extensions": "account,containerapp,deploy-to-azure,subscription"
     },
-
-    // Uncomment the below to install GitHub CLI
-    "ghcr.io/devcontainers/features/github-cli:latest": {
-      "version": "latest"
-    },
-
-    // Uncomment the below to install node.js
-    "ghcr.io/devcontainers/features/node:latest": {
-      "version": "lts",
-      "nodeGypDependencies": true,
-      "nvmInstallPath": "/usr/local/share/nvm"
-    },
-
-    // Uncomment the below to install Docker-in-Docker
     "ghcr.io/devcontainers/features/docker-in-docker:latest": {},
-
-    // Uncomment the below to install Kubernetes CLI
+    "ghcr.io/devcontainers/features/github-cli:latest": {},
     "ghcr.io/devcontainers/features/kubectl-helm-minikube:latest": {},
-
-    // Install common utilities
-    "ghcr.io/devcontainers/features/common-utils:latest": {
-      "installZsh": true,
-      "configureZshAsDefaultShell": true,
-      "installOhMyZsh": true,
-      "installOhMyZshConfig": true,
-      "upgradePackages": true,
-      "username": "vscode",
-      "uid": "1000",
-      "gid": "1000"
-    }
+    "ghcr.io/devcontainers/features/node:latest": {},
+    "ghcr.io/prom3theu5/aspirational-manifests/aspirate:latest": {}
   },
 
   "overrideFeatureInstallOrder": [
     "ghcr.io/devcontainers/features/common-utils"
   ],
 
-  // Configure tool-specific properties.
   "customizations": {
-    // Configure properties specific to VS Code.
     "vscode": {
-      // Add the IDs of extensions you want installed when the container is created.
       "extensions": [
-        // Recommended extensions - GitHub
-        "GitHub.vscode-github-actions",
-        "GitHub.vscode-pull-request-github",
-
-        // Recommended extensions - Azure
-        "ms-azuretools.vscode-bicep",
-
-        // Recommended extensions - Collaboration
+        "dbaeumer.vscode-eslint",
         "EditorConfig.EditorConfig",
-        "streetsidesoftware.code-spell-checker",
-
-        // Recommended extensions - Markdown
-        "bierner.github-markdown-preview",
-        "DavidAnson.vscode-markdownlint",
-        "docsmsft.docs-linting",
-        "johnpapa.read-time",
-        "yzhang.markdown-all-in-one",
-
-        // Required extensions
         "GitHub.copilot",
         "GitHub.copilot-chat",
+        "GitHub.vscode-github-actions",
+        "GitHub.vscode-pull-request-github",
+        "ms-azuretools.azure-dev",
+        "ms-azuretools.vscode-bicep",
+        "ms-azuretools.vscode-docker",
+        "ms-dotnettools.csharp",
         "ms-dotnettools.csdevkit",
-        "ms-vscode.PowerShell",
         "ms-vscode.vscode-node-azure-pack",
-        "VisualStudioExptTeam.vscodeintellicode"
+        "redhat.vscode-yaml"
       ],
       "settings": {
-        // Uncomment if you want to disable the minimap view
         "editor.minimap.enabled": false,
 
-        // Uncomment if you want to change the default font family to D2Coding
         "editor.fontFamily": "D2Coding, Consolas, 'Courier New', monospace",
 
-        // Uncomment if you want to use D2CodingLigature Nerd Font as the default terminal font
         "terminal.integrated.fontFamily": "D2CodingLigature Nerd Font",
 
-        // Recommended settings for the explorer pane
         "explorer.sortOrder": "type",
         "explorer.fileNesting.enabled": true,
         "explorer.fileNesting.patterns": {
@@ -109,8 +58,11 @@
     }
   },
 
-  // Uncomment if you want to use bash in 'onCreateCommand' after the container is created
+  "remoteUser": "vscode",
+
   "onCreateCommand": "/bin/bash ./.devcontainer/on-create.sh > ~/on-create.log",
 
-  "remoteUser": "vscode"
+  "hostRequirements": {
+    "memory": "8gb"
+  }
 }
