@@ -1,0 +1,11 @@
+@OpenChat.ApiApp_HostAddress = http://localhost:5153
+
+POST {{OpenChat.ApiApp_HostAddress}}/api/chat/complete
+Accept: application/json
+Content-Type: application/json
+
+{
+  "prompt": "who are you?"
+}
+
+###

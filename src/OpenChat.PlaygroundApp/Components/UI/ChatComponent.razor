@@ -1,0 +1,108 @@
+﻿@using Microsoft.JSInterop
+@using OpenChat.PlaygroundApp.ApiClients
+@using OpenChat.PlaygroundApp.Models
+@inject IChatClient Chat
+@inject IJSRuntime JSRuntime
+
+<div class="container my-4">
+    <div class="row">
+        <div class="col-12 col-md-8 offset-md-2">
+            <div class="card">
+                <!-- Header -->
+                <div class="card-header">
+                    <h5 class="mb-0">Chat</h5>
+                </div>
+
+                <!-- Scrollable Chat Body -->
+                <div class="card-body" style="max-height: 80vh; overflow-y: auto;" @ref="chatBody">
+                    @if (Messages != null && Messages.Any())
+                    {
+                        @foreach (var message in Messages)
+                        {
+                            <div class="d-flex mb-2 p-2 bg-opacity-10 rounded @(message.Role == "User" ? "col-8 offset-4 bg-primary justify-content-end" : "col-8 bg-success justify-content-start")">
+                                @if (string.IsNullOrWhiteSpace(message.Content) == true)
+                                {
+                                    <div class="spinner-border text-success" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    @((MarkupString)message.Content)
+                                }
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-muted">No messages yet. Start the conversation!</p>
+                    }
+                </div>
+
+                <!-- Input Footer -->
+                <div class="card-footer">
+                    <div class="input-group">
+                        <input class="form-control" placeholder="Type your message..." @bind="UserMessage" @bind:event="oninput" @onkeydown="OnKeyDownAsync" />
+                        <button class="btn btn-primary" @onclick="SendMessageAsync">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private ElementReference chatBody;
+
+    protected List<ChatMessage> Messages = new();
+    protected string UserMessage = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.Messages.Add(new ChatMessage("Assistant", "Hi, I'm your friendly assistant. How can I help you today?"));
+
+        await Task.CompletedTask;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await JSRuntime.InvokeVoidAsync("scrollToBottom", chatBody);
+    }
+
+    protected async Task SendMessageAsync()
+    {
+        if (string.IsNullOrWhiteSpace(this.UserMessage) == true)
+        {
+            return;
+        }
+
+        var userChatMessage = new ChatMessage("User", this.UserMessage);
+        var assistantChatMessage = new ChatMessage("Assistant", string.Empty);
+
+        this.Messages.Add(userChatMessage);
+        this.Messages.Add(assistantChatMessage);
+
+        var userMessage = this.UserMessage;
+        this.UserMessage = string.Empty;
+
+        var response = Chat.CompleteChatStreamingWithHistoryAsync(this.Messages);
+        await foreach (var text in response)
+        {
+            await Task.Delay(20);
+
+            assistantChatMessage.Content += $"{text.Replace("\n", "<br />").Replace("\r", "<br />")}";
+
+            StateHasChanged();
+        }
+    }
+
+    protected async Task OnKeyDownAsync(KeyboardEventArgs e)
+    {
+        if (e.Key != "Enter")
+        {
+            return;
+        }
+
+        await this.SendMessageAsync();
+    }
+}

@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <AssemblyName>OpenChat.PlaygroundApp</AssemblyName>
+    <RootNamespace>OpenChat.PlaygroundApp</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OpenChat.ServiceDefaults\OpenChat.ServiceDefaults.csproj" />
+  </ItemGroup>
+
+</Project>

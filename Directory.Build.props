@@ -1,29 +1,26 @@
 <Project>
   <!-- See https://aka.ms/dotnet/msbuild/customize for more details on customizing your build -->
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <LangVersion>latest</LangVersion>
 
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
-    <AspireVersion>8.2.1</AspireVersion>
-    <AzureOpenAIVersion>2.*-*</AzureOpenAIVersion>
-    <AspNetCoreVersion>8.*</AspNetCoreVersion>
-    <MicrosoftExtensionsVersion>8.*</MicrosoftExtensionsVersion>
+    <AspireVersion>9.*</AspireVersion>
+    <AspNetCoreVersion>9.*</AspNetCoreVersion>
+    <MicrosoftExtensionsVersion>9.*</MicrosoftExtensionsVersion>
     <OpenTelemetryExporterVersion>1.*</OpenTelemetryExporterVersion>
     <OpenTelemetryExtensionsVersion>1.*</OpenTelemetryExtensionsVersion>
     <OpenTelemetryInstrumentationVersion>1.*</OpenTelemetryInstrumentationVersion>
-    <SwashbuckleVersion>6.*</SwashbuckleVersion>
-    <SystemTextJsonVersion>8.*</SystemTextJsonVersion>
+    <SystemTextJsonVersion>9.*</SystemTextJsonVersion>
     <FluentUIVersion>4.*</FluentUIVersion>
 
     <CoverletVersion>6.*</CoverletVersion>
     <FluentAssertionsVersion>6.*</FluentAssertionsVersion>
     <MicrosoftTestSdkVersion>17.*</MicrosoftTestSdkVersion>
     <NSubstituteVersion>5.*</NSubstituteVersion>
-    <NUnitVersion>4.*</NUnitVersion>
-    <PlaywrightVersion>1.*</PlaywrightVersion>
-    <XunitVersion>2.*</XunitVersion>
+    <PlaywrightVersion>2.*</PlaywrightVersion>
+    <XUnitVersion>3.*</XUnitVersion>
   </PropertyGroup>
 </Project>
