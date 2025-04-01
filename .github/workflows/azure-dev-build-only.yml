@@ -38,7 +38,7 @@ jobs:
     - name: Install Aspire workload
       shell: bash
       run: |
-        dotnet workload uninstall aspire
+        # dotnet workload uninstall aspire
         dotnet new install Aspire.ProjectTemplates
 
     - name: Restore NuGet packages
