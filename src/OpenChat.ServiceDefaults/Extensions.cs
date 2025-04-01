@@ -62,7 +62,7 @@ public static class Extensions
                 });
 
                 // See: https://www.pollydocs.org/strategies/timeout.html
-                builder.AddTimeout(TimeSpan.FromSeconds(60));
+                builder.AddTimeout(TimeSpan.FromSeconds(120));
             });
 
             // Turn on service discovery by default
