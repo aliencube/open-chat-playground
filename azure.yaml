@@ -1,9 +1,9 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
 
-name: azure-openai-sdk-proxy
+name: open-chat-playground
 
 services:  
   app:
     language: dotnet
-    project: ./src/AzureOpenAIProxy.AppHost/AzureOpenAIProxy.AppHost.csproj
+    project: ./src/OpenChat.AppHost/OpenChat.AppHost.csproj
     host: containerapp

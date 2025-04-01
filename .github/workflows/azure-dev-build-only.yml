@@ -6,7 +6,6 @@ on:
     - 'feature/*'
     paths-ignore:
     - '.github/**'
-  # pull_request_target:
   pull_request:
     branches:
     - main
@@ -29,24 +28,18 @@ jobs:
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.x
+        dotnet-version: 9.x
 
     - name: Install local certs
-      shell: pwsh
-      run: |
-        dotnet tool update -g linux-dev-certs
-        dotnet linux-dev-certs install
-
-    - name: Install Aspire workload
-      shell: pwsh
-      run: |
-        dotnet workload update
-        dotnet workload install aspire
-
-    - name: Install Spectral Cli
       shell: bash
       run: |
-        curl -L https://raw.github.com/stoplightio/spectral/master/scripts/install.sh | sh
+        dotnet dev-certs https --trust
+
+    - name: Install Aspire workload
+      shell: bash
+      run: |
+        dotnet workload uninstall aspire
+        dotnet new install Aspire.ProjectTemplates
 
     - name: Restore NuGet packages
       shell: bash
@@ -56,7 +49,7 @@ jobs:
     - name: Build solution
       shell: bash
       run: |
-        dotnet build
+        dotnet build . --no-restore --no-incremental
 
     - name: Install playwright
       shell: pwsh
@@ -65,70 +58,22 @@ jobs:
         $installer = "$($playwright[0].Directory.FullName)/playwright.ps1"
         & "$installer" install
 
-    - name: Run unit tests
+    - name: Run tests
       shell: bash
       run: |
-        dotnet test ./test/AzureOpenAIProxy.AppHost.Tests --no-build --logger "trx" --collect:"XPlat Code Coverage"
-        dotnet test ./test/AzureOpenAIProxy.ApiApp.Tests --no-build --logger "trx" --collect:"XPlat Code Coverage"
+        dotnet test . --no-build --logger "trx" --collect:"XPlat Code Coverage"
 
-    - name: Run integration tests
-      shell: bash
-      run: |
-        dotnet run --project ./src/AzureOpenAIProxy.AppHost &
-
-        sleep 30
-
-        dotnet test ./test/AzureOpenAIProxy.PlaygroundApp.Tests --no-build --logger "trx" --collect:"XPlat Code Coverage"
-
-    - name: Create openapi.json
-      shell: pwsh
-      run: |
-        $API_VERSION = $(Get-Content ./src/AzureOpenAIProxy.ApiApp/appsettings.json | ConvertFrom-Json).OpenApi.DocVersion
-
-        Invoke-WebRequest -Uri "https://localhost:7001/swagger/$API_VERSION/swagger.json" -OutFile "openapi.json"
-
-    - name: Lint OpenAPI doc
-      shell: pwsh
-      run: |
-        $LINT_RESULT = spectral lint -f json -F warn -D -q openapi.json | ConvertFrom-Json
-
-        if( $LINT_RESULT.Count -gt 0) {
-          $LINT_RESULT | ForEach-Object {
-            Write-Host ("code: " + $_.code)
-            Write-Host ("message: " + $_.message)
-            Write-Host ("path: " + $($_.path -join "."))
-            Write-Host "`n"
-          }
-          exit 1
-        }
-
-    - name: Publish test results
-      if: ${{ !cancelled() }}
-      id: test-report
-      uses: bibipkins/dotnet-test-reporter@main
-      with:
-        github-token: ${{ secrets.GH_PAT_GRAINED }}
-        results-path: ./**/TestResults/**/*.trx
-        # coverage-path: ./**/TestResults/**/*.xml
-        # coverage-type: cobertura
-        # coverage-threshold: 0
-        # coverage-threshold: 80
-        allow-failed-tests: true
-        post-new-comment: true
-        comment-title: "Test Results"
-
-    # - name: Comment to issue
-    #   if: ${{ !cancelled() && (github.event_name == 'pull_request_target' || github.event_name == 'pull_request') }}
-    #   uses: actions-cool/issues-helper@v3
+    # - name: Publish test results
+    #   if: ${{ !cancelled() }}
+    #   id: test-report
+    #   uses: bibipkins/dotnet-test-reporter@main
     #   with:
-    #     actions: "create-comment"
-    #     token: ${{ secrets.GH_PAT_GRAINED }}
-    #     issue-number: ${{ github.event.pull_request.number }}
-    #     body: |
-    #       ## Test Results
-
-    #       ### Tests
-
-    #       | :clipboard: Total | :heavy_check_mark: Passed | :x: Failed | :warning: Skipped |
-    #       |-------------------|---------------------------|------------|-------------------|
-    #       | ${{ steps.test-report.outputs.tests-total }} | ${{ steps.test-report.outputs.tests-passed }} | ${{ steps.test-report.outputs.tests-failed }} | ${{ steps.test-report.outputs.tests-skipped }} |
+    #     github-token: ${{ secrets.GH_PAT_GRAINED }}
+    #     results-path: ./**/TestResults/**/*.trx
+    #     # coverage-path: ./**/TestResults/**/*.xml
+    #     # coverage-type: cobertura
+    #     # coverage-threshold: 0
+    #     # coverage-threshold: 80
+    #     allow-failed-tests: true
+    #     post-new-comment: true
+    #     comment-title: "Test Results"

@@ -35,34 +35,18 @@ jobs:
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.x
+        dotnet-version: 9.x
 
     - name: Install local certs
-      shell: pwsh
-      run: |
-        dotnet tool update -g linux-dev-certs
-        dotnet linux-dev-certs install
-
-    - name: Install Aspire workload
-      shell: pwsh
-      run: |
-        dotnet workload update
-        dotnet workload install aspire
-
-    - name: Update appsettings.json for API app
-      shell: pwsh
-      run: |
-        $appsettings = Get-Content -Path "./src/AzureOpenAIProxy.ApiApp/appsettings.json" -Raw | ConvertFrom-Json
-        $appsettings.Azure.OpenAI.Instances = @()
-        $appsettings.Azure.KeyVault.VaultUri = "${{ env.AZURE_KEYVAULT_URI }}"
-        $appsettings.Azure.KeyVault.SecretNames.OpenAI = "${{ env.AZURE_KEYVAULT_SECRET_NAME_OPENAI }}"
-        $appsettings.Azure.KeyVault.SecretNames.Storage = "${{ env.AZURE_KEYVAULT_SECRET_NAME_STORAGE }}"
-        $appsettings | ConvertTo-Json -Depth 100 | Set-Content -Path "./src/AzureOpenAIProxy.ApiApp/appsettings.json" -Encoding UTF8 -Force
-        
-    - name: Install Spectral Cli
       shell: bash
       run: |
-        curl -L https://raw.github.com/stoplightio/spectral/master/scripts/install.sh | sh
+        dotnet dev-certs https --trust
+
+    - name: Install Aspire workload
+      shell: bash
+      run: |
+        dotnet workload uninstall aspire
+        dotnet new install Aspire.ProjectTemplates
 
     - name: Restore NuGet packages
       shell: bash
@@ -72,7 +56,7 @@ jobs:
     - name: Build solution
       shell: bash
       run: |
-        dotnet build -c Release
+        dotnet build -c Release --no-restore --no-incremental
 
     - name: Install playwright
       shell: pwsh
@@ -84,68 +68,36 @@ jobs:
     - name: Run unit tests
       shell: bash
       run: |
-        dotnet test ./test/AzureOpenAIProxy.AppHost.Tests -c Release --no-build --logger "trx" --collect:"XPlat Code Coverage"
-        dotnet test ./test/AzureOpenAIProxy.ApiApp.Tests -c Release --no-build --logger "trx" --collect:"XPlat Code Coverage"
+        dotnet test . -c Release --no-build --logger "trx" --collect:"XPlat Code Coverage"
 
-    - name: Run integration tests
-      shell: bash
-      run: |
-        dotnet run --project ./src/AzureOpenAIProxy.AppHost &
-
-        sleep 30
-
-        dotnet test ./test/AzureOpenAIProxy.PlaygroundApp.Tests -c Release --no-build --logger "trx" --collect:"XPlat Code Coverage"
-
-    - name: Create openapi.json
-      shell: pwsh
-      run: |
-        $API_VERSION = $(Get-Content ./src/AzureOpenAIProxy.ApiApp/appsettings.json | ConvertFrom-Json).OpenApi.DocVersion
-
-        Invoke-WebRequest -Uri "https://localhost:7001/swagger/$API_VERSION/swagger.json" -OutFile "openapi.json"
-
-    - name: Lint OpenAPI doc
-      shell: pwsh
-      run: |
-        $LINT_RESULT = spectral lint -f json -F warn -D -q openapi.json | ConvertFrom-Json
-
-        if( $LINT_RESULT.Count -gt 0) {
-          $LINT_RESULT | ForEach-Object {
-            Write-Host ("code: " + $_.code)
-            Write-Host ("message: " + $_.message)
-            Write-Host ("path: " + $($_.path -join "."))
-            Write-Host "`n"
-          }
-          exit 1
-        }
-
-    - name: Publish test results
-      uses: bibipkins/dotnet-test-reporter@main
-      with:
-        github-token: ${{ secrets.GH_PAT_GRAINED }}
-        results-path: ./**/TestResults/**/*.trx
-        # coverage-path: ./**/TestResults/**/*.xml
-        # coverage-type: cobertura
-        # coverage-threshold: 0
-        # coverage-threshold: 80
-        allow-failed-tests: true
-        post-new-comment: false
+    # - name: Publish test results
+    #   uses: bibipkins/dotnet-test-reporter@main
+    #   with:
+    #     github-token: ${{ secrets.GH_PAT_GRAINED }}
+    #     results-path: ./**/TestResults/**/*.trx
+    #     # coverage-path: ./**/TestResults/**/*.xml
+    #     # coverage-type: cobertura
+    #     # coverage-threshold: 0
+    #     # coverage-threshold: 80
+    #     allow-failed-tests: true
+    #     post-new-comment: false
         
-    - name: Install azd
-      uses: Azure/setup-azd@v1.0.0
+    # - name: Install azd
+    #   uses: Azure/setup-azd@v2
 
-    - name: Log in with Azure (Federated Credentials)
-      if: env.AZURE_CLIENT_ID != ''
-      run: |
-        azd auth login `
-          --client-id "$Env:AZURE_CLIENT_ID" `
-          --federated-credential-provider "github" `
-          --tenant-id "$Env:AZURE_TENANT_ID"
-      shell: pwsh
+    # - name: Log in with Azure (Federated Credentials)
+    #   if: env.AZURE_CLIENT_ID != ''
+    #   shell: pwsh
+    #   run: |
+    #     azd auth login `
+    #       --client-id "$env:AZURE_CLIENT_ID" `
+    #       --federated-credential-provider "github" `
+    #       --tenant-id "$env:AZURE_TENANT_ID"
 
-    - name: Provision Infrastructure
-      run: azd provision --no-prompt
-      env:
-        AZD_INITIAL_ENVIRONMENT_CONFIG: ${{ secrets.AZD_INITIAL_ENVIRONMENT_CONFIG }}
+    # - name: Provision Infrastructure
+    #   run: azd provision --no-prompt
+    #   env:
+    #     AZD_INITIAL_ENVIRONMENT_CONFIG: ${{ secrets.AZD_INITIAL_ENVIRONMENT_CONFIG }}
 
-    - name: Deploy Application
-      run: azd deploy --no-prompt
+    # - name: Deploy Application
+    #   run: azd deploy --no-prompt
