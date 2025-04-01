@@ -6,21 +6,5 @@
 
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-
-    <AspireVersion>9.*</AspireVersion>
-    <AspNetCoreVersion>9.*</AspNetCoreVersion>
-    <MicrosoftExtensionsVersion>9.*</MicrosoftExtensionsVersion>
-    <OpenTelemetryExporterVersion>1.*</OpenTelemetryExporterVersion>
-    <OpenTelemetryExtensionsVersion>1.*</OpenTelemetryExtensionsVersion>
-    <OpenTelemetryInstrumentationVersion>1.*</OpenTelemetryInstrumentationVersion>
-    <SystemTextJsonVersion>9.*</SystemTextJsonVersion>
-    <FluentUIVersion>4.*</FluentUIVersion>
-
-    <CoverletVersion>6.*</CoverletVersion>
-    <FluentAssertionsVersion>6.*</FluentAssertionsVersion>
-    <MicrosoftTestSdkVersion>17.*</MicrosoftTestSdkVersion>
-    <NSubstituteVersion>5.*</NSubstituteVersion>
-    <PlaywrightVersion>2.*</PlaywrightVersion>
-    <XUnitVersion>3.*</XUnitVersion>
   </PropertyGroup>
 </Project>
