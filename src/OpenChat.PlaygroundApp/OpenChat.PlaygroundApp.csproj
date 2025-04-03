@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Markdig" Version="0.*" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\OpenChat.ServiceDefaults\OpenChat.ServiceDefaults.csproj" />
     <ProjectReference Include="..\OpenChat.Common\OpenChat.Common.csproj" />
   </ItemGroup>

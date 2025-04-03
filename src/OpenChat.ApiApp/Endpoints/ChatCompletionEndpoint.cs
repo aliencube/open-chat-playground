@@ -15,7 +15,6 @@ public static class ChatCompletionEndpoint
         api.MapPost("complete", ChatCompletionDelegate.PostChatCompletionStreamingAsync)
            .Accepts<ChatRequest>(contentType: "application/json")
            .Produces<IEnumerable<ChatResponse>>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
-           .WithTags("chat")
            .WithName("ChatCompletion")
            .WithOpenApi();
 

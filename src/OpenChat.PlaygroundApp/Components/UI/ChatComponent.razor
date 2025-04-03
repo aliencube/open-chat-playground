@@ -1,6 +1,10 @@
-﻿@using Microsoft.JSInterop
+﻿@using Markdig
+
+@using Microsoft.JSInterop
+
+@using OpenChat.Common.Models
 @using OpenChat.PlaygroundApp.ApiClients
-@using OpenChat.PlaygroundApp.Models
+
 @inject IChatClient Chat
 @inject IJSRuntime JSRuntime
 
@@ -19,16 +23,22 @@
                     {
                         @foreach (var message in Messages)
                         {
-                            <div class="d-flex mb-2 p-2 bg-opacity-10 rounded @(message.Role == "User" ? "col-8 offset-4 bg-primary justify-content-end" : "col-8 bg-success justify-content-start")">
+                            <div class="d-flex mb-2 p-2 bg-opacity-10 rounded @(message.Role == RoleType.User ? "col-8 offset-4 bg-primary justify-content-end" : "col-8 bg-success justify-content-start")">
                                 @if (string.IsNullOrWhiteSpace(message.Content) == true)
                                 {
                                     <div class="spinner-border text-success" role="status">
                                         <span class="visually-hidden">Loading...</span>
                                     </div>
                                 }
+                                else if (message.Role == RoleType.User)
+                                {
+                                    @((MarkupString)Markdown.ToHtml(message.Content))
+                                }
                                 else
                                 {
-                                    @((MarkupString)message.Content)
+                                    <div class="flex-grow-1 text-break">
+                                        @((MarkupString)Markdown.ToHtml(message.Content))
+                                    </div>
                                 }
                             </div>
                         }
@@ -54,12 +64,12 @@
 @code {
     private ElementReference chatBody;
 
-    protected List<ChatMessage> Messages = new();
+    protected List<ChatMessage> Messages = [];
     protected string UserMessage = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
-        this.Messages.Add(new ChatMessage("Assistant", "Hi, I'm your friendly assistant. How can I help you today?"));
+        this.Messages.Add(new ChatMessage(RoleType.Assistant, "Hi, I'm your friendly assistant. How can I help you today?"));
 
         await Task.CompletedTask;
     }
@@ -76,8 +86,8 @@
             return;
         }
 
-        var userChatMessage = new ChatMessage("User", this.UserMessage);
-        var assistantChatMessage = new ChatMessage("Assistant", string.Empty);
+        var userChatMessage = new ChatMessage(RoleType.User, this.UserMessage);
+        var assistantChatMessage = new ChatMessage(RoleType.Assistant, string.Empty);
 
         this.Messages.Add(userChatMessage);
         this.Messages.Add(assistantChatMessage);
@@ -85,12 +95,12 @@
         var userMessage = this.UserMessage;
         this.UserMessage = string.Empty;
 
-        var response = Chat.CompleteChatStreamingWithHistoryAsync(this.Messages);
+        var response = Chat.CompleteChatStreamingAsync(this.Messages);
         await foreach (var text in response)
         {
             await Task.Delay(20);
 
-            assistantChatMessage.Content += $"{text.Replace("\n", "<br />").Replace("\r", "<br />")}";
+            assistantChatMessage.Content += text;
 
             StateHasChanged();
         }
