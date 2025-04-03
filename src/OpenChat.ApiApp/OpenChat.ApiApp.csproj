@@ -14,11 +14,16 @@
     <PackageReference Include="CommunityToolkit.Aspire.OllamaSharp" Version="9.*" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.*" />
     <PackageReference Include="Microsoft.SemanticKernel" Version="1.*" />
+    <PackageReference Include="Microsoft.SemanticKernel.Agents.Core" Version="1.*-*" />
     <PackageReference Include="Microsoft.SemanticKernel.Connectors.Ollama" Version="1.*-*" />
+    <PackageReference Include="Microsoft.SemanticKernel.Plugins.Core" Version="1.*-*" />
+    <PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.*" />
+    <PackageReference Include="YamlDotNet" Version="16.*" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\OpenChat.ServiceDefaults\OpenChat.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\OpenChat.Common\OpenChat.Common.csproj" />
   </ItemGroup>
 
 </Project>

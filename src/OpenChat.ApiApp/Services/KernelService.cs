@@ -15,7 +15,10 @@ public class KernelService(Kernel kernel, IConfiguration config) : IKernelServic
 {
     public async IAsyncEnumerable<string> CompleteChatStreamingAsync(string prompt)
     {
-        var settings = new PromptExecutionSettings { ServiceId = config["SemanticKernel:ServiceId"] };
+        var settings = new PromptExecutionSettings()
+        {
+            ServiceId = config["SemanticKernel:ServiceId"]!
+        };
         var arguments = new KernelArguments(settings);
 
         var result = kernel.InvokePromptStreamingAsync(prompt, arguments).ConfigureAwait(false);
@@ -31,9 +34,13 @@ public class KernelService(Kernel kernel, IConfiguration config) : IKernelServic
         var history = new ChatHistory();
         history.AddRange(messages);
 
-        var service = kernel.GetRequiredService<IChatCompletionService>(config["SemanticKernel:ServiceId"]!);
+        var service = kernel.GetRequiredService<IChatCompletionService>();
+        var settings = new PromptExecutionSettings()
+        {
+            ServiceId = config["SemanticKernel:ServiceId"]!
+        };
 
-        var result = service.GetStreamingChatMessageContentsAsync(chatHistory: history, kernel: kernel);
+        var result = service.GetStreamingChatMessageContentsAsync(chatHistory: history, executionSettings: settings, kernel: kernel);
         await foreach (var text in result)
         {
             yield return text.ToString();
