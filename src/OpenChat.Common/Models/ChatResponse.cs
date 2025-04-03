@@ -1,6 +1,8 @@
 namespace OpenChat.Common.Models;
 
-public class ChatResponse(string? content)
+public class ChatResponse()
 {
-    public string? Content { get; set; } = content;
+    public RoleType Role { get; set; }
+    public string? AgentName { get; set; }
+    public string? Content { get; set; }
 }

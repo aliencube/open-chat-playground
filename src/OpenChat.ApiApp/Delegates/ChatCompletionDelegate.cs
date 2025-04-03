@@ -29,9 +29,9 @@ public static class ChatCompletionDelegate
         }
 
         var result = service.CompleteChatStreamingAsync(messages);
-        await foreach (var text in result)
+        await foreach (var message in result)
         {
-            yield return new ChatResponse(text);
+            yield return new ChatResponse() { Role = message.Role, AgentName = message.AgentName, Content = message.Content };
         }
     }
 }

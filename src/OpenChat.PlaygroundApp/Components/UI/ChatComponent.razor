@@ -95,12 +95,12 @@
         var userMessage = this.UserMessage;
         this.UserMessage = string.Empty;
 
-        var response = Chat.CompleteChatStreamingAsync(this.Messages);
-        await foreach (var text in response)
+        var responses = Chat.CompleteChatStreamingAsync(this.Messages);
+        await foreach (var response in responses)
         {
             await Task.Delay(20);
 
-            assistantChatMessage.Content += text;
+            assistantChatMessage.Content += response.Content;
 
             StateHasChanged();
         }
