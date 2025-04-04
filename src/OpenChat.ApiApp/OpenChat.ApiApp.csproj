@@ -15,20 +15,11 @@
     <PackageReference Include="Microsoft.SemanticKernel" Version="1.*" />
     <PackageReference Include="Microsoft.SemanticKernel.Agents.Core" Version="1.*-*" />
     <PackageReference Include="Microsoft.SemanticKernel.Plugins.Core" Version="1.*-*" />
-    <PackageReference Include="Microsoft.SemanticKernel.Yaml" Version="1.*" />
-    <PackageReference Include="YamlDotNet" Version="15.*" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\OpenChat.ServiceDefaults\OpenChat.ServiceDefaults.csproj" />
     <ProjectReference Include="..\OpenChat.Common\OpenChat.Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Agents/**/*">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

@@ -14,7 +14,7 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<IKernelService, KernelService>();
 
-builder.AddAzureOpenAIClient("aoai");
+builder.AddAzureOpenAIClient("openai");
 
 builder.Services.AddSingleton<Kernel>(sp =>
 {
