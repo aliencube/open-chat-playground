@@ -1,6 +1,6 @@
 using Microsoft.SemanticKernel;
 
-using OpenAI;
+using OllamaSharp;
 
 using OpenChat.ApiApp.Endpoints;
 using OpenChat.ApiApp.Services;
@@ -14,19 +14,18 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<IKernelService, KernelService>();
 
-builder.AddAzureOpenAIClient("aoai");
+builder.AddKeyedOllamaApiClient("ollama-phi4-mini");
 
 builder.Services.AddSingleton<Kernel>(sp =>
 {
     var config = builder.Configuration;
 
-    var openAIClient = sp.GetRequiredService<OpenAIClient>();
+    var ollamaClient = sp.GetRequiredKeyedService<IOllamaApiClient>("ollama-phi4-mini");
 
     var kernel = Kernel.CreateBuilder()
-                       .AddOpenAIChatCompletion(
-                           modelId: config["GitHub:Models:ModelId"]!,
-                           openAIClient: openAIClient,
-                           serviceId: "github")
+                       .AddOllamaChatCompletion(
+                           ollamaClient: (OllamaApiClient)ollamaClient,
+                           serviceId: "ollama")
                        .Build();
 
     return kernel;
