@@ -4,7 +4,7 @@ var builder = DistributedApplication.CreateBuilder(args);
 
 var config = builder.Configuration;
 
-var openai = builder.AddConnectionString("aoai");
+var openai = builder.AddConnectionString("openai");
 
 var apiapp = builder.AddProject<OpenChat_ApiApp>("apiapp")
                     .WithReference(openai)
