@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 using Microsoft.Extensions.Configuration;
 
 namespace OpenChat.Common.Configurations;
@@ -18,15 +16,14 @@ public class AppSettings
 
         settings.OpenAI.ConnectionString = config["ConnectionStrings:openai"] ?? string.Empty;
 
-        if (args.Length < 2)
+        if (args.Length == 0)
         {
-            if (args.Length == 1 && args[0] == "--help")
-            {
-                settings.Help = true;
+            return settings;
+        }
 
-                return settings;
-            }
-
+        if (args.Length == 1)
+        {
+            settings.Help = true;
             return settings;
         }
 
@@ -38,7 +35,7 @@ public class AppSettings
                 case "--llm-provider":
                     if (i < args.Length - 1)
                     {
-                        settings.LLM.Provider = Enum.TryParse<LLMProviderType>(args[++i], ignoreCase: true, out var result) ? result : LLMProviderType.OpenAI;
+                        settings.LLM.Provider = args[++i];
                     }
                     break;
 
@@ -70,14 +67,8 @@ public class AppSettings
                     }
                     break;
 
-                case "--ollama-use-huggingface-model":
-                    if (i < args.Length - 1)
-                    {
-                        settings.Ollama.UseHuggingFaceModel = bool.TryParse(args[++i], out var result) && result;
-                    }
-                    break;
-
                 case "--ollama-deployment":
+                case "--huggingface-deployment":
                     if (i < args.Length - 1)
                     {
                         settings.Ollama.DeploymentName = args[++i];
@@ -85,6 +76,7 @@ public class AppSettings
                     break;
 
                 case "--ollama-model":
+                case "--huggingface-model":
                     if (i < args.Length - 1)
                     {
                         settings.Ollama.ModelName = args[++i];
@@ -98,37 +90,35 @@ public class AppSettings
             }
         }
 
+        if (settings.LLM.ProviderType == LLMProviderType.Ollama && string.IsNullOrWhiteSpace(settings.Ollama.DeploymentName))
+        {
+            settings.Ollama.DeploymentName = "llama";
+        }
+        if (settings.LLM.ProviderType == LLMProviderType.Ollama && string.IsNullOrWhiteSpace(settings.Ollama.ModelName))
+        {
+            settings.Ollama.ModelName = "llama3.2";
+        }
+
+        if (settings.LLM.ProviderType == LLMProviderType.HuggingFace && string.IsNullOrWhiteSpace(settings.Ollama.DeploymentName))
+        {
+            settings.Ollama.DeploymentName = "qwen3";
+        }
+        if (settings.LLM.ProviderType == LLMProviderType.HuggingFace && string.IsNullOrWhiteSpace(settings.Ollama.ModelName))
+        {
+            settings.Ollama.ModelName = "Qwen/Qwen3-14B-GGUF";
+        }
+
+        if (settings.LLM.ProviderType == LLMProviderType.HuggingFace && IsValidHuggingFaceModel(settings.Ollama.ModelName) != true)
+        {
+            settings.Help = true;
+            return settings;
+        }
+
         return settings;
     }
-}
 
-public class LLMSettings
-{
-    public LLMProviderType Provider { get; set; }
-}
-
-public class OpenAISettings
-{
-    public string DeploymentName { get; set; } = "gpt-4o";
-    public string? ConnectionString { get; set; }
-}
-
-public class OllamaSettings
-{
-    public string ImageTag { get; set; } = "0.6.8";
-    public bool UseGPU { get; set; }
-    public bool UseHuggingFaceModel { get; set; }
-    public string DeploymentName { get; set; } = "ollama";
-    public string ModelName { get; set; } = "qwen3";
-}
-
-[JsonConverter(typeof(JsonStringEnumConverter))]
-public enum LLMProviderType
-{
-    [JsonStringEnumMemberName("openai")]
-    OpenAI,
-    [JsonStringEnumMemberName("ollama")]
-    Ollama,
-    [JsonStringEnumMemberName("hface")]
-    HuggingFace
+    private static bool IsValidHuggingFaceModel(string modelName)
+    {
+        return modelName.Contains('/') && modelName.EndsWith("GGUF", StringComparison.InvariantCultureIgnoreCase);
+    }
 }

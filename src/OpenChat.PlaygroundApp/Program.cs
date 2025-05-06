@@ -4,6 +4,17 @@ using OpenChat.PlaygroundApp.Components;
 var builder = WebApplication.CreateBuilder(args);
 
 var config = AppSettings.Parse(builder.Configuration, args);
+if (config.Help == true)
+{
+    Console.WriteLine("Usage: dotnet run -- [options]");
+    return;
+}
+if (config.LLM.ProviderType == LLMProviderType.Undefined)
+{
+    Console.WriteLine("Usage: dotnet run -- [options]");
+    return;
+}
+
 builder.Services.AddSingleton(config);
 
 // Add services to the container.
@@ -12,12 +23,12 @@ builder.AddServiceDefaults();
 builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
-if (config.LLM.Provider == LLMProviderType.OpenAI)
+if (config.LLM.ProviderType == LLMProviderType.OpenAI)
 {
-    builder.AddAzureOpenAIClient(config.LLM.Provider.ToString()).AddChatClient(config.OpenAI.DeploymentName);
+    builder.AddAzureOpenAIClient(config.LLM.ProviderType.ToString().ToLowerInvariant()).AddChatClient(config.OpenAI.DeploymentName);
 }
 
-if (config.LLM.Provider == LLMProviderType.Ollama || config.LLM.Provider == LLMProviderType.HuggingFace)
+if (config.LLM.ProviderType == LLMProviderType.Ollama || config.LLM.ProviderType == LLMProviderType.HuggingFace)
 {
     builder.AddOllamaSharpChatClient(config.Ollama.DeploymentName);
 }

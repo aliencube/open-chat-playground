@@ -7,45 +7,55 @@ using Projects;
 var builder = DistributedApplication.CreateBuilder(args);
 
 var config = AppSettings.Parse(builder.Configuration, args);
+if (config.Help == true)
+{
+    Console.WriteLine("Usage: dotnet run -- [options]");
+    return;
+}
+if (config.LLM.ProviderType == LLMProviderType.Undefined)
+{
+    Console.WriteLine("Usage: dotnet run -- [options]");
+    return;
+}
+
 builder.Services.AddSingleton(config);
 
 var openai = default(IResourceBuilder<IResourceWithConnectionString>);
-if (config.LLM.Provider == LLMProviderType.OpenAI)
+if (config.LLM.ProviderType == LLMProviderType.OpenAI)
 {
-    openai = builder.AddConnectionString(config.LLM.Provider.ToString());
+    openai = builder.AddConnectionString(config.LLM.ProviderType.ToString().ToLowerInvariant());
 }
 
 var ollama = default(IResourceBuilder<OllamaResource>);
 var model = default(IResourceBuilder<OllamaModelResource>);
-if (config.LLM.Provider == LLMProviderType.Ollama || config.LLM.Provider == LLMProviderType.HuggingFace)
+if (config.LLM.ProviderType == LLMProviderType.Ollama || config.LLM.ProviderType == LLMProviderType.HuggingFace)
 {
-    ollama = builder.AddOllama(config.LLM.Provider.ToString())
+    ollama = builder.AddOllama(config.LLM.ProviderType.ToString().ToLowerInvariant())
                     .WithImageTag(config.Ollama.ImageTag)
                     .WithDataVolume();
     if (config.Ollama.UseGPU == true)
     {
         ollama.WithContainerRuntimeArgs("--gpus=all");
     }
-    model = config.LLM.Provider == LLMProviderType.Ollama
+    model = config.LLM.ProviderType == LLMProviderType.Ollama
             ? ollama.AddModel(config.Ollama.DeploymentName, config.Ollama.ModelName)
             : ollama.AddHuggingFaceModel(config.Ollama.DeploymentName, config.Ollama.ModelName);
 }
 
 var webapp = builder.AddProject<OpenChat_PlaygroundApp>("playgroundapp")
-                    .WithEnvironment("LLM__Provider", config.LLM.Provider.ToString());
-if (config.LLM.Provider == LLMProviderType.OpenAI)
+                    .WithEnvironment("LLM__Provider", config.LLM.ProviderType.ToString().ToLowerInvariant());
+if (config.LLM.ProviderType == LLMProviderType.OpenAI)
 {
     webapp.WithReference(openai!)
           .WaitFor(openai!)
           .WithEnvironment("OpenAI__DeploymentName", config.OpenAI.DeploymentName);
 }
-if (config.LLM.Provider == LLMProviderType.Ollama || config.LLM.Provider == LLMProviderType.HuggingFace)
+if (config.LLM.ProviderType == LLMProviderType.Ollama || config.LLM.ProviderType == LLMProviderType.HuggingFace)
 {
     webapp.WithReference(model!)
           .WaitFor(model!)
           .WithEnvironment("Ollama__ImageTag", config.Ollama.ImageTag)
           .WithEnvironment("Ollama__UseGPU", config.Ollama.UseGPU.ToString().ToLowerInvariant())
-          .WithEnvironment("Ollama__UseHuggingFaceModel", config.Ollama.UseHuggingFaceModel.ToString().ToLowerInvariant())
           .WithEnvironment("Ollama__DeploymentName", config.Ollama.DeploymentName)
           .WithEnvironment("Ollama__ModelName", config.Ollama.ModelName);
 }

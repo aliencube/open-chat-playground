@@ -9,6 +9,7 @@
     <PackageReference Include="Aspire.Azure.AI.OpenAI" Version="9.*-*" />
     <PackageReference Include="CommunityToolkit.Aspire.OllamaSharp" Version="9.*" />
     <PackageReference Include="Markdig" Version="0.*" />
+    <PackageReference Include="OllamaSharp" Version="5.*" />
     <PackageReference Include="System.Text.Json" Version="9.*" />
   </ItemGroup>
 
