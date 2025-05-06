@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Sdk Name="Aspire.AppHost.Sdk" Version="9.1.0" />
+  <Sdk Name="Aspire.AppHost.Sdk" Version="9.2.1" />
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OpenChat.ApiApp\OpenChat.ApiApp.csproj" />
+    <ProjectReference Include="..\OpenChat.Common\OpenChat.Common.csproj" IsAspireProjectResource="false" />
     <ProjectReference Include="..\OpenChat.PlaygroundApp\OpenChat.PlaygroundApp.csproj" />
   </ItemGroup>
 

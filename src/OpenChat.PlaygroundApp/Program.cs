@@ -1,7 +1,10 @@
-using OpenChat.PlaygroundApp.ApiClients;
+using OpenChat.Common.Configurations;
 using OpenChat.PlaygroundApp.Components;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var config = AppSettings.Parse(builder.Configuration, args);
+builder.Services.AddSingleton(config);
 
 // Add services to the container.
 builder.AddServiceDefaults();
@@ -9,12 +12,15 @@ builder.AddServiceDefaults();
 builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
-builder.Services.AddHttpClient<IChatClient, ChatClient>(client =>
+if (config.LLM.Provider == LLMProviderType.OpenAI)
 {
-    var config = builder.Configuration;
+    builder.AddAzureOpenAIClient(config.LLM.Provider.ToString()).AddChatClient(config.OpenAI.DeploymentName);
+}
 
-    client.BaseAddress = new Uri("https+http://apiapp");
-});
+if (config.LLM.Provider == LLMProviderType.Ollama || config.LLM.Provider == LLMProviderType.HuggingFace)
+{
+    builder.AddOllamaSharpChatClient(config.Ollama.DeploymentName);
+}
 
 var app = builder.Build();
 

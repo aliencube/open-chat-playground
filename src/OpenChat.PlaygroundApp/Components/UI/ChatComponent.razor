@@ -1,9 +1,7 @@
 ﻿@using Markdig
 
+@using Microsoft.Extensions.AI
 @using Microsoft.JSInterop
-
-@using OpenChat.Common.Models
-@using OpenChat.PlaygroundApp.ApiClients
 
 @inject IChatClient Chat
 @inject IJSRuntime JSRuntime
@@ -23,21 +21,21 @@
                     {
                         @foreach (var message in Messages)
                         {
-                            <div class="d-flex mb-2 p-2 bg-opacity-10 rounded @(message.Role == RoleType.User ? "col-8 offset-4 bg-primary justify-content-end" : "col-8 bg-success justify-content-start")">
-                                @if (string.IsNullOrWhiteSpace(message.Content) == true)
+                            <div class="d-flex mb-2 p-2 bg-opacity-10 rounded @(message.Role == ChatRole.User ? "col-8 offset-4 bg-primary justify-content-end" : "col-8 bg-success justify-content-start")">
+                                @if (message.Contents.Any() == false)
                                 {
                                     <div class="spinner-border text-success" role="status">
                                         <span class="visually-hidden">Loading...</span>
                                     </div>
                                 }
-                                else if (message.Role == RoleType.User)
+                                else if (message.Role == ChatRole.User)
                                 {
-                                    @((MarkupString)Markdown.ToHtml(message.Content))
+                                    @((MarkupString)Markdown.ToHtml(string.Join("", message.Text)))
                                 }
                                 else
                                 {
                                     <div class="flex-grow-1 text-break">
-                                        @((MarkupString)Markdown.ToHtml(message.Content))
+                                        @((MarkupString)Markdown.ToHtml(message.Text))
                                     </div>
                                 }
                             </div>
@@ -69,7 +67,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        this.Messages.Add(new ChatMessage(RoleType.Assistant, "Hi, I'm your friendly assistant. How can I help you today?"));
+        this.Messages.Add(new ChatMessage(ChatRole.Assistant, "Hi, I'm your friendly assistant. How can I help you today?"));
 
         await Task.CompletedTask;
     }
@@ -86,8 +84,8 @@
             return;
         }
 
-        var userChatMessage = new ChatMessage(RoleType.User, this.UserMessage);
-        var assistantChatMessage = new ChatMessage(RoleType.Assistant, string.Empty);
+        var userChatMessage = new ChatMessage(ChatRole.User, this.UserMessage);
+        var assistantChatMessage = new ChatMessage(ChatRole.Assistant, string.Empty);
 
         this.Messages.Add(userChatMessage);
         this.Messages.Add(assistantChatMessage);
@@ -95,12 +93,12 @@
         var userMessage = this.UserMessage;
         this.UserMessage = string.Empty;
 
-        var response = Chat.CompleteChatStreamingAsync(this.Messages);
+        var response = Chat.GetStreamingResponseAsync(this.Messages);
         await foreach (var text in response)
         {
             await Task.Delay(20);
 
-            assistantChatMessage.Content += text;
+            assistantChatMessage.Contents.Add(new TextContent(text.ToString()));
 
             StateHasChanged();
         }
