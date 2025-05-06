@@ -23,11 +23,13 @@ builder.AddServiceDefaults();
 builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
+// Add OpenAI
 if (config.LLM.ProviderType == LLMProviderType.OpenAI)
 {
     builder.AddAzureOpenAIClient(config.LLM.ProviderType.ToString().ToLowerInvariant()).AddChatClient(config.OpenAI.DeploymentName);
 }
 
+// Add Ollama or Hugging Face
 if (config.LLM.ProviderType == LLMProviderType.Ollama || config.LLM.ProviderType == LLMProviderType.HuggingFace)
 {
     builder.AddOllamaSharpChatClient(config.Ollama.DeploymentName);

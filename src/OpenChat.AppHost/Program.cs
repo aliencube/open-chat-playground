@@ -20,12 +20,14 @@ if (config.LLM.ProviderType == LLMProviderType.Undefined)
 
 builder.Services.AddSingleton(config);
 
+// Add OpenAI
 var openai = default(IResourceBuilder<IResourceWithConnectionString>);
 if (config.LLM.ProviderType == LLMProviderType.OpenAI)
 {
     openai = builder.AddConnectionString(config.LLM.ProviderType.ToString().ToLowerInvariant());
 }
 
+// Add Ollama or Hugging Face
 var ollama = default(IResourceBuilder<OllamaResource>);
 var model = default(IResourceBuilder<OllamaModelResource>);
 if (config.LLM.ProviderType == LLMProviderType.Ollama || config.LLM.ProviderType == LLMProviderType.HuggingFace)
@@ -42,6 +44,7 @@ if (config.LLM.ProviderType == LLMProviderType.Ollama || config.LLM.ProviderType
             : ollama.AddHuggingFaceModel(config.Ollama.DeploymentName, config.Ollama.ModelName);
 }
 
+// Add the playground web application
 var webapp = builder.AddProject<OpenChat_PlaygroundApp>("playgroundapp")
                     .WithEnvironment("LLM__Provider", config.LLM.ProviderType.ToString().ToLowerInvariant());
 if (config.LLM.ProviderType == LLMProviderType.OpenAI)
