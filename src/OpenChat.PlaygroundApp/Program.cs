@@ -30,6 +30,10 @@ if (config.LLM.ProviderType == LLMProviderType.OpenAI)
 }
 
 // Add Ollama or Hugging Face
+// TODO : Except when deploying to azure
+// TODO : Cache model data volume
+// TODO : Service to use IOllamaClientApi
+// TODO : Q) Could we register Hface model with below logic? https://learn.microsoft.com/en-us/dotnet/aspire/community-toolkit/ollama?tabs=dotnet-cli%2Cdocker
 if (config.LLM.ProviderType == LLMProviderType.Ollama || config.LLM.ProviderType == LLMProviderType.HuggingFace)
 {
     builder.AddOllamaApiClient(config.Ollama.DeploymentName).AddChatClient();
