@@ -32,7 +32,7 @@ if (config.LLM.ProviderType == LLMProviderType.OpenAI)
 // Add Ollama or Hugging Face
 if (config.LLM.ProviderType == LLMProviderType.Ollama || config.LLM.ProviderType == LLMProviderType.HuggingFace)
 {
-    builder.AddOllamaSharpChatClient(config.Ollama.DeploymentName);
+    builder.AddOllamaApiClient(config.Ollama.DeploymentName).AddChatClient();
 }
 
 var app = builder.Build();
