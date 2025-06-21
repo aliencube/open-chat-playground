@@ -1,0 +1,34 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{B3B1CB60-19A4-4427-BF16-4C4FD6CBEE08}") = "OpenChat.AppHost", "OpenChat.AppHost\OpenChat.AppHost.csproj", "{27196553-EC48-4E62-9597-58ECBADEB90E}"
+EndProject
+Project("{B3B1CB60-19A4-4427-BF16-4C4FD6CBEE08}") = "OpenChat.ServiceDefaults", "OpenChat.ServiceDefaults\OpenChat.ServiceDefaults.csproj", "{5F3F7365-5C92-493A-9C8D-5654504CA412}"
+EndProject
+Project("{B3B1CB60-19A4-4427-BF16-4C4FD6CBEE08}") = "OpenChat.Web", "OpenChat.Web\OpenChat.Web.csproj", "{0A000DF7-2476-4128-B671-1C867BC0DB45}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{27196553-EC48-4E62-9597-58ECBADEB90E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27196553-EC48-4E62-9597-58ECBADEB90E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27196553-EC48-4E62-9597-58ECBADEB90E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27196553-EC48-4E62-9597-58ECBADEB90E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F3F7365-5C92-493A-9C8D-5654504CA412}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F3F7365-5C92-493A-9C8D-5654504CA412}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F3F7365-5C92-493A-9C8D-5654504CA412}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F3F7365-5C92-493A-9C8D-5654504CA412}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A000DF7-2476-4128-B671-1C867BC0DB45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A000DF7-2476-4128-B671-1C867BC0DB45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A000DF7-2476-4128-B671-1C867BC0DB45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A000DF7-2476-4128-B671-1C867BC0DB45}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

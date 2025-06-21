@@ -1,0 +1,69 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "OpenChat", "OpenChat", "{CB2912C6-F6FB-3637-B0AE-43EFE2594335}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenChat.AppHost", "OpenChat\OpenChat.AppHost\OpenChat.AppHost.csproj", "{1AD48637-EF8E-44CD-9DEC-4385EF1B793B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenChat.ServiceDefaults", "OpenChat\OpenChat.ServiceDefaults\OpenChat.ServiceDefaults.csproj", "{1B32DC7A-D397-4967-8776-22AE6BC95A57}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenChat.Web", "OpenChat\OpenChat.Web\OpenChat.Web.csproj", "{3FAA2DAA-9802-4F17-9F9F-915BE011612D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1AD48637-EF8E-44CD-9DEC-4385EF1B793B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AD48637-EF8E-44CD-9DEC-4385EF1B793B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AD48637-EF8E-44CD-9DEC-4385EF1B793B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1AD48637-EF8E-44CD-9DEC-4385EF1B793B}.Debug|x64.Build.0 = Debug|Any CPU
+		{1AD48637-EF8E-44CD-9DEC-4385EF1B793B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1AD48637-EF8E-44CD-9DEC-4385EF1B793B}.Debug|x86.Build.0 = Debug|Any CPU
+		{1AD48637-EF8E-44CD-9DEC-4385EF1B793B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AD48637-EF8E-44CD-9DEC-4385EF1B793B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AD48637-EF8E-44CD-9DEC-4385EF1B793B}.Release|x64.ActiveCfg = Release|Any CPU
+		{1AD48637-EF8E-44CD-9DEC-4385EF1B793B}.Release|x64.Build.0 = Release|Any CPU
+		{1AD48637-EF8E-44CD-9DEC-4385EF1B793B}.Release|x86.ActiveCfg = Release|Any CPU
+		{1AD48637-EF8E-44CD-9DEC-4385EF1B793B}.Release|x86.Build.0 = Release|Any CPU
+		{1B32DC7A-D397-4967-8776-22AE6BC95A57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B32DC7A-D397-4967-8776-22AE6BC95A57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B32DC7A-D397-4967-8776-22AE6BC95A57}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{1B32DC7A-D397-4967-8776-22AE6BC95A57}.Debug|x64.Build.0 = Debug|Any CPU
+		{1B32DC7A-D397-4967-8776-22AE6BC95A57}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1B32DC7A-D397-4967-8776-22AE6BC95A57}.Debug|x86.Build.0 = Debug|Any CPU
+		{1B32DC7A-D397-4967-8776-22AE6BC95A57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B32DC7A-D397-4967-8776-22AE6BC95A57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B32DC7A-D397-4967-8776-22AE6BC95A57}.Release|x64.ActiveCfg = Release|Any CPU
+		{1B32DC7A-D397-4967-8776-22AE6BC95A57}.Release|x64.Build.0 = Release|Any CPU
+		{1B32DC7A-D397-4967-8776-22AE6BC95A57}.Release|x86.ActiveCfg = Release|Any CPU
+		{1B32DC7A-D397-4967-8776-22AE6BC95A57}.Release|x86.Build.0 = Release|Any CPU
+		{3FAA2DAA-9802-4F17-9F9F-915BE011612D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FAA2DAA-9802-4F17-9F9F-915BE011612D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FAA2DAA-9802-4F17-9F9F-915BE011612D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3FAA2DAA-9802-4F17-9F9F-915BE011612D}.Debug|x64.Build.0 = Debug|Any CPU
+		{3FAA2DAA-9802-4F17-9F9F-915BE011612D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3FAA2DAA-9802-4F17-9F9F-915BE011612D}.Debug|x86.Build.0 = Debug|Any CPU
+		{3FAA2DAA-9802-4F17-9F9F-915BE011612D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FAA2DAA-9802-4F17-9F9F-915BE011612D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FAA2DAA-9802-4F17-9F9F-915BE011612D}.Release|x64.ActiveCfg = Release|Any CPU
+		{3FAA2DAA-9802-4F17-9F9F-915BE011612D}.Release|x64.Build.0 = Release|Any CPU
+		{3FAA2DAA-9802-4F17-9F9F-915BE011612D}.Release|x86.ActiveCfg = Release|Any CPU
+		{3FAA2DAA-9802-4F17-9F9F-915BE011612D}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1AD48637-EF8E-44CD-9DEC-4385EF1B793B} = {CB2912C6-F6FB-3637-B0AE-43EFE2594335}
+		{1B32DC7A-D397-4967-8776-22AE6BC95A57} = {CB2912C6-F6FB-3637-B0AE-43EFE2594335}
+		{3FAA2DAA-9802-4F17-9F9F-915BE011612D} = {CB2912C6-F6FB-3637-B0AE-43EFE2594335}
+	EndGlobalSection
+EndGlobal
