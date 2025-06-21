@@ -113,46 +113,18 @@ This provides a web UI for AI chat playground that is able to connect virtually 
     az account show
     ```
 
-1. Update `appsettings.json` on the `OpenChat.AppHost` project. The JSON object below shows the default values.
-
-    ```jsonc
-    {
-      "LLM": {
-        // Set the LLM provider.
-        "Provider": "openai"
-      },
-    
-      "OpenAI": {
-        // Set the deployment name, if you choose 'openai' as the LLM provider.
-        "DeploymentName": "gpt-4o"
-      },
-    
-      "Ollama": {
-        // Set the Ollama container image tag.
-        "ImageTag": "0.6.8",
-        // Set to either 'true' or 'false' depending on the usage of the GPU acceleration.
-        "UseGPU": false,
-        // Set the deployment name, if you choose either `ollama` or `hface` as the LLM provider.
-        "DeploymentName": "llama",
-        // Set the model name, if you choose either `ollama` or `hface` as the LLM provider.
-        // Make sure the model name must include '/' in the middle and 'GGUF' at the end, if you choose 'hface' as the LLM provider.
-        "ModelName": "llama3.2"
-      }
-    }
-    ```
-
 1. Add OpenAI connection string, if you want to use OpenAI as the LLM provider.
 
     ```bash
     # bash/zsh
     dotnet user-secrets --project $REPOSITORY_ROOT/src/OpenChat.AppHost \
-        set ConnectionStrings:openai "Endpoint={{API_ENDPOINT}};Key={{API_KEY}}"
+        set ConnectionStrings:openai "Endpoint=https://models.inference.ai.azure.com;Key=YOUR-API-KEY"
     ```
 
     ```bash
     # PowerShell
     dotnet user-secrets --project $REPOSITORY_ROOT/src/OpenChat.AppHost `
-        set ConnectionStrings:openai "Endpoint={{API_ENDPOINT}};Key={{API_KEY}}"
+        set ConnectionStrings:openai "Endpoint=https://models.inference.ai.azure.com;Key=YOUR-API-KEY"
     ```
 
 1. Run the following commands in order to provision and deploy the app.
