@@ -1,9 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.AI;
-using Microsoft.Extensions.VectorData;
 using OpenChat.PlaygroundApp.Components;
-using OpenChat.PlaygroundApp.Services;
-using OpenChat.PlaygroundApp.Services.Ingestion;
 using OpenAI;
 using System.ClientModel;
 
@@ -24,19 +20,10 @@ var ghModelsClient = new OpenAIClient(credential, openAIOptions);
 var chatClient = ghModelsClient.GetChatClient("gpt-4o-mini").AsIChatClient();
 var embeddingGenerator = ghModelsClient.GetEmbeddingClient("text-embedding-3-small").AsIEmbeddingGenerator();
 
-var vectorStore = new JsonVectorStore(Path.Combine(AppContext.BaseDirectory, "vector-store"));
-
-builder.Services.AddSingleton<IVectorStore>(vectorStore);
-builder.Services.AddScoped<DataIngestor>();
-builder.Services.AddSingleton<SemanticSearch>();
 builder.Services.AddChatClient(chatClient).UseFunctionInvocation().UseLogging();
 builder.Services.AddEmbeddingGenerator(embeddingGenerator);
 
-builder.Services.AddDbContext<IngestionCacheDbContext>(options =>
-    options.UseSqlite("Data Source=ingestioncache.db"));
-
 var app = builder.Build();
-IngestionCacheDbContext.Initialize(app.Services);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -52,13 +39,5 @@ app.UseAntiforgery();
 app.UseStaticFiles();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
-
-// By default, we ingest PDF files from the /wwwroot/Data directory. You can ingest from
-// other sources by implementing IIngestionSource.
-// Important: ensure that any content you ingest is trusted, as it may be reflected back
-// to users or could be a source of prompt injection risk.
-await DataIngestor.IngestDataAsync(
-    app.Services,
-    new PDFDirectorySource(Path.Combine(builder.Environment.WebRootPath, "Data")));
 
 app.Run();
