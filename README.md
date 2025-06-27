@@ -48,30 +48,33 @@ This provides a web UI for AI chat playground that is able to connect virtually 
     $REPOSITORY_ROOT = git rev-parse --show-toplevel
     ```
 
+1. Add Github token for Github Models connection.
+
+    ```bash
+    # bash/zsh
+    dotnet user-secrets --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp \
+        set GitHubModels:Token "YOUR-TOKEN"
+    ```
+
+    ```bash
+    # PowerShell
+    dotnet user-secrets --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp `
+        set GitHubModels:Token "YOUR-TOKEN"
+    ```
+    > The Token needs "Models" "read-only" permission.
+    > For more detailed information dealing tokens, refer to [\[Github | Managing-your-personal-access-tokens\](Link)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
+
 1. Run the app.
 
     ```bash
-    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.AppHost
+    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp
     ```
 
 1. If you want to change the model, pass the following arguments:
 
     ```bash
-    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.AppHost -- [OPTIONS]
+    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- [OPTIONS]
     ```
-
-   Here are the list of options:
-
-   - `--llm-provider`: Choose `openai`, `ollama` or `hface`. Default is `openai`.
-   - `--openai-deployment`: Provide the deployment name, if you choose `openai` as the LLM provider. Default is `gpt-4o`.
-   - `--openai-connection-string`: Provide the connection string to OpenAI. It must be provided if you choose `openai` as the LLM provider. It must follow the format like `Endpoint=xxxxx;Key=xxxxx`.
-   - `--ollama-image-tag`: Provide the Ollama container version, if you choose either `ollama` or `hface` as the LLM provider. Default is `0.6.8`.
-   - `--ollama-use-gpu`: Provide the value whether to use the GPU acceleration or not, if you choose either `ollama` or `hface` as the LLM provider. Default is `false`.
-   - `--ollama-deployment`: Provide the deployment name, if you choose `ollama` as the LLM provider. Default is `llama`.
-   - `--ollama-model`: Provide the model name, if you choose `ollama` as the LLM provider. Default is `llama3.2`.
-   - `--huggingface-deployment`: Provide the deployment name, if you choose `hface` as the LLM provider. Default is `qwen3`.
-   - `--huggingface-model`: Provide the model name, if you choose `hface` as the LLM provider. Default is `Qwen/Qwen3-14B-GGUF`.
-   - `--help`: Display the help message.
 
 ### Run on Azure
 
@@ -111,48 +114,6 @@ This provides a web UI for AI chat playground that is able to connect virtually 
     
     # Azure CLI
     az account show
-    ```
-
-1. Update `appsettings.json` on the `OpenChat.AppHost` project. The JSON object below shows the default values.
-
-    ```jsonc
-    {
-      "LLM": {
-        // Set the LLM provider.
-        "Provider": "openai"
-      },
-    
-      "OpenAI": {
-        // Set the deployment name, if you choose 'openai' as the LLM provider.
-        "DeploymentName": "gpt-4o"
-      },
-    
-      "Ollama": {
-        // Set the Ollama container image tag.
-        "ImageTag": "0.6.8",
-        // Set to either 'true' or 'false' depending on the usage of the GPU acceleration.
-        "UseGPU": false,
-        // Set the deployment name, if you choose either `ollama` or `hface` as the LLM provider.
-        "DeploymentName": "llama",
-        // Set the model name, if you choose either `ollama` or `hface` as the LLM provider.
-        // Make sure the model name must include '/' in the middle and 'GGUF' at the end, if you choose 'hface' as the LLM provider.
-        "ModelName": "llama3.2"
-      }
-    }
-    ```
-
-1. Add OpenAI connection string, if you want to use OpenAI as the LLM provider.
-
-    ```bash
-    # bash/zsh
-    dotnet user-secrets --project $REPOSITORY_ROOT/src/OpenChat.AppHost \
-        set ConnectionStrings:openai "Endpoint={{API_ENDPOINT}};Key={{API_KEY}}"
-    ```
-
-    ```bash
-    # PowerShell
-    dotnet user-secrets --project $REPOSITORY_ROOT/src/OpenChat.AppHost `
-        set ConnectionStrings:openai "Endpoint={{API_ENDPOINT}};Key={{API_KEY}}"
     ```
 
 1. Run the following commands in order to provision and deploy the app.
