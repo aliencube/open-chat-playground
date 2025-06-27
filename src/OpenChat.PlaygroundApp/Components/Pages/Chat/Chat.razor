@@ -11,33 +11,20 @@
 
 <ChatMessageList Messages="@messages" InProgressMessage="@currentResponseMessage">
     <NoMessagesContent>
-        <div>To get started, try asking about these example documents. You can replace these with your own data and replace this message.</div>
-        <ChatCitation File="Example_Emergency_Survival_Kit.pdf"/>
-        <ChatCitation File="Example_GPS_Watch.pdf"/>
+        <div>To get started, try asking about anything.</div>
     </NoMessagesContent>
 </ChatMessageList>
 
 <div class="chat-container">
-    <ChatSuggestions OnSelected="@AddUserMessageAsync" @ref="@chatSuggestions" />
     <ChatInput OnSend="@AddUserMessageAsync" @ref="@chatInput" />
     <SurveyPrompt /> @* Remove this line to eliminate the template survey message *@
 </div>
 
 @code {
     private const string SystemPrompt = @"
-        You are an assistant who answers questions about information you retrieve.
+        You are an assistant who answers questions about anything.
         Do not answer questions about anything else.
         Use only simple markdown to format your responses.
-
-        Use the search tool to find relevant information. When you do this, end your
-        reply with citations in the special XML format:
-
-        <citation filename='string' page_number='number'>exact quote here</citation>
-
-        Always include the citation in your response if there are results.
-
-        The quote must be max 5 words, taken word-for-word from the search result, and is the basis for why the citation is relevant.
-        Don't refer to the presence of citations; just emit these tags right at the end, with no surrounding text.
         ";
 
     private readonly ChatOptions chatOptions = new();
@@ -45,12 +32,10 @@
     private CancellationTokenSource? currentResponseCancellation;
     private ChatMessage? currentResponseMessage;
     private ChatInput? chatInput;
-    private ChatSuggestions? chatSuggestions;
 
     protected override void OnInitialized()
     {
         messages.Add(new(ChatRole.System, SystemPrompt));
-        chatOptions.Tools = [AIFunctionFactory.Create(SearchAsync)];
     }
 
     private async Task AddUserMessageAsync(ChatMessage userMessage)
@@ -59,7 +44,6 @@
 
         // Add the user message to the conversation
         messages.Add(userMessage);
-        chatSuggestions?.Clear();
         await chatInput!.FocusAsync();
 
         // Stream and display a new response from the IChatClient
@@ -76,7 +60,6 @@
         // Store the final response in the conversation, and begin getting suggestions
         messages.Add(currentResponseMessage!);
         currentResponseMessage = null;
-        chatSuggestions?.Update(messages);
     }
 
     private void CancelAnyCurrentResponse()
@@ -96,19 +79,7 @@
         CancelAnyCurrentResponse();
         messages.Clear();
         messages.Add(new(ChatRole.System, SystemPrompt));
-        chatSuggestions?.Clear();
         await chatInput!.FocusAsync();
-    }
-
-    [Description("Searches for information using a phrase or keyword")]
-    private async Task<IEnumerable<string>> SearchAsync(
-        [Description("The phrase to search for.")] string searchPhrase,
-        [Description("If possible, specify the filename to search that file only. If not provided or empty, the search includes all files.")] string? filenameFilter = null)
-    {
-        await InvokeAsync(StateHasChanged);
-        var results = await Search.SearchAsync(searchPhrase, filenameFilter, maxResults: 5);
-        return results.Select(result =>
-            $"<result filename=\"{result.FileName}\" page_number=\"{result.PageNumber}\">{result.Text}</result>");
     }
 
     public void Dispose()
