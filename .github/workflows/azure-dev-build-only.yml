@@ -35,12 +35,6 @@ jobs:
       run: |
         dotnet dev-certs https --trust
 
-    - name: Install Aspire workload
-      shell: bash
-      run: |
-        # dotnet workload uninstall aspire
-        dotnet new install Aspire.ProjectTemplates
-
     - name: Restore NuGet packages
       shell: bash
       run: |
@@ -51,29 +45,7 @@ jobs:
       run: |
         dotnet build . --no-restore --no-incremental
 
-    - name: Install playwright
-      shell: pwsh
-      run: |
-        $playwright = Get-ChildItem -File Microsoft.Playwright.dll -Path . -Recurse
-        $installer = "$($playwright[0].Directory.FullName)/playwright.ps1"
-        & "$installer" install
-
     - name: Run tests
       shell: bash
       run: |
         dotnet test . --no-build --logger "trx" --collect:"XPlat Code Coverage"
-
-    # - name: Publish test results
-    #   if: ${{ !cancelled() }}
-    #   id: test-report
-    #   uses: bibipkins/dotnet-test-reporter@main
-    #   with:
-    #     github-token: ${{ secrets.GH_PAT_GRAINED }}
-    #     results-path: ./**/TestResults/**/*.trx
-    #     # coverage-path: ./**/TestResults/**/*.xml
-    #     # coverage-type: cobertura
-    #     # coverage-threshold: 0
-    #     # coverage-threshold: 80
-    #     allow-failed-tests: true
-    #     post-new-comment: true
-    #     comment-title: "Test Results"

@@ -17,17 +17,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    env:
-      AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
-      AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
-      AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-      AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
-      AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
-      AZURE_OPENAI_KEYS: ${{ secrets.AZURE_OPENAI_KEYS }}
-      AZURE_KEYVAULT_URI: ${{ secrets.AZURE_KEYVAULT_URI }}
-      AZURE_KEYVAULT_SECRET_NAME_OPENAI: ${{ vars.AZURE_KEYVAULT_SECRET_NAME_OPENAI }}
-      AZURE_KEYVAULT_SECRET_NAME_STORAGE: ${{ vars.AZURE_KEYVAULT_SECRET_NAME_STORAGE }}
-
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -42,12 +31,6 @@ jobs:
       run: |
         dotnet dev-certs https --trust
 
-    - name: Install Aspire workload
-      shell: bash
-      run: |
-        # dotnet workload uninstall aspire
-        dotnet new install Aspire.ProjectTemplates
-
     - name: Restore NuGet packages
       shell: bash
       run: |
@@ -58,46 +41,7 @@ jobs:
       run: |
         dotnet build -c Release --no-restore --no-incremental
 
-    - name: Install playwright
-      shell: pwsh
-      run: |
-        $playwright = Get-ChildItem -File Microsoft.Playwright.dll -Path . -Recurse
-        $installer = "$($playwright[0].Directory.FullName)/playwright.ps1"
-        & "$installer" install
-
     - name: Run unit tests
       shell: bash
       run: |
         dotnet test . -c Release --no-build --logger "trx" --collect:"XPlat Code Coverage"
-
-    # - name: Publish test results
-    #   uses: bibipkins/dotnet-test-reporter@main
-    #   with:
-    #     github-token: ${{ secrets.GH_PAT_GRAINED }}
-    #     results-path: ./**/TestResults/**/*.trx
-    #     # coverage-path: ./**/TestResults/**/*.xml
-    #     # coverage-type: cobertura
-    #     # coverage-threshold: 0
-    #     # coverage-threshold: 80
-    #     allow-failed-tests: true
-    #     post-new-comment: false
-        
-    # - name: Install azd
-    #   uses: Azure/setup-azd@v2
-
-    # - name: Log in with Azure (Federated Credentials)
-    #   if: env.AZURE_CLIENT_ID != ''
-    #   shell: pwsh
-    #   run: |
-    #     azd auth login `
-    #       --client-id "$env:AZURE_CLIENT_ID" `
-    #       --federated-credential-provider "github" `
-    #       --tenant-id "$env:AZURE_TENANT_ID"
-
-    # - name: Provision Infrastructure
-    #   run: azd provision --no-prompt
-    #   env:
-    #     AZD_INITIAL_ENVIRONMENT_CONFIG: ${{ secrets.AZD_INITIAL_ENVIRONMENT_CONFIG }}
-
-    # - name: Deploy Application
-    #   run: azd deploy --no-prompt
