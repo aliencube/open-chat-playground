@@ -1,45 +1,44 @@
-using OpenChat.Common.Configurations;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.AI;
+using Microsoft.Extensions.VectorData;
 using OpenChat.PlaygroundApp.Components;
+using OpenChat.PlaygroundApp.Services;
+using OpenChat.PlaygroundApp.Services.Ingestion;
+using OpenAI;
+using System.ClientModel;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 
-var config = AppSettings.Parse(builder.Configuration, args);
-if (config.Help == true)
+// You will need to set the endpoint and key to your own values
+// You can do this using Visual Studio's "Manage User Secrets" UI, or on the command line:
+//   cd this-project-directory
+//   dotnet user-secrets set GitHubModels:Token YOUR-GITHUB-TOKEN
+var credential = new ApiKeyCredential(builder.Configuration["GitHubModels:Token"] ?? throw new InvalidOperationException("Missing configuration: GitHubModels:Token. See the README for details."));
+var openAIOptions = new OpenAIClientOptions()
 {
-    Console.WriteLine("Usage: dotnet run -- [options]");
-    return;
-}
-if (config.LLM.ProviderType == LLMProviderType.Undefined)
-{
-    Console.WriteLine("Usage: dotnet run -- [options]");
-    return;
-}
+    Endpoint = new Uri("https://models.inference.ai.azure.com")
+};
 
-builder.Services.AddSingleton(config);
+var ghModelsClient = new OpenAIClient(credential, openAIOptions);
+var chatClient = ghModelsClient.GetChatClient("gpt-4o-mini").AsIChatClient();
+var embeddingGenerator = ghModelsClient.GetEmbeddingClient("text-embedding-3-small").AsIEmbeddingGenerator();
 
-// Add services to the container.
-builder.AddServiceDefaults();
+var vectorStore = new JsonVectorStore(Path.Combine(AppContext.BaseDirectory, "vector-store"));
 
-builder.Services.AddRazorComponents()
-                .AddInteractiveServerComponents();
+builder.Services.AddSingleton<IVectorStore>(vectorStore);
+builder.Services.AddScoped<DataIngestor>();
+builder.Services.AddSingleton<SemanticSearch>();
+builder.Services.AddChatClient(chatClient).UseFunctionInvocation().UseLogging();
+builder.Services.AddEmbeddingGenerator(embeddingGenerator);
 
-// Add OpenAI
-if (config.LLM.ProviderType == LLMProviderType.OpenAI)
-{
-    builder.AddAzureOpenAIClient(config.LLM.ProviderType.ToString().ToLowerInvariant()).AddChatClient(config.OpenAI.DeploymentName);
-}
-
-// Add Ollama or Hugging Face
-if (config.LLM.ProviderType == LLMProviderType.Ollama || config.LLM.ProviderType == LLMProviderType.HuggingFace)
-{
-    builder.AddOllamaSharpChatClient(config.Ollama.DeploymentName);
-}
+builder.Services.AddDbContext<IngestionCacheDbContext>(options =>
+    options.UseSqlite("Data Source=ingestioncache.db"));
 
 var app = builder.Build();
+IngestionCacheDbContext.Initialize(app.Services);
 
 // Configure the HTTP request pipeline.
-app.MapDefaultEndpoints();
-
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
@@ -48,12 +47,18 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAntiforgery();
 
-app.MapStaticAssets();
-
+app.UseStaticFiles();
 app.MapRazorComponents<App>()
-   .AddInteractiveServerRenderMode();
+    .AddInteractiveServerRenderMode();
+
+// By default, we ingest PDF files from the /wwwroot/Data directory. You can ingest from
+// other sources by implementing IIngestionSource.
+// Important: ensure that any content you ingest is trusted, as it may be reflected back
+// to users or could be a source of prompt injection risk.
+await DataIngestor.IngestDataAsync(
+    app.Services,
+    new PDFDirectorySource(Path.Combine(builder.Environment.WebRootPath, "Data")));
 
 app.Run();

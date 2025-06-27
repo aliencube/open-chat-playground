@@ -5,5 +5,5 @@ name: open-chat-playground
 services:  
   app:
     language: dotnet
-    project: ./src/OpenChat.AppHost/OpenChat.AppHost.csproj
+    project: ./src/OpenChat.PlaygroundApp/OpenChat.PlaygroundApp.csproj
     host: containerapp
