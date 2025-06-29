@@ -70,12 +70,6 @@ This provides a web UI for AI chat playground that is able to connect virtually 
     dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp
     ```
 
-1. If you want to change the model, pass the following arguments:
-
-    ```bash
-    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- [OPTIONS]
-    ```
-
 ### Run on Azure
 
 1. Get the repository root.
