@@ -28,24 +28,6 @@ else if (Message.Role == ChatRole.Assistant)
                 </div>
             </div>
         }
-        else if (content is FunctionCallContent { Name: "Search" } fcc && fcc.Arguments?.TryGetValue("searchPhrase", out var searchPhrase) is true)
-        {
-            <div class="assistant-search">
-                <div class="assistant-search-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                    </svg>
-                </div>
-                <div class="assistant-search-content">
-                    Searching:
-                    <span class="assistant-search-phrase">@searchPhrase</span>
-                    @if (fcc.Arguments?.TryGetValue("filenameFilter", out var filenameObj) is true && filenameObj is string filename && !string.IsNullOrEmpty(filename))
-                    {
-                        <text> in </text><span class="assistant-search-phrase">@filename</span>
-                    }
-                </div>
-            </div>
-        }
     }
 }
 
