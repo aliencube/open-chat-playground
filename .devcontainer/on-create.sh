@@ -18,7 +18,9 @@ dotnet dev-certs https --trust
 echo Install .NET Aspire workload
 dotnet workload update --from-previous-sdk && \
     dotnet workload uninstall aspire && \
-    dotnet new install Aspire.ProjectTemplates
+    dotnet new install Aspire.ProjectTemplates && \
+    dotnet new install Microsoft.Extensions.AI.Templates && \
+    dotnet tool install --global aspire.cli --prerelease
 
 # D2Coding Nerd Font
 echo Install D2Coding Nerd Font

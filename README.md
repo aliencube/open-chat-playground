@@ -4,9 +4,10 @@ This provides a web UI for AI chat playground that is able to connect virtually 
 
 ## Prerequisites
 
+- [Azure Subscription](https://azure.microsoft.com/free)
 - [.NET SDK 9](https://dotnet.microsoft.com/download/dotnet/9.0)
 - [Visual Studio Code](https://code.visualstudio.com/) + [C# DevKit](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit)
-- [Docker Desktop](https://docs.docker.com/desktop/) or [Podman](https://podman.io/docs/installation)
+- [Docker Desktop](https://docs.docker.com/desktop/)
 - [PowerShell 7.4+](https://learn.microsoft.com/powershell/scripting/install/installing-powershell)
 - [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd)
 - [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) + [Container Apps extension](https://learn.microsoft.com/cli/azure/azure-cli-extensions-overview)
@@ -48,20 +49,21 @@ This provides a web UI for AI chat playground that is able to connect virtually 
     $REPOSITORY_ROOT = git rev-parse --show-toplevel
     ```
 
-1. Add Github token for Github Models connection.
+1. Add GitHub Personal Access Token (PAT) for GitHub Models connection. Make sure you should replace `{{YOUR_TOKEN}}` with your GitHub PAT.
 
     ```bash
     # bash/zsh
     dotnet user-secrets --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp \
-        set GitHubModels:Token "YOUR-TOKEN"
+        set GitHubModels:Token "{{YOUR_TOKEN}}"
     ```
 
     ```bash
     # PowerShell
     dotnet user-secrets --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp `
-        set GitHubModels:Token "YOUR-TOKEN"
+        set GitHubModels:Token "{{YOUR_TOKEN}}"
     ```
-    > refer to the doc, [Managing your personal access tokens](https://docs.github.com/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
+
+    > For more details about GitHub PAT, refer to the doc, [Managing your personal access tokens](https://docs.github.com/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
 
 1. Run the app.
 

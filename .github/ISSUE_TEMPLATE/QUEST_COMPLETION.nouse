@@ -1,0 +1,64 @@
+name: '과제 완료 인증'
+description: '과제 완료 인증용 템플릿'
+title: "과제 완료 인증"
+
+body:
+- type: markdown
+  attributes:
+    value: |
+      과제를 완료하신 분들은 이슈를 통해 인증을 받을 수 있습니다. 아래의 템플릿을 작성하여 이슈를 등록해 주세요.
+
+- type: dropdown
+  id: title
+  attributes:
+    label: '제목'
+    options:
+      # - '과제 1: Blazor 앱'
+      # - '과제 2: 단위 테스트'
+      - '과제 3: .NET Aspire'
+    default: 0
+
+- type: input
+  id: github_id
+  attributes:
+    label: 'GitHub 프로필 URL'
+    description: 'GitHub 프로필 주소를 입력하세요. (예: https://github.com/aliencube)'
+    placeholder: 'GitHub 프로필 주소를 입력하세요. (예: https://github.com/aliencube)'
+  validations:
+    required: true
+
+- type: input
+  id: github_repository
+  attributes:
+    label: 'GitHub 리포지토리 URL'
+    description: '과제를 저장한 GitHub 리포지토리 주소를 입력하세요. (예: https://github.com/aliencube/azure-openai-sdk-proxy)'
+    placeholder: '과제를 저장한 GitHub 리포지토리 주소를 입력하세요. (예: https://github.com/aliencube/azure-openai-sdk-proxy)'
+  validations:
+    required: true
+
+- type: input
+  id: frontend_url
+  attributes:
+    label: '프론트엔드 앱 URL'
+    description: '프론트엔드 앱 URL을 입력해 주세요. (예: https://webapp.howsweet-fcd6fb4e.koreacentral.azurecontainerapps.io)'
+    placeholder: '프론트엔드 앱 URL을 입력해 주세요. (예: https://webapp.howsweet-fcd6fb4e.koreacentral.azurecontainerapps.io)'
+  validations:
+    required: true
+
+- type: input
+  id: backend_url
+  attributes:
+    label: '백엔드 앱 URL'
+    description: '백엔드 앱 URL을 입력해 주세요. (예: https://apiapp.howsweet-fcd6fb4e.koreacentral.azurecontainerapps.io)'
+    placeholder: '백엔드 앱 URL을 입력해 주세요. (예: https://apiapp.howsweet-fcd6fb4e.koreacentral.azurecontainerapps.io)'
+  validations:
+    required: true
+
+- type: input
+  id: dashboard_url
+  attributes:
+    label: '대시보드 앱 URL'
+    description: '대시보드 앱 URL을 입력해 주세요. (예: https://aspire-dashboard.ext.howsweet-fcd6fb4e.koreacentral.azurecontainerapps.io)'
+    placeholder: '대시보드 앱 URL을 입력해 주세요. (예: https://aspire-dashboard.ext.howsweet-fcd6fb4e.koreacentral.azurecontainerapps.io)'
+  validations:
+    required: true
