@@ -61,8 +61,7 @@ This provides a web UI for AI chat playground that is able to connect virtually 
     dotnet user-secrets --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp `
         set GitHubModels:Token "YOUR-TOKEN"
     ```
-    > The Token needs "Models" "read-only" permission.
-    > For more detailed information dealing tokens, refer to [Managing your personal access tokens](https://docs.github.com/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
+    > refer to the doc, [Managing your personal access tokens](https://docs.github.com/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
 
 1. Run the app.
 
