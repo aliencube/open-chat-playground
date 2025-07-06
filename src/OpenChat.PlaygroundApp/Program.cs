@@ -1,10 +1,15 @@
-using Microsoft.Extensions.AI;
-using OpenChat.PlaygroundApp.Components;
-using OpenAI;
 using System.ClientModel;
 
+using Microsoft.Extensions.AI;
+
+using OpenChat.PlaygroundApp.Components;
+
+using OpenAI;
+
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddRazorComponents().AddInteractiveServerComponents();
+
+builder.Services.AddRazorComponents()
+                .AddInteractiveServerComponents();
 
 // You will need to set the endpoint and key to your own values
 // You can do this using Visual Studio's "Manage User Secrets" UI, or on the command line:
@@ -17,11 +22,11 @@ var openAIOptions = new OpenAIClientOptions()
 };
 
 var ghModelsClient = new OpenAIClient(credential, openAIOptions);
-var chatClient = ghModelsClient.GetChatClient("gpt-4o-mini").AsIChatClient();
-var embeddingGenerator = ghModelsClient.GetEmbeddingClient("text-embedding-3-small").AsIEmbeddingGenerator();
+var chatClient = ghModelsClient.GetChatClient("gpt-4o").AsIChatClient();
 
-builder.Services.AddChatClient(chatClient).UseFunctionInvocation().UseLogging();
-builder.Services.AddEmbeddingGenerator(embeddingGenerator);
+builder.Services.AddChatClient(chatClient)
+                .UseFunctionInvocation()
+                .UseLogging();
 
 var app = builder.Build();
 
@@ -37,7 +42,8 @@ app.UseHttpsRedirection();
 app.UseAntiforgery();
 
 app.UseStaticFiles();
+
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+   .AddInteractiveServerRenderMode();
 
 app.Run();
