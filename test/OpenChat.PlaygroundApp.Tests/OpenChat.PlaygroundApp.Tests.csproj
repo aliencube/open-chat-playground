@@ -10,7 +10,9 @@
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.*" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.*" />
+    <PackageReference Include="Microsoft.Playwright.NUnit" Version="1.53.0" />
     <PackageReference Include="NSubstitute" Version="5.*" />
+    <PackageReference Include="NUnit3TestAdapter" Version="5.0.0" />
     <PackageReference Include="Shouldly" Version="4.*" />
     <PackageReference Include="xunit" Version="2.*" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.*" />
