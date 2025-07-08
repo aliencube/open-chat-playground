@@ -45,7 +45,18 @@ jobs:
       run: |
         dotnet build . --no-restore --no-incremental
 
+    - name: Install playwright
+      shell: pwsh
+      run: |
+        $playwright = Get-ChildItem -File Microsoft.Playwright.dll -Path . -Recurse
+        $installer = "$($playwright[0].Directory.FullName)/playwright.ps1"
+        & "$installer" install
+
     - name: Run tests
       shell: bash
       run: |
+        dotnet run --project ./src/OpenChat.PlaygroundApp &
+
+        sleep 30
+
         dotnet test . --no-build --logger "trx" --collect:"XPlat Code Coverage"
