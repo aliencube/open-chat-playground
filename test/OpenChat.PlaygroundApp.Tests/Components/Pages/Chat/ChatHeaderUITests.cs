@@ -9,15 +9,10 @@ namespace OpenChat.PlaygroundApp.Tests.Components.Pages.Chat;
 [TestFixture]
 public class ChatHeaderUITests : PageTest
 {
-    public override BrowserNewContextOptions ContextOptions() => new()
-    {
-        IgnoreHTTPSErrors = true,
-    };
-
     [SetUp]
     public async Task Init()
     {
-        await Page.GotoAsync("https://localhost:5001");
+        await Page.GotoAsync("http://localhost:8080");
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
     }
 

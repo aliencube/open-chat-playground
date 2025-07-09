@@ -47,5 +47,16 @@ jobs:
 
     - name: Run tests
       shell: bash
+      env:
+        GITHUB_MODEL_ACCESS_TOKEN: ${{ secrets.GITHUBMODEL_ACCESS_TOKEN }}
       run: |
+        REPOSITORY_ROOT=$(git rev-parse --show-toplevel)
+
+        dotnet user-secrets --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp \
+            set GitHubModels:Token "$GITHUB_MODEL_ACCESS_TOKEN"
+
+        dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp &
+
+        sleep 30
+
         dotnet test . --no-build --logger "trx" --collect:"XPlat Code Coverage"
