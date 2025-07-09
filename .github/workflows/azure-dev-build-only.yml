@@ -47,13 +47,11 @@ jobs:
 
     - name: Run tests
       shell: bash
-      env:
-        GITHUB_MODEL_ACCESS_TOKEN: ${{ secrets.GITHUBMODEL_ACCESS_TOKEN }}
       run: |
         REPOSITORY_ROOT=$(git rev-parse --show-toplevel)
 
         dotnet user-secrets --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp \
-            set GitHubModels:Token "$GITHUB_MODEL_ACCESS_TOKEN"
+            set GitHubModels:Token "temporary-dummy-token"
 
         dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp &
 
