@@ -1,22 +1,16 @@
-﻿using Microsoft.Playwright;
-using Microsoft.Playwright.NUnit;
-
-using NUnit.Framework;
+﻿using Microsoft.Playwright.Xunit;
 
 namespace OpenChat.PlaygroundApp.Tests.Components.Pages.Chat;
 
-[Parallelizable(ParallelScope.Self)]
-[TestFixture]
 public class ChatHeaderUITests : PageTest
 {
-    [SetUp]
-    public async Task Init()
+    public override async Task InitializeAsync()
     {
+        await base.InitializeAsync();
         await Page.GotoAsync("http://localhost:8080");
-        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
     }
 
-    [Test]
+    [Fact]
     public async Task Given_Root_Page_When_Loaded_Then_Header_Is_Visible()
     {
         // Act
@@ -26,10 +20,8 @@ public class ChatHeaderUITests : PageTest
         title.ShouldBe("OpenChat.PlaygroundApp");
     }
 
-    [TearDown]
-    public async Task CleanUp()
+    public override async Task DisposeAsync()
     {
         await Page.CloseAsync();
     }
 }
-
