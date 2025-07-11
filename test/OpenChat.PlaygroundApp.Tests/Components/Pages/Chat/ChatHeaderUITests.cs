@@ -1,4 +1,5 @@
-﻿using Microsoft.Playwright.Xunit;
+﻿using Microsoft.Playwright;
+using Microsoft.Playwright.Xunit;
 
 namespace OpenChat.PlaygroundApp.Tests.Components.Pages.Chat;
 
@@ -8,6 +9,7 @@ public class ChatHeaderUITests : PageTest
     {
         await base.InitializeAsync();
         await Page.GotoAsync("http://localhost:8080");
+        await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
     }
 
     [Theory]
@@ -24,5 +26,6 @@ public class ChatHeaderUITests : PageTest
     public override async Task DisposeAsync()
     {
         await Page.CloseAsync();
+        await base.DisposeAsync();
     }
 }
