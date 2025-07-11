@@ -120,3 +120,36 @@ This provides a web UI for AI chat playground that is able to connect virtually 
     ```
 
    > **NOTE**: You will be asked to provide Azure subscription and location for deployment.
+
+## Run Test
+
+1. Get the repository root.
+
+    ```bash
+    # bash/zsh
+    REPOSITORY_ROOT=$(git rev-parse --show-toplevel)
+    ```
+
+    ```powershell
+    # PowerShell
+    $REPOSITORY_ROOT = git rev-parse --show-toplevel
+    ```
+
+1. Restore packages and install playwright.
+
+    ```bash
+    cd $REPOSITORY_ROOT && dotnet restore
+    pwsh $REPOSITORY_ROOT/test/OpenChat.PlaygroundApp.Tests/bin/Debug/net{YOUR_VERSION}/playwright.ps1 install
+    ```
+
+1. Run the app.
+
+    ```bash
+    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp
+    ```
+
+1. Run tests.
+
+    ```bash
+    cd $REPOSITORY_ROOT && dotnet test
+    ```
