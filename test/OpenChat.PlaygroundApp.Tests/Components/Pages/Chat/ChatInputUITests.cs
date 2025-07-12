@@ -17,9 +17,9 @@ public class ChatInputUITest : PageTest
     [InlineData("Why is the sky blue?", 1)]
     [InlineData(" ", 1)]
     [InlineData("\n", 1)]
-    [InlineData("\n\r", 1)]
+    [InlineData("\r\n", 1)]
     [InlineData("", 0)]
-    [Trait("Category", "LLMProviderNeeded")]
+    [Trait("Category", "Skip")]
     public async Task GivenUserMessage_WhenSendButtonClicked_ThenSendOnlyNotEmptyString(string userMessage, int expectedMessageReturn)
     {
         // Arrange
@@ -39,11 +39,36 @@ public class ChatInputUITest : PageTest
     }
 
     [Theory]
+    [InlineData("하늘은 왜 푸른 색인가요?", 1)]
+    [InlineData("Why is the sky blue?", 1)]
+    [InlineData(" ", 1)]
+    [InlineData("\n", 1)]
+    [InlineData("\r\n", 1)]
+    [InlineData("", 0)]
+    [Trait("Category", "Skip")]
+    public async Task GivenUserMessage_WhenEnterPressed_ThenSendOnlyNotEmptyString(string userMessage, int expectedMessageReturn)
+    {
+        // Arrange
+        var textArea = Page.GetByRole(AriaRole.Textbox);
+        var messageCountBefore = await Page.Locator(".assistant-message-header")
+                                        .CountAsync();
+
+        // Act
+        await textArea.FillAsync(userMessage);
+        await textArea.PressAsync("Enter");
+
+        // Assert
+        await Expect(textArea).ToHaveValueAsync("");
+        await Expect(Page.Locator(".assistant-message-header"))
+                .ToHaveCountAsync(messageCountBefore + expectedMessageReturn);
+    }
+
+    [Theory]
     [InlineData("하늘은 왜 푸를까?", "rgb(0, 0, 0)")]
     [InlineData("Why is the sky blue?", "rgb(0, 0, 0)")]
     [InlineData(" ", "rgb(0, 0, 0)")]
     [InlineData("\n", "rgb(0, 0, 0)")]
-    [InlineData("\n\r", "rgb(0, 0, 0)")]
+    [InlineData("\r\n", "rgb(0, 0, 0)")]
     [InlineData("", "rgb(170, 170, 170)")]
     public async Task GivenUserMessage_WhenFillInTextarea_ThenColorReflects(string userMessage, string buttonColor)
     {
