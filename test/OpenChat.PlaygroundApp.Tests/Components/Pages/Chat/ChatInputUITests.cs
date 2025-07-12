@@ -24,7 +24,7 @@ public class ChatInputUITest : PageTest
     {
         // Arrange
         var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
-        var sendButton = Page.GetByRole(AriaRole.Button, new() { Name = "Send Button" });
+        var sendButton = Page.GetByRole(AriaRole.Button, new() { Name = "User Message Send Button" });
         var messageCountBefore = await Page.Locator(".assistant-message-header")
                                         .CountAsync();
 
