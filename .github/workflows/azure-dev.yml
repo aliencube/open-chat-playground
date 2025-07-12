@@ -61,4 +61,4 @@ jobs:
     - name: Run tests
       shell: bash
       run: |
-        dotnet test . -c Release --no-build --logger "trx" --collect:"XPlat Code Coverage"
+        dotnet test . -c Release --no-build --logger "trx" --collect:"XPlat Code Coverage" --filter "Category!=LLMProviderNeeded"

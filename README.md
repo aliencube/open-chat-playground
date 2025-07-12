@@ -151,5 +151,7 @@ This provides a web UI for AI chat playground that is able to connect virtually 
 1. Run tests.
 
     ```bash
-    cd $REPOSITORY_ROOT && dotnet test
+    cd $REPOSITORY_ROOT && dotnet test --filter "Category!=LLMProviderNeeded"
     ```
+
+    > **NOTE** : For now, skip the tests which need LLM provider connection.

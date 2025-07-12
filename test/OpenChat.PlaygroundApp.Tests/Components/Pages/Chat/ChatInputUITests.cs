@@ -13,11 +13,14 @@ public class ChatInputUITest : PageTest
     }
 
     [Theory]
-    [InlineData("Why is the sky blue?")]
-    [InlineData(" ")]
-    [InlineData("\n")]
-    [InlineData("\n\r")]
-    public async Task GivenInputNotEmpty_WhenSendButtonClicked_ThenSend(string userMessage)
+    [InlineData("하늘은 왜 푸른 색인가요?", 1)]
+    [InlineData("Why is the sky blue?", 1)]
+    [InlineData(" ", 1)]
+    [InlineData("\n", 1)]
+    [InlineData("\n\r", 1)]
+    [InlineData("", 0)]
+    [Trait("Category", "LLMProviderNeeded")]
+    public async Task GivenUserMessage_WhenSendButtonClicked_ThenSendOnlyNotEmptyString(string userMessage, int expectedMessageReturn)
     {
         // Arrange
         var textArea = Page.GetByRole(AriaRole.Textbox);
@@ -32,15 +35,17 @@ public class ChatInputUITest : PageTest
         // Assert
         await Expect(textArea).ToHaveValueAsync("");
         await Expect(Page.Locator(".assistant-message-header"))
-                .ToHaveCountAsync(messageCountBefore + 1);
+                .ToHaveCountAsync(messageCountBefore + expectedMessageReturn);
     }
 
     [Theory]
-    [InlineData("Why is the sky blue?")]
-    [InlineData(" ")]
-    [InlineData("\n")]
-    [InlineData("\n\r")]
-    public async Task GivenInputNotEmpty_ThenSendButtonColorShouldBeBlack(string userMessage)
+    [InlineData("하늘은 왜 푸를까?", "rgb(0, 0, 0)")]
+    [InlineData("Why is the sky blue?", "rgb(0, 0, 0)")]
+    [InlineData(" ", "rgb(0, 0, 0)")]
+    [InlineData("\n", "rgb(0, 0, 0)")]
+    [InlineData("\n\r", "rgb(0, 0, 0)")]
+    [InlineData("", "rgb(170, 170, 170)")]
+    public async Task GivenUserMessage_WhenFillInTextarea_ThenColorReflects(string userMessage, string buttonColor)
     {
         // Arrange
         var textArea = Page.GetByRole(AriaRole.Textbox);
@@ -50,39 +55,7 @@ public class ChatInputUITest : PageTest
         await textArea.FillAsync(userMessage);
 
         // Assert
-        await Expect(sendButton).ToHaveCSSAsync("color", "rgb(0, 0, 0)");
-    }
-
-    [Fact]
-    public async Task GivenInputEmpty_WhenSendButtonClicked_ThenDoNotSend()
-    {
-        // Arrange
-        var textArea = Page.GetByRole(AriaRole.Textbox);
-        var sendButton = Page.GetByRole(AriaRole.Button, new() { Name = "Send" });
-        var messageCountBefore = await Page.Locator(".assistant-message-header")
-                                        .CountAsync();
-
-        // Act
-        await textArea.FillAsync("");
-        await sendButton.ClickAsync();
-
-        // Assert
-        await Expect(Page.Locator(".assistant-message-header"))
-                .ToHaveCountAsync(messageCountBefore);
-    }
-
-    [Fact]
-    public async Task GivenInputEmpty_ThenButtonColorShouldBeGrey()
-    {
-        // Arrange
-        var textArea = Page.GetByRole(AriaRole.Textbox);
-        var sendButton = Page.GetByRole(AriaRole.Button, new() { Name = "Send" });
-
-        // Act
-        await textArea.FillAsync("");
-
-        // Assert
-        await Expect(sendButton).ToHaveCSSAsync("color", "rgb(170, 170, 170)");
+        await Expect(sendButton).ToHaveCSSAsync("color", buttonColor);
     }
 
     public override async Task DisposeAsync()
