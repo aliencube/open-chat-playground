@@ -23,8 +23,8 @@ public class ChatInputUITest : PageTest
     public async Task GivenUserMessage_WhenSendButtonClicked_ThenSendOnlyNotEmptyString(string userMessage, int expectedMessageReturn)
     {
         // Arrange
-        var textArea = Page.GetByRole(AriaRole.Textbox);
-        var sendButton = Page.GetByRole(AriaRole.Button, new() { Name = "Send" });
+        var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
+        var sendButton = Page.GetByRole(AriaRole.Button, new() { Name = "Send Button" });
         var messageCountBefore = await Page.Locator(".assistant-message-header")
                                         .CountAsync();
 
@@ -49,7 +49,7 @@ public class ChatInputUITest : PageTest
     public async Task GivenUserMessage_WhenEnterPressed_ThenSendOnlyNotEmptyString(string userMessage, int expectedMessageReturn)
     {
         // Arrange
-        var textArea = Page.GetByRole(AriaRole.Textbox);
+        var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
         var messageCountBefore = await Page.Locator(".assistant-message-header")
                                         .CountAsync();
 
@@ -73,8 +73,8 @@ public class ChatInputUITest : PageTest
     public async Task GivenUserMessage_WhenFillInTextarea_ThenColorReflects(string userMessage, string buttonColor)
     {
         // Arrange
-        var textArea = Page.GetByRole(AriaRole.Textbox);
-        var sendButton = Page.GetByRole(AriaRole.Button, new() { Name = "Send" });
+        var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
+        var sendButton = Page.GetByRole(AriaRole.Button, new() { Name = "Send Button" });
 
         // Act
         await textArea.FillAsync(userMessage);
