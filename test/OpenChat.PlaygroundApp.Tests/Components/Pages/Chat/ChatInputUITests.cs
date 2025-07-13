@@ -104,7 +104,7 @@ public class ChatInputUITest : PageTest
     [InlineData(" ", "rgb(0, 0, 0)")]
     [InlineData("\n", "rgb(0, 0, 0)")]
     [InlineData("\r\n", "rgb(0, 0, 0)")]
-    public async Task Given_UserMessage_When_Fillin_Textarea_Then_SendButton_Color_Should_Changes(string userMessage, string buttonColor)
+    public async Task Given_UserMessage_When_Fillin_Textarea_Then_SendButton_Color_Should_Changes(string userMessage, string expectedButtonColor)
     {
         // Arrange
         var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
@@ -115,12 +115,12 @@ public class ChatInputUITest : PageTest
 
         // Assert
         var sendButtonColor = await sendButton.EvaluateAsync<string>("el => window.getComputedStyle(el).color");
-        sendButtonColor.ShouldBe(buttonColor);
+        sendButtonColor.ShouldBe(expectedButtonColor);
     }
 
     [Theory]
     [InlineData("", "rgb(170, 170, 170)")]
-    public async Task Given_Empty_UserMessage_When_Fillin_Textarea_Then_SendButton_Color_Should_Not_Changes(string userMessage, string buttonColor)
+    public async Task Given_Empty_UserMessage_When_Fillin_Textarea_Then_SendButton_Color_Should_Not_Changes(string userMessage, string expectedButtonColor)
     {
         // Arrange
         var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
@@ -131,7 +131,7 @@ public class ChatInputUITest : PageTest
 
         // Assert
         var sendButtonColor = await sendButton.EvaluateAsync<string>("el => window.getComputedStyle(el).color");
-        sendButtonColor.ShouldBe(buttonColor);
+        sendButtonColor.ShouldBe(expectedButtonColor);
     }
 
     public override async Task DisposeAsync()
