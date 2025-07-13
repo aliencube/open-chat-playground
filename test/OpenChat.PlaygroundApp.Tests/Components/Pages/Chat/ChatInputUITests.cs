@@ -19,7 +19,7 @@ public class ChatInputUITest : PageTest
     [InlineData("\n", 1)]
     [InlineData("\r\n", 1)]
     [InlineData("", 0)]
-    [Trait("Category", "Skip")]
+    [Trait("Category", "LLMRequired")]
     public async Task GivenUserMessage_WhenSendButtonClicked_ThenSendOnlyNotEmptyString(string userMessage, int expectedMessageReturn)
     {
         // Arrange
@@ -45,7 +45,7 @@ public class ChatInputUITest : PageTest
     [InlineData("\n", 1)]
     [InlineData("\r\n", 1)]
     [InlineData("", 0)]
-    [Trait("Category", "Skip")]
+    [Trait("Category", "LLMRequired")]
     public async Task GivenUserMessage_WhenEnterPressed_ThenSendOnlyNotEmptyString(string userMessage, int expectedMessageReturn)
     {
         // Arrange
