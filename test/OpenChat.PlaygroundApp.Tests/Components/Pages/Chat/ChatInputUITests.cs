@@ -18,24 +18,42 @@ public class ChatInputUITest : PageTest
     [InlineData(" ", 1)]
     [InlineData("\n", 1)]
     [InlineData("\r\n", 1)]
-    [InlineData("", 0)]
     [Trait("Category", "LLMRequired")]
-    public async Task GivenUserMessage_WhenSendButtonClicked_ThenSendOnlyNotEmptyString(string userMessage, int expectedMessageReturn)
+    public async Task Given_UserMessage_When_SendButton_Clicked_Then_It_Should_SendMessage(string userMessage, int expectedMessageCount)
     {
         // Arrange
         var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
         var sendButton = Page.GetByRole(AriaRole.Button, new() { Name = "User Message Send Button" });
-        var messageCountBefore = await Page.Locator(".assistant-message-header")
-                                        .CountAsync();
+        var messageCountBefore = await Page.Locator(".assistant-message-header").CountAsync();
 
         // Act
         await textArea.FillAsync(userMessage);
         await sendButton.ClickAsync();
 
         // Assert
-        await Expect(textArea).ToHaveValueAsync("");
-        await Expect(Page.Locator(".assistant-message-header"))
-                .ToHaveCountAsync(messageCountBefore + expectedMessageReturn);
+        var textAreaAfter = await textArea.InnerTextAsync();
+        textAreaAfter.ShouldBeEmpty();
+        var messageCountAfter = await Page.Locator(".assistant-message-header").CountAsync();
+        messageCountAfter.ShouldBe(messageCountBefore + expectedMessageCount);
+    }
+
+    [Theory]
+    [InlineData("", 0)]
+    [Trait("Category", "LLMRequired")]
+    public async Task Given_Empty_UserMessage_When_SendButton_Clicked_Then_It_Should_Not_SendMessage(string userMessage, int expectedMessageCount)
+    {
+        // Arrange
+        var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
+        var sendButton = Page.GetByRole(AriaRole.Button, new() { Name = "User Message Send Button" });
+        var messageCountBefore = await Page.Locator(".assistant-message-header").CountAsync();
+
+        // Act
+        await textArea.FillAsync(userMessage);
+        await sendButton.ClickAsync();
+
+        // Assert
+        var messageCountAfter = await Page.Locator(".assistant-message-header").CountAsync();
+        messageCountAfter.ShouldBe(messageCountBefore + expectedMessageCount);
     }
 
     [Theory]
@@ -44,23 +62,40 @@ public class ChatInputUITest : PageTest
     [InlineData(" ", 1)]
     [InlineData("\n", 1)]
     [InlineData("\r\n", 1)]
-    [InlineData("", 0)]
     [Trait("Category", "LLMRequired")]
-    public async Task GivenUserMessage_WhenEnterPressed_ThenSendOnlyNotEmptyString(string userMessage, int expectedMessageReturn)
+    public async Task Given_UserMessage_When_EnterPressed_Then_It_Should_SendMessage(string userMessage, int expectedMessageCount)
     {
         // Arrange
         var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
-        var messageCountBefore = await Page.Locator(".assistant-message-header")
-                                        .CountAsync();
+        var messageCountBefore = await Page.Locator(".assistant-message-header").CountAsync();
 
         // Act
         await textArea.FillAsync(userMessage);
         await textArea.PressAsync("Enter");
 
         // Assert
-        await Expect(textArea).ToHaveValueAsync("");
-        await Expect(Page.Locator(".assistant-message-header"))
-                .ToHaveCountAsync(messageCountBefore + expectedMessageReturn);
+        var textAreaAfter = await textArea.InnerTextAsync();
+        textAreaAfter.ShouldBeEmpty();
+        var messageCountAfter = await Page.Locator(".assistant-message-header").CountAsync();
+        messageCountAfter.ShouldBe(messageCountBefore + expectedMessageCount);
+    }
+
+    [Theory]
+    [InlineData("", 0)]
+    [Trait("Category", "LLMRequired")]
+    public async Task Given_Empty_UserMessage_When_EnterPressed_Then_It_Should_Not_SendMessage(string userMessage, int expectedMessageCount)
+    {
+        // Arrange
+        var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
+        var messageCountBefore = await Page.Locator(".assistant-message-header").CountAsync();
+
+        // Act
+        await textArea.FillAsync(userMessage);
+        await textArea.PressAsync("Enter");
+
+        // Assert
+        var messageCountAfter = await Page.Locator(".assistant-message-header").CountAsync();
+        messageCountAfter.ShouldBe(messageCountBefore + expectedMessageCount);
     }
 
     [Theory]
@@ -69,8 +104,7 @@ public class ChatInputUITest : PageTest
     [InlineData(" ", "rgb(0, 0, 0)")]
     [InlineData("\n", "rgb(0, 0, 0)")]
     [InlineData("\r\n", "rgb(0, 0, 0)")]
-    [InlineData("", "rgb(170, 170, 170)")]
-    public async Task GivenUserMessage_WhenFillInTextarea_ThenColorReflects(string userMessage, string buttonColor)
+    public async Task Given_UserMessage_When_Fillin_Textarea_Then_SendButton_Color_Should_Changes(string userMessage, string buttonColor)
     {
         // Arrange
         var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
@@ -80,7 +114,24 @@ public class ChatInputUITest : PageTest
         await textArea.FillAsync(userMessage);
 
         // Assert
-        await Expect(sendButton).ToHaveCSSAsync("color", buttonColor);
+        var sendButtonColor = await sendButton.EvaluateAsync<string>("el => window.getComputedStyle(el).color");
+        sendButtonColor.ShouldBe(buttonColor);
+    }
+
+    [Theory]
+    [InlineData("", "rgb(170, 170, 170)")]
+    public async Task Given_Empty_UserMessage_When_Fillin_Textarea_Then_SendButton_Color_Should_Not_Changes(string userMessage, string buttonColor)
+    {
+        // Arrange
+        var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
+        var sendButton = Page.GetByRole(AriaRole.Button, new() { Name = "Send Button" });
+
+        // Act
+        await textArea.FillAsync(userMessage);
+
+        // Assert
+        var sendButtonColor = await sendButton.EvaluateAsync<string>("el => window.getComputedStyle(el).color");
+        sendButtonColor.ShouldBe(buttonColor);
     }
 
     public override async Task DisposeAsync()
