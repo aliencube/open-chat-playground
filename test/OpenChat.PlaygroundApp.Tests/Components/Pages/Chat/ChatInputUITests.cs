@@ -36,10 +36,9 @@ public class ChatInputUITest : PageTest
 
     [Theory]
     [InlineData("", 0)]
-    //[InlineData(" ", 1)]
-    //[InlineData("\n", 1)]
-    //[InlineData("\r\n", 1)]
-    [Trait("Category", "LLMRequired")]
+    //[InlineData(" ", 0)]
+    //[InlineData("\n", 0)]
+    //[InlineData("\r\n", 0)]
     public async Task Given_Empty_UserMessage_When_SendButton_Clicked_Then_It_Should_Not_SendMessage(string userMessage, int expectedMessageCount)
     {
         // Arrange
@@ -79,10 +78,9 @@ public class ChatInputUITest : PageTest
 
     [Theory]
     [InlineData("", 0)]
-    //[InlineData(" ", 1)]
-    //[InlineData("\n", 1)]
-    //[InlineData("\r\n", 1)]
-    [Trait("Category", "LLMRequired")]
+    //[InlineData(" ", 0)]
+    //[InlineData("\n", 0)]
+    //[InlineData("\r\n", 0)]
     public async Task Given_Empty_UserMessage_When_EnterKey_Pressed_Then_It_Should_Not_SendMessage(string userMessage, int expectedMessageCount)
     {
         // Arrange
@@ -105,7 +103,7 @@ public class ChatInputUITest : PageTest
     {
         // Arrange
         var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
-        var sendButton = Page.GetByRole(AriaRole.Button, new() { Name = "Send Button" });
+        var sendButton = Page.GetByRole(AriaRole.Button, new() { Name = "User Message Send Button" });
 
         // Act
         await textArea.FillAsync(userMessage);
@@ -117,14 +115,14 @@ public class ChatInputUITest : PageTest
 
     [Theory]
     [InlineData("", "rgb(170, 170, 170)")]
-    //[InlineData(" ", "rgb(0, 0, 0)")]
-    //[InlineData("\n", "rgb(0, 0, 0)")]
-    //[InlineData("\r\n", "rgb(0, 0, 0)")]
+    //[InlineData(" ", "rgb(170, 170, 170)")]
+    //[InlineData("\n", "rgb(170, 170, 170)")]
+    //[InlineData("\r\n", "rgb(170, 170, 170)")]
     public async Task Given_Empty_UserMessage_Then_It_Should_Not_Change_Color_Of_SendButton(string userMessage, string expectedButtonColor)
     {
         // Arrange
         var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
-        var sendButton = Page.GetByRole(AriaRole.Button, new() { Name = "Send Button" });
+        var sendButton = Page.GetByRole(AriaRole.Button, new() { Name = "User Message Send Button" });
 
         // Act
         await textArea.FillAsync(userMessage);
