@@ -206,6 +206,7 @@ jobs:
             -c "제출한 앱이 유효하지 않습니다. 이슈를 닫습니다." \
             -R ${{ github.event.repository.full_name }}
 
+      # C# Certification Quest
       - name: Verify quest - C# Certification
         if: |
           steps.issue.outputs.isValid == 'true' &&
@@ -409,7 +410,9 @@ jobs:
           } | ConvertTo-Json
           
           Invoke-RestMethod -Uri $webhookUrl -Method Post -Body $body -ContentType "application/json"
+      # C# Certification Quest
 
+      # Connect Four Quest
       - name: Checkout quest repository - Connect Four
         if: |
           steps.issue.outputs.isValid == 'true' &&
@@ -672,7 +675,9 @@ jobs:
           } | ConvertTo-Json
           
           Invoke-RestMethod -Uri $webhookUrl -Method Post -Body $body -ContentType "application/json"
+      # Connect Four Quest
 
+      # Unit Test Quest
       - name: Run project - Unit Test
         if: |
           steps.issue.outputs.isValid == 'true' &&
@@ -799,3 +804,20 @@ jobs:
           gh issue close ${{ steps.issue.outputs.issueNumber }} \
             -c "과제를 완료했습니다. 이슈를 닫습니다." \
             -R ${{ github.event.repository.full_name }}
+      
+      - name: Post to Discord - COMPLETED - Unit Test
+        if: |
+          steps.issue.outputs.isValid == 'true' &&
+          steps.issue.outputs.issueType == 'unit-test' &&
+          steps.check-quest-unit-test.outputs.questStatus == 'completed'
+        shell: pwsh
+        run: |
+          $mentees = Get-Content "${{ github.workspace }}/mentees.json" | ConvertFrom-Json
+          $mentee = $mentees | Where-Object { $_.github_username -eq "${{ steps.issue.outputs.githubId }}" }
+          $webhookUrl = "${{ secrets.DISCORD_WEBHOOK_URL }}"
+          $body = @{
+            content = "👋🏼 <@$($mentee.discord_userid)> 님, ${{ steps.issue.outputs.title }} 과제를 성공적으로 제출하셨습니다! 🎉"
+          } | ConvertTo-Json
+          
+          Invoke-RestMethod -Uri $webhookUrl -Method Post -Body $body -ContentType "application/json"
+      # Unit Test Quest

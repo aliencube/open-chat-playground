@@ -15,8 +15,8 @@ body:
     label: '제목'
     options:
       # - '과제 1: C# Certificate'
-      - '과제 2: Blazor - Connect Four'
-      # - '과제 3: Unit Tests'
+      # - '과제 2: Blazor - Connect Four'
+      - '과제 3: Unit Tests'
       # - '과제 4: GenAI for Beginners - .NET'
     default: 0
 
@@ -50,25 +50,25 @@ body:
 #   validations:
 #     required: true
 
-## 과제 2 ##
-- type: input
-  id: github_repository
-  attributes:
-    label: 'GitHub 리포지토리 URL'
-    description: '과제를 저장한 GitHub 리포지토리 주소를 입력하세요. (예: `https://github.com/aliencube/open-chat-playground`)'
-    placeholder: '과제를 저장한 GitHub 리포지토리 주소를 입력하세요. (예: https://github.com/aliencube/open-chat-playground)'
-  validations:
-    required: true
-
-# ## 과제 3 ##
+# ## 과제 2 ##
 # - type: input
-#   id: mslearn_profile
+#   id: github_repository
 #   attributes:
-#     label: 'MS Learn 프로필 URL'
-#     description: 'MS Learn 프로필 주소를 입력하세요. (예: https://learn.microsoft.com/users/aliencube)'
-#     placeholder: 'MS Learn 프로필 주소를 입력하세요. (예: https://learn.microsoft.com/users/aliencube)'
+#     label: 'GitHub 리포지토리 URL'
+#     description: '과제를 저장한 GitHub 리포지토리 주소를 입력하세요. (예: `https://github.com/aliencube/open-chat-playground`)'
+#     placeholder: '과제를 저장한 GitHub 리포지토리 주소를 입력하세요. (예: https://github.com/aliencube/open-chat-playground)'
 #   validations:
 #     required: true
+
+## 과제 3 ##
+- type: input
+  id: mslearn_profile
+  attributes:
+    label: 'MS Learn 프로필 URL'
+    description: 'MS Learn 프로필 주소를 입력하세요. (예: https://learn.microsoft.com/users/aliencube)'
+    placeholder: 'MS Learn 프로필 주소를 입력하세요. (예: https://learn.microsoft.com/users/aliencube)'
+  validations:
+    required: true
 
 # ## 과제 4 ##
 # - type: input
