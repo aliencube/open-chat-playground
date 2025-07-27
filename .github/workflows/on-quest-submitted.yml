@@ -681,7 +681,7 @@ jobs:
       - name: Run project - Unit Test
         if: |
           steps.issue.outputs.isValid == 'true' &&
-          steps.issue.outputs.issueType == 'unit-test'
+          steps.issue.outputs.questType == 'unit-test'
         shell: bash
         run: |
           pushd ./quest
@@ -695,7 +695,7 @@ jobs:
       - name: Verify quest - Unit Test
         if: |
           steps.issue.outputs.isValid == 'true' &&
-          steps.issue.outputs.issueType == 'unit-test'
+          steps.issue.outputs.questType == 'unit-test'
         id: check-quest-unit-test
         shell: pwsh
         run: |
@@ -721,7 +721,7 @@ jobs:
       - name: Add label - NOT_COMPLETED - Unit Test
         if: |
           steps.issue.outputs.isValid == 'true' &&
-          steps.issue.outputs.issueType == 'unit-test' &&
+          steps.issue.outputs.questType == 'unit-test' &&
           steps.check-quest-unit-test.outputs.questStatus == 'not-completed'
         shell: bash
         env:
@@ -734,7 +734,7 @@ jobs:
       - name: Comment to issue - NOT_COMPLETED - Unit Test
         if: |
           steps.issue.outputs.isValid == 'true' &&
-          steps.issue.outputs.issueType == 'unit-test' &&
+          steps.issue.outputs.questType == 'unit-test' &&
           steps.check-quest-unit-test.outputs.questStatus == 'not-completed'
         uses: actions-cool/issues-helper@v3
         with:
@@ -751,7 +751,7 @@ jobs:
       - name: Close issue - NOT_COMPLETED - Unit Test
         if: |
           steps.issue.outputs.isValid == 'true' &&
-          steps.issue.outputs.issueType == 'unit-test' &&
+          steps.issue.outputs.questType == 'unit-test' &&
           steps.check-quest-unit-test.outputs.questStatus == 'not-completed'
         shell: bash
         env:
@@ -764,7 +764,7 @@ jobs:
       - name: Add label - COMPLETED - Unit Test
         if: |
           steps.issue.outputs.isValid == 'true' &&
-          steps.issue.outputs.issueType == 'unit-test' &&
+          steps.issue.outputs.questType == 'unit-test' &&
           steps.check-quest-unit-test.outputs.questStatus == 'completed'
         shell: bash
         env:
@@ -777,7 +777,7 @@ jobs:
       - name: Comment to issue - COMPLETED - Unit Test
         if: |
           steps.issue.outputs.isValid == 'true' &&
-          steps.issue.outputs.issueType == 'unit-test' &&
+          steps.issue.outputs.questType == 'unit-test' &&
           steps.check-quest-unit-test.outputs.questStatus == 'completed'
         uses: actions-cool/issues-helper@v3
         with:
@@ -795,7 +795,7 @@ jobs:
       - name: Close issue - COMPLETED - Unit Test
         if: |
           steps.issue.outputs.isValid == 'true' &&
-          steps.issue.outputs.issueType == 'unit-test' &&
+          steps.issue.outputs.questType == 'unit-test' &&
           steps.check-quest-unit-test.outputs.questStatus == 'completed'
         shell: bash
         env:
@@ -808,7 +808,7 @@ jobs:
       - name: Post to Discord - COMPLETED - Unit Test
         if: |
           steps.issue.outputs.isValid == 'true' &&
-          steps.issue.outputs.issueType == 'unit-test' &&
+          steps.issue.outputs.questType == 'unit-test' &&
           steps.check-quest-unit-test.outputs.questStatus == 'completed'
         shell: pwsh
         run: |
