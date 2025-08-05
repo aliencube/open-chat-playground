@@ -2,9 +2,9 @@ name: Clear Resource Group
 
 on:
   workflow_dispatch:
-  # schedule:
-  #   # Run every day at 4:30 AM (KST)
-  #   - cron: "30 19 * * *"
+  schedule:
+    # Run every day at 4:30 AM (KST)
+    - cron: "30 19 * * *"
 
 permissions:
   contents: read

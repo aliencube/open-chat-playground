@@ -16,8 +16,8 @@ body:
     options:
       # - '과제 1: C# Certificate'
       # - '과제 2: Blazor - Connect Four'
-      - '과제 3: Unit Tests'
-      # - '과제 4: GenAI for Beginners - .NET'
+      # - '과제 3: Unit Tests'
+      - '과제 4: GenAI for Beginners - .NET'
     default: 0
 
 ## 공통 ##
@@ -60,22 +60,22 @@ body:
 #   validations:
 #     required: true
 
-## 과제 3 ##
-- type: input
-  id: mslearn_profile
-  attributes:
-    label: 'MS Learn 프로필 URL'
-    description: 'MS Learn 프로필 주소를 입력하세요. (예: https://learn.microsoft.com/users/aliencube)'
-    placeholder: 'MS Learn 프로필 주소를 입력하세요. (예: https://learn.microsoft.com/users/aliencube)'
-  validations:
-    required: true
-
-# ## 과제 4 ##
+# ## 과제 3 ##
 # - type: input
-#   id: youtube_url
+#   id: mslearn_profile
 #   attributes:
-#     label: 'YouTube 동영상 링크'
-#     description: '과제를 저장한 YouTube 동영상 링크를 입력하세요. (예: `https://youtube.com/watch?v=4zkIBMFdL2w`)'
-#     placeholder: '과제를 저장한 YouTube 동영상 링크를 입력하세요. (예: https://youtube.com/watch?v=4zkIBMFdL2w)'
+#     label: 'MS Learn 프로필 URL'
+#     description: 'MS Learn 프로필 주소를 입력하세요. (예: https://learn.microsoft.com/users/aliencube)'
+#     placeholder: 'MS Learn 프로필 주소를 입력하세요. (예: https://learn.microsoft.com/users/aliencube)'
 #   validations:
 #     required: true
+
+## 과제 4 ##
+- type: input
+  id: youtube_url
+  attributes:
+    label: 'YouTube 동영상 링크'
+    description: '과제를 저장한 YouTube 동영상 링크를 입력하세요. (예: `https://youtube.com/watch?v=4zkIBMFdL2w`)'
+    placeholder: '과제를 저장한 YouTube 동영상 링크를 입력하세요. (예: https://youtube.com/watch?v=4zkIBMFdL2w)'
+  validations:
+    required: true

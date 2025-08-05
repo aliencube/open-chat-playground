@@ -808,3 +808,21 @@ jobs:
           
           Invoke-RestMethod -Uri $webhookUrl -Method Post -Body $body -ContentType "application/json"
       # Unit Test Quest
+
+      # GenAI for Beginners for .NET Quest
+      - name: Assign issue - GenAI for Beginners for .NET
+        if: |
+          steps.issue.outputs.isValid == 'true' &&
+          steps.issue.outputs.questType == 'genai-for-beginners'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $assignees = ${{ vars.ASSIGNEES }} -split ","
+          $random = Get-Random -Minimum 0 -Maximum $assignees.Count
+          $assignee = $assignees[$random]
+
+          gh issue edit ${{ steps.issue.outputs.issueNumber }} \
+            --add-assignee $assignee \
+            -R ${{ github.event.repository.full_name }}
+      # GenAI for Beginners for .NET Quest
