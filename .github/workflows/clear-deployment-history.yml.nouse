@@ -1,0 +1,44 @@
+name: Clear Deployment History
+
+on:
+  workflow_dispatch:
+  # schedule:
+  #   - cron: "0 0/4 * * *"
+
+permissions:
+  contents: read
+  id-token: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  delete-deployment-history:
+    name: "Deleting Deployment History"
+
+    if: github.repository_owner == 'aliencube'
+
+    runs-on: ubuntu-latest
+
+    env:
+      AZURE_CLIENT_ID: ${{ vars.AZM_CLIENT_ID }}
+      AZURE_CLIENT_SECRET: ${{ secrets.AZM_CLIENT_SECRET }}
+      AZURE_TENANT_ID: ${{ vars.AZM_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ vars.AZM_SUBSCRIPTION_ID }}
+
+    steps:
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          creds: '{ "clientId":  "${{ env.AZURE_CLIENT_ID }}", "clientSecret":  "${{ env.AZURE_CLIENT_SECRET }}", "tenantId":  "${{ env.AZURE_TENANT_ID }}", "subscriptionId":  "${{ env.AZURE_SUBSCRIPTION_ID }}" }'
+          # client-id: ${{ env.AZURE_CLIENT_ID }}
+          # tenant-id: ${{ env.AZURE_TENANT_ID }}
+          # subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Delete all deployment history
+        shell: pwsh
+        run: |
+          $history = az deployment sub list --query "[].name" | ConvertFrom-Json
+          $history | ForEach-Object {
+            $name = $_
+            az deployment sub delete --name $name --no-wait
+          }
