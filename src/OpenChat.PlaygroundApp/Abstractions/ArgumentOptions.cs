@@ -130,7 +130,6 @@ public abstract class ArgumentOptions
     /// <summary>
     /// Determines whether to display help information based on the options provided.
     /// </summary>
-    /// <param name="options"><see cref="ArgumentOptions"/> instance.</param>
     /// <param name="type">The type of the options to parse into.</param>
     /// <returns></returns>
     protected virtual bool ShouldDisplayHelp(Type type)
