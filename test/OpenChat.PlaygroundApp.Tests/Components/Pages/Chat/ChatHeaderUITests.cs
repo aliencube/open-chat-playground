@@ -12,6 +12,7 @@ public class ChatHeaderUITests : PageTest
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
     }
 
+    [Trait("Category", "IntegrationTest")]
     [Theory]
     [InlineData("OpenChat.PlaygroundApp")]
     public async Task Given_Root_Page_When_Loaded_Then_Header_Should_Be_Visible(string expected)

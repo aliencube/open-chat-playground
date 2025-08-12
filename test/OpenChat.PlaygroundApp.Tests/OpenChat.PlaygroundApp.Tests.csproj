@@ -18,13 +18,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="NSubstitute" />
-    <Using Include="Shouldly" />
-    <Using Include="Xunit" />
+    <ProjectReference Include="..\..\src\OpenChat.PlaygroundApp\OpenChat.PlaygroundApp.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\OpenChat.PlaygroundApp\OpenChat.PlaygroundApp.csproj" />
+    <Using Include="NSubstitute" />
+    <Using Include="Shouldly" />
+    <Using Include="Xunit" />
   </ItemGroup>
 
 </Project>

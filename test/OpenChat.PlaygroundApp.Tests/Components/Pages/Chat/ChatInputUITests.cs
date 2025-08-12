@@ -12,10 +12,11 @@ public class ChatInputUITest : PageTest
         await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
     }
 
+    [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "LLMRequired")]
     [Theory]
     [InlineData("하늘은 왜 푸른 색인가요?", 1)]
     [InlineData("Why is the sky blue?", 1)]
-    [Trait("Category", "LLMRequired")]
     public async Task Given_UserMessage_When_SendButton_Clicked_Then_It_Should_SendMessage(string userMessage, int expectedMessageCount)
     {
         // Arrange
@@ -34,6 +35,7 @@ public class ChatInputUITest : PageTest
         messageCountAfter.ShouldBe(messageCountBefore + expectedMessageCount);
     }
 
+    [Trait("Category", "IntegrationTest")]
     [Theory]
     [InlineData("", 0)]
     //[InlineData(" ", 0)]
@@ -55,10 +57,11 @@ public class ChatInputUITest : PageTest
         messageCountAfter.ShouldBe(messageCountBefore + expectedMessageCount);
     }
 
+    [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "LLMRequired")]
     [Theory]
     [InlineData("하늘은 왜 푸른 색인가요?", 1)]
     [InlineData("Why is the sky blue?", 1)]
-    [Trait("Category", "LLMRequired")]
     public async Task Given_UserMessage_When_EnterKey_Pressed_Then_It_Should_SendMessage(string userMessage, int expectedMessageCount)
     {
         // Arrange
@@ -76,6 +79,7 @@ public class ChatInputUITest : PageTest
         messageCountAfter.ShouldBe(messageCountBefore + expectedMessageCount);
     }
 
+    [Trait("Category", "IntegrationTest")]
     [Theory]
     [InlineData("", 0)]
     //[InlineData(" ", 0)]
@@ -96,6 +100,7 @@ public class ChatInputUITest : PageTest
         messageCountAfter.ShouldBe(messageCountBefore + expectedMessageCount);
     }
 
+    [Trait("Category", "IntegrationTest")]
     [Theory]
     [InlineData("하늘은 왜 푸를까?", "rgb(0, 0, 0)")]
     [InlineData("Why is the sky blue?", "rgb(0, 0, 0)")]
@@ -113,6 +118,7 @@ public class ChatInputUITest : PageTest
         sendButtonColor.ShouldBe(expectedButtonColor);
     }
 
+    [Trait("Category", "IntegrationTest")]
     [Theory]
     [InlineData("", "rgb(170, 170, 170)")]
     //[InlineData(" ", "rgb(170, 170, 170)")]

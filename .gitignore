@@ -520,3 +520,9 @@ resources.bicep
 # Aspire
 aspire-manifest.json
 instances*.json
+
+# GitHub Copilot
+.github/copilot-instructions.md
+.github/chatmodes/
+.github/instructions/
+.github/prompts/
