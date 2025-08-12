@@ -45,6 +45,11 @@ jobs:
       run: |
         dotnet build . --no-restore --no-incremental
 
+    - name: Run unit tests
+      shell: bash
+      run: |
+        dotnet test . --no-build --logger "trx" --collect:"XPlat Code Coverage" --filter "Category=UnitTest"
+
     - name: Install playwright
       shell: pwsh
       run: |
@@ -61,11 +66,6 @@ jobs:
         dotnet run --project ./src/OpenChat.PlaygroundApp &
 
         sleep 30
-
-    - name: Run unit tests
-      shell: bash
-      run: |
-        dotnet test . --no-build --logger "trx" --collect:"XPlat Code Coverage" --filter "Category=UnitTest"
 
     - name: Run integration tests - LLM not required
       shell: bash

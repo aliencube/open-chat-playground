@@ -49,6 +49,11 @@ jobs:
       run: |
         dotnet build -c Release --no-restore --no-incremental
 
+    - name: Run unit tests
+      shell: bash
+      run: |
+        dotnet test . -c Release --no-build --logger "trx" --collect:"XPlat Code Coverage" --filter "Category=UnitTest"
+
     - name: Install playwright
       shell: pwsh
       run: |
@@ -66,10 +71,10 @@ jobs:
 
         sleep 30
 
-    - name: Run tests
+    - name: Run integration tests - LLM not required
       shell: bash
       run: |
-        dotnet test . -c Release --no-build --logger "trx" --collect:"XPlat Code Coverage" --filter "Category!=LLMRequired"
+        dotnet test . -c Release --no-build --logger "trx" --collect:"XPlat Code Coverage" --filter "Category=IntegrationTest & Category!=LLMRequired"
 
     - name: Install azd
       uses: Azure/setup-azd@v2
