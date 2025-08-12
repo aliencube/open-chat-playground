@@ -73,7 +73,27 @@ This provides a web UI for AI chat playground that is able to connect virtually 
 
 1. Open your web browser and navigate to `http://localhost:8080` and enter prompts.
 
-## Run Tests
+## Run Unit Tests
+
+1. Get the repository root.
+
+    ```bash
+    # bash/zsh
+    REPOSITORY_ROOT=$(git rev-parse --show-toplevel)
+    ```
+
+    ```powershell
+    # PowerShell
+    $REPOSITORY_ROOT = git rev-parse --show-toplevel
+    ```
+
+1. Run tests.
+
+    ```bash
+    cd $REPOSITORY_ROOT && dotnet test --filter "Category=UnitTest"
+    ```
+
+## Run Integration Tests
 
 1. Get the repository root.
 
@@ -104,12 +124,12 @@ This provides a web UI for AI chat playground that is able to connect virtually 
 
     ```bash
     # With LLM provider
-    cd $REPOSITORY_ROOT && dotnet test
+    cd $REPOSITORY_ROOT && dotnet test --filter "Category=IntegrationTest"
     ```
 
     ```bash
     # Without LLM provider
-    cd $REPOSITORY_ROOT && dotnet test --filter "Category!=LLMRequired"
+    cd $REPOSITORY_ROOT && dotnet test --filter "Category=IntegrationTest & Category!=LLMRequired"
     ```
 
 ### Run on Azure

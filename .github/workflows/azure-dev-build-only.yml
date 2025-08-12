@@ -62,7 +62,12 @@ jobs:
 
         sleep 30
 
-    - name: Run tests
+    - name: Run unit tests
       shell: bash
       run: |
-        dotnet test . --no-build --logger "trx" --collect:"XPlat Code Coverage" --filter "Category!=LLMRequired"
+        dotnet test . --no-build --logger "trx" --collect:"XPlat Code Coverage" --filter "Category=UnitTest"
+
+    - name: Run integration tests - LLM not required
+      shell: bash
+      run: |
+        dotnet test . --no-build --logger "trx" --collect:"XPlat Code Coverage" --filter "Category=IntegrationTest & Category!=LLMRequired"
