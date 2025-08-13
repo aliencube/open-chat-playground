@@ -1,18 +1,12 @@
 # syntax=docker/dockerfile:1
 
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
 
 COPY ./src/OpenChat.PlaygroundApp /source/OpenChat.PlaygroundApp
 
 WORKDIR /source/OpenChat.PlaygroundApp
 
-ARG TARGETARCH
-RUN case "$TARGETARCH" in \
-      "amd64") RID="linux-musl-x64" ;; \
-      "arm64") RID="linux-musl-arm64" ;; \
-      *) RID="linux-musl-x64" ;; \
-    esac && \
-    dotnet publish -c Release -o /app -r $RID --self-contained false
+RUN dotnet publish -c Release -o /app
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS final
 

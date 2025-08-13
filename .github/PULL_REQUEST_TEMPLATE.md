@@ -15,8 +15,7 @@ What kind of change does this Pull Request introduce?
 <!-- Please check the one that applies to this PR using "x". -->
 ```
 [ ] Bugfix
-[ ] New feature to existing sample
-[ ] New sample
+[ ] New feature
 [ ] Refactoring (no functional changes, no api changes)
 [ ] Documentation content changes
 [ ] Other... Please describe:

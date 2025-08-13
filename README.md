@@ -13,7 +13,7 @@ This provides a web UI for AI chat playground that is able to connect virtually 
 - [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) + [Container Apps extension](https://learn.microsoft.com/cli/azure/azure-cli-extensions-overview)
 - [GitHub CLI](https://cli.github.com/)
 
-## Getting Started
+## Getting started
 
 ### Get the repository ready
 
@@ -35,7 +35,11 @@ This provides a web UI for AI chat playground that is able to connect virtually 
     gh repo fork aliencube/open-chat-playground --clone --default-branch-only
     ```
 
-### Run on Local Machine
+1. Navigate to the cloned repository.
+
+    ```bash
+    cd open-chat-playground
+    ```
 
 1. Get the repository root.
 
@@ -47,6 +51,16 @@ This provides a web UI for AI chat playground that is able to connect virtually 
     ```powershell
     # PowerShell
     $REPOSITORY_ROOT = git rev-parse --show-toplevel
+    ```
+
+### Run on local machine
+
+#### Use GitHub Models
+
+1. Make sure you are at the repository root.
+
+    ```bash
+    cd $REPOSITORY_ROOT
     ```
 
 1. Add GitHub Personal Access Token (PAT) for GitHub Models connection. Make sure you should replace `{{YOUR_TOKEN}}` with your GitHub PAT.
@@ -68,24 +82,74 @@ This provides a web UI for AI chat playground that is able to connect virtually 
 1. Run the app.
 
     ```bash
-    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp
+    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- --connector-type GitHubModels
     ```
 
-1. Open your web browser and navigate to `http://localhost:8080` and enter prompts.
+1. Open your web browser, navigate to `http://localhost:5280`, and enter prompts.
 
-## Run Unit Tests
+### Run in container
 
-1. Get the repository root.
+#### Build container
+
+1. Make sure you are at the repository root.
+
+    ```bash
+    cd $REPOSITORY_ROOT
+    ```
+
+1. Build a container.
+
+    ```bash
+    docker build -f Dockerfile -t openchat-playground:latest .
+    ```
+
+#### Run container
+
+##### Use GitHub Models
+
+1. Get GitHub PAT.
 
     ```bash
     # bash/zsh
-    REPOSITORY_ROOT=$(git rev-parse --show-toplevel)
+    TOKEN=$(dotnet user-secrets --project ./src/OpenChat.PlaygroundApp list --json | sed -n '/^\/\//d; p' | jq -r '."GitHubModels:Token"')
     ```
 
-    ```powershell
+    ```bash
     # PowerShell
-    $REPOSITORY_ROOT = git rev-parse --show-toplevel
+    $TOKEN = (dotnet user-secrets --project ./src/OpenChat.PlaygroundApp list --json | Select-String -NotMatch '^//(BEGIN|END)' | ConvertFrom-Json).'GitHubModels:Token'
     ```
+
+1. Run the app.
+
+    ```bash
+    # From locally built container
+    docker run -i --rm -p 8080:8080 -e GitHubModels__Token=$TOKEN openchat-playground:latest --connector-type GitHubModels
+    ```
+
+    ```bash
+    # From GitHub Container Registry
+    docker run -i --rm -p 8080:8080 -e GitHubModels__Token=$TOKEN ghcr.io/aliencube/open-chat-playground/openchat-playground:latest --connector-type GitHubModels
+    ```
+
+1. Open your web browser, navigate to `http://localhost:8080`, and enter prompts.
+
+### Run tests
+
+#### Build app
+
+1. Make sure you are at the repository root.
+
+    ```bash
+    cd $REPOSITORY_ROOT
+    ```
+
+1. Build the app.
+
+    ```bash
+    dotnet restore && dotnet build
+    ```
+
+#### Unit tests
 
 1. Run tests.
 
@@ -93,24 +157,17 @@ This provides a web UI for AI chat playground that is able to connect virtually 
     cd $REPOSITORY_ROOT && dotnet test --filter "Category=UnitTest"
     ```
 
-## Run Integration Tests
+#### Integration tests
 
-1. Get the repository root.
-
-    ```bash
-    # bash/zsh
-    REPOSITORY_ROOT=$(git rev-parse --show-toplevel)
-    ```
-
-    ```powershell
-    # PowerShell
-    $REPOSITORY_ROOT = git rev-parse --show-toplevel
-    ```
-
-1. Restore packages and install playwright.
+1. Make sure you are at the repository root.
 
     ```bash
-    cd $REPOSITORY_ROOT && dotnet restore
+    cd $REPOSITORY_ROOT
+    ```
+
+1. Install playwright.
+
+    ```bash
     pwsh $REPOSITORY_ROOT/test/OpenChat.PlaygroundApp.Tests/bin/Debug/net{YOUR_VERSION}/playwright.ps1 install
     ```
 
@@ -124,27 +181,15 @@ This provides a web UI for AI chat playground that is able to connect virtually 
 
     ```bash
     # With LLM provider
-    cd $REPOSITORY_ROOT && dotnet test --filter "Category=IntegrationTest"
+    dotnet test --filter "Category=IntegrationTest"
     ```
 
     ```bash
     # Without LLM provider
-    cd $REPOSITORY_ROOT && dotnet test --filter "Category=IntegrationTest & Category!=LLMRequired"
+    dotnet test --filter "Category=IntegrationTest & Category!=LLMRequired"
     ```
 
 ### Run on Azure
-
-1. Get the repository root.
-
-    ```bash
-    # bash/zsh
-    REPOSITORY_ROOT=$(git rev-parse --show-toplevel)
-    ```
-
-    ```powershell
-    # PowerShell
-    $REPOSITORY_ROOT = git rev-parse --show-toplevel
-    ```
 
 1. Make sure you are at the repository root.
 
@@ -180,7 +225,13 @@ This provides a web UI for AI chat playground that is able to connect virtually 
 
    > **NOTE**: You will be asked to provide Azure subscription and location for deployment.
 
-## Configure GitHub Actions for CI/CD Pipeline
+### Configure GitHub Actions for CI/CD Pipeline
+
+1. Make sure you are at the repository root.
+
+    ```bash
+    cd $REPOSITORY_ROOT
+    ```
 
 1. Make sure you've logged in to Azure.
 
