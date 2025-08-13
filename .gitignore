@@ -526,3 +526,5 @@ instances*.json
 .github/chatmodes/
 .github/instructions/
 .github/prompts/
+.vscode/mcp.json
+.vscode/settings.json
