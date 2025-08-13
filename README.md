@@ -124,12 +124,12 @@ This provides a web UI for AI chat playground that is able to connect virtually 
 
     ```bash
     # From locally built container
-    docker run -i --rm -p 8080:8080 -e GitHubModels__Token=$TOKEN openchat-playground:latest --connector-type GitHubModels
+    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type GitHubModels --token $TOKEN
     ```
 
     ```bash
     # From GitHub Container Registry
-    docker run -i --rm -p 8080:8080 -e GitHubModels__Token=$TOKEN ghcr.io/aliencube/open-chat-playground/openchat-playground:latest --connector-type GitHubModels
+    docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest --connector-type GitHubModels --token $TOKEN
     ```
 
 1. Open your web browser, navigate to `http://localhost:8080`, and enter prompts.

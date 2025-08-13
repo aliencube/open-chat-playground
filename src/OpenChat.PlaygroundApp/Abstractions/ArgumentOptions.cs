@@ -1,5 +1,6 @@
 using OpenChat.PlaygroundApp.Configurations;
 using OpenChat.PlaygroundApp.Connectors;
+using OpenChat.PlaygroundApp.Options;
 
 namespace OpenChat.PlaygroundApp.Abstractions;
 
@@ -84,20 +85,31 @@ public abstract class ArgumentOptions
                 case "-c":
                     if (i + 1 < args.Length)
                     {
-                        if (Enum.TryParse<ConnectorType>(args[i + 1], ignoreCase: true, out var result))
+                        if (Enum.TryParse<ConnectorType>(args[++i], ignoreCase: true, out var result))
                         {
                             options.ConnectorType = result;
-                            i++;
                         }
                     }
                     break;
 
                 case "--help":
                 case "-h":
-                default:
                     options.Help = true;
                     break;
+
+                default:
+                    break;
             }
+        }
+
+        switch (options)
+        {
+            case GitHubModelsArgumentOptions github:
+                settings.GitHubModels ??= new GitHubModelsSettings();
+                settings.GitHubModels.Endpoint = github.Endpoint ?? settings.GitHubModels.Endpoint;
+                settings.GitHubModels.Token = github.Token ?? settings.GitHubModels.Token;
+                settings.GitHubModels.Model = github.Model ?? settings.GitHubModels.Model;
+                break;
         }
 
         settings.ConnectorType = options.ConnectorType;
