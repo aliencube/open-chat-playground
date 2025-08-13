@@ -31,39 +31,45 @@ public class GitHubModelsConnectorTests
 		client.ShouldNotBeNull();
 	}
 
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData(null, typeof(InvalidOperationException), "GitHubModels:Token")]
+    [InlineData("", typeof(ArgumentException), "key")]
+	public void Given_Missing_Token_When_GetChatClient_Invoked_Then_It_Should_Throw(string? token, Type expected, string message)
+    {
+        var settings = BuildAppSettings(token: token);
+        var connector = new GitHubModelsConnector(settings);
+
+        var ex = Assert.Throws(expected, connector.GetChatClient);
+
+        ex.Message.ShouldContain(message);
+    }
+
 	[Trait("Category", "UnitTest")]
-	[Fact]
-	public void Given_Missing_Token_When_GetChatClient_Invoked_Then_It_Should_Throw()
+    [Theory]
+    [InlineData(null, typeof(InvalidOperationException), "GitHubModels:Endpoint")]
+    [InlineData("", typeof(UriFormatException), "empty")]
+	public void Given_Missing_Endpoint_When_GetChatClient_Invoked_Then_It_Should_Throw(string? endpoint, Type expected, string message)
 	{
-		var settings = BuildAppSettings(token: null);
+		var settings = BuildAppSettings(endpoint: endpoint);
 		var connector = new GitHubModelsConnector(settings);
 
-		var ex = Assert.Throws<InvalidOperationException>(() => connector.GetChatClient());
+		var ex = Assert.Throws(expected, connector.GetChatClient);
 
-		ex.Message.ShouldContain("GitHubModels:Token");
+		ex.Message.ShouldContain(message);
 	}
 
 	[Trait("Category", "UnitTest")]
-	[Fact]
-	public void Given_Missing_Endpoint_When_GetChatClient_Invoked_Then_It_Should_Throw()
+    [Theory]
+    [InlineData(null, typeof(ArgumentNullException), "model")]
+    [InlineData("", typeof(ArgumentException), "model")]
+	public void Given_Missing_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
 	{
-		var settings = BuildAppSettings(endpoint: null);
+		var settings = BuildAppSettings(model: model);
 		var connector = new GitHubModelsConnector(settings);
 
-		var ex = Assert.Throws<InvalidOperationException>(() => connector.GetChatClient());
+		var ex = Assert.Throws(expected, connector.GetChatClient);
 
-		ex.Message.ShouldContain("GitHubModels:Endpoint");
-	}
-
-	[Trait("Category", "UnitTest")]
-	[Fact]
-	public void Given_Missing_Model_When_GetChatClient_Invoked_Then_It_Should_Throw()
-	{
-		var settings = BuildAppSettings(model: null);
-		var connector = new GitHubModelsConnector(settings);
-
-		var ex = Assert.Throws<ArgumentNullException>(() => connector.GetChatClient());
-
-		ex.ParamName.ShouldBe("model");
+		ex.Message.ShouldContain(message);
 	}
 }

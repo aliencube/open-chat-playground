@@ -99,6 +99,19 @@ public class ArgumentOptionsTests
     }
 
     [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("ConnectorType", "GoogleVertexAI")]
+    public void Given_Unimplemented_ConnectorType_When_Parse_Invoked_Then_It_Should_Throw(string key, string value)
+    {
+        var config = BuildConfig((key, value));
+        var args = Array.Empty<string>();
+
+        var ex = Assert.Throws<InvalidOperationException>(() => ArgumentOptions.Parse(config, args));
+
+        ex.Message.ShouldContain($"{value}ArgumentOptions");
+    }
+
+    [Trait("Category", "UnitTest")]
     [Fact]
     public void Given_Empty_ConnectorType_When_Parse_Invoked_Then_It_Should_Return_Unknown()
     {
