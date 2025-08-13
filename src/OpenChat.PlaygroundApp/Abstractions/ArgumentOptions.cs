@@ -9,6 +9,14 @@ namespace OpenChat.PlaygroundApp.Abstractions;
 /// </summary>
 public abstract class ArgumentOptions
 {
+    private static readonly (string Argument, bool IsSwitch)[] arguments =
+    [
+        // GitHub Models
+        ("--endpoint", false),
+        ("--token", false),
+        ("--model", false)
+    ];
+
     /// <summary>
     /// Gets or sets the connector type to use.
     /// </summary>
@@ -98,6 +106,15 @@ public abstract class ArgumentOptions
                     break;
 
                 default:
+                    var argument = arguments.SingleOrDefault(p => p.Argument.Equals(args[i], StringComparison.InvariantCultureIgnoreCase));
+                    if (argument == default)
+                    {
+                        options.Help = true;
+                    }
+                    else if (argument.IsSwitch == false)
+                    {
+                        i++;
+                    }
                     break;
             }
         }

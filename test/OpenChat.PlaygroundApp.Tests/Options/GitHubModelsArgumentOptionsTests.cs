@@ -8,7 +8,6 @@ namespace OpenChat.PlaygroundApp.Tests.Options;
 
 public class GitHubModelsArgumentOptionsTests
 {
-    private const string ConnectorName = "GitHubModels";
     private const string Endpoint = "https://github-models/inference";
     private const string Token = "github-pat";
     private const string Model = "github-model-name";
@@ -29,7 +28,7 @@ public class GitHubModelsArgumentOptionsTests
 		string? model = Model)
 	{
 		return BuildConfigFrom(
-			("ConnectorType", ConnectorName),
+			("ConnectorType", ConnectorType.GitHubModels.ToString()),
 			("GitHubModels:Endpoint", endpoint!),
 			("GitHubModels:Token", token!),
 			("GitHubModels:Model", model!)
@@ -41,7 +40,7 @@ public class GitHubModelsArgumentOptionsTests
 		var fullArgs = new List<string>();
 		if (args.Any(a => a.Equals("--connector-type", StringComparison.CurrentCultureIgnoreCase) || a.Equals("-c", StringComparison.CurrentCultureIgnoreCase)) == false)
 		{
-			fullArgs.AddRange(["--connector-type", ConnectorName]);
+			fullArgs.AddRange(["--connector-type", ConnectorType.GitHubModels.ToString()]);
 		}
 		fullArgs.AddRange(args);
 		return ArgumentOptions.Parse(config, [.. fullArgs]);
@@ -112,7 +111,7 @@ public class GitHubModelsArgumentOptionsTests
 	[InlineData("--model")]
 	public void Given_ArgumentWithoutValue_When_Parse_Invoked_Then_It_Should_Not_Set_Property(string argument)
 	{
-		var config = BuildConfigFrom(("ConnectorType", ConnectorName));
+		var config = BuildConfigFrom(("ConnectorType", ConnectorType.GitHubModels.ToString()));
 		var settings = Parse(config, argument);
 
         settings.GitHubModels.ShouldNotBeNull();
@@ -126,7 +125,7 @@ public class GitHubModelsArgumentOptionsTests
 	[InlineData("--something", "else", "--another", "value")]
 	public void Given_UnrelatedArguments_When_Parse_Invoked_Then_It_Should_Ignore_Them(params string[] args)
 	{
-		var config = BuildConfigFrom(("ConnectorType", ConnectorName));
+		var config = BuildConfigFrom(("ConnectorType", ConnectorType.GitHubModels.ToString()));
 		var settings = Parse(config, args);
 
         settings.GitHubModels.ShouldNotBeNull();
@@ -165,4 +164,68 @@ public class GitHubModelsArgumentOptionsTests
 		settings.GitHubModels.Token.ShouldBe(cliToken);
 		settings.GitHubModels.Model.ShouldBe(cliModel);
 	}
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://models.github.ai/inference", "pat", "openai/gpt-5-mini")]
+    public void Given_GitHubModels_With_KnownArguments_When_Parse_Invoked_Then_Help_ShouldBe_False(string endpoint, string token, string model)
+    {
+        var config = BuildConfigWithGitHubModels(Endpoint, Token, Model);
+        var args = new[] { "--endpoint", endpoint, "--token", token, "--model", model };
+        var settings = ArgumentOptions.Parse(config, args);
+
+        settings.Help.ShouldBeFalse();
+        settings.ConnectorType.ShouldBe(ConnectorType.GitHubModels);
+        settings.GitHubModels.ShouldNotBeNull();
+        settings.GitHubModels.Endpoint.ShouldBe(endpoint);
+        settings.GitHubModels.Token.ShouldBe(token);
+        settings.GitHubModels.Model.ShouldBe(model);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("--endpoint")]
+    [InlineData("--token")]
+    [InlineData("--model")]
+    public void Given_GitHubModels_With_KnownArgument_WithoutValue_When_Parse_Invoked_Then_Help_ShouldBe_False(string argument)
+    {
+        var config = BuildConfigWithGitHubModels();
+        var args = new[] { argument };
+
+        var settings = ArgumentOptions.Parse(config, args);
+
+        settings.Help.ShouldBeFalse();
+        settings.GitHubModels.ShouldNotBeNull();
+        settings.GitHubModels.Endpoint.ShouldBe(Endpoint);
+        settings.GitHubModels.Token.ShouldBe(Token);
+        settings.GitHubModels.Model.ShouldBe(Model);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://models.github.ai/inference", "--unknown-flag")]
+    public void Given_GitHubModels_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_ShouldBe_True(string endpoint, string argument)
+    {
+        var config = BuildConfigWithGitHubModels();
+        var args = new[] { "--endpoint", endpoint, argument };
+
+        var settings = ArgumentOptions.Parse(config, args);
+
+        settings.Help.ShouldBeTrue();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("--strange-model-name")]
+    public void Given_GitHubModels_With_ModelName_StartingWith_Dashes_When_Parse_Invoked_Then_It_Should_Treat_As_Value(string model)
+    {
+        var config = BuildConfigWithGitHubModels();
+        var args = new[] { "--model", model };
+
+        var settings = ArgumentOptions.Parse(config, args);
+
+        settings.Help.ShouldBeFalse();
+        settings.GitHubModels.ShouldNotBeNull();
+        settings.GitHubModels.Model.ShouldBe(model);
+    }
 }
