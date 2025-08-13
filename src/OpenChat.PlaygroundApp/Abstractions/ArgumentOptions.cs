@@ -66,9 +66,9 @@ public abstract class ArgumentOptions
         var expectedName = connectorType + "ArgumentOptions";
 
         var assembly = typeof(ArgumentOptions).Assembly;
-        var optionsType = (assembly?.GetTypes()
+        var optionsType = assembly?.GetTypes()
                                    .SingleOrDefault(t => typeof(ArgumentOptions).IsAssignableFrom(t) &&
-                                                         string.Equals(t.Name, expectedName, StringComparison.InvariantCultureIgnoreCase)))
+                                                         string.Equals(t.Name, expectedName, StringComparison.InvariantCultureIgnoreCase))
                           ?? throw new InvalidOperationException($"Options type '{expectedName}' not found for connector type '{connectorType}'.");
 
         var options = (ArgumentOptions)Activator.CreateInstance(optionsType)!;
@@ -109,11 +109,26 @@ public abstract class ArgumentOptions
     /// <summary>
     /// Displays the help information for the command line arguments.
     /// </summary>
-    public void DisplayHelp()
+    public static void DisplayHelp()
     {
+        var foregroundColor = Console.ForegroundColor;
+
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine("OpenChat Playground");
+        Console.ForegroundColor = foregroundColor;
+
         Console.WriteLine("Usage: [options]");
+        Console.WriteLine();
         Console.WriteLine("Options:");
-        Console.WriteLine("  --connector-type|-c  Specify the connector type.");
+        Console.WriteLine("  --connector-type|-c  The connector type. Supporting connectors are:");
+        Console.WriteLine("                       - AmazonBedrock, AzureAIFoundry, GitHubModels, GoogleVertexAI");
+        Console.WriteLine("                       - DockerModelRunner, FoundryLocal, HuggingFace, Ollama");
+        Console.WriteLine("                       - Anthropic, LG, Naver, OpenAI, Upstage");
+        Console.WriteLine("  ** GitHub Models: **");
+        Console.WriteLine("  --endpoint           The endpoint URL. Default to 'https://models.github.ai/inference'");
+        Console.WriteLine("  --token              The GitHub PAT.");
+        Console.WriteLine("  --model              The model name. Default to 'openai/gpt-5-mini'");
+        Console.WriteLine();
         Console.WriteLine("  --help|-h            Show this help message.");
     }
 

@@ -7,4 +7,9 @@ namespace OpenChat.PlaygroundApp.Options;
 /// </summary>
 public class GitHubModelsArgumentOptions : ArgumentOptions
 {
+    /// <inheritdoc/>
+    protected override void ParseOptions(IConfiguration config, string[] args)
+    {
+        base.ParseOptions(config, args);
+    }
 }
