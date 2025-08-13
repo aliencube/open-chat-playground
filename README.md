@@ -111,12 +111,14 @@ This provides a web UI for AI chat playground that is able to connect virtually 
 
     ```bash
     # bash/zsh
-    TOKEN=$(dotnet user-secrets --project ./src/OpenChat.PlaygroundApp list --json | sed -n '/^\/\//d; p' | jq -r '."GitHubModels:Token"')
+    TOKEN=$(dotnet user-secrets --project ./src/OpenChat.PlaygroundApp list --json | \
+              sed -n '/^\/\//d; p' | jq -r '."GitHubModels:Token"')
     ```
 
     ```bash
     # PowerShell
-    $TOKEN = (dotnet user-secrets --project ./src/OpenChat.PlaygroundApp list --json | Select-String -NotMatch '^//(BEGIN|END)' | ConvertFrom-Json).'GitHubModels:Token'
+    $TOKEN = (dotnet user-secrets --project ./src/OpenChat.PlaygroundApp list --json | `
+                Select-String -NotMatch '^//(BEGIN|END)' | ConvertFrom-Json).'GitHubModels:Token'
     ```
 
 1. Run the app.
@@ -151,10 +153,16 @@ This provides a web UI for AI chat playground that is able to connect virtually 
 
 #### Unit tests
 
+1. Make sure you are at the repository root.
+
+    ```bash
+    cd $REPOSITORY_ROOT
+    ```
+
 1. Run tests.
 
     ```bash
-    cd $REPOSITORY_ROOT && dotnet test --filter "Category=UnitTest"
+    dotnet test --filter "Category=UnitTest"
     ```
 
 #### Integration tests
