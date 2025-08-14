@@ -228,4 +228,148 @@ public class GitHubModelsArgumentOptionsTests
         settings.GitHubModels.ShouldNotBeNull();
         settings.GitHubModels.Model.ShouldBe(model);
     }
+
+    // Environment Variables Tests for Issue #180/#208
+    
+    private static IConfiguration BuildConfigWithEnvironmentVariables(
+        string? configEndpoint = null, string? configToken = null, string? configModel = null,
+        string? envEndpoint = null, string? envToken = null, string? envModel = null)
+    {
+        // Base configuration values (lowest priority)
+        var configDict = new Dictionary<string, string?>
+        {
+            ["ConnectorType"] = ConnectorType.GitHubModels.ToString()
+        };
+
+        if (configEndpoint != null) configDict["GitHubModels:Endpoint"] = configEndpoint;
+        if (configToken != null) configDict["GitHubModels:Token"] = configToken;
+        if (configModel != null) configDict["GitHubModels:Model"] = configModel;
+
+        // Environment variables (medium priority)
+        var envDict = new Dictionary<string, string?>();
+        if (envEndpoint != null) envDict["GitHubModels:Endpoint"] = envEndpoint;
+        if (envToken != null) envDict["GitHubModels:Token"] = envToken;
+        if (envModel != null) envDict["GitHubModels:Model"] = envModel;
+
+        var config = new ConfigurationBuilder()
+                        .AddInMemoryCollection(configDict!)  // Base configuration (lowest priority)
+                        .AddInMemoryCollection(envDict!)     // Environment variables (medium priority)
+                        .Build();
+
+        return config;
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://env.example/inference", "env-token", "env-model")]
+    public void Given_EnvironmentVariables_And_No_Config_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(
+        string envEndpoint, string envToken, string envModel)
+    {
+        var config = BuildConfigWithEnvironmentVariables(
+            envEndpoint: envEndpoint, envToken: envToken, envModel: envModel);
+        var settings = Parse(config);
+
+        settings.GitHubModels.ShouldNotBeNull();
+        settings.GitHubModels.Endpoint.ShouldBe(envEndpoint);
+        settings.GitHubModels.Token.ShouldBe(envToken);
+        settings.GitHubModels.Model.ShouldBe(envModel);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://config.example/inference", "config-token", "config-model",
+                "https://env.example/inference", "env-token", "env-model")]
+    public void Given_ConfigValues_And_EnvironmentVariables_When_Parse_Invoked_Then_EnvironmentVariables_Should_Override_Config(
+        string configEndpoint, string configToken, string configModel,
+        string envEndpoint, string envToken, string envModel)
+    {
+        var config = BuildConfigWithEnvironmentVariables(
+            configEndpoint, configToken, configModel,
+            envEndpoint, envToken, envModel);
+        var settings = Parse(config);
+
+        settings.GitHubModels.ShouldNotBeNull();
+        settings.GitHubModels.Endpoint.ShouldBe(envEndpoint);
+        settings.GitHubModels.Token.ShouldBe(envToken);
+        settings.GitHubModels.Model.ShouldBe(envModel);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://config.example/inference", "config-token", "config-model",
+                "https://env.example/inference", "env-token", "env-model",
+                "https://cli.example/inference", "cli-token", "cli-model")]
+    public void Given_ConfigValues_And_EnvironmentVariables_And_CLI_When_Parse_Invoked_Then_CLI_Should_Override_All(
+        string configEndpoint, string configToken, string configModel,
+        string envEndpoint, string envToken, string envModel,
+        string cliEndpoint, string cliToken, string cliModel)
+    {
+        var config = BuildConfigWithEnvironmentVariables(
+            configEndpoint, configToken, configModel,
+            envEndpoint, envToken, envModel);
+        var settings = Parse(config, "--endpoint", cliEndpoint, "--token", cliToken, "--model", cliModel);
+
+        settings.GitHubModels.ShouldNotBeNull();
+        settings.GitHubModels.Endpoint.ShouldBe(cliEndpoint);
+        settings.GitHubModels.Token.ShouldBe(cliToken);
+        settings.GitHubModels.Model.ShouldBe(cliModel);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://config.example/inference", "config-token", "config-model",
+                "https://env.example/inference", null, "env-model")]
+    public void Given_Partial_EnvironmentVariables_When_Parse_Invoked_Then_It_Should_Mix_Config_And_Environment(
+        string configEndpoint, string configToken, string configModel,
+        string envEndpoint, string? envToken, string envModel)
+    {
+        var config = BuildConfigWithEnvironmentVariables(
+            configEndpoint, configToken, configModel,
+            envEndpoint, envToken, envModel);
+        var settings = Parse(config);
+
+        settings.GitHubModels.ShouldNotBeNull();
+        settings.GitHubModels.Endpoint.ShouldBe(envEndpoint); // From environment
+        settings.GitHubModels.Token.ShouldBe(configToken);    // From config (no env override)
+        settings.GitHubModels.Model.ShouldBe(envModel);       // From environment
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://config.example/inference", "config-token", "config-model",
+                null, "env-token", null,
+                "https://cli.example/inference")]
+    public void Given_Mixed_Priority_Sources_When_Parse_Invoked_Then_It_Should_Respect_Priority_Order(
+        string configEndpoint, string configToken, string configModel,
+        string? envEndpoint, string envToken, string? envModel,
+        string cliEndpoint)
+    {
+        var config = BuildConfigWithEnvironmentVariables(
+            configEndpoint, configToken, configModel,
+            envEndpoint, envToken, envModel);
+        var settings = Parse(config, "--endpoint", cliEndpoint);
+
+        settings.GitHubModels.ShouldNotBeNull();
+        settings.GitHubModels.Endpoint.ShouldBe(cliEndpoint);  // CLI wins (highest priority)
+        settings.GitHubModels.Token.ShouldBe(envToken);        // Env wins over config (medium priority)
+        settings.GitHubModels.Model.ShouldBe(configModel);     // Config only (lowest priority)
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://env.example/inference", "env-token", "env-model")]
+    public void Given_EnvironmentVariables_Only_When_Parse_Invoked_Then_Help_Should_Be_False(
+        string envEndpoint, string envToken, string envModel)
+    {
+        var config = BuildConfigWithEnvironmentVariables(
+            envEndpoint: envEndpoint, envToken: envToken, envModel: envModel);
+        var settings = Parse(config);
+
+        settings.Help.ShouldBeFalse();
+        settings.ConnectorType.ShouldBe(ConnectorType.GitHubModels);
+        settings.GitHubModels.ShouldNotBeNull();
+        settings.GitHubModels.Endpoint.ShouldBe(envEndpoint);
+        settings.GitHubModels.Token.ShouldBe(envToken);
+        settings.GitHubModels.Model.ShouldBe(envModel);
+    }
 }
