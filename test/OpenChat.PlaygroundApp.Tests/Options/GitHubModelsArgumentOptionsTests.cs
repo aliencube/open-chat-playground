@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Configurations;
@@ -12,27 +13,42 @@ public class GitHubModelsArgumentOptionsTests
     private const string Token = "github-pat";
     private const string Model = "github-model-name";
 
-	private static IConfiguration BuildConfigFrom(params (string Key, string Value)[] pairs)
-    {
-        var dict = pairs.ToDictionary(p => p.Key, p => (string?)p.Value);
-        var config = new ConfigurationBuilder()
-                         .AddInMemoryCollection(dict!)
-                         .Build();
-
-        return config;
-    }
-
 	private static IConfiguration BuildConfigWithGitHubModels(
-		string? endpoint = Endpoint,
-		string? token = Token,
-		string? model = Model)
+		string? configEndpoint = Endpoint,
+		string? configToken = Token,
+		string? configModel = Model,
+		string? envEndpoint = null,
+		string? envToken = null,
+		string? envModel = null)
 	{
-		return BuildConfigFrom(
-			("ConnectorType", ConnectorType.GitHubModels.ToString()),
-			("GitHubModels:Endpoint", endpoint!),
-			("GitHubModels:Token", token!),
-			("GitHubModels:Model", model!)
-		);
+		// Base configuration values (lowest priority)
+		var configDict = new Dictionary<string, string?>
+		{
+			["ConnectorType"] = ConnectorType.GitHubModels.ToString()
+		};
+
+		if (configEndpoint != null) configDict["GitHubModels:Endpoint"] = configEndpoint;
+		if (configToken != null) configDict["GitHubModels:Token"] = configToken;
+		if (configModel != null) configDict["GitHubModels:Model"] = configModel;
+
+		// If no environment variables are specified, just return basic config
+		if (envEndpoint == null && envToken == null && envModel == null)
+		{
+			return new ConfigurationBuilder()
+				.AddInMemoryCollection(configDict!)
+				.Build();
+		}
+
+		// Environment variables (medium priority)
+		var envDict = new Dictionary<string, string?>();
+		if (envEndpoint != null) envDict["GitHubModels:Endpoint"] = envEndpoint;
+		if (envToken != null) envDict["GitHubModels:Token"] = envToken;
+		if (envModel != null) envDict["GitHubModels:Model"] = envModel;
+
+		return new ConfigurationBuilder()
+			.AddInMemoryCollection(configDict!)  // Base configuration (lowest priority)
+			.AddInMemoryCollection(envDict!)     // Environment variables (medium priority)
+			.Build();
 	}
 
 	private static AppSettings Parse(IConfiguration config, params string[] args)
@@ -111,7 +127,7 @@ public class GitHubModelsArgumentOptionsTests
 	[InlineData("--model")]
 	public void Given_ArgumentWithoutValue_When_Parse_Invoked_Then_It_Should_Not_Set_Property(string argument)
 	{
-		var config = BuildConfigFrom(("ConnectorType", ConnectorType.GitHubModels.ToString()));
+		var config = BuildConfigWithGitHubModels(configEndpoint: null, configToken: null, configModel: null);
 		var settings = Parse(config, argument);
 
         settings.GitHubModels.ShouldNotBeNull();
@@ -125,7 +141,7 @@ public class GitHubModelsArgumentOptionsTests
 	[InlineData("--something", "else", "--another", "value")]
 	public void Given_UnrelatedArguments_When_Parse_Invoked_Then_It_Should_Ignore_Them(params string[] args)
 	{
-		var config = BuildConfigFrom(("ConnectorType", ConnectorType.GitHubModels.ToString()));
+		var config = BuildConfigWithGitHubModels(configEndpoint: null, configToken: null, configModel: null);
 		var settings = Parse(config, args);
 
         settings.GitHubModels.ShouldNotBeNull();
@@ -230,34 +246,6 @@ public class GitHubModelsArgumentOptionsTests
     }
 
     // Environment Variables Tests for Issue #180/#208
-    
-    private static IConfiguration BuildConfigWithEnvironmentVariables(
-        string? configEndpoint = null, string? configToken = null, string? configModel = null,
-        string? envEndpoint = null, string? envToken = null, string? envModel = null)
-    {
-        // Base configuration values (lowest priority)
-        var configDict = new Dictionary<string, string?>
-        {
-            ["ConnectorType"] = ConnectorType.GitHubModels.ToString()
-        };
-
-        if (configEndpoint != null) configDict["GitHubModels:Endpoint"] = configEndpoint;
-        if (configToken != null) configDict["GitHubModels:Token"] = configToken;
-        if (configModel != null) configDict["GitHubModels:Model"] = configModel;
-
-        // Environment variables (medium priority)
-        var envDict = new Dictionary<string, string?>();
-        if (envEndpoint != null) envDict["GitHubModels:Endpoint"] = envEndpoint;
-        if (envToken != null) envDict["GitHubModels:Token"] = envToken;
-        if (envModel != null) envDict["GitHubModels:Model"] = envModel;
-
-        var config = new ConfigurationBuilder()
-                        .AddInMemoryCollection(configDict!)  // Base configuration (lowest priority)
-                        .AddInMemoryCollection(envDict!)     // Environment variables (medium priority)
-                        .Build();
-
-        return config;
-    }
 
     [Trait("Category", "UnitTest")]
     [Theory]
@@ -265,7 +253,8 @@ public class GitHubModelsArgumentOptionsTests
     public void Given_EnvironmentVariables_And_No_Config_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(
         string envEndpoint, string envToken, string envModel)
     {
-        var config = BuildConfigWithEnvironmentVariables(
+        var config = BuildConfigWithGitHubModels(
+            configEndpoint: null, configToken: null, configModel: null,
             envEndpoint: envEndpoint, envToken: envToken, envModel: envModel);
         var settings = Parse(config);
 
@@ -283,7 +272,7 @@ public class GitHubModelsArgumentOptionsTests
         string configEndpoint, string configToken, string configModel,
         string envEndpoint, string envToken, string envModel)
     {
-        var config = BuildConfigWithEnvironmentVariables(
+        var config = BuildConfigWithGitHubModels(
             configEndpoint, configToken, configModel,
             envEndpoint, envToken, envModel);
         var settings = Parse(config);
@@ -304,7 +293,7 @@ public class GitHubModelsArgumentOptionsTests
         string envEndpoint, string envToken, string envModel,
         string cliEndpoint, string cliToken, string cliModel)
     {
-        var config = BuildConfigWithEnvironmentVariables(
+        var config = BuildConfigWithGitHubModels(
             configEndpoint, configToken, configModel,
             envEndpoint, envToken, envModel);
         var settings = Parse(config, "--endpoint", cliEndpoint, "--token", cliToken, "--model", cliModel);
@@ -323,7 +312,7 @@ public class GitHubModelsArgumentOptionsTests
         string configEndpoint, string configToken, string configModel,
         string envEndpoint, string? envToken, string envModel)
     {
-        var config = BuildConfigWithEnvironmentVariables(
+        var config = BuildConfigWithGitHubModels(
             configEndpoint, configToken, configModel,
             envEndpoint, envToken, envModel);
         var settings = Parse(config);
@@ -344,7 +333,7 @@ public class GitHubModelsArgumentOptionsTests
         string? envEndpoint, string envToken, string? envModel,
         string cliEndpoint)
     {
-        var config = BuildConfigWithEnvironmentVariables(
+        var config = BuildConfigWithGitHubModels(
             configEndpoint, configToken, configModel,
             envEndpoint, envToken, envModel);
         var settings = Parse(config, "--endpoint", cliEndpoint);
@@ -361,7 +350,8 @@ public class GitHubModelsArgumentOptionsTests
     public void Given_EnvironmentVariables_Only_When_Parse_Invoked_Then_Help_Should_Be_False(
         string envEndpoint, string envToken, string envModel)
     {
-        var config = BuildConfigWithEnvironmentVariables(
+        var config = BuildConfigWithGitHubModels(
+            configEndpoint: null, configToken: null, configModel: null,
             envEndpoint: envEndpoint, envToken: envToken, envModel: envModel);
         var settings = Parse(config);
 
