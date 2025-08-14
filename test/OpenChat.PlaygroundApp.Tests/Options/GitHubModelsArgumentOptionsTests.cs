@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 using Microsoft.Extensions.Configuration;
 
 using OpenChat.PlaygroundApp.Abstractions;
@@ -67,27 +69,21 @@ public class GitHubModelsArgumentOptionsTests
                    .Build();
     }
 
-    private static AppSettings Parse(IConfiguration config, params string[] args)
-    {
-        var fullArgs = new List<string>();
-        if (args.Any(a => a.Equals("--connector-type", StringComparison.CurrentCultureIgnoreCase) || a.Equals("-c", StringComparison.CurrentCultureIgnoreCase)) == false)
-        {
-            fullArgs.AddRange(["--connector-type", ConnectorType.GitHubModels.ToString()]);
-        }
-        fullArgs.AddRange(args);
 
-        return ArgumentOptions.Parse(config, [.. fullArgs]);
-    }
 
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("https://example.test/inference")]
     public void Given_Endpoint_When_Parse_Invoked_Then_It_Should_Set_Endpoint(string endpoint)
     {
+        // Arrange
         var config = BuildConfigWithGitHubModels();
+        var args = new[] { "--connector-type", ConnectorType.GitHubModels.ToString(), "--endpoint", endpoint };
 
-        var settings = Parse(config, "--endpoint", endpoint);
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
 
+        // Assert
         settings.ConnectorType.ShouldBe(ConnectorType.GitHubModels);
         settings.GitHubModels.ShouldNotBeNull();
         settings.GitHubModels.Endpoint.ShouldBe(endpoint);
@@ -100,10 +96,14 @@ public class GitHubModelsArgumentOptionsTests
     [InlineData("test-token")]
     public void Given_Token_When_Parse_Invoked_Then_It_Should_Set_Token(string token)
     {
+        // Arrange
         var config = BuildConfigWithGitHubModels();
+        var args = new[] { "--connector-type", ConnectorType.GitHubModels.ToString(), "--token", token };
 
-        var settings = Parse(config, "--token", token);
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
 
+        // Assert
         settings.GitHubModels.ShouldNotBeNull();
         settings.GitHubModels.Endpoint.ShouldBe(Endpoint);
         settings.GitHubModels.Token.ShouldBe(token);
@@ -115,10 +115,14 @@ public class GitHubModelsArgumentOptionsTests
     [InlineData("test-model")]
     public void Given_Model_When_Parse_Invoked_Then_It_Should_Set_Model(string model)
     {
+        // Arrange
         var config = BuildConfigWithGitHubModels();
+        var args = new[] { "--connector-type", ConnectorType.GitHubModels.ToString(), "--model", model };
 
-        var settings = Parse(config, "--model", model);
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
 
+        // Assert
         settings.GitHubModels.ShouldNotBeNull();
         settings.GitHubModels.Endpoint.ShouldBe(Endpoint);
         settings.GitHubModels.Token.ShouldBe(Token);
@@ -130,10 +134,14 @@ public class GitHubModelsArgumentOptionsTests
     [InlineData("https://example.test/inference", "test-token", "openai/gpt-4o-mini")]
     public void Given_AllArguments_When_Parse_Invoked_Then_It_Should_Set_All(string endpoint, string token, string model)
     {
+        // Arrange
         var config = BuildConfigWithGitHubModels();
+        var args = new[] { "--connector-type", ConnectorType.GitHubModels.ToString(), "--endpoint", endpoint, "--token", token, "--model", model };
 
-        var settings = Parse(config, "--endpoint", endpoint, "--token", token, "--model", model);
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
 
+        // Assert
         settings.GitHubModels.ShouldNotBeNull();
         settings.GitHubModels.Endpoint.ShouldBe(endpoint);
         settings.GitHubModels.Token.ShouldBe(token);
@@ -147,10 +155,14 @@ public class GitHubModelsArgumentOptionsTests
     [InlineData("--model")]
     public void Given_ArgumentWithoutValue_When_Parse_Invoked_Then_It_Should_Not_Set_Property(string argument)
     {
+        // Arrange
         var config = BuildConfigWithGitHubModels(configEndpoint: null, configToken: null, configModel: null);
+        var args = new[] { "--connector-type", ConnectorType.GitHubModels.ToString(), argument };
 
-        var settings = Parse(config, argument);
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
 
+        // Assert
         settings.GitHubModels.ShouldNotBeNull();
         settings.GitHubModels.Endpoint.ShouldBeNull();
         settings.GitHubModels.Token.ShouldBeNull();
@@ -162,10 +174,15 @@ public class GitHubModelsArgumentOptionsTests
     [InlineData("--something", "else", "--another", "value")]
     public void Given_UnrelatedArguments_When_Parse_Invoked_Then_It_Should_Ignore_Them(params string[] args)
     {
+        // Arrange
         var config = BuildConfigWithGitHubModels(configEndpoint: null, configToken: null, configModel: null);
+        var fullArgs = new List<string> { "--connector-type", ConnectorType.GitHubModels.ToString() };
+        fullArgs.AddRange(args);
 
-        var settings = Parse(config, args);
+        // Act
+        var settings = ArgumentOptions.Parse(config, [.. fullArgs]);
 
+        // Assert
         settings.GitHubModels.ShouldNotBeNull();
         settings.GitHubModels.Endpoint.ShouldBeNull();
         settings.GitHubModels.Token.ShouldBeNull();
@@ -177,10 +194,14 @@ public class GitHubModelsArgumentOptionsTests
     [InlineData("https://models.github.ai/inference", "{{GITHUB_PAT}}", "openai/gpt-4o-mini")]
     public void Given_ConfigValues_And_No_CLI_When_Parse_Invoked_Then_It_Should_Use_Config(string endpoint, string token, string model)
     {
+        // Arrange
         var config = BuildConfigWithGitHubModels(endpoint, token, model);
+        var args = new[] { "--connector-type", ConnectorType.GitHubModels.ToString() };
 
-        var settings = Parse(config);
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
 
+        // Assert
         settings.GitHubModels.ShouldNotBeNull();
         settings.GitHubModels.Endpoint.ShouldBe(endpoint);
         settings.GitHubModels.Token.ShouldBe(token);
@@ -195,10 +216,14 @@ public class GitHubModelsArgumentOptionsTests
         string configEndpoint, string configToken, string configModel,
         string cliEndpoint, string cliToken, string cliModel)
     {
+        // Arrange
         var config = BuildConfigWithGitHubModels(configEndpoint, configToken, configModel);
+        var args = new[] { "--connector-type", ConnectorType.GitHubModels.ToString(), "--endpoint", cliEndpoint, "--token", cliToken, "--model", cliModel };
 
-        var settings = Parse(config, "--endpoint", cliEndpoint, "--token", cliToken, "--model", cliModel);
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
 
+        // Assert
         settings.GitHubModels.ShouldNotBeNull();
         settings.GitHubModels.Endpoint.ShouldBe(cliEndpoint);
         settings.GitHubModels.Token.ShouldBe(cliToken);
@@ -210,11 +235,14 @@ public class GitHubModelsArgumentOptionsTests
     [InlineData("https://models.github.ai/inference", "pat", "openai/gpt-4o-mini")]
     public void Given_GitHubModels_With_KnownArguments_When_Parse_Invoked_Then_Help_ShouldBe_False(string endpoint, string token, string model)
     {
+        // Arrange
         var config = BuildConfigWithGitHubModels(Endpoint, Token, Model);
         var args = new[] { "--endpoint", endpoint, "--token", token, "--model", model };
 
+        // Act
         var settings = ArgumentOptions.Parse(config, args);
 
+        // Assert
         settings.Help.ShouldBeFalse();
         settings.ConnectorType.ShouldBe(ConnectorType.GitHubModels);
         settings.GitHubModels.ShouldNotBeNull();
@@ -230,11 +258,14 @@ public class GitHubModelsArgumentOptionsTests
     [InlineData("--model")]
     public void Given_GitHubModels_With_KnownArgument_WithoutValue_When_Parse_Invoked_Then_Help_ShouldBe_False(string argument)
     {
+        // Arrange
         var config = BuildConfigWithGitHubModels();
         var args = new[] { argument };
 
+        // Act
         var settings = ArgumentOptions.Parse(config, args);
 
+        // Assert
         settings.Help.ShouldBeFalse();
         settings.GitHubModels.ShouldNotBeNull();
         settings.GitHubModels.Endpoint.ShouldBe(Endpoint);
@@ -247,11 +278,14 @@ public class GitHubModelsArgumentOptionsTests
     [InlineData("https://models.github.ai/inference", "--unknown-flag")]
     public void Given_GitHubModels_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_ShouldBe_True(string endpoint, string argument)
     {
+        // Arrange
         var config = BuildConfigWithGitHubModels();
         var args = new[] { "--endpoint", endpoint, argument };
 
+        // Act
         var settings = ArgumentOptions.Parse(config, args);
 
+        // Assert
         settings.Help.ShouldBeTrue();
     }
 
@@ -260,11 +294,14 @@ public class GitHubModelsArgumentOptionsTests
     [InlineData("--strange-model-name")]
     public void Given_GitHubModels_With_ModelName_StartingWith_Dashes_When_Parse_Invoked_Then_It_Should_Treat_As_Value(string model)
     {
+        // Arrange
         var config = BuildConfigWithGitHubModels();
         var args = new[] { "--model", model };
 
+        // Act
         var settings = ArgumentOptions.Parse(config, args);
 
+        // Assert
         settings.Help.ShouldBeFalse();
         settings.GitHubModels.ShouldNotBeNull();
         settings.GitHubModels.Model.ShouldBe(model);
@@ -276,12 +313,16 @@ public class GitHubModelsArgumentOptionsTests
     public void Given_EnvironmentVariables_And_No_Config_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(
         string envEndpoint, string envToken, string envModel)
     {
+        // Arrange
         var config = BuildConfigWithGitHubModels(
             configEndpoint: null, configToken: null, configModel: null,
             envEndpoint: envEndpoint, envToken: envToken, envModel: envModel);
+        var args = new[] { "--connector-type", ConnectorType.GitHubModels.ToString() };
 
-        var settings = Parse(config);
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
 
+        // Assert
         settings.GitHubModels.ShouldNotBeNull();
         settings.GitHubModels.Endpoint.ShouldBe(envEndpoint);
         settings.GitHubModels.Token.ShouldBe(envToken);
@@ -296,11 +337,16 @@ public class GitHubModelsArgumentOptionsTests
         string configEndpoint, string configToken, string configModel,
         string envEndpoint, string envToken, string envModel)
     {
+        // Arrange
         var config = BuildConfigWithGitHubModels(
             configEndpoint, configToken, configModel,
             envEndpoint, envToken, envModel);
-        var settings = Parse(config);
+        var args = new[] { "--connector-type", ConnectorType.GitHubModels.ToString() };
 
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
         settings.GitHubModels.ShouldNotBeNull();
         settings.GitHubModels.Endpoint.ShouldBe(envEndpoint);
         settings.GitHubModels.Token.ShouldBe(envToken);
@@ -317,11 +363,16 @@ public class GitHubModelsArgumentOptionsTests
         string envEndpoint, string envToken, string envModel,
         string cliEndpoint, string cliToken, string cliModel)
     {
+        // Arrange
         var config = BuildConfigWithGitHubModels(
             configEndpoint, configToken, configModel,
             envEndpoint, envToken, envModel);
-        var settings = Parse(config, "--endpoint", cliEndpoint, "--token", cliToken, "--model", cliModel);
+        var args = new[] { "--connector-type", ConnectorType.GitHubModels.ToString(), "--endpoint", cliEndpoint, "--token", cliToken, "--model", cliModel };
 
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
         settings.GitHubModels.ShouldNotBeNull();
         settings.GitHubModels.Endpoint.ShouldBe(cliEndpoint);
         settings.GitHubModels.Token.ShouldBe(cliToken);
@@ -336,11 +387,16 @@ public class GitHubModelsArgumentOptionsTests
         string configEndpoint, string configToken, string configModel,
         string envEndpoint, string? envToken, string envModel)
     {
+        // Arrange
         var config = BuildConfigWithGitHubModels(
             configEndpoint, configToken, configModel,
             envEndpoint, envToken, envModel);
-        var settings = Parse(config);
+        var args = new[] { "--connector-type", ConnectorType.GitHubModels.ToString() };
 
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
         settings.GitHubModels.ShouldNotBeNull();
         settings.GitHubModels.Endpoint.ShouldBe(envEndpoint); // From environment
         settings.GitHubModels.Token.ShouldBe(configToken);    // From config (no env override)
@@ -357,11 +413,16 @@ public class GitHubModelsArgumentOptionsTests
         string? envEndpoint, string envToken, string? envModel,
         string cliEndpoint)
     {
+        // Arrange
         var config = BuildConfigWithGitHubModels(
             configEndpoint, configToken, configModel,
             envEndpoint, envToken, envModel);
-        var settings = Parse(config, "--endpoint", cliEndpoint);
+        var args = new[] { "--connector-type", ConnectorType.GitHubModels.ToString(), "--endpoint", cliEndpoint };
 
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
         settings.GitHubModels.ShouldNotBeNull();
         settings.GitHubModels.Endpoint.ShouldBe(cliEndpoint);  // CLI wins (highest priority)
         settings.GitHubModels.Token.ShouldBe(envToken);        // Env wins over config (medium priority)
@@ -374,11 +435,16 @@ public class GitHubModelsArgumentOptionsTests
     public void Given_EnvironmentVariables_Only_When_Parse_Invoked_Then_Help_Should_Be_False(
         string envEndpoint, string envToken, string envModel)
     {
+        // Arrange
         var config = BuildConfigWithGitHubModels(
             configEndpoint: null, configToken: null, configModel: null,
             envEndpoint: envEndpoint, envToken: envToken, envModel: envModel);
-        var settings = Parse(config);
+        var args = new[] { "--connector-type", ConnectorType.GitHubModels.ToString() };
 
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
         settings.Help.ShouldBeFalse();
         settings.ConnectorType.ShouldBe(ConnectorType.GitHubModels);
         settings.GitHubModels.ShouldNotBeNull();
