@@ -16,6 +16,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="9.*-*" />
     <PackageReference Include="Microsoft.Extensions.AI" Version="9.*-*" />
+    <PackageReference Include="AWSSDK.Extensions.Bedrock.MEAI" Version="4.*-*" />
     <PackageReference Include="System.Linq.Async" Version="6.*" />
   </ItemGroup>
 
