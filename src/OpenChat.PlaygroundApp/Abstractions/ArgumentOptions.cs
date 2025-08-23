@@ -16,13 +16,15 @@ public abstract class ArgumentOptions
         // GitHub Models
         (ConnectorType.GitHubModels, "--endpoint", false),
         (ConnectorType.GitHubModels, "--token", false),
-        (ConnectorType.GitHubModels, "--model", false)
+        (ConnectorType.GitHubModels, "--model", false),
         // Google Vertex AI
         // Docker Model Runner
         // Foundry Local
         // Hugging Face
         // Ollama
         // Anthropic
+        (ConnectorType.Anthropic, "--api-key", false),
+        (ConnectorType.Anthropic, "--model", false),
         // LG
         // Naver
         // OpenAI
@@ -139,6 +141,12 @@ public abstract class ArgumentOptions
                 settings.GitHubModels.Endpoint = github.Endpoint ?? settings.GitHubModels.Endpoint;
                 settings.GitHubModels.Token = github.Token ?? settings.GitHubModels.Token;
                 settings.GitHubModels.Model = github.Model ?? settings.GitHubModels.Model;
+                break;
+
+            case AnthropicArgumentOptions anthropic:
+                settings.Anthropic ??= new AnthropicSettings();
+                settings.Anthropic.ApiKey = anthropic.ApiKey ?? settings.Anthropic.ApiKey;
+                settings.Anthropic.Model = anthropic.Model ?? settings.Anthropic.Model;
                 break;
 
             default:
@@ -303,7 +311,8 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** Anthropic: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  TBD");
+        Console.WriteLine("  --api-key        The Anthropic API key (required)");
+        Console.WriteLine("  --model          The model name (optional, defaults to 'claude-3-5-sonnet-latest')");
         Console.WriteLine();
     }
 
