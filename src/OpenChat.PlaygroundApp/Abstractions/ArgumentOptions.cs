@@ -9,12 +9,24 @@ namespace OpenChat.PlaygroundApp.Abstractions;
 /// </summary>
 public abstract class ArgumentOptions
 {
-    private static readonly (string Argument, bool IsSwitch)[] arguments =
+    private static readonly (ConnectorType ConnectorType,string Argument, bool IsSwitch)[] arguments =
     [
+        // Amazon Bedrock
+        // Azure AI Foundry
         // GitHub Models
-        ("--endpoint", false),
-        ("--token", false),
-        ("--model", false)
+        (ConnectorType.GitHubModels, "--endpoint", false),
+        (ConnectorType.GitHubModels, "--token", false),
+        (ConnectorType.GitHubModels, "--model", false)
+        // Google Vertex AI
+        // Docker Model Runner
+        // Foundry Local
+        // Hugging Face
+        // Ollama
+        // Anthropic
+        // LG
+        // Naver
+        // OpenAI
+        // Upstage
     ];
 
     /// <summary>
@@ -106,7 +118,8 @@ public abstract class ArgumentOptions
                     break;
 
                 default:
-                    var argument = arguments.SingleOrDefault(p => p.Argument.Equals(args[i], StringComparison.InvariantCultureIgnoreCase));
+                    var argument = arguments.SingleOrDefault(p => p.ConnectorType == connectorType &&
+                                                                  p.Argument.Equals(args[i], StringComparison.InvariantCultureIgnoreCase));
                     if (argument == default)
                     {
                         options.Help = true;
@@ -126,6 +139,9 @@ public abstract class ArgumentOptions
                 settings.GitHubModels.Endpoint = github.Endpoint ?? settings.GitHubModels.Endpoint;
                 settings.GitHubModels.Token = github.Token ?? settings.GitHubModels.Token;
                 settings.GitHubModels.Model = github.Model ?? settings.GitHubModels.Model;
+                break;
+
+            default:
                 break;
         }
 
@@ -153,11 +169,20 @@ public abstract class ArgumentOptions
         Console.WriteLine("                       - AmazonBedrock, AzureAIFoundry, GitHubModels, GoogleVertexAI");
         Console.WriteLine("                       - DockerModelRunner, FoundryLocal, HuggingFace, Ollama");
         Console.WriteLine("                       - Anthropic, LG, Naver, OpenAI, Upstage");
-        Console.WriteLine("  ** GitHub Models: **");
-        Console.WriteLine("  --endpoint           The endpoint URL. Default to 'https://models.github.ai/inference'");
-        Console.WriteLine("  --token              The GitHub PAT.");
-        Console.WriteLine("  --model              The model name. Default to 'openai/gpt-4o-mini'");
         Console.WriteLine();
+        DisplayHelpForAmazonBedrock();
+        DisplayHelpForAzureAIFoundry();
+        DisplayHelpForGitHubModels();
+        DisplayHelpForGoogleVertexAI();
+        DisplayHelpForDockerModelRunner();
+        DisplayHelpForFoundryLocal();
+        DisplayHelpForHuggingFace();
+        DisplayHelpForOllama();
+        DisplayHelpForAnthropic();
+        DisplayHelpForLG();
+        DisplayHelpForNaver();
+        DisplayHelpForOpenAI();
+        DisplayHelpForUpstage();
         Console.WriteLine("  --help|-h            Show this help message.");
     }
 
@@ -179,5 +204,150 @@ public abstract class ArgumentOptions
     protected virtual bool ShouldDisplayHelp(Type type)
     {
         return this.ConnectorType == ConnectorType.Unknown || this.Help;
+    }
+
+    private static void DisplayHelpForAmazonBedrock()
+    {
+        var foregroundColor = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.Magenta;
+        Console.WriteLine("  ** Amazon Bedrock: **");
+        Console.ForegroundColor = foregroundColor;
+
+        Console.WriteLine("  TBD");
+        Console.WriteLine();
+    }
+
+    private static void DisplayHelpForAzureAIFoundry()
+    {
+        var foregroundColor = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.Magenta;
+        Console.WriteLine("  ** Azure AI Foundry: **");
+        Console.ForegroundColor = foregroundColor;
+
+        Console.WriteLine("  TBD");
+        Console.WriteLine();
+    }
+
+    private static void DisplayHelpForGitHubModels()
+    {
+        var foregroundColor = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.Magenta;
+        Console.WriteLine("  ** GitHub Models: **");
+        Console.ForegroundColor = foregroundColor;
+
+        Console.WriteLine("  --endpoint           The endpoint URL. Default to 'https://models.github.ai/inference'");
+        Console.WriteLine("  --token              The GitHub PAT.");
+        Console.WriteLine("  --model              The model name. Default to 'openai/gpt-4o-mini'");
+        Console.WriteLine();
+    }
+
+    private static void DisplayHelpForGoogleVertexAI()
+    {
+        var foregroundColor = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.Magenta;
+        Console.WriteLine("  ** Google Vertex AI: **");
+        Console.ForegroundColor = foregroundColor;
+
+        Console.WriteLine("  TBD");
+        Console.WriteLine();
+    }
+
+    private static void DisplayHelpForDockerModelRunner()
+    {
+        var foregroundColor = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.WriteLine("  ** Docker Model Runner: **");
+        Console.ForegroundColor = foregroundColor;
+
+        Console.WriteLine("  TBD");
+        Console.WriteLine();
+    }
+
+    private static void DisplayHelpForFoundryLocal()
+    {
+        var foregroundColor = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.WriteLine("  ** Foundry Local: **");
+        Console.ForegroundColor = foregroundColor;
+
+        Console.WriteLine("  TBD");
+        Console.WriteLine();
+    }
+
+    private static void DisplayHelpForHuggingFace()
+    {
+        var foregroundColor = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.WriteLine("  ** Hugging Face: **");
+        Console.ForegroundColor = foregroundColor;
+
+        Console.WriteLine("  TBD");
+        Console.WriteLine();
+    }
+
+    private static void DisplayHelpForOllama()
+    {
+        var foregroundColor = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.DarkYellow;
+        Console.WriteLine("  ** Ollama: **");
+        Console.ForegroundColor = foregroundColor;
+
+        Console.WriteLine("  TBD");
+        Console.WriteLine();
+    }
+
+    private static void DisplayHelpForAnthropic()
+    {
+        var foregroundColor = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.DarkGreen;
+        Console.WriteLine("  ** Anthropic: **");
+        Console.ForegroundColor = foregroundColor;
+
+        Console.WriteLine("  TBD");
+        Console.WriteLine();
+    }
+
+    private static void DisplayHelpForLG()
+    {
+        var foregroundColor = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.DarkGreen;
+        Console.WriteLine("  ** LG: **");
+        Console.ForegroundColor = foregroundColor;
+
+        Console.WriteLine("  TBD");
+        Console.WriteLine();
+    }
+
+    private static void DisplayHelpForNaver()
+    {
+        var foregroundColor = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.DarkGreen;
+        Console.WriteLine("  ** Naver: **");
+        Console.ForegroundColor = foregroundColor;
+
+        Console.WriteLine("  TBD");
+        Console.WriteLine();
+    }
+
+    private static void DisplayHelpForOpenAI()
+    {
+        var foregroundColor = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.DarkGreen;
+        Console.WriteLine("  ** OpenAI: **");
+        Console.ForegroundColor = foregroundColor;
+
+        Console.WriteLine("  TBD");
+        Console.WriteLine();
+    }
+
+    private static void DisplayHelpForUpstage()
+    {
+        var foregroundColor = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.DarkGreen;
+        Console.WriteLine("  ** Upstage: **");
+        Console.ForegroundColor = foregroundColor;
+
+        Console.WriteLine("  TBD");
+        Console.WriteLine();
     }
 }
