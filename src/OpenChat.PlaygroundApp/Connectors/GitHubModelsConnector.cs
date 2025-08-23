@@ -9,10 +9,13 @@ using OpenChat.PlaygroundApp.Configurations;
 
 namespace OpenChat.PlaygroundApp.Connectors;
 
+/// <summary>
+/// This represents the connector entity for GitHub Models.
+/// </summary>
 public class GitHubModelsConnector(AppSettings settings) : LanguageModelConnector(settings.GitHubModels)
 {
     /// <inheritdoc/>
-    public override IChatClient GetChatClient()
+    public override async Task<IChatClient> GetChatClientAsync()
     {
         var settings = this.Settings as GitHubModelsSettings;
 
@@ -26,6 +29,6 @@ public class GitHubModelsConnector(AppSettings settings) : LanguageModelConnecto
         var chatClient = client.GetChatClient(settings.Model)
                                .AsIChatClient();
 
-        return chatClient;
+        return await Task.FromResult(chatClient).ConfigureAwait(false);
     }
 }

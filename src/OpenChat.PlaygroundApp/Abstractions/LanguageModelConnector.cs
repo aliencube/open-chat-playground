@@ -19,14 +19,14 @@ public abstract class LanguageModelConnector(LanguageModelSettings? settings)
     /// Gets an <see cref="IChatClient"/> instance.
     /// </summary>
     /// <returns>Returns <see cref="IChatClient"/> instance.</returns>
-    public abstract IChatClient GetChatClient();
+    public abstract Task<IChatClient> GetChatClientAsync();
 
     /// <summary>
     /// Gets an <see cref="IChatClient"/> instance based on the app settings provided.
     /// </summary>
     /// <param name="settings"><see cref="AppSettings"/> instance.</param>
     /// <returns>Returns <see cref="IChatClient"/> instance.</returns>
-    public static IChatClient CreateChatClient(AppSettings settings)
+    public static async Task<IChatClient> CreateChatClientAsync(AppSettings settings)
     {
         LanguageModelConnector connector = settings.ConnectorType switch
         {
@@ -34,6 +34,6 @@ public abstract class LanguageModelConnector(LanguageModelSettings? settings)
             _ => throw new NotSupportedException($"Connector type '{settings.ConnectorType}' is not supported.")
         };
 
-        return connector.GetChatClient();
+        return await connector.GetChatClientAsync().ConfigureAwait(false);
     }
 }
