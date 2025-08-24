@@ -1,0 +1,60 @@
+name: Assign PR reviewer by rotation
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  assign-reviewer:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Request reviewer based on PR number
+        uses: actions/github-script@v6
+        env:
+          REVIEWERS: ${{ secrets.REVIEWERS }}
+        with:
+          script: |
+            const reviewersEnv = process.env.REVIEWERS || '';
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const pr = context.payload.pull_request;
+            if (!pr) {
+              core.setFailed('This workflow must be triggered by a pull_request event.');
+              return;
+            }
+            const prNumber = pr.number;
+            const author = pr.user && pr.user.login;
+
+            const reviewers = reviewersEnv.split(',').map(s => s.trim()).filter(Boolean);
+            if (reviewers.length === 0) {
+              core.setFailed('No reviewers configured. Set the repository secret REVIEWERS to a comma-separated list of GitHub usernames.');
+              return;
+            }
+
+            // Use modulo on the PR number to pick an index. Works for any length but intended for 3 entries.
+            const index = prNumber % reviewers.length;
+            let chosen = reviewers[index];
+
+            // Avoid requesting the PR author; if collision happens, pick the next reviewer in rotation
+            if (author && chosen === author) {
+              core.info(`Chosen reviewer (${chosen}) is the PR author; choosing next reviewer to avoid self-request.`);
+              chosen = reviewers[(index + 1) % reviewers.length];
+            }
+
+            try {
+              core.info(`Requesting review from: ${chosen} (PR #${prNumber})`);
+              await github.rest.pulls.requestReviewers({
+                owner,
+                repo,
+                pull_number: prNumber,
+                reviewers: [chosen]
+              });
+              core.info(`Requested @${chosen} to review PR #${prNumber}`);
+            } catch (err) {
+              core.error(`Failed to request reviewer: ${err.message}`);
+              core.setFailed(err.message);
+            }
