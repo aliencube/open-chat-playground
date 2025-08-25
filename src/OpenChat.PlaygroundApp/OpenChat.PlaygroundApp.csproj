@@ -16,6 +16,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="9.*-*" />
     <PackageReference Include="Microsoft.Extensions.AI" Version="9.*-*" />
+    <PackageReference Include="Azure.AI.OpenAI" Version="2.*" />
     <PackageReference Include="System.Linq.Async" Version="6.*" />
   </ItemGroup>
 
