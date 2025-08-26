@@ -33,7 +33,7 @@ public class HuggingFaceArgumentOptions : ArgumentOptions
         {
             switch (args[i])
             {
-                case "--base-url":
+                case "--baseurl":
                     if (i + 1 < args.Length)
                     {
                         this.BaseUrl = args[++i];
