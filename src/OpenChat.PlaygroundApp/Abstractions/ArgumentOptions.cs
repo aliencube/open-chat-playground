@@ -9,18 +9,20 @@ namespace OpenChat.PlaygroundApp.Abstractions;
 /// </summary>
 public abstract class ArgumentOptions
 {
-    private static readonly (ConnectorType ConnectorType,string Argument, bool IsSwitch)[] arguments =
+    private static readonly (ConnectorType ConnectorType, string Argument, bool IsSwitch)[] arguments =
     [
         // Amazon Bedrock
         // Azure AI Foundry
         // GitHub Models
         (ConnectorType.GitHubModels, "--endpoint", false),
         (ConnectorType.GitHubModels, "--token", false),
-        (ConnectorType.GitHubModels, "--model", false)
+        (ConnectorType.GitHubModels, "--model", false),
         // Google Vertex AI
         // Docker Model Runner
         // Foundry Local
         // Hugging Face
+        (ConnectorType.HuggingFace, "----base-url", false),
+        (ConnectorType.HuggingFace, "--model", false)
         // Ollama
         // Anthropic
         // LG
@@ -139,6 +141,12 @@ public abstract class ArgumentOptions
                 settings.GitHubModels.Endpoint = github.Endpoint ?? settings.GitHubModels.Endpoint;
                 settings.GitHubModels.Token = github.Token ?? settings.GitHubModels.Token;
                 settings.GitHubModels.Model = github.Model ?? settings.GitHubModels.Model;
+                break;
+
+            case HuggingFaceArgumentOptions huggingFace:
+                settings.HuggingFace ??= new HuggingFaceSettings();
+                settings.HuggingFace.BaseUrl = huggingFace.BaseUrl ?? settings.HuggingFace.BaseUrl;
+                settings.HuggingFace.Model = huggingFace.Model ?? settings.HuggingFace.Model;
                 break;
 
             default:
@@ -281,7 +289,8 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** Hugging Face: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  TBD");
+        Console.WriteLine("  --base-url           The endpoint URL. Default to 'http://localhost:11434'");
+        Console.WriteLine("  --model              The model name. Default to 'hf.co/microsoft/Phi-3-mini-4k-instruct-gguf'");
         Console.WriteLine();
     }
 
