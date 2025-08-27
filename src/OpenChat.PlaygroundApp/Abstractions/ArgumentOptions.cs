@@ -21,7 +21,7 @@ public abstract class ArgumentOptions
         // Docker Model Runner
         // Foundry Local
         // Hugging Face
-        (ConnectorType.HuggingFace, "--baseurl", false),
+        (ConnectorType.HuggingFace, "--base-url", false),
         (ConnectorType.HuggingFace, "--model", false)
         // Ollama
         // Anthropic
@@ -289,7 +289,7 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** Hugging Face: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  --baseurl            The endpoint URL. Default to 'http://localhost:11434'");
+        Console.WriteLine("  --base-url           The endpoint URL. Default to 'http://localhost:11434'");
         Console.WriteLine("  --model              The model name. Default to 'hf.co/microsoft/Phi-3-mini-4k-instruct-gguf'");
         Console.WriteLine();
     }
