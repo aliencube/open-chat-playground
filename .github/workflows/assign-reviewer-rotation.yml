@@ -15,7 +15,7 @@ jobs:
       - name: Request reviewer based on PR number
         uses: actions/github-script@v6
         env:
-          REVIEWERS: ${{ secrets.REVIEWERS }}
+            REVIEWERS: ${{ vars.ASSIGNEES }}
         with:
           script: |
             const reviewersEnv = process.env.REVIEWERS || '';
@@ -31,7 +31,7 @@ jobs:
 
             const reviewers = reviewersEnv.split(',').map(s => s.trim()).filter(Boolean);
             if (reviewers.length === 0) {
-              core.setFailed('No reviewers configured. Set the repository secret REVIEWERS to a comma-separated list of GitHub usernames.');
+              core.setFailed('No reviewers configured. Set the repository variable ASSIGNEES to a comma-separated list of GitHub usernames.');
               return;
             }
 
