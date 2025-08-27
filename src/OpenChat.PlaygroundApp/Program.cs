@@ -16,7 +16,7 @@ if (settings.Help == true)
 builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
-var chatClient = LanguageModelConnector.CreateChatClient(settings);
+var chatClient = await LanguageModelConnector.CreateChatClientAsync(settings);
 
 builder.Services.AddChatClient(chatClient)
                 .UseFunctionInvocation()
@@ -40,4 +40,4 @@ app.UseStaticFiles();
 app.MapRazorComponents<App>()
    .AddInteractiveServerRenderMode();
 
-app.Run();
+await app.RunAsync();

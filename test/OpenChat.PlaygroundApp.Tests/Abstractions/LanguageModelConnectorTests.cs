@@ -26,10 +26,10 @@ public class LanguageModelConnectorTests
 
 	[Trait("Category", "UnitTest")]
 	[Fact]
-	public void Given_GitHubModels_Settings_When_CreateChatClient_Invoked_Then_It_Should_Return_ChatClient()
+	public async Task Given_GitHubModels_Settings_When_CreateChatClient_Invoked_Then_It_Should_Return_ChatClient()
 	{
 		var settings = BuildAppSettings();
-		var client = LanguageModelConnector.CreateChatClient(settings);
+		var client = await LanguageModelConnector.CreateChatClientAsync(settings);
 
 		client.ShouldNotBeNull();
 	}
@@ -40,11 +40,11 @@ public class LanguageModelConnectorTests
 	[InlineData(ConnectorType.AmazonBedrock)]
 	[InlineData(ConnectorType.AzureAIFoundry)]
 	[InlineData(ConnectorType.Unknown)]
-	public void Given_Unsupported_ConnectorType_When_CreateChatClient_Invoked_Then_It_Should_Throw(ConnectorType connectorType)
+	public async Task Given_Unsupported_ConnectorType_When_CreateChatClient_Invoked_Then_It_Should_Throw(ConnectorType connectorType)
 	{
 		var settings = BuildAppSettings(connectorType: connectorType);
 
-		var ex = Assert.Throws<NotSupportedException>(() => LanguageModelConnector.CreateChatClient(settings));
+		var ex = await Assert.ThrowsAsync<NotSupportedException>(() => LanguageModelConnector.CreateChatClientAsync(settings));
 
 		ex.Message.ShouldContain($"Connector type '{connectorType}'");
 	}

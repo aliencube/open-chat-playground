@@ -9,14 +9,14 @@ namespace OpenChat.PlaygroundApp.Abstractions;
 /// </summary>
 public abstract class ArgumentOptions
 {
-    private static readonly (string Argument, bool IsSwitch)[] arguments =
+    private static readonly (ConnectorType ConnectorType,string Argument, bool IsSwitch)[] arguments =
     [
         // Amazon Bedrock
         // Azure AI Foundry
         // GitHub Models
-        ("--endpoint", false),
-        ("--token", false),
-        ("--model", false)
+        (ConnectorType.GitHubModels, "--endpoint", false),
+        (ConnectorType.GitHubModels, "--token", false),
+        (ConnectorType.GitHubModels, "--model", false)
         // Google Vertex AI
         // Docker Model Runner
         // Foundry Local
@@ -118,7 +118,8 @@ public abstract class ArgumentOptions
                     break;
 
                 default:
-                    var argument = arguments.SingleOrDefault(p => p.Argument.Equals(args[i], StringComparison.InvariantCultureIgnoreCase));
+                    var argument = arguments.SingleOrDefault(p => p.ConnectorType == connectorType &&
+                                                                  p.Argument.Equals(args[i], StringComparison.InvariantCultureIgnoreCase));
                     if (argument == default)
                     {
                         options.Help = true;
@@ -138,6 +139,9 @@ public abstract class ArgumentOptions
                 settings.GitHubModels.Endpoint = github.Endpoint ?? settings.GitHubModels.Endpoint;
                 settings.GitHubModels.Token = github.Token ?? settings.GitHubModels.Token;
                 settings.GitHubModels.Model = github.Model ?? settings.GitHubModels.Model;
+                break;
+
+            default:
                 break;
         }
 
