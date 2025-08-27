@@ -290,7 +290,7 @@ public abstract class ArgumentOptions
         Console.ForegroundColor = foregroundColor;
 
         Console.WriteLine("  --base-url           The endpoint URL. Default to 'http://localhost:11434'");
-        Console.WriteLine("  --model              The model name. Default to 'hf.co/microsoft/Phi-3-mini-4k-instruct-gguf'");
+        Console.WriteLine("  --model              The model name. Default to 'hf.co/google/gemma-3-1b-pt-qat-q4_0-gguf'");
         Console.WriteLine();
     }
 
