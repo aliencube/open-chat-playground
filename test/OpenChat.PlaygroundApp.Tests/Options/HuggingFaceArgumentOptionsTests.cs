@@ -7,27 +7,18 @@ namespace OpenChat.PlaygroundApp.Tests.Options;
 
 public class HuggingFaceArgumentOptionsTests
 {
-    private const string BaseUrl = "https://huggingface.co/api";
+    private const string BaseUrl = "https://test.huggingface.co/api";
     private const string Model = "hf-model-name";
 
-    private static IConfiguration BuildConfigWithHuggingFace(
-        string? configBaseUrl = BaseUrl,
-        string? configModel = Model)
+    private static IConfiguration BuildConfigWithHuggingFace()
     {
         // Base configuration values (lowest priority)
         var configDict = new Dictionary<string, string?>
         {
-            ["ConnectorType"] = ConnectorType.HuggingFace.ToString()
+            ["ConnectorType"] = ConnectorType.HuggingFace.ToString(),
+            ["HuggingFace:BaseUrl"] = BaseUrl,
+            ["HuggingFace:Model"] = Model
         };
-
-        if (string.IsNullOrWhiteSpace(configBaseUrl) == false)
-        {
-            configDict["HuggingFace:BaseUrl"] = configBaseUrl;
-        }
-        if (string.IsNullOrWhiteSpace(configModel) == false)
-        {
-            configDict["HuggingFace:Model"] = configModel;
-        }
 
         return new ConfigurationBuilder()
                                .AddInMemoryCollection(configDict!)
@@ -53,7 +44,7 @@ public class HuggingFaceArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("https://example.test/api")]
+    [InlineData("https://cli.huggingface.co/api")]
     public void Given_CLI_BaseUrl_When_Parse_Invoked_Then_It_Should_Use_CLI_BaseUrl(string cliBaseUrl)
     {
         // Arrange
@@ -71,7 +62,7 @@ public class HuggingFaceArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("test-model")]
+    [InlineData("cli-model")]
     public void Given_CLI_Model_When_Parse_Invoked_Then_It_Should_Use_CLI_Model(string cliModel)
     {
         // Arrange
@@ -89,7 +80,7 @@ public class HuggingFaceArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("https://cli.example/api", "cli-model")]
+    [InlineData("https://cli.huggingface.co/api", "cli-model")]
     public void Given_All_CLI_Arguments_When_Parse_Invoked_Then_It_Should_Use_CLI(string cliBaseUrl, string cliModel)
     {
         // Arrange
@@ -162,11 +153,11 @@ public class HuggingFaceArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("https://models.hf.ai/api", "hf-model")]
+    [InlineData("https://cli.huggingface.co/api", "cli-model")]
     public void Given_HuggingFace_With_KnownArguments_When_Parse_Invoked_Then_Help_ShouldBe_False(string cliBaseUrl, string cliModel)
     {
         // Arrange
-        var config = BuildConfigWithHuggingFace(BaseUrl, Model);
+        var config = BuildConfigWithHuggingFace();
         var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
 
         // Act
@@ -195,7 +186,7 @@ public class HuggingFaceArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("https://models.hf.ai/api", "--unknown-flag")]
+    [InlineData("https://cli.huggingface.co/api", "--unknown-flag")]
     public void Given_HuggingFace_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_ShouldBe_True(string cliBaseUrl, string argument)
     {
         // Arrange
@@ -212,7 +203,7 @@ public class HuggingFaceArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("https://cli.example/api", "cli-model")]
+    [InlineData("https://cli.huggingface.co/api", "cli-model")]
     public void Given_CLI_Only_When_Parse_Invoked_Then_Help_Should_Be_False(string cliBaseUrl, string cliModel)
     {
         // Arrange
