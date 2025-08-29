@@ -6,18 +6,18 @@ namespace OpenChat.PlaygroundApp.Configurations;
 public partial class AppSettings
 {
     /// <summary>
-    /// Gets or sets the <see cref="UpstageSolarSettings"/> instance.
+    /// Gets or sets the <see cref="UpstageSettings"/> instance.
     /// </summary>
-    public UpstageSolarSettings? Upstage { get; set; }
+    public UpstageSettings? Upstage { get; set; }
 }
 
 /// <summary>
-/// This represents the app settings entity for Upstage Solar.
+/// This represents the app settings entity for Upstage.
 /// </summary>
-public class UpstageSolarSettings : LanguageModelSettings
+public class UpstageSettings : LanguageModelSettings
 {
     /// <summary>
-    /// Gets or sets the base URL of Upstage Solar API.
+    /// Gets or sets the base URL of Upstage API.
     /// </summary>
     public string? BaseUrl { get; set; }
 
@@ -27,7 +27,7 @@ public class UpstageSolarSettings : LanguageModelSettings
     public string? ApiKey { get; set; }
 
     /// <summary>
-    /// Gets or sets the model name of Upstage Solar.
+    /// Gets or sets the model name of Upstage.
     /// </summary>
     public string? Model { get; set; }
 }
