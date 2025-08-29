@@ -17,14 +17,9 @@ public partial class AppSettings
 public class GoogleVertexAISettings : LanguageModelSettings
 {
     /// <summary>
-    /// Gets or sets the endpoint URL of Google Vertex AI API.
+    /// Gets or sets the Google Vertex AI API Key.
     /// </summary>
-    public string? Endpoint { get; set; }
-
-    /// <summary>
-    /// Gets or sets the Google Cloud API Key.
-    /// </summary>
-    public string? Token { get; set; }
+    public string? ApiKey { get; set; }
 
     /// <summary>
     /// Gets or sets the model name of Google Vertex AI.
