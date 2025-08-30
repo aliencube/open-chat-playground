@@ -100,7 +100,7 @@ public class ArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("ConnectorType", "GoogleVertexAI")]
+    [InlineData("ConnectorType", "Naver")]
     public void Given_Unimplemented_ConnectorType_When_Parse_Invoked_Then_It_Should_Throw(string key, string value)
     {
         var config = BuildConfig((key, value));
