@@ -9,9 +9,9 @@ namespace OpenChat.PlaygroundApp.Options;
 public class UpstageArgumentOptions : ArgumentOptions
 {
     /// <summary>
-    /// Gets or sets the endpoint URL for Upstage API.
+    /// Gets or sets the base URL for Upstage API.
     /// </summary>
-    public string? Endpoint { get; set; }
+    public string? BaseUrl { get; set; }
 
     /// <summary>
     /// Gets or sets the API key for Upstage.
