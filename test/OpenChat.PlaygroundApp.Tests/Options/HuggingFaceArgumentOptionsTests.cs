@@ -160,73 +160,6 @@ public class HuggingFaceArgumentOptionsTests
         settings.HuggingFace.Model.ShouldBe(model);
     }
 
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData("https://cli.huggingface.co/api", "cli-model")]
-    public void Given_HuggingFace_With_KnownArguments_When_Parse_Invoked_Then_Help_ShouldBe_False(string cliBaseUrl, string cliModel)
-    {
-        // Arrange
-        var config = BuildConfigWithHuggingFace();
-        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
-
-        // Act
-        var settings = ArgumentOptions.Parse(config, args);
-
-        // Assert
-        settings.Help.ShouldBeFalse();
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData("--base-url")]
-    [InlineData("--model")]
-    public void Given_HuggingFace_With_KnownArgument_WithoutValue_When_Parse_Invoked_Then_Help_ShouldBe_False(string argument)
-    {
-        // Arrange
-        var config = BuildConfigWithHuggingFace();
-        var args = new[] { argument };
-
-        // Act
-        var settings = ArgumentOptions.Parse(config, args);
-
-        // Assert
-        settings.Help.ShouldBeFalse();
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData("https://cli.huggingface.co/api", "--unknown-flag")]
-    public void Given_HuggingFace_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_ShouldBe_True(string cliBaseUrl, string argument)
-    {
-        // Arrange
-        var config = BuildConfigWithHuggingFace();
-        var args = new[] { "--base-url", cliBaseUrl, argument };
-
-        // Act
-        var settings = ArgumentOptions.Parse(config, args);
-
-        // Assert
-        settings.Help.ShouldBeTrue();
-    }
-
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData("https://cli.huggingface.co/api", "cli-model")]
-    public void Given_CLI_Only_When_Parse_Invoked_Then_Help_Should_Be_False(string cliBaseUrl, string cliModel)
-    {
-        // Arrange
-        var config = BuildConfigWithHuggingFace();
-        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
-
-        // Act
-        var settings = ArgumentOptions.Parse(config, args);
-
-        // Assert
-        settings.Help.ShouldBeFalse();
-    }
-
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("https://config.huggingface.co/api", "config-model")]
@@ -264,6 +197,72 @@ public class HuggingFaceArgumentOptionsTests
         settings.HuggingFace.ShouldNotBeNull();
         settings.HuggingFace.BaseUrl.ShouldBe(cliBaseUrl);
         settings.HuggingFace.Model.ShouldBe(cliModel);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://cli.huggingface.co/api", "cli-model")]
+    public void Given_HuggingFace_With_KnownArguments_When_Parse_Invoked_Then_Help_Should_Be_False(string cliBaseUrl, string cliModel)
+    {
+        // Arrange
+        var config = BuildConfigWithHuggingFace();
+        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.Help.ShouldBeFalse();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("--base-url")]
+    [InlineData("--model")]
+    public void Given_HuggingFace_With_KnownArgument_WithoutValue_When_Parse_Invoked_Then_Help_Should_Be_False(string argument)
+    {
+        // Arrange
+        var config = BuildConfigWithHuggingFace();
+        var args = new[] { argument };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.Help.ShouldBeFalse();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://cli.huggingface.co/api", "--unknown-flag")]
+    public void Given_HuggingFace_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_Should_Be_True(string cliBaseUrl, string argument)
+    {
+        // Arrange
+        var config = BuildConfigWithHuggingFace();
+        var args = new[] { "--base-url", cliBaseUrl, argument };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.Help.ShouldBeTrue();
+    }
+
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://cli.huggingface.co/api", "cli-model")]
+    public void Given_CLI_Only_When_Parse_Invoked_Then_Help_Should_Be_False(string cliBaseUrl, string cliModel)
+    {
+        // Arrange
+        var config = BuildConfigWithHuggingFace();
+        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.Help.ShouldBeFalse();
     }
 }
 
