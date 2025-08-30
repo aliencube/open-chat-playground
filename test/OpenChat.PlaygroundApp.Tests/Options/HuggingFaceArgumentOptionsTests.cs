@@ -10,15 +10,25 @@ public class HuggingFaceArgumentOptionsTests
     private const string BaseUrl = "https://test.huggingface.co/api";
     private const string Model = "hf-model-name";
 
-    private static IConfiguration BuildConfigWithHuggingFace()
+    private static IConfiguration BuildConfigWithHuggingFace(
+        string? baseUrl = BaseUrl,
+        string? model = Model
+    )
     {
         // Base configuration values (lowest priority)
         var configDict = new Dictionary<string, string?>
         {
             ["ConnectorType"] = ConnectorType.HuggingFace.ToString(),
-            ["HuggingFace:BaseUrl"] = BaseUrl,
-            ["HuggingFace:Model"] = Model
         };
+
+        if (string.IsNullOrWhiteSpace(baseUrl) == false)
+        {
+            configDict["HuggingFace:BaseUrl"] = baseUrl;
+        }
+        if (string.IsNullOrWhiteSpace(model) == false)
+        {
+            configDict["HuggingFace:Model"] = model;
+        }
 
         return new ConfigurationBuilder()
                                .AddInMemoryCollection(configDict!)
@@ -215,6 +225,45 @@ public class HuggingFaceArgumentOptionsTests
 
         // Assert
         settings.Help.ShouldBeFalse();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://config.huggingface.co/api", "config-model")]
+    public void Given_ConfigValues_And_No_CLI_When_Parse_Invoked_Then_It_Should_Use_Config(string configBaseUrl, string configModel)
+    {
+        // Arrange
+        var config = BuildConfigWithHuggingFace(configBaseUrl, configModel);
+        var args = Array.Empty<string>();
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.HuggingFace.ShouldNotBeNull();
+        settings.HuggingFace.BaseUrl.ShouldBe(configBaseUrl);
+        settings.HuggingFace.Model.ShouldBe(configModel);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://config.huggingface.co/api", "config-model",
+                "https://cli.huggingface.co/api", "cli-model")]
+    public void Given_ConfigValues_And_CLI_When_Parse_Invoked_Then_It_Should_Use_CLI(
+        string configBaseUrl, string configModel,
+        string cliBaseUrl, string cliModel)
+    {
+        // Arrange
+        var config = BuildConfigWithHuggingFace(configBaseUrl, configModel);
+        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.HuggingFace.ShouldNotBeNull();
+        settings.HuggingFace.BaseUrl.ShouldBe(cliBaseUrl);
+        settings.HuggingFace.Model.ShouldBe(cliModel);
     }
 }
 
