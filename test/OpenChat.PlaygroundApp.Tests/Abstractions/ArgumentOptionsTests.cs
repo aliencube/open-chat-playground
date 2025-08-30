@@ -55,7 +55,6 @@ public class ArgumentOptionsTests
     [InlineData("ConnectorType", "FoundryLocal", "--connector-type", "AzureAIFoundry", ConnectorType.AzureAIFoundry)]
     [InlineData("ConnectorType", "Ollama", "--connector-type", "HuggingFace", ConnectorType.HuggingFace)]
     [InlineData("ConnectorType", "OpenAI", "--connector-type", "FoundryLocal", ConnectorType.FoundryLocal)]
-
     [InlineData("ConnectorType", "AmazonBedrock", "-c", "OpenAI", ConnectorType.OpenAI)]
     [InlineData("ConnectorType", "AzureAIFoundry", "-c", "AmazonBedrock", ConnectorType.AmazonBedrock)]
     [InlineData("ConnectorType", "GitHubModels", "-c", "OpenAI", ConnectorType.OpenAI)]
@@ -77,7 +76,6 @@ public class ArgumentOptionsTests
     [InlineData("ConnectorType", "AmazonBedrock", "--connector-type", "Kimchi", ConnectorType.AmazonBedrock)]
     [InlineData("ConnectorType", "AzureAIFoundry", "--connector-type", "Bulgogi", ConnectorType.AzureAIFoundry)]
     [InlineData("ConnectorType", "HuggingFace", "--connector-type", "Pizza", ConnectorType.HuggingFace)]
-
     [InlineData("ConnectorType", "AmazonBedrock", "-c", "Kimchi", ConnectorType.AmazonBedrock)]
     [InlineData("ConnectorType", "AzureAIFoundry", "-c", "Bulgogi", ConnectorType.AzureAIFoundry)]
     [InlineData("ConnectorType", "HuggingFace", "-c", "Pizza", ConnectorType.HuggingFace)]
