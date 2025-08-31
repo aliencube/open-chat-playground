@@ -321,7 +321,7 @@ public class HuggingFaceArgumentOptionsTests
                 "https://cli.huggingface.co/api", null)]
     public void Given_Mixed_Priority_Sources_When_Parse_Invoked_Then_It_Should_Respect_Priority_Order(
         string configBaseUrl, string configModel,
-        string? envBaseUrl, string? envModel,
+        string? envBaseUrl, string envModel,
         string cliBaseUrl, string? cliModel)
     {
         // Arrange
