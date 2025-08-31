@@ -32,7 +32,7 @@ public class HuggingFaceArgumentOptionsTests
             configDict["HuggingFace:Model"] = configModel;
         }
 
-        if (string.IsNullOrWhiteSpace(envBaseUrl) && string.IsNullOrWhiteSpace(envModel))
+        if (string.IsNullOrWhiteSpace(envBaseUrl) == true && string.IsNullOrWhiteSpace(envModel) == true)
         {
             return new ConfigurationBuilder()
                        .AddInMemoryCollection(configDict!)
@@ -51,9 +51,9 @@ public class HuggingFaceArgumentOptionsTests
         }
 
         return new ConfigurationBuilder()
-           .AddInMemoryCollection(configDict!)  // Base configuration (lowest priority)
-           .AddInMemoryCollection(envDict!)     // Environment variables (medium priority)
-           .Build();
+                   .AddInMemoryCollection(configDict!)  // Base configuration (lowest priority)
+                   .AddInMemoryCollection(envDict!)     // Environment variables (medium priority)
+                   .Build();
     }
 
     [Trait("Category", "UnitTest")]
