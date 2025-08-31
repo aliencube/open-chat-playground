@@ -2,7 +2,7 @@
 
 <EditForm Model="@this" OnValidSubmit="@SendMessageAsync">
     <label class="input-box page-width">
-        <textarea aria-label="User Message Textarea" @ref="@textArea" @bind="@messageText" placeholder="Type your message..." rows="1"></textarea>
+        <textarea aria-label="User Message Textarea" @ref="@textArea" @bind="@messageText" @bind:event="oninput" @onkeydown="HandleKeyDown" placeholder="Type your message..." rows="1"></textarea>
 
         <div class="tools">
             <button type="submit" title="Send" class="send-button" aria-label="User Message Send Button">
@@ -31,6 +31,30 @@
             messageText = null;
             await OnSend.InvokeAsync(new ChatMessage(ChatRole.User, text));
         }
+    }
+
+    private Task HandleKeyDown(Microsoft.AspNetCore.Components.Web.KeyboardEventArgs e)
+    {
+        // Ignore while composing (IME) to avoid duplicate Enter keydown on macOS
+        if (e.IsComposing)
+        {
+            return Task.CompletedTask;
+        }
+
+        var isEnter = e.Key == "Enter" && !e.ShiftKey;
+        if (!isEnter)
+        {
+            return Task.CompletedTask;
+        }
+
+        // Don't submit on empty Enter
+        var isEmpty = string.IsNullOrWhiteSpace(messageText);
+        if (isEmpty)
+        {
+            return Task.CompletedTask;
+        }
+
+        return SendMessageAsync();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
