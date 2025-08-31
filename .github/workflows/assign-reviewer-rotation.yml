@@ -22,6 +22,8 @@ jobs:
 
       - name: Request reviewer based on PR number
         shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT_TOKEN }}
         run: |
           $event = Get-Content $env:GITHUB_EVENT_PATH | ConvertFrom-Json
           $pr = $event.pull_request
@@ -30,7 +32,7 @@ jobs:
             exit 0
           }
 
-          $reviewers = ${{ vars.ASSIGNEES }}
+          $reviewers = "${{ vars.ASSIGNEES }}"
           if (-not $reviewers) {
             Write-Error "No reviewers configured. Set the repository variable ASSIGNEES to a comma-separated list of GitHub usernames."
             exit 1
