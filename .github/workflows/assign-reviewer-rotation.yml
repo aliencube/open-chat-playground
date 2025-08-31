@@ -19,7 +19,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          $reviewers = "justinyoo,sikuisa,tae0y"
+          $reviewers = $(gh api repos/${{ github.repository }}/actions/variables --jq '.variables[] | select(.name == "ASSIGNEES")' | ConvertFrom-Json).value
           if (-not $reviewers) {
             Write-Error "No reviewers configured. Set the repository variable ASSIGNEES to a comma-separated list of GitHub usernames."
             exit 1
@@ -31,7 +31,7 @@ jobs:
             exit 1
           }
 
-          $pr = $env:GITHUB_EVENT_PATH | Get-Content | ConvertFrom-Json | Select-Object -ExpandProperty pull_request
+          $pr = Get-Content $env:GITHUB_EVENT_PATH | ConvertFrom-Json | Select-Object -ExpandProperty pull_request
           if (-not $pr) {
             Write-Host "This workflow must be triggered by a pull_request event."
             exit 0
