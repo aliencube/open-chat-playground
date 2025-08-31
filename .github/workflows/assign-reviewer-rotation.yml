@@ -2,7 +2,7 @@ name: Assign PR reviewer by rotation
 
 on:
   pull_request:
-    types: [opened, reopened, synchronize]
+    types: [opened, reopened]
 
 permissions:
   contents: read
