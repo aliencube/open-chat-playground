@@ -22,7 +22,7 @@ public abstract class ArgumentOptions
         // Foundry Local
         // Hugging Face
         (ConnectorType.HuggingFace, "--base-url", false),
-        (ConnectorType.HuggingFace, "--model", false)
+        (ConnectorType.HuggingFace, "--model", false),
         // Ollama
         // Anthropic
         // LG
