@@ -21,6 +21,8 @@ public abstract class ArgumentOptions
         // Docker Model Runner
         // Foundry Local
         // Hugging Face
+        (ConnectorType.HuggingFace, "--base-url", false),
+        (ConnectorType.HuggingFace, "--model", false)
         // Ollama
         // Anthropic
         // LG
@@ -141,6 +143,12 @@ public abstract class ArgumentOptions
                 settings.GitHubModels.Endpoint = github.Endpoint ?? settings.GitHubModels.Endpoint;
                 settings.GitHubModels.Token = github.Token ?? settings.GitHubModels.Token;
                 settings.GitHubModels.Model = github.Model ?? settings.GitHubModels.Model;
+                break;
+
+            case HuggingFaceArgumentOptions huggingFace:
+                settings.HuggingFace ??= new HuggingFaceSettings();
+                settings.HuggingFace.BaseUrl = huggingFace.BaseUrl ?? settings.HuggingFace.BaseUrl;
+                settings.HuggingFace.Model = huggingFace.Model ?? settings.HuggingFace.Model;
                 break;
 
             case OpenAIArgumentOptions openai:
@@ -289,7 +297,8 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** Hugging Face: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  TBD");
+        Console.WriteLine("  --base-url           The endpoint URL. Default to 'http://localhost:11434'");
+        Console.WriteLine("  --model              The model name. Default to 'hf.co/google/gemma-3-1b-pt-qat-q4_0-gguf'");
         Console.WriteLine();
     }
 
