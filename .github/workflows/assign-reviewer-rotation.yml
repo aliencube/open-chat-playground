@@ -1,7 +1,8 @@
 name: Assign PR reviewer by rotation
 
 on:
-  pull_request:
+  # Triggered on these events, but use origin/main source code 
+  pull_request_target:
     types: [opened, reopened, synchronize]
 
 permissions:
@@ -13,17 +14,23 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    env:
-      GH_TOKEN: ${{ github.token }}
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Request reviewer based on PR number
         shell: pwsh
         run: |
-          $reviewers = "justinyoo,sikuisa,tae0y"
+          $event = Get-Content $env:GITHUB_EVENT_PATH | ConvertFrom-Json
+          $pr = $event.pull_request
+          if (-not $pr) {
+            Write-Host "This workflow must be triggered by a pull_request event."
+            exit 0
+          }
+
+          $reviewers = ${{ vars.ASSIGNEES }}
           if (-not $reviewers) {
             Write-Error "No reviewers configured. Set the repository variable ASSIGNEES to a comma-separated list of GitHub usernames."
             exit 1
@@ -33,12 +40,6 @@ jobs:
           if ($reviewers.Count -eq 0) {
             Write-Error "No reviewers configured. Set the repository variable ASSIGNEES to a comma-separated list of GitHub usernames."
             exit 1
-          }
-
-          $pr = Get-Content $env:GITHUB_EVENT_PATH | ConvertFrom-Json | Select-Object -ExpandProperty pull_request
-          if (-not $pr) {
-            Write-Host "This workflow must be triggered by a pull_request event."
-            exit 0
           }
 
           $prNumber = $pr.number
