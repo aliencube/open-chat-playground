@@ -1,0 +1,60 @@
+name: Clear Resource Group
+
+on:
+  workflow_dispatch:
+  # schedule:
+  #   # Run every day at 4:30 AM (KST)
+  #   - cron: "30 19 * * *"
+
+permissions:
+  contents: read
+  id-token: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  clear-resource-group:
+    name: "Clearing Resource Groups"
+
+    if: github.repository_owner == 'aliencube'
+
+    runs-on: ubuntu-latest
+
+    env:
+      AZURE_CLIENT_ID: ${{ vars.AZM_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ vars.AZM_TENANT_ID }}
+      AZURE_SUBSCRIPTION_ID: ${{ vars.AZM_SUBSCRIPTION_ID }}
+      AZURE_APP_NAMES: ${{ vars.AZM_APP_NAMES }}
+
+    steps:
+      - name: Azure login (Federated Credentials)
+        if: env.AZURE_CLIENT_ID != ''
+        uses: azure/login@v2
+        with:
+          client-id: ${{ env.AZURE_CLIENT_ID }}
+          tenant-id: ${{ env.AZURE_TENANT_ID }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Delete all resource groups
+        shell: pwsh
+        run: |
+          $groups = az group list --query "[].name" | ConvertFrom-Json
+          $groups | ForEach-Object {
+            $name = $_
+            az group delete -g $name -y --no-wait
+          }
+
+      - name: Delete all apps
+        shell: pwsh
+        run: |
+          $excludes = "${{ env.AZURE_APP_NAMES }}" -split ','
+
+          $apps = az ad app list --query "[].{id: id, displayName:displayName, appId: appId}" | ConvertFrom-Json
+          $apps | ForEach-Object {
+            $id = $_.id
+            $name = $_.displayName
+
+            if ($excludes -notcontains $name) {
+              az ad app delete --id $id
+            }
+          }

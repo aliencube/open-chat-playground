@@ -1,0 +1,53 @@
+name: Assign PR reviewer by rotation
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  assign-reviewer:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Request reviewer based on PR number
+        shell: pwsh
+        run: |
+          $reviewers = ${{ vars.ASSIGNEES }}
+          if (-not $reviewers) {
+            Write-Error "No reviewers configured. Set the repository variable ASSIGNEES to a comma-separated list of GitHub usernames."
+            exit 1
+          }
+
+          $reviewers = $reviewers.Split(',') | ForEach-Object { $_.Trim() } | Where-Object { $_ }
+          if ($reviewers.Count -eq 0) {
+            Write-Error "No reviewers configured. Set the repository variable ASSIGNEES to a comma-separated list of GitHub usernames."
+            exit 1
+          }
+
+          $pr = $env:GITHUB_EVENT_PATH | Get-Content | ConvertFrom-Json | Select-Object -ExpandProperty pull_request
+          if (-not $pr) {
+            Write-Host "This workflow must be triggered by a pull_request event."
+            exit 0
+          }
+
+          $prNumber = $pr.number
+          $author = $pr.user.login
+          $index = $prNumber % $reviewers.Count
+          $chosen = $reviewers[$index]
+          if ($author -and $chosen -eq $author) {
+            Write-Host "Chosen reviewer ($chosen) is the PR author; choosing next reviewer to avoid self-request."
+            $rand = Get-Random -Minimum 1 -Maximum $reviewers.Count
+            $chosen = $reviewers[($index + $rand) % $reviewers.Count]
+            if ($chosen -eq $author) {
+              # If still the author, pick the next one in rotation
+              $chosen = $reviewers[($index + 1) % $reviewers.Count]
+            }
+          }
+
+          Write-Host "Requesting review from: $chosen (PR #$prNumber)"
+          gh pr review $prNumber --request --reviewer $chosen

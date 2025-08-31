@@ -46,6 +46,18 @@ jobs:
         run: |
           $payload = Get-Content "${{ github.workspace }}/payload.json"
           $payload
+      
+      - name: Get mentees
+        shell: pwsh
+        run: |
+          $menteesPayload = '${{ secrets.MENTEES }}'
+          $menteesPayload | Out-File -FilePath ${{github.workspace}}/mentees.json -Force
+      
+      - name: Verify mentees payload
+        shell: pwsh
+        run: |
+          $payload = Get-Content "${{ github.workspace }}/mentees.json"
+          $payload
 
       - name: Install .NET SDK
         uses: actions/setup-dotnet@v4
@@ -69,6 +81,7 @@ jobs:
           dotnet run --project ./src/OssCaQuestChecker.IssueVerification.ConsoleApp -- \
             --input "${{ github.workspace }}/payload.json" \
             --output "${{ github.workspace }}/issue.json" \
+            --mentees "${{ github.workspace }}/mentees.json" \
             --due-date "${{ vars.DUE_DATE }}"
           
           popd
@@ -83,6 +96,7 @@ jobs:
           dotnet run --project ./src/OssCaQuestChecker.IssueVerification.ConsoleApp -- \
             --input "${{ github.workspace }}/payload.json" \
             --output "${{ github.workspace }}/issue.json" \
+            --mentees "${{ github.workspace }}/mentees.json" \
             --due-date "${{ vars.DUE_DATE }}" \
             --workflow-dispatch
 
@@ -104,6 +118,7 @@ jobs:
 
           # Common
           echo "issueNumber=$($result.number)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+          echo "title=$($result.body.title)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
           echo "questType=$($result.body.questType)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
           echo "githubId=$($result.createdBy)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
           echo "submittedAt=$([TimeZoneInfo]::ConvertTime($result.createdAt, $tzi).ToString("yyyy-MM-dd HH:mm:ss.fff") + " +09:00")" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
@@ -117,8 +132,11 @@ jobs:
           echo "englishName=$($result.body.englishName)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
           echo "certId=$($result.body.certificationId)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
 
-          # Quest 2 & 3
+          # Quest 2
           echo "githubRepository=$($result.body.gitHubRepository)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+
+          # Quest 3
+          echo "mslearnId=$($result.body.learnId)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
 
           # Quest 4
           echo "youtubeLink=$($result.body.youTubeLink)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
@@ -188,6 +206,7 @@ jobs:
             -c "제출한 앱이 유효하지 않습니다. 이슈를 닫습니다." \
             -R ${{ github.event.repository.full_name }}
 
+      # C# Certification Quest
       - name: Verify quest - C# Certification
         if: |
           steps.issue.outputs.isValid == 'true' &&
@@ -375,11 +394,29 @@ jobs:
           gh issue close ${{ steps.issue.outputs.issueNumber }} \
             -c "과제를 완료했습니다. 이슈를 닫습니다." \
             -R ${{ github.event.repository.full_name }}
-
-      - name: Checkout quest repository - Quest 2 & 3
+      
+      - name: Post to Discord - COMPLETED - C# Certification
         if: |
           steps.issue.outputs.isValid == 'true' &&
-          (steps.issue.outputs.questType == 'connect-four' || steps.issue.outputs.questType == 'unit-test')
+          steps.issue.outputs.questType == 'csharp-certification' &&
+          steps.check-quest-csharp-certification.outputs.questStatus == 'completed'
+        shell: pwsh
+        run: |
+          $mentees = Get-Content "${{ github.workspace }}/mentees.json" | ConvertFrom-Json
+          $mentee = $mentees | Where-Object { $_.github_username -eq "${{ steps.issue.outputs.githubId }}" }
+          $webhookUrl = "${{ secrets.DISCORD_WEBHOOK_URL }}"
+          $body = @{
+            content = "👋🏼 <@$($mentee.discord_userid)> 님, ${{ steps.issue.outputs.title }} 과제를 성공적으로 제출하셨습니다! 🎉"
+          } | ConvertTo-Json
+          
+          Invoke-RestMethod -Uri $webhookUrl -Method Post -Body $body -ContentType "application/json"
+      # C# Certification Quest
+
+      # Connect Four Quest
+      - name: Checkout quest repository - Connect Four
+        if: |
+          steps.issue.outputs.isValid == 'true' &&
+          steps.issue.outputs.questType == 'connect-four'
         uses: actions/checkout@v4
         with:
           repository: ${{ steps.issue.outputs.githubRepository }}
@@ -402,6 +439,9 @@ jobs:
             "none"
           }
 
+          $isValidTargetFramework = ./quest-checker/gha-scripts/Check-TargetFramework.ps1 -CsprojPath $project.FullName -ExpectedTargetFramework "net9.0"
+
+          echo "isValidTargetFramework=$($isValidTargetFramework)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
           echo "projectCount=$($projects.Count)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
           echo "project=$project" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
           echo "appUrl=$appUrl" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
@@ -448,6 +488,52 @@ jobs:
 
           popd
 
+      - name: Add label - INVALID - Connect Four
+        if: |
+          steps.issue.outputs.isValid == 'true' &&
+          steps.issue.outputs.questType == 'connect-four' &&
+          steps.connect-four.outputs.projectCount == '1' &&
+          (steps.check-quest-connect-four.outputs.questStatus == 'invalid' || steps.connect-four.outputs.isValidTargetFramework == 'false')
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue edit ${{ steps.issue.outputs.issueNumber }} \
+          --add-label "invalid" \
+          -R ${{ github.event.repository.full_name }}
+
+      - name: Comment to issue - INVALID - Connect Four
+        if: |
+          steps.issue.outputs.isValid == 'true' &&
+          steps.issue.outputs.questType == 'connect-four' &&
+          steps.connect-four.outputs.projectCount == '1' &&
+          (steps.check-quest-connect-four.outputs.questStatus == 'invalid' || steps.connect-four.outputs.isValidTargetFramework == 'false')
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: "create-comment"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ steps.issue.outputs.issueNumber }}
+          body: |
+            👋🏼 @${{ steps.issue.outputs.githubId }} 님!
+
+            입력하신 값이 올바르지 않습니다. 😭
+
+            다시 한 번 확인해 주세요❗
+
+      - name: Close issue - INVALID - Connect Four
+        if: |
+          steps.issue.outputs.isValid == 'true' &&
+          steps.issue.outputs.questType == 'connect-four' &&
+          steps.connect-four.outputs.projectCount == '1' &&
+          (steps.check-quest-connect-four.outputs.questStatus == 'invalid' || steps.connect-four.outputs.isValidTargetFramework == 'false')
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue close ${{ steps.issue.outputs.issueNumber }} \
+            -c "입력 값이 올바르지 않습니다. 이슈를 닫습니다." \
+            -R ${{ github.event.repository.full_name }}
+
       - name: Add label - FAILED - Connect Four
         if: |
           steps.issue.outputs.isValid == 'true' &&
@@ -479,52 +565,6 @@ jobs:
             과제를 확인하는 중에 문제가 발생했습니다❗
 
             최대한 빨리 확인한 후 다시 알려드리겠습니다.
-
-      - name: Add label - INVALID - Connect Four
-        if: |
-          steps.issue.outputs.isValid == 'true' &&
-          steps.issue.outputs.questType == 'connect-four' &&
-          steps.connect-four.outputs.projectCount == '1' &&
-          steps.check-quest-connect-four.outputs.questStatus == 'invalid'
-        shell: bash
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh issue edit ${{ steps.issue.outputs.issueNumber }} \
-          --add-label "invalid" \
-          -R ${{ github.event.repository.full_name }}
-
-      - name: Comment to issue - INVALID - Connect Four
-        if: |
-          steps.issue.outputs.isValid == 'true' &&
-          steps.issue.outputs.questType == 'connect-four' &&
-          steps.connect-four.outputs.projectCount == '1' &&
-          steps.check-quest-connect-four.outputs.questStatus == 'invalid'
-        uses: actions-cool/issues-helper@v3
-        with:
-          actions: "create-comment"
-          token: ${{ secrets.GITHUB_TOKEN }}
-          issue-number: ${{ steps.issue.outputs.issueNumber }}
-          body: |
-            👋🏼 @${{ steps.issue.outputs.githubId }} 님!
-
-            입력하신 값이 올바르지 않습니다. 😭
-
-            다시 한 번 확인해 주세요❗
-
-      - name: Close issue - INVALID - Connect Four
-        if: |
-          steps.issue.outputs.isValid == 'true' &&
-          steps.issue.outputs.questType == 'connect-four' &&
-          steps.connect-four.outputs.projectCount == '1' &&
-          steps.check-quest-connect-four.outputs.questStatus == 'invalid'
-        shell: bash
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh issue close ${{ steps.issue.outputs.issueNumber }} \
-            -c "입력 값이 올바르지 않습니다. 이슈를 닫습니다." \
-            -R ${{ github.event.repository.full_name }}
 
       - name: Add label - NOT_COMPLETED - Connect Four
         if: |
@@ -618,51 +658,57 @@ jobs:
           gh issue close ${{ steps.issue.outputs.issueNumber }} \
             -c "과제를 완료했습니다. 이슈를 닫습니다." \
             -R ${{ github.event.repository.full_name }}
-
-      - name: Run project - Unit Test
+      
+      - name: Post to Discord - COMPLETED - Connect Four
         if: |
           steps.issue.outputs.isValid == 'true' &&
-          steps.issue.outputs.issueType == 'unit-test'
-        shell: bash
+          steps.issue.outputs.questType == 'connect-four' &&
+          steps.connect-four.outputs.projectCount == '1' &&
+          steps.check-quest-connect-four.outputs.questStatus == 'completed'
+        shell: pwsh
         run: |
-          pushd ./quest
+          $mentees = Get-Content "${{ github.workspace }}/mentees.json" | ConvertFrom-Json
+          $mentee = $mentees | Where-Object { $_.github_username -eq "${{ steps.issue.outputs.githubId }}" }
+          $webhookUrl = "${{ secrets.DISCORD_WEBHOOK_URL }}"
+          $body = @{
+            content = "👋🏼 <@$($mentee.discord_userid)> 님, ${{ steps.issue.outputs.title }} 과제를 성공적으로 제출하셨습니다! 🎉"
+          } | ConvertTo-Json
+          
+          Invoke-RestMethod -Uri $webhookUrl -Method Post -Body $body -ContentType "application/json"
+      # Connect Four Quest
 
-          dotnet restore
-          dotnet build /p:LangVersion=latest
-          dotnet test /p:LangVersion=latest --logger "trx;LogFileName=test-results.trx"
-
-          popd
-
+      # Unit Test Quest
       - name: Verify quest - Unit Test
         if: |
           steps.issue.outputs.isValid == 'true' &&
-          steps.issue.outputs.issueType == 'unit-test'
+          steps.issue.outputs.questType == 'unit-test'
         id: check-quest-unit-test
         shell: pwsh
         run: |
-          pushd ./quest
-
-          $files = Get-ChildItem *.trx -Recurse | Select-Object -Property FullName
-
-          popd
-
           pushd ./quest-checker
 
-          $result = ./gha-scripts/Check-UnitTestResults.ps1 -FilePaths $files.FullName
-          $questType = "${{ steps.issue.outputs.questType }}"
-          $questStatus = if ($result -eq $true) { "completed" } else { "not-completed" }
-          $message = if ($result -eq $true) { "Test passed" } else { "Test NOT passed" }
+          dotnet restore && dotnet build
 
-          echo "questType=$questType" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
-          echo "questStatus=$questStatus" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
-          echo "questMessage=$message" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+          $playwright = Get-ChildItem -File Microsoft.Playwright.dll -Path . -Recurse
+          $installer = "$($playwright[0].Directory.FullName)/playwright.ps1"
+          & "$installer" install
+
+          $result = dotnet run `
+            --project ./src/OssCaQuestChecker.MsLearn.ConsoleApp `
+            -- `
+            -t "${{ steps.issue.outputs.questType }}" `
+            -l "${{ steps.issue.outputs.mslearnId }}" | ConvertFrom-Json
+
+          echo "questType=$($result.questType)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+          echo "questStatus=$($result.questStatus)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
+          echo "questMessage=$($result.message)" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf-8 -Append
 
           popd
 
       - name: Add label - NOT_COMPLETED - Unit Test
         if: |
           steps.issue.outputs.isValid == 'true' &&
-          steps.issue.outputs.issueType == 'unit-test' &&
+          steps.issue.outputs.questType == 'unit-test' &&
           steps.check-quest-unit-test.outputs.questStatus == 'not-completed'
         shell: bash
         env:
@@ -675,7 +721,7 @@ jobs:
       - name: Comment to issue - NOT_COMPLETED - Unit Test
         if: |
           steps.issue.outputs.isValid == 'true' &&
-          steps.issue.outputs.issueType == 'unit-test' &&
+          steps.issue.outputs.questType == 'unit-test' &&
           steps.check-quest-unit-test.outputs.questStatus == 'not-completed'
         uses: actions-cool/issues-helper@v3
         with:
@@ -692,7 +738,7 @@ jobs:
       - name: Close issue - NOT_COMPLETED - Unit Test
         if: |
           steps.issue.outputs.isValid == 'true' &&
-          steps.issue.outputs.issueType == 'unit-test' &&
+          steps.issue.outputs.questType == 'unit-test' &&
           steps.check-quest-unit-test.outputs.questStatus == 'not-completed'
         shell: bash
         env:
@@ -705,7 +751,7 @@ jobs:
       - name: Add label - COMPLETED - Unit Test
         if: |
           steps.issue.outputs.isValid == 'true' &&
-          steps.issue.outputs.issueType == 'unit-test' &&
+          steps.issue.outputs.questType == 'unit-test' &&
           steps.check-quest-unit-test.outputs.questStatus == 'completed'
         shell: bash
         env:
@@ -718,7 +764,7 @@ jobs:
       - name: Comment to issue - COMPLETED - Unit Test
         if: |
           steps.issue.outputs.isValid == 'true' &&
-          steps.issue.outputs.issueType == 'unit-test' &&
+          steps.issue.outputs.questType == 'unit-test' &&
           steps.check-quest-unit-test.outputs.questStatus == 'completed'
         uses: actions-cool/issues-helper@v3
         with:
@@ -736,7 +782,7 @@ jobs:
       - name: Close issue - COMPLETED - Unit Test
         if: |
           steps.issue.outputs.isValid == 'true' &&
-          steps.issue.outputs.issueType == 'unit-test' &&
+          steps.issue.outputs.questType == 'unit-test' &&
           steps.check-quest-unit-test.outputs.questStatus == 'completed'
         shell: bash
         env:
@@ -745,3 +791,38 @@ jobs:
           gh issue close ${{ steps.issue.outputs.issueNumber }} \
             -c "과제를 완료했습니다. 이슈를 닫습니다." \
             -R ${{ github.event.repository.full_name }}
+      
+      - name: Post to Discord - COMPLETED - Unit Test
+        if: |
+          steps.issue.outputs.isValid == 'true' &&
+          steps.issue.outputs.questType == 'unit-test' &&
+          steps.check-quest-unit-test.outputs.questStatus == 'completed'
+        shell: pwsh
+        run: |
+          $mentees = Get-Content "${{ github.workspace }}/mentees.json" | ConvertFrom-Json
+          $mentee = $mentees | Where-Object { $_.github_username -eq "${{ steps.issue.outputs.githubId }}" }
+          $webhookUrl = "${{ secrets.DISCORD_WEBHOOK_URL }}"
+          $body = @{
+            content = "👋🏼 <@$($mentee.discord_userid)> 님, ${{ steps.issue.outputs.title }} 과제를 성공적으로 제출하셨습니다! 🎉"
+          } | ConvertTo-Json
+          
+          Invoke-RestMethod -Uri $webhookUrl -Method Post -Body $body -ContentType "application/json"
+      # Unit Test Quest
+
+      # GenAI for Beginners for .NET Quest
+      - name: Assign issue - GenAI for Beginners for .NET
+        if: |
+          steps.issue.outputs.isValid == 'true' &&
+          steps.issue.outputs.questType == 'genai-for-beginners'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $assignees = "${{ vars.ASSIGNEES }}" -split ","
+          $random = Get-Random -Minimum 0 -Maximum $assignees.Count
+          $assignee = $assignees[$random]
+
+          gh issue edit ${{ steps.issue.outputs.issueNumber }} `
+            --add-assignee $assignee `
+            -R ${{ github.event.repository.full_name }}
+      # GenAI for Beginners for .NET Quest

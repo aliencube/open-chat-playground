@@ -2,8 +2,23 @@
 
 name: open-chat-playground
 
-services:  
-  app:
-    language: dotnet
-    project: ./src/OpenChat.PlaygroundApp/OpenChat.PlaygroundApp.csproj
+metadata:
+  template: azd-init@1.18.0
+
+services:
+  openchat-playgroundapp:
+    project: src/OpenChat.PlaygroundApp
     host: containerapp
+    language: dotnet
+    docker:
+      path: ../../Dockerfile.azure
+      context: ../../
+      remoteBuild: true
+
+resources:
+  openchat-playgroundapp:
+    type: host.containerapp
+    port: 8080
+    env:
+      - name: GitHubModels__Token
+        secret: ${GH_MODELS_TOKEN}

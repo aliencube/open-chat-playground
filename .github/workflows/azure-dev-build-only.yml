@@ -45,6 +45,11 @@ jobs:
       run: |
         dotnet build . --no-restore --no-incremental
 
+    - name: Run unit tests
+      shell: bash
+      run: |
+        dotnet test . --no-build --logger "trx" --collect:"XPlat Code Coverage" --filter "Category=UnitTest"
+
     - name: Install playwright
       shell: pwsh
       run: |
@@ -52,16 +57,17 @@ jobs:
         $installer = "$($playwright[0].Directory.FullName)/playwright.ps1"
         & "$installer" install
 
-    - name: Run tests
+    - name: Run app in background
       shell: bash
       run: |
-        REPOSITORY_ROOT=$(git rev-parse --show-toplevel)
-
-        dotnet user-secrets --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp \
+        dotnet user-secrets --project ./src/OpenChat.PlaygroundApp \
             set GitHubModels:Token "temporary-dummy-token"
 
-        dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp &
+        dotnet run --project ./src/OpenChat.PlaygroundApp &
 
         sleep 30
 
-        dotnet test . --no-build --logger "trx" --collect:"XPlat Code Coverage"
+    - name: Run integration tests - LLM not required
+      shell: bash
+      run: |
+        dotnet test . --no-build --logger "trx" --collect:"XPlat Code Coverage" --filter "Category=IntegrationTest & Category!=LLMRequired"
