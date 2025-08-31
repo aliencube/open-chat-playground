@@ -50,4 +50,4 @@ jobs:
           }
 
           Write-Host "Requesting review from: $chosen (PR #$prNumber)"
-          gh pr review $prNumber --request --reviewer $chosen
+          gh pr edit $prNumber --add-reviewer $chosen
