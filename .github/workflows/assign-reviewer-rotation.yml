@@ -2,7 +2,7 @@ name: Assign PR reviewer by rotation
 
 on:
   pull_request:
-    types: [opened, reopened]
+    types: [opened, reopened, synchronize]
 
 permissions:
   contents: read
@@ -17,7 +17,7 @@ jobs:
       - name: Request reviewer based on PR number
         shell: pwsh
         run: |
-          $reviewers = ${{ vars.ASSIGNEES }}
+          $reviewers = $(gh api repos/aliencube/open-chat-playground/actions/variables --jq '.variables[] | select(.name == "ASSIGNEES") | .value')
           if (-not $reviewers) {
             Write-Error "No reviewers configured. Set the repository variable ASSIGNEES to a comma-separated list of GitHub usernames."
             exit 1
