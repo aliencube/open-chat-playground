@@ -16,7 +16,7 @@ public abstract class ArgumentOptions
         // GitHub Models
         (ConnectorType.GitHubModels, "--endpoint", false),
         (ConnectorType.GitHubModels, "--token", false),
-        (ConnectorType.GitHubModels, "--model", false)
+        (ConnectorType.GitHubModels, "--model", false),
         // Google Vertex AI
         // Docker Model Runner
         // Foundry Local
@@ -24,6 +24,8 @@ public abstract class ArgumentOptions
         // Ollama
         // Anthropic
         // LG
+        (ConnectorType.LG, "--base-url", false),
+        (ConnectorType.LG, "--model", false)
         // Naver
         // OpenAI
         // Upstage
@@ -139,6 +141,12 @@ public abstract class ArgumentOptions
                 settings.GitHubModels.Endpoint = github.Endpoint ?? settings.GitHubModels.Endpoint;
                 settings.GitHubModels.Token = github.Token ?? settings.GitHubModels.Token;
                 settings.GitHubModels.Model = github.Model ?? settings.GitHubModels.Model;
+                break;
+
+            case LGArgumentOptions lg:
+                settings.LG ??= new LGSettings();
+                settings.LG.BaseUrl = lg.BaseUrl ?? settings.LG.BaseUrl;
+                settings.LG.Model = lg.Model ?? settings.LG.Model;
                 break;
 
             default:
@@ -311,10 +319,11 @@ public abstract class ArgumentOptions
     {
         var foregroundColor = Console.ForegroundColor;
         Console.ForegroundColor = ConsoleColor.DarkGreen;
-        Console.WriteLine("  ** LG: **");
+        Console.WriteLine("  ** LG (LG Models via OllamaSharp): **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  TBD");
+        Console.WriteLine("  --base-url           The base URL for Ollama API. Default to 'http://localhost:11434'");
+        Console.WriteLine("  --model              The LG model name. Default to 'lg-model:latest'");
         Console.WriteLine();
     }
 
