@@ -9,14 +9,14 @@ namespace OpenChat.PlaygroundApp.Abstractions;
 /// </summary>
 public abstract class ArgumentOptions
 {
-    private static readonly (ConnectorType ConnectorType,string Argument, bool IsSwitch)[] arguments =
+    private static readonly (ConnectorType ConnectorType, string Argument, bool IsSwitch)[] arguments =
     [
         // Amazon Bedrock
         // Azure AI Foundry
         // GitHub Models
         (ConnectorType.GitHubModels, "--endpoint", false),
         (ConnectorType.GitHubModels, "--token", false),
-        (ConnectorType.GitHubModels, "--model", false)
+        (ConnectorType.GitHubModels, "--model", false),
         // Google Vertex AI
         // Docker Model Runner
         // Foundry Local
@@ -26,6 +26,8 @@ public abstract class ArgumentOptions
         // LG
         // Naver
         // OpenAI
+        (ConnectorType.OpenAI, "--api-key", false),
+        (ConnectorType.OpenAI, "--model", false),
         // Upstage
     ];
 
@@ -139,6 +141,12 @@ public abstract class ArgumentOptions
                 settings.GitHubModels.Endpoint = github.Endpoint ?? settings.GitHubModels.Endpoint;
                 settings.GitHubModels.Token = github.Token ?? settings.GitHubModels.Token;
                 settings.GitHubModels.Model = github.Model ?? settings.GitHubModels.Model;
+                break;
+
+            case OpenAIArgumentOptions openai:
+                settings.OpenAI ??= new OpenAISettings();
+                settings.OpenAI.ApiKey = openai.ApiKey ?? settings.OpenAI.ApiKey;
+                settings.OpenAI.Model = openai.Model ?? settings.OpenAI.Model;
                 break;
 
             default:
@@ -336,7 +344,8 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** OpenAI: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  TBD");
+    Console.WriteLine("  --api-key            The OpenAI API key. (Env: OPENAI_API_KEY)");
+    Console.WriteLine("  --model              The OpenAI model name. Default to 'gpt-4.1-mini'");
         Console.WriteLine();
     }
 
