@@ -16,8 +16,10 @@ jobs:
     steps:
       - name: Request reviewer based on PR number
         shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          $reviewers = $(gh api repos/aliencube/open-chat-playground/actions/variables --jq '.variables[] | select(.name == "ASSIGNEES") | .value')
+          $reviewers = "justinyoo,sikuisa,tae0y"
           if (-not $reviewers) {
             Write-Error "No reviewers configured. Set the repository variable ASSIGNEES to a comma-separated list of GitHub usernames."
             exit 1
