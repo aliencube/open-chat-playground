@@ -17,6 +17,9 @@ jobs:
       GH_TOKEN: ${{ github.token }}
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Request reviewer based on PR number
         shell: pwsh
         run: |
