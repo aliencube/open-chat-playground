@@ -1,4 +1,5 @@
 using OpenChat.PlaygroundApp.Abstractions;
+using OpenChat.PlaygroundApp.Configurations;
 
 namespace OpenChat.PlaygroundApp.Options;
 
@@ -7,4 +8,13 @@ namespace OpenChat.PlaygroundApp.Options;
 /// </summary>
 public class OpenAIArgumentOptions : ArgumentOptions
 {
+	/// <summary>
+	/// Gets or sets the OpenAI API key.
+	/// </summary>
+	public string? ApiKey { get; set; }
+
+	/// <summary>
+	/// Gets or sets the OpenAI model name.
+	/// </summary>
+	public string? Model { get; set; }
 }
