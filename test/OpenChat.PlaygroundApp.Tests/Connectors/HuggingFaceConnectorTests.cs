@@ -5,7 +5,7 @@ namespace OpenChat.PlaygroundApp.Tests.Connectors;
 
 public class HuggingFaceConnectorTests
 {
-	private static AppSettings BuildAppSettings(string? baseUrl = "http://localhost:11434", string? model = "hf.co/google/gemma-3-1b-pt-qat-q4_0-gguf")
+	private static AppSettings BuildAppSettings(string? baseUrl = "https://test.huggingface.co/api", string? model = "hf-model-name")
 	{
 		return new AppSettings
 		{
@@ -47,7 +47,6 @@ public class HuggingFaceConnectorTests
 	[Trait("Category", "UnitTest")]
 	[Theory]
 	[InlineData(null, typeof(InvalidOperationException), "HuggingFace:Model")]
-	[InlineData("", typeof(OllamaSharp.Models.Exceptions.OllamaException), "model")]
 	public async Task Given_Missing_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
 	{
 		var settings = BuildAppSettings(model: model);

@@ -25,15 +25,6 @@ public class HuggingFaceConnector(AppSettings settings) : LanguageModelConnector
 
         var chatClient = new OllamaApiClient(config);
 
-        await foreach (var response in chatClient.PullModelAsync(config.Model))
-        {
-            if (response != null)
-            {
-                Console.WriteLine($"Status: {response.Status}");
-                Console.WriteLine($"Progress: {response.Completed}/{response.Total}");
-            }
-        }
-
         return await Task.FromResult(chatClient).ConfigureAwait(false);
     }
 }
