@@ -7,7 +7,7 @@ namespace OpenChat.PlaygroundApp.Tests.Options;
 
 public class GitHubModelsArgumentOptionsTests
 {
-    private const string Endpoint = "https://github-models/inference";
+    private const string Endpoint = "https://test.github-models/inference";
     private const string Token = "github-pat";
     private const string Model = "github-model-name";
 
@@ -38,7 +38,9 @@ public class GitHubModelsArgumentOptionsTests
             configDict["GitHubModels:Model"] = configModel;
         }
 
-        if (string.IsNullOrWhiteSpace(envEndpoint) && string.IsNullOrWhiteSpace(envToken) && string.IsNullOrWhiteSpace(envModel))
+        if (string.IsNullOrWhiteSpace(envEndpoint) == true &&
+            string.IsNullOrWhiteSpace(envToken) == true &&
+            string.IsNullOrWhiteSpace(envModel) == true)
         {
             return new ConfigurationBuilder()
                        .AddInMemoryCollection(configDict!)
@@ -86,7 +88,7 @@ public class GitHubModelsArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("https://example.test/inference")]
+    [InlineData("https://cli.github-models/inference")]
     public void Given_CLI_Endpoint_When_Parse_Invoked_Then_It_Should_Use_CLI_Endpoint(string cliEndpoint)
     {
         // Arrange
@@ -105,7 +107,7 @@ public class GitHubModelsArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("test-token")]
+    [InlineData("cli-token")]
     public void Given_CLI_Token_When_Parse_Invoked_Then_It_Should_Use_CLI_Token(string cliToken)
     {
         // Arrange
@@ -124,7 +126,7 @@ public class GitHubModelsArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("test-model")]
+    [InlineData("cli-model")]
     public void Given_CLI_Model_When_Parse_Invoked_Then_It_Should_Use_CLI_Model(string cliModel)
     {
         // Arrange
@@ -143,7 +145,7 @@ public class GitHubModelsArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("https://example.test/inference", "test-token", "openai/gpt-4o-mini")]
+    [InlineData("https://cli.github-models/inference", "cli-token", "cli-model")]
     public void Given_All_CLI_Arguments_When_Parse_Invoked_Then_It_Should_Use_CLI(string cliEndpoint, string cliToken, string cliModel)
     {
         // Arrange
@@ -201,7 +203,24 @@ public class GitHubModelsArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("https://models.github.ai/inference", "{{GITHUB_PAT}}", "openai/gpt-4o-mini")]
+    [InlineData("--strange-model-name")]
+    public void Given_GitHubModels_With_ModelName_StartingWith_Dashes_When_Parse_Invoked_Then_It_Should_Treat_As_Value(string model)
+    {
+        // Arrange
+        var config = BuildConfigWithGitHubModels();
+        var args = new[] { "--model", model };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.GitHubModels.ShouldNotBeNull();
+        settings.GitHubModels.Model.ShouldBe(model);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://config.github-models/inference", "config-token", "config-model")]
     public void Given_ConfigValues_And_No_CLI_When_Parse_Invoked_Then_It_Should_Use_Config(string configEndpoint, string configToken, string configModel)
     {
         // Arrange
@@ -220,8 +239,8 @@ public class GitHubModelsArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("https://models.github.ai/inference", "{{GITHUB_PAT}}", "openai/gpt-4o-mini",
-                "https://cli.example/inference", "cli-token", "openai/gpt-5-large")]
+    [InlineData("https://config.github-models/inference", "config-token", "config-model",
+                "https://cli.github-models/inference", "cli-token", "cli-model")]
     public void Given_ConfigValues_And_CLI_When_Parse_Invoked_Then_It_Should_Use_CLI(
         string configEndpoint, string configToken, string configModel,
         string cliEndpoint, string cliToken, string cliModel)
@@ -242,24 +261,7 @@ public class GitHubModelsArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("--strange-model-name")]
-    public void Given_GitHubModels_With_ModelName_StartingWith_Dashes_When_Parse_Invoked_Then_It_Should_Treat_As_Value(string model)
-    {
-        // Arrange
-        var config = BuildConfigWithGitHubModels();
-        var args = new[] { "--model", model };
-
-        // Act
-        var settings = ArgumentOptions.Parse(config, args);
-
-        // Assert
-        settings.GitHubModels.ShouldNotBeNull();
-        settings.GitHubModels.Model.ShouldBe(model);
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData("https://env.example/inference", "env-token", "env-model")]
+    [InlineData("https://env.github-models/inference", "env-token", "env-model")]
     public void Given_EnvironmentVariables_And_No_Config_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(
         string envEndpoint, string envToken, string envModel)
     {
@@ -281,8 +283,8 @@ public class GitHubModelsArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("https://config.example/inference", "config-token", "config-model",
-                "https://env.example/inference", "env-token", "env-model")]
+    [InlineData("https://config.github-models/inference", "config-token", "config-model",
+                "https://env.github-models/inference", "env-token", "env-model")]
     public void Given_ConfigValues_And_EnvironmentVariables_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(
         string configEndpoint, string configToken, string configModel,
         string envEndpoint, string envToken, string envModel)
@@ -305,9 +307,9 @@ public class GitHubModelsArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("https://config.example/inference", "config-token", "config-model",
-                "https://env.example/inference", "env-token", "env-model",
-                "https://cli.example/inference", "cli-token", "cli-model")]
+    [InlineData("https://config.github-models/inference", "config-token", "config-model",
+                "https://env.github-models/inference", "env-token", "env-model",
+                "https://cli.github-models/inference", "cli-token", "cli-model")]
     public void Given_ConfigValues_And_EnvironmentVariables_And_CLI_When_Parse_Invoked_Then_It_Should_Use_CLI(
         string configEndpoint, string configToken, string configModel,
         string envEndpoint, string envToken, string envModel,
@@ -331,8 +333,8 @@ public class GitHubModelsArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("https://config.example/inference", "config-token", "config-model",
-                "https://env.example/inference", null, "env-model")]
+    [InlineData("https://config.github-models/inference", "config-token", "config-model",
+                "https://env.github-models/inference", null, "env-model")]
     public void Given_Partial_EnvironmentVariables_When_Parse_Invoked_Then_It_Should_Mix_Config_And_Environment(
         string configEndpoint, string configToken, string configModel,
         string envEndpoint, string? envToken, string envModel)
@@ -355,22 +357,22 @@ public class GitHubModelsArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("https://config.example/inference", "config-token", "config-model",
+    [InlineData("https://config.github-models/inference", "config-token", "config-model",
                 null, "env-token", null,
-                "https://cli.example/inference")]
+                "https://cli.github-models/inference", null, null)]
     public void Given_Mixed_Priority_Sources_When_Parse_Invoked_Then_It_Should_Respect_Priority_Order(
         string configEndpoint, string configToken, string configModel,
         string? envEndpoint, string envToken, string? envModel,
-        string cliEndpoint)
+        string cliEndpoint, string? cliToken, string? cliModel)
     {
         // Arrange
         var config = BuildConfigWithGitHubModels(
             configEndpoint, configToken, configModel,
             envEndpoint, envToken, envModel);
-        var args = new[] { "--endpoint", cliEndpoint };
+        var args = new[] { "--endpoint", cliEndpoint, "--token", cliToken, "--model", cliModel };
 
         // Act
-        var settings = ArgumentOptions.Parse(config, args);
+        var settings = ArgumentOptions.Parse(config, args!);
 
         // Assert
         settings.GitHubModels.ShouldNotBeNull();
@@ -381,7 +383,7 @@ public class GitHubModelsArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("https://models.github.ai/inference", "pat", "openai/gpt-4o-mini")]
+    [InlineData("https://cli.github-models/inference", "cli-token", "cli-model")]
     public void Given_GitHubModels_With_KnownArguments_When_Parse_Invoked_Then_Help_ShouldBe_False(string cliEndpoint, string cliToken, string cliModel)
     {
         // Arrange
@@ -415,7 +417,7 @@ public class GitHubModelsArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("https://models.github.ai/inference", "--unknown-flag")]
+    [InlineData("https://cli.github-models/inference", "--unknown-flag")]
     public void Given_GitHubModels_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_ShouldBe_True(string cliEndpoint, string argument)
     {
         // Arrange
@@ -431,7 +433,7 @@ public class GitHubModelsArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("https://env.example/inference", "env-token", "env-model")]
+    [InlineData("https://env.github-models/inference", "env-token", "env-model")]
     public void Given_EnvironmentVariables_Only_When_Parse_Invoked_Then_Help_Should_Be_False(
         string envEndpoint, string envToken, string envModel)
     {
@@ -450,7 +452,7 @@ public class GitHubModelsArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("https://cli.example/inference", "cli-token", "cli-model")]
+    [InlineData("https://env.github-models/inference", "cli-token", "cli-model")]
     public void Given_CLI_Only_When_Parse_Invoked_Then_Help_Should_Be_False(string cliEndpoint, string cliToken, string cliModel)
     {
         // Arrange
