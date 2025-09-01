@@ -35,8 +35,8 @@ public class OpenAIArgumentOptionsTests
             string.IsNullOrWhiteSpace(envModel) == true)
         {
             return new ConfigurationBuilder()
-            .AddInMemoryCollection(configDict!)
-            .Build();
+                        .AddInMemoryCollection(configDict!)
+                        .Build();
         }
 
         // Environment variables (medium priority)
@@ -227,17 +227,19 @@ public class OpenAIArgumentOptionsTests
         string? configApiKey, string? configModel,
         string envApiKey, string envModel)
     {
-    // Arrange
-    var config = BuildConfigWithOpenAI(configApiKey, configModel, envApiKey, envModel);
-    var args = Array.Empty<string>();
+        // Arrange
+        var config = BuildConfigWithOpenAI(
+            configApiKey, configModel,
+            envApiKey, envModel);
+        var args = Array.Empty<string>();
 
-    // Act
-    var settings = ArgumentOptions.Parse(config, args);
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
 
-    // Assert
-    settings.OpenAI.ShouldNotBeNull();
-    settings.OpenAI.ApiKey.ShouldBe(envApiKey);
-    settings.OpenAI.Model.ShouldBe(envModel);
+        // Assert
+        settings.OpenAI.ShouldNotBeNull();
+        settings.OpenAI.ApiKey.ShouldBe(envApiKey);
+        settings.OpenAI.Model.ShouldBe(envModel);
     }
 
     [Trait("Category", "UnitTest")]
@@ -248,7 +250,9 @@ public class OpenAIArgumentOptionsTests
         string envApiKey, string envModel)
     {
         // Arrange
-        var config = BuildConfigWithOpenAI(configApiKey, configModel, envApiKey, envModel);
+        var config = BuildConfigWithOpenAI(
+            configApiKey, configModel,
+            envApiKey, envModel);
         var args = Array.Empty<string>();
 
         // Act
@@ -269,7 +273,9 @@ public class OpenAIArgumentOptionsTests
         string cliApiKey, string cliModel)
     {
         // Arrange
-        var config = BuildConfigWithOpenAI(configApiKey, configModel, envApiKey, envModel);
+        var config = BuildConfigWithOpenAI(
+            configApiKey, configModel,
+            envApiKey, envModel);
         var args = new[] { "--api-key", cliApiKey, "--model", cliModel };
 
         // Act
@@ -290,7 +296,9 @@ public class OpenAIArgumentOptionsTests
         string cliApiKey, string? cliModel)
     {
         // Arrange
-        var config = BuildConfigWithOpenAI(configApiKey, configModel, envApiKey, envModel);
+        var config = BuildConfigWithOpenAI(
+            configApiKey, configModel,
+            envApiKey, envModel);
         var args = new[] { "--api-key", cliApiKey, "--model", cliModel };
 
         // Act
