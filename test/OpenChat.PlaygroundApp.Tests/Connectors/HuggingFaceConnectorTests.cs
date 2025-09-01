@@ -33,7 +33,8 @@ public class HuggingFaceConnectorTests
 	[Trait("Category", "UnitTest")]
 	[Theory]
 	[InlineData(null, typeof(InvalidOperationException), "HuggingFace:BaseUrl")]
-	[InlineData("", typeof(UriFormatException), "empty")]
+	[InlineData("", typeof(InvalidOperationException), "HuggingFace:BaseUrl")]
+	[InlineData("strange-uri-format", typeof(UriFormatException), "Invalid URI")]
 	public async Task Given_Missing_BaseUrl_When_GetChatClient_Invoked_Then_It_Should_Throw(string? baseUrl, Type expected, string message)
 	{
 		var settings = BuildAppSettings(baseUrl: baseUrl);
@@ -47,6 +48,7 @@ public class HuggingFaceConnectorTests
 	[Trait("Category", "UnitTest")]
 	[Theory]
 	[InlineData(null, typeof(InvalidOperationException), "HuggingFace:Model")]
+	[InlineData("", typeof(InvalidOperationException), "HuggingFace:Model")]
 	public async Task Given_Missing_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
 	{
 		var settings = BuildAppSettings(model: model);
