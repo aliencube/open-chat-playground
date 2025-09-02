@@ -6,15 +6,15 @@ namespace OpenChat.PlaygroundApp.Configurations;
 public partial class AppSettings
 {
     /// <summary>
-    /// Gets or sets the <see cref="AnthropicClaudeSettings"/> instance.
+    /// Gets or sets the <see cref="AnthropicSettings"/> instance.
     /// </summary>
-    public AnthropicClaudeSettings? AnthropicClaude { get; set; }
+    public AnthropicSettings? Anthropic { get; set; }
 }
 
 /// <summary>
 /// This represents the app settings entity for Anthropic Claude.
 /// </summary>
-public class AnthropicClaudeSettings : LanguageModelSettings
+public class AnthropicSettings : LanguageModelSettings
 {
     /// <summary>
     /// Gets or sets the API key for Anthropic Claude.
