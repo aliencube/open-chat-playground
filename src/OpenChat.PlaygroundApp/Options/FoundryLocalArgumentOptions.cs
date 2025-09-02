@@ -13,30 +13,4 @@ public class FoundryLocalArgumentOptions : ArgumentOptions
     /// </summary>
     public string? Alias { get; set; }
 
-    /// <inheritdoc/>
-    protected override void ParseOptions(IConfiguration config, string[] args)
-    {
-        var settings = new AppSettings();
-        config.Bind(settings);
-
-        var foundryLocal = settings.FoundryLocal;
-
-        this.Alias ??= foundryLocal?.Alias;
-
-        for (var i = 0; i < args.Length; i++)
-        {
-            switch (args[i])
-            {
-                case "--alias":
-                    if (i + 1 < args.Length)
-                    {
-                        this.Alias = args[++i];
-                    }
-                    break;
-
-                default:
-                    break;
-            }
-        }
-    }
 }
