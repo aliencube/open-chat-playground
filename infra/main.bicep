@@ -11,9 +11,24 @@ param location string
 
 
 param connectorType string = ''
+
+// Amazon Bedrock
+// Azure AI Foundry
+// GitHub Models
 param githubModelsModel string = ''
 @secure()
 param githubModelsToken string = ''
+// Google Vertex AI
+// Docker Model Runner
+// Foundry Local
+// Hugging Face
+// Ollama
+// Anthropic
+// LG
+// Naver
+// OpenAI
+// Upstage
+
 param openchatPlaygroundappExists bool
 
 @description('Id of the user or app to assign application roles')
@@ -52,5 +67,6 @@ module resources 'resources.bicep' = {
     openchatPlaygroundappExists: openchatPlaygroundappExists
   }
 }
+
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = resources.outputs.AZURE_CONTAINER_REGISTRY_ENDPOINT
 output AZURE_RESOURCE_OPENCHAT_PLAYGROUNDAPP_ID string = resources.outputs.AZURE_RESOURCE_OPENCHAT_PLAYGROUNDAPP_ID

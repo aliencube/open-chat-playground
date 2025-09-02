@@ -14,15 +14,3 @@ services:
       path: ../../Dockerfile.azure
       context: ../../
       remoteBuild: true
-
-# resources:
-#   openchat-playgroundapp:
-#     type: host.containerapp
-#     port: 8080
-#     env:
-#       - name: ConnectorType
-#         value: ${CONNECTOR_TYPE}
-#       - name: GitHubModels__Token
-#         secret: ${GH_MODELS_TOKEN}
-#       - name: GitHubModels__Model
-#         value: ${GH_MODELS_MODEL}

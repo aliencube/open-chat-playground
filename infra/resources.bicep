@@ -6,9 +6,24 @@ param tags object = {}
 
 
 param connectorType string = ''
+
+// Amazon Bedrock
+// Azure AI Foundry
+// GitHub Models
 param githubModelsModel string = ''
 @secure()
 param githubModelsToken string = ''
+// Google Vertex AI
+// Docker Model Runner
+// Foundry Local
+// Hugging Face
+// Ollama
+// Anthropic
+// LG
+// Naver
+// OpenAI
+// Upstage
+
 param openchatPlaygroundappExists bool
 
 @description('Id of the user or app to assign application roles')
@@ -59,6 +74,7 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.11.
     name: '${abbrs.appManagedEnvironments}${resourceToken}'
     location: location
     zoneRedundant: false
+    publicNetworkAccess: 'Enabled'
   }
 }
 
@@ -76,6 +92,37 @@ module openchatPlaygroundappFetchLatestImage './modules/fetch-container-image.bi
     name: 'openchat-playgroundapp'
   }
 }
+
+var envConnectorType = connectorType != '' ? [
+  {
+    name: 'ConnectorType'
+    value: connectorType
+  }
+] : []
+// Amazon Bedrock
+// Azure AI Foundry
+// GitHub Models
+var envGitHubModels = (connectorType == '' || connectorType == 'GitHubModels') ? concat(githubModelsModel != '' ? [
+  {
+    name: 'GitHubModels__Model'
+    value: githubModelsModel
+  }
+] : [], [
+  {
+    name: 'GitHubModels__Token'
+    secretRef: 'github-models-token'
+  }
+]) : []
+// Google Vertex AI
+// Docker Model Runner
+// Foundry Local
+// Hugging Face
+// Ollama
+// Anthropic
+// LG
+// Naver
+// OpenAI
+// Upstage
 
 module openchatPlaygroundapp 'br/public:avm/res/app/container-app:0.18.1' = {
   name: 'openchatPlaygroundapp'
@@ -112,19 +159,9 @@ module openchatPlaygroundapp 'br/public:avm/res/app/container-app:0.18.1' = {
           {
             name: 'PORT'
             value: '8080'
-          }], connectorType != '' ? [
-          {
-            name: 'ConnectorType'
-            value: connectorType
-          }] : [], (connectorType == '' || connectorType == 'GitHubModels') ? [
-          {
-            name: 'GitHubModels__Model'
-            value: githubModelsModel
-          }
-          {
-            name: 'GitHubModels__Token'
-            secretRef: 'github-models-token'
-          }] : [])
+          }],
+          envConnectorType,
+          envGitHubModels)
       }
     ]
     managedIdentities:{
@@ -142,5 +179,6 @@ module openchatPlaygroundapp 'br/public:avm/res/app/container-app:0.18.1' = {
     tags: union(tags, { 'azd-service-name': 'openchat-playgroundapp' })
   }
 }
+
 output AZURE_CONTAINER_REGISTRY_ENDPOINT string = containerRegistry.outputs.loginServer
 output AZURE_RESOURCE_OPENCHAT_PLAYGROUNDAPP_ID string = openchatPlaygroundapp.outputs.resourceId
