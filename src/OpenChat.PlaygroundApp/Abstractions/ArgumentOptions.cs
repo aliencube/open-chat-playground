@@ -22,8 +22,10 @@ public abstract class ArgumentOptions
         // Foundry Local
         // Hugging Face
         (ConnectorType.HuggingFace, "--base-url", false),
-        (ConnectorType.HuggingFace, "--model", false)
+        (ConnectorType.HuggingFace, "--model", false),
         // Ollama
+        (ConnectorType.Ollama, "--base-url", false),
+        (ConnectorType.Ollama, "--model", false),
         // Anthropic
         // LG
         // Naver
@@ -147,6 +149,12 @@ public abstract class ArgumentOptions
                 settings.HuggingFace ??= new HuggingFaceSettings();
                 settings.HuggingFace.BaseUrl = huggingFace.BaseUrl ?? settings.HuggingFace.BaseUrl;
                 settings.HuggingFace.Model = huggingFace.Model ?? settings.HuggingFace.Model;
+                break;
+            
+            case OllamaArgumentOptions ollama:
+                settings.Ollama ??= new OllamaSettings();
+                settings.Ollama.BaseUrl = ollama.BaseUrl ?? settings.Ollama.BaseUrl;
+                settings.Ollama.Model = ollama.Model ?? settings.Ollama.Model;
                 break;
 
             default:
@@ -301,7 +309,8 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** Ollama: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  TBD");
+        Console.WriteLine("  --base-url           The baseURL. Default to 'http://localhost:11434'");
+        Console.WriteLine("  --model              The model name. Default to 'llama3.2'");
         Console.WriteLine();
     }
 
