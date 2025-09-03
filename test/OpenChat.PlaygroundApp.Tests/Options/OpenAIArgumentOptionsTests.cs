@@ -56,8 +56,6 @@ public class OpenAIArgumentOptionsTests
                     .Build();
     }
 
-    //TODO - 메서드 매개변수 nullable 확인 
-
     [Trait("Category", "UnitTest")]
     [Fact]
     public void Given_Nothing_When_Parse_Invoked_Then_It_Should_Set_Config()
@@ -95,7 +93,7 @@ public class OpenAIArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("cli-model")]    
+    [InlineData("cli-model")]
     public void Given_CLI_Model_When_Parse_Invoked_Then_It_Should_Use_CLI_Model(string cliModel)
     {
         // Arrange
@@ -204,8 +202,50 @@ public class OpenAIArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
+    [InlineData("env-key", "env-model")]
+    public void Given_EnvironmentVariables_And_No_Config_When_Parse_Invoked_Then_It_Should_Use_Environment(string envApiKey, string envModel)
+    {
+        // Arrange
+        var config = BuildConfigWithOpenAI(
+            configApiKey: null, configModel: null,
+            envApiKey, envModel);
+        var args = Array.Empty<string>();
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.OpenAI.ShouldNotBeNull();
+        settings.OpenAI.ApiKey.ShouldBe(envApiKey);
+        settings.OpenAI.Model.ShouldBe(envModel);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("config-key", "config-model", "env-key", "env-model")]
+    public void Given_Config_And_EnvironmentVariables_When_Parse_Invoked_Then_It_Should_Use_Environment(
+        string configApiKey, string configModel,
+        string envApiKey, string envModel)
+    {
+        // Arrange
+        var config = BuildConfigWithOpenAI(
+            configApiKey, configModel,
+            envApiKey, envModel);
+        var args = Array.Empty<string>();
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.OpenAI.ShouldNotBeNull();
+        settings.OpenAI.ApiKey.ShouldBe(envApiKey);
+        settings.OpenAI.Model.ShouldBe(envModel);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
     [InlineData("config-key", "config-model", "cli-key", "cli-model")]
-    public void Given_ConfigValues_And_CLI_When_Parse_Invoked_Then_It_Should_Use_CLI(
+    public void Given_Config_And_CLI_When_Parse_Invoked_Then_It_Should_Use_CLI(
         string configApiKey, string configModel,
         string cliApiKey, string cliModel)
     {
@@ -224,52 +264,8 @@ public class OpenAIArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, null, "env-key", "env-model")]
-    public void Given_EnvironmentVariables_And_No_Config_When_Parse_Invoked_Then_It_Should_Use_Environment(
-        string? configApiKey, string? configModel,
-        string envApiKey, string envModel)
-    {
-        // Arrange
-        var config = BuildConfigWithOpenAI(
-            configApiKey, configModel,
-            envApiKey, envModel);
-        var args = Array.Empty<string>();
-
-        // Act
-        var settings = ArgumentOptions.Parse(config, args);
-
-        // Assert
-        settings.OpenAI.ShouldNotBeNull();
-        settings.OpenAI.ApiKey.ShouldBe(envApiKey);
-        settings.OpenAI.Model.ShouldBe(envModel);
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData("config-key", "config-model", "env-key", "env-model")]
-    public void Given_ConfigValues_And_EnvironmentVariables_When_Parse_Invoked_Then_Env_Should_Win(
-        string configApiKey, string configModel,
-        string envApiKey, string envModel)
-    {
-        // Arrange
-        var config = BuildConfigWithOpenAI(
-            configApiKey, configModel,
-            envApiKey, envModel);
-        var args = Array.Empty<string>();
-
-        // Act
-        var settings = ArgumentOptions.Parse(config, args);
-
-        // Assert
-        settings.OpenAI.ShouldNotBeNull();
-        settings.OpenAI.ApiKey.ShouldBe(envApiKey);
-        settings.OpenAI.Model.ShouldBe(envModel);
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
     [InlineData("config-key", "config-model", "env-key", "env-model", "cli-key", "cli-model")]
-    public void Given_Config_Env_And_CLI_When_Parse_Invoked_Then_CLI_Should_Win(
+    public void Given_Config_And_EnvironmentVariables_And_CLI_When_Parse_Invoked_Then_It_Should_Use_CLI(
         string configApiKey, string configModel,
         string envApiKey, string envModel,
         string cliApiKey, string cliModel)
@@ -292,8 +288,8 @@ public class OpenAIArgumentOptionsTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("config-key", "config-model", "env-key", null, "cli-key", null)]
-    public void Given_Mixed_Partial_Sources_When_Parse_Invoked_Then_Priority_Should_Apply(
-        string configApiKey, string configModel,
+    public void Given_Mixed_Priority_Sources_When_Parse_Invoked_Then_It_Should_Respect_Priority_Order(
+        string configApiKey, string? configModel,
         string envApiKey, string? envModel,
         string cliApiKey, string? cliModel)
     {
@@ -308,57 +304,8 @@ public class OpenAIArgumentOptionsTests
 
         // Assert
         settings.OpenAI.ShouldNotBeNull();
-        settings.OpenAI.ApiKey.ShouldBe(cliApiKey);    // CLI overrides all
-        settings.OpenAI.Model.ShouldBe(envModel ?? cliModel ?? configModel); // env > cli(null) > config
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData("cli-key", "cli-model")]
-    public void Given_OpenAI_With_KnownArguments_When_Parse_Invoked_Then_Help_ShouldBe_False(string cliApiKey, string cliModel)
-    {
-        // Arrange
-        var config = BuildConfigWithOpenAI(ApiKey, Model);
-        var args = new[] { "--api-key", cliApiKey, "--model", cliModel };
-
-        // Act
-        var settings = ArgumentOptions.Parse(config, args);
-
-        // Assert
-        settings.Help.ShouldBeFalse();
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData("--api-key")]
-    [InlineData("--model")]
-    public void Given_OpenAI_With_KnownArgument_WithoutValue_When_Parse_Invoked_Then_Help_ShouldBe_False(string argument)
-    {
-        // Arrange
-        var config = BuildConfigWithOpenAI();
-        var args = new[] { argument };
-
-        // Act
-        var settings = ArgumentOptions.Parse(config, args);
-
-        // Assert
-        settings.Help.ShouldBeFalse();
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData("cli-key", "--unknown-flag")]
-    public void Given_OpenAI_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_ShouldBe_True(string cliApiKey, string unknown)
-    {
-        // Arrange
-        var config = BuildConfigWithOpenAI();
-        var args = new[] { "--api-key", cliApiKey, unknown };
-
-        // Act
-        var settings = ArgumentOptions.Parse(config, args);
-
-        // Assert
-        settings.Help.ShouldBeTrue();
+        settings.OpenAI.ApiKey.ShouldBe(cliApiKey);
+        settings.OpenAI.Model.ShouldBe(envModel ?? cliModel ?? configModel);
     }
 
     [Trait("Category", "UnitTest")]
@@ -378,10 +325,10 @@ public class OpenAIArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Fact]
-    public void Given_Missing_ConnectorType_When_Parse_Invoked_Then_It_Should_Set_Help()
+    public void Given_Missing_ConnectorType_When_Parse_Invoked_Then_Help_Should_Be_True()
     {
         // Arrange
-        var empty = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string,string?>()).Build();
+        var empty = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>()).Build();
         var args = Array.Empty<string>();
 
         // Act
@@ -390,5 +337,88 @@ public class OpenAIArgumentOptionsTests
         // Assert
         settings.ConnectorType.ShouldBe(ConnectorType.Unknown);
         settings.Help.ShouldBeTrue();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("cli-key", "cli-model")]
+    public void Given_OpenAI_With_KnownArguments_When_Parse_Invoked_Then_Help_Should_Be_False(string cliApiKey, string cliModel)
+    {
+        // Arrange
+        var config = BuildConfigWithOpenAI(ApiKey, Model);
+        var args = new[] { "--api-key", cliApiKey, "--model", cliModel };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.Help.ShouldBeFalse();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("--api-key")]
+    [InlineData("--model")]
+    public void Given_OpenAI_With_KnownArgument_WithoutValue_When_Parse_Invoked_Then_Help_Should_Be_False(string argument)
+    {
+        // Arrange
+        var config = BuildConfigWithOpenAI();
+        var args = new[] { argument };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.Help.ShouldBeFalse();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("cli-key", "--unknown-flag")]
+    public void Given_OpenAI_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_Should_Be_True(string cliApiKey, string unknown)
+    {
+        // Arrange
+        var config = BuildConfigWithOpenAI();
+        var args = new[] { "--api-key", cliApiKey, unknown };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.Help.ShouldBeTrue();
+    }
+    
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("env-key", "env-model")]
+    public void Given_EnvironmentVariables_Only_When_Parse_Invoked_Then_Help_Should_Be_False(string envApiKey, string envModel)
+    {
+        // Arrange
+        var config = BuildConfigWithOpenAI(
+            null, null,
+            envApiKey, envModel);
+        var args = Array.Empty<string>();
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.Help.ShouldBeFalse();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("cli-key", "cli-model")]
+    public void Given_CLI_Only_When_Parse_Invoked_Then_Help_Should_Be_False(string cliApiKey, string cliModel)
+    {
+        // Arrange
+        var config = BuildConfigWithOpenAI();
+        var args = new[] { "--api-key", cliApiKey, "--model", cliModel };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.Help.ShouldBeFalse();
     }
 }
