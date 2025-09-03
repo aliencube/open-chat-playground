@@ -76,9 +76,11 @@ public class ArgumentOptionsTests
     [InlineData("ConnectorType", "AmazonBedrock", "--connector-type", "Kimchi", ConnectorType.AmazonBedrock)]
     [InlineData("ConnectorType", "AzureAIFoundry", "--connector-type", "Bulgogi", ConnectorType.AzureAIFoundry)]
     [InlineData("ConnectorType", "HuggingFace", "--connector-type", "Pizza", ConnectorType.HuggingFace)]
+    [InlineData("ConnectorType", "OpenAI", "--connector-type", "Apple", ConnectorType.OpenAI)]
     [InlineData("ConnectorType", "AmazonBedrock", "-c", "Kimchi", ConnectorType.AmazonBedrock)]
     [InlineData("ConnectorType", "AzureAIFoundry", "-c", "Bulgogi", ConnectorType.AzureAIFoundry)]
     [InlineData("ConnectorType", "HuggingFace", "-c", "Pizza", ConnectorType.HuggingFace)]
+    [InlineData("ConnectorType", "OpenAI", "-c", "Apple", ConnectorType.OpenAI)]
     public void Given_ConnectorType_And_InvalidArgument_When_VerifyConnectorType_Invoked_Then_It_Should_Return_Result(string key, string value, string argument1, string argument2, ConnectorType expected)
     {
         var config = BuildConfig((key, value));
@@ -94,6 +96,7 @@ public class ArgumentOptionsTests
     [InlineData("ConnectorType", "AmazonBedrock", "Kimchi", ConnectorType.AmazonBedrock)]
     [InlineData("ConnectorType", "AzureAIFoundry", "Bulgogi", ConnectorType.AzureAIFoundry)]
     [InlineData("ConnectorType", "HuggingFace", "Pizza", ConnectorType.HuggingFace)]
+    [InlineData("ConnectorType", "OpenAI", "Apple", ConnectorType.OpenAI)]
     public void Given_ConnectorType_And_UnrelatedArgument_When_VerifyConnectorType_Invoked_Then_It_Should_Return_Result(string key, string value, string argument, ConnectorType expected)
     {
         var config = BuildConfig((key, value));
@@ -176,6 +179,7 @@ public class ArgumentOptionsTests
     [InlineData("ConnectorType", "AmazonBedrock", "Kimchi", ConnectorType.AmazonBedrock)]
     [InlineData("ConnectorType", "AzureAIFoundry", "Bulgogi", ConnectorType.AzureAIFoundry)]
     [InlineData("ConnectorType", "HuggingFace", "Pizza", ConnectorType.HuggingFace)]
+    [InlineData("ConnectorType", "OpenAI", "Apple", ConnectorType.OpenAI)]
     public void Given_ConnectorType_And_UnrelatedArgument_When_Parse_Invoked_Then_It_Should_Return_Result(string key, string value, string argument, ConnectorType expected)
     {
         var config = BuildConfig((key, value));

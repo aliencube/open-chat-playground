@@ -51,8 +51,8 @@ public class OpenAIArgumentOptionsTests
         }
 
         return new ConfigurationBuilder()
-                    .AddInMemoryCollection(configDict!) // Base configuration (lowest priority)
-                    .AddInMemoryCollection(envDict!)    // Environment variables (medium priority)
+                    .AddInMemoryCollection(configDict!)
+                    .AddInMemoryCollection(envDict!)
                     .Build();
     }
 
@@ -167,7 +167,8 @@ public class OpenAIArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("--weird-model-name")] // leading dashes inside value
+    [InlineData("-weird-model-name")]
+    [InlineData("--weird-model-name")]
     public void Given_OpenAI_With_ModelName_StartingWith_Dashes_When_Parse_Invoked_Then_It_Should_Treat_As_Value(string cliModel)
     {
         // Arrange
@@ -179,6 +180,7 @@ public class OpenAIArgumentOptionsTests
 
         // Assert
         settings.OpenAI.ShouldNotBeNull();
+        settings.OpenAI.ApiKey.ShouldBe(ApiKey);
         settings.OpenAI.Model.ShouldBe(cliModel);
     }
 

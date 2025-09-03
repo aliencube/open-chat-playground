@@ -353,8 +353,8 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** OpenAI: **");
         Console.ForegroundColor = foregroundColor;
 
-    Console.WriteLine("  --api-key            The OpenAI API key. (Env: OPENAI_API_KEY)");
-    Console.WriteLine("  --model              The OpenAI model name. Default to 'gpt-4.1-mini'");
+        Console.WriteLine("  --api-key            The OpenAI API key. (Env: OPENAI_API_KEY)");
+        Console.WriteLine("  --model              The OpenAI model name. Default to 'gpt-4.1-mini'");
         Console.WriteLine();
     }
 
