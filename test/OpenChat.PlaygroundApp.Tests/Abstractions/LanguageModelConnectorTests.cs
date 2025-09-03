@@ -38,16 +38,7 @@ public class LanguageModelConnectorTests
 	[Theory]
 	[InlineData(ConnectorType.AmazonBedrock)]
 	[InlineData(ConnectorType.AzureAIFoundry)]
-	[InlineData(ConnectorType.GoogleVertexAI)]
-	[InlineData(ConnectorType.DockerModelRunner)]
-	[InlineData(ConnectorType.FoundryLocal)]
-	[InlineData(ConnectorType.HuggingFace)]
-	[InlineData(ConnectorType.Ollama)]
-	[InlineData(ConnectorType.Anthropic)]
-	[InlineData(ConnectorType.LG)]
-	[InlineData(ConnectorType.Naver)]
-	[InlineData(ConnectorType.OpenAI)]
-	[InlineData(ConnectorType.Upstage)]
+	[InlineData(ConnectorType.Unknown)]
 	public async Task Given_Unsupported_ConnectorType_When_CreateChatClient_Invoked_Then_It_Should_Throw(ConnectorType connectorType)
 	{
 		var settings = BuildAppSettings(connectorType: connectorType);
