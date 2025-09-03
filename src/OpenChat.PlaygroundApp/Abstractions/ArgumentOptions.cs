@@ -13,6 +13,9 @@ public abstract class ArgumentOptions
     [
         // Amazon Bedrock
         // Azure AI Foundry
+        (ConnectorType.AzureAIFoundry, "--endpoint", false),
+        (ConnectorType.AzureAIFoundry, "--api-key", false),
+        (ConnectorType.AzureAIFoundry, "--deployment-name", false),
         // GitHub Models
         (ConnectorType.GitHubModels, "--endpoint", false),
         (ConnectorType.GitHubModels, "--token", false),
@@ -149,6 +152,13 @@ public abstract class ArgumentOptions
                 settings.HuggingFace.Model = huggingFace.Model ?? settings.HuggingFace.Model;
                 break;
 
+            case AzureAIFoundryArgumentOptions azureAIFoundry:
+                settings.AzureAIFoundry ??= new AzureAIFoundrySettings();
+                settings.AzureAIFoundry.Endpoint = azureAIFoundry.Endpoint ?? settings.AzureAIFoundry.Endpoint;
+                settings.AzureAIFoundry.ApiKey = azureAIFoundry.ApiKey ?? settings.AzureAIFoundry.ApiKey;
+                settings.AzureAIFoundry.DeploymentName = azureAIFoundry.DeploymentName ?? settings.AzureAIFoundry.DeploymentName;
+                break;
+
             default:
                 break;
         }
@@ -232,7 +242,9 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** Azure AI Foundry: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  TBD");
+        Console.WriteLine("  --endpoint           The Azure AI Foundry endpoint.");
+        Console.WriteLine("  --api-key            The Azure AI Foundry API key.");
+        Console.WriteLine("  --deployment-name    The deployment name. Default to 'gpt-4o-mini'");
         Console.WriteLine();
     }
 
