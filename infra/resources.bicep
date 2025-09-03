@@ -55,7 +55,6 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.3' =
     tags: tags
     exportPolicyStatus: 'enabled'
     publicNetworkAccess: 'Enabled'
-    zoneRedundancy: 'Disabled'
     roleAssignments:[
       {
         principalId: openchatPlaygroundappIdentity.outputs.principalId
