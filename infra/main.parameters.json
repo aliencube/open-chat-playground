@@ -12,10 +12,10 @@
         "value": "${CONNECTOR_TYPE}"
       },
       "githubModelsModel": {
-        "value": "${GITHUB_MODELS_MODEL}"
+        "value": "${GH_MODELS_MODEL}"
       },
       "githubModelsToken": {
-        "value": "${GITHUB_MODELS_TOKEN}"
+        "value": "${GH_MODELS_TOKEN}"
       },
       "openchatPlaygroundappExists": {
         "value": "${SERVICE_OPENCHAT_PLAYGROUNDAPP_RESOURCE_EXISTS=false}"
