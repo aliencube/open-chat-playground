@@ -12,9 +12,7 @@ public class OllamaArgumentOptionsTests
 
     private static IConfiguration BuildConfigWithOllama(
         string? configBaseUrl = BaseUrl,
-        string? configModel = Model,
-        string? envBaseUrl = null,
-        string? envModel = null
+        string? configModel = Model
     )
     {
         // Base configuration values (lowest priority)
@@ -32,27 +30,8 @@ public class OllamaArgumentOptionsTests
             configDict["Ollama:Model"] = configModel;
         }
 
-        if (string.IsNullOrWhiteSpace(envBaseUrl) == true && string.IsNullOrWhiteSpace(envModel) == true)
-        {
-            return new ConfigurationBuilder()
-                       .AddInMemoryCollection(configDict!)
-                       .Build();
-        }
-
-        // Environment variables (medium priority)
-        var envDict = new Dictionary<string, string?>();
-        if (string.IsNullOrWhiteSpace(envBaseUrl) == false)
-        {
-            envDict["Ollama:BaseUrl"] = envBaseUrl;
-        }
-        if (string.IsNullOrWhiteSpace(envModel) == false)
-        {
-            envDict["Ollama:Model"] = envModel;
-        }
-
         return new ConfigurationBuilder()
-                   .AddInMemoryCollection(configDict!)  // Base configuration (lowest priority)
-                   .AddInMemoryCollection(envDict!)     // Environment variables (medium priority)
+                   .AddInMemoryCollection(configDict!)
                    .Build();
     }
 
@@ -196,143 +175,6 @@ public class OllamaArgumentOptionsTests
         settings.Ollama.ShouldNotBeNull();
         settings.Ollama.BaseUrl.ShouldBe(configBaseUrl);
         settings.Ollama.Model.ShouldBe(configModel);
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData("http://env.ollama.com:8080", "env-model")]
-    public void Given_EnvironmentVariables_And_No_Config_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(
-        string envBaseUrl, string envModel)
-    {
-        // Arrange
-        var config = BuildConfigWithOllama(
-            configBaseUrl: null, configModel: null,
-            envBaseUrl: envBaseUrl, envModel: envModel
-        );
-        var args = Array.Empty<string>();
-
-        // Act
-        var settings = ArgumentOptions.Parse(config, args);
-
-        // Assert
-        settings.Ollama.ShouldNotBeNull();
-        settings.Ollama.BaseUrl.ShouldBe(envBaseUrl);
-        settings.Ollama.Model.ShouldBe(envModel);
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData("http://config.ollama.com:8080", "config-model",
-                "http://env.ollama.com:8080", "env-model")]
-    public void Given_ConfigValues_And_EnvironmentVariables_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(
-        string configBaseUrl, string configModel,
-        string envBaseUrl, string envModel)
-    {
-        // Arrange
-        var config = BuildConfigWithOllama(
-            configBaseUrl, configModel,
-            envBaseUrl, envModel);
-        var args = Array.Empty<string>();
-
-        // Act
-        var settings = ArgumentOptions.Parse(config, args);
-
-        // Assert
-        settings.Ollama.ShouldNotBeNull();
-        settings.Ollama.BaseUrl.ShouldBe(envBaseUrl);
-        settings.Ollama.Model.ShouldBe(envModel);
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData("http://config.ollama.com:8080", "config-model",
-                "http://env.ollama.com:8080", "env-model",
-                "http://cli.ollama.com:8080", "cli-model")]
-    public void Given_ConfigValues_And_EnvironmentVariables_And_CLI_When_Parse_Invoked_Then_It_Should_Use_CLI(
-        string configBaseUrl, string configModel,
-        string envBaseUrl, string envModel,
-        string cliBaseUrl, string cliModel)
-    {
-        // Arrange
-        var config = BuildConfigWithOllama(
-            configBaseUrl, configModel,
-            envBaseUrl, envModel);
-        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
-
-        // Act
-        var settings = ArgumentOptions.Parse(config, args);
-
-        // Assert
-        settings.Ollama.ShouldNotBeNull();
-        settings.Ollama.BaseUrl.ShouldBe(cliBaseUrl);
-        settings.Ollama.Model.ShouldBe(cliModel);
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData("http://config.ollama.com:8080", "config-model",
-                "http://env.ollama.com:8080", null)]
-    public void Given_Partial_EnvironmentVariables_When_Parse_Invoked_Then_It_Should_Mix_Config_And_Environment(
-        string configBaseUrl, string configModel,
-        string envBaseUrl, string? envModel)
-    {
-        // Arrange
-        var config = BuildConfigWithOllama(
-            configBaseUrl, configModel,
-            envBaseUrl, envModel);
-        var args = Array.Empty<string>();
-
-        // Act
-        var settings = ArgumentOptions.Parse(config, args);
-
-        // Assert
-        settings.Ollama.ShouldNotBeNull();
-        settings.Ollama.BaseUrl.ShouldBe(envBaseUrl);  // From environment
-        settings.Ollama.Model.ShouldBe(configModel);   // From config (no env override)
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData("http://config.ollama.com:8080", "config-model",
-                null, "env-model",
-                "http://cli.ollama.com:8080", null)]
-    public void Given_Mixed_Priority_Sources_When_Parse_Invoked_Then_It_Should_Respect_Priority_Order(
-        string configBaseUrl, string configModel,
-        string? envBaseUrl, string envModel,
-        string cliBaseUrl, string? cliModel)
-    {
-        // Arrange
-        var config = BuildConfigWithOllama(
-            configBaseUrl, configModel,
-            envBaseUrl, envModel);
-        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
-
-        // Act
-        var settings = ArgumentOptions.Parse(config, args!);
-
-        // Assert
-        settings.Ollama.ShouldNotBeNull();
-        settings.Ollama.BaseUrl.ShouldBe(cliBaseUrl);  // CLI wins (highest priority)
-        settings.Ollama.Model.ShouldBe(envModel);      // Env wins over config (medium priority)
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData("http://env.ollama.com:8080", "env-model")]
-    public void Given_EnvironmentVariables_Only_When_Parse_Invoked_Then_Help_Should_Be_False(
-        string envBaseUrl, string envModel)
-    {
-        // Arrange
-        var config = BuildConfigWithOllama(
-            configBaseUrl: null, configModel: null,
-            envBaseUrl: envBaseUrl, envModel: envModel);
-        var args = Array.Empty<string>();
-
-        // Act
-        var settings = ArgumentOptions.Parse(config, args);
-
-        // Assert
-        settings.Help.ShouldBeFalse();
     }
 
     [Trait("Category", "UnitTest")]

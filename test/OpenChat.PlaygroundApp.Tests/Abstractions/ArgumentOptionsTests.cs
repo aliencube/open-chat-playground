@@ -54,16 +54,17 @@ public class ArgumentOptionsTests
     [InlineData("ConnectorType", "AzureAIFoundry", "--connector-type", "AmazonBedrock", ConnectorType.AmazonBedrock)]
     [InlineData("ConnectorType", "GitHubModels", "--connector-type", "OpenAI", ConnectorType.OpenAI)]
     [InlineData("ConnectorType", "FoundryLocal", "--connector-type", "AzureAIFoundry", ConnectorType.AzureAIFoundry)]
+    [InlineData("ConnectorType", "HuggingFace", "--connector-type", "Ollama", ConnectorType.Ollama)]
     [InlineData("ConnectorType", "Ollama", "--connector-type", "HuggingFace", ConnectorType.HuggingFace)]
     [InlineData("ConnectorType", "OpenAI", "--connector-type", "FoundryLocal", ConnectorType.FoundryLocal)]
-    [InlineData("ConnectorType", "HuggingFace", "--connector-type", "Ollama", ConnectorType.Ollama)]
     [InlineData("ConnectorType", "AmazonBedrock", "-c", "OpenAI", ConnectorType.OpenAI)]
     [InlineData("ConnectorType", "AzureAIFoundry", "-c", "AmazonBedrock", ConnectorType.AmazonBedrock)]
     [InlineData("ConnectorType", "GitHubModels", "-c", "OpenAI", ConnectorType.OpenAI)]
     [InlineData("ConnectorType", "FoundryLocal", "-c", "AzureAIFoundry", ConnectorType.AzureAIFoundry)]
+    [InlineData("ConnectorType", "HuggingFace", "-c", "Ollama", ConnectorType.Ollama)]
     [InlineData("ConnectorType", "Ollama", "-c", "HuggingFace", ConnectorType.HuggingFace)]
     [InlineData("ConnectorType", "OpenAI", "-c", "FoundryLocal", ConnectorType.FoundryLocal)]
-    [InlineData("ConnectorType", "HuggingFace", "-c", "Ollama", ConnectorType.Ollama)]
+    
     public void Given_ConnectorType_And_Argument_When_VerifyConnectorType_Invoked_Then_It_Should_Return_Result(string key, string value, string argument1, string argument2, ConnectorType expected)
     {
         var config = BuildConfig((key, value));
@@ -79,11 +80,11 @@ public class ArgumentOptionsTests
     [InlineData("ConnectorType", "AmazonBedrock", "--connector-type", "Kimchi", ConnectorType.AmazonBedrock)]
     [InlineData("ConnectorType", "AzureAIFoundry", "--connector-type", "Bulgogi", ConnectorType.AzureAIFoundry)]
     [InlineData("ConnectorType", "HuggingFace", "--connector-type", "Pizza", ConnectorType.HuggingFace)]
-    [InlineData("ConnectorType", "Ollama", "--connector-type", "chicken", ConnectorType.Ollama)]
+    [InlineData("ConnectorType", "Ollama", "--connector-type", "Chicken", ConnectorType.Ollama)]
     [InlineData("ConnectorType", "AmazonBedrock", "-c", "Kimchi", ConnectorType.AmazonBedrock)]
     [InlineData("ConnectorType", "AzureAIFoundry", "-c", "Bulgogi", ConnectorType.AzureAIFoundry)]
     [InlineData("ConnectorType", "HuggingFace", "-c", "Pizza", ConnectorType.HuggingFace)]
-    [InlineData("ConnectorType", "Ollama", "-c", "chicken", ConnectorType.Ollama)]
+    [InlineData("ConnectorType", "Ollama", "-c", "Chicken", ConnectorType.Ollama)]
     public void Given_ConnectorType_And_InvalidArgument_When_VerifyConnectorType_Invoked_Then_It_Should_Return_Result(string key, string value, string argument1, string argument2, ConnectorType expected)
     {
         var config = BuildConfig((key, value));
@@ -99,7 +100,7 @@ public class ArgumentOptionsTests
     [InlineData("ConnectorType", "AmazonBedrock", "Kimchi", ConnectorType.AmazonBedrock)]
     [InlineData("ConnectorType", "AzureAIFoundry", "Bulgogi", ConnectorType.AzureAIFoundry)]
     [InlineData("ConnectorType", "HuggingFace", "Pizza", ConnectorType.HuggingFace)]
-    [InlineData("ConnectorType", "Ollama", "chicken", ConnectorType.Ollama)]
+    [InlineData("ConnectorType", "Ollama", "Chicken", ConnectorType.Ollama)]
     public void Given_ConnectorType_And_UnrelatedArgument_When_VerifyConnectorType_Invoked_Then_It_Should_Return_Result(string key, string value, string argument, ConnectorType expected)
     {
         var config = BuildConfig((key, value));
@@ -164,9 +165,10 @@ public class ArgumentOptionsTests
     [InlineData("ConnectorType", "AzureAIFoundry", "AmazonBedrock", ConnectorType.AmazonBedrock)]
     [InlineData("ConnectorType", "GitHubModels", "OpenAI", ConnectorType.OpenAI)]
     [InlineData("ConnectorType", "FoundryLocal", "GitHubModels", ConnectorType.GitHubModels)]
+    [InlineData("ConnectorType", "HuggingFace", "Ollama", ConnectorType.Ollama)]
     [InlineData("ConnectorType", "Ollama", "HuggingFace", ConnectorType.HuggingFace)]
     [InlineData("ConnectorType", "OpenAI", "FoundryLocal", ConnectorType.FoundryLocal)]
-    [InlineData("ConnectorType", "HuggingFace", "Ollama", ConnectorType.Ollama)]
+    
     public void Given_ConnectorType_And_Argument_When_Parse_Invoked_Then_It_Should_Return_Result(string key, string value, string argument, ConnectorType expected)
     {
         var config = BuildConfig((key, value));
@@ -184,7 +186,7 @@ public class ArgumentOptionsTests
     [InlineData("ConnectorType", "AmazonBedrock", "Kimchi", ConnectorType.AmazonBedrock)]
     [InlineData("ConnectorType", "AzureAIFoundry", "Bulgogi", ConnectorType.AzureAIFoundry)]
     [InlineData("ConnectorType", "HuggingFace", "Pizza", ConnectorType.HuggingFace)]
-    [InlineData("ConnectorType", "Ollama", "chicken", ConnectorType.Ollama)]
+    [InlineData("ConnectorType", "Ollama", "Chicken", ConnectorType.Ollama)]
     public void Given_ConnectorType_And_UnrelatedArgument_When_Parse_Invoked_Then_It_Should_Return_Result(string key, string value, string argument, ConnectorType expected)
     {
         var config = BuildConfig((key, value));

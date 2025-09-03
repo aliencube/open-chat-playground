@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Configuration;
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Configurations;
 
