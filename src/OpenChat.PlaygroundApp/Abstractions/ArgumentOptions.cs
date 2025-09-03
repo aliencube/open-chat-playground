@@ -22,13 +22,16 @@ public abstract class ArgumentOptions
         // Foundry Local
         // Hugging Face
         (ConnectorType.HuggingFace, "--base-url", false),
-        (ConnectorType.HuggingFace, "--model", false)
+        (ConnectorType.HuggingFace, "--model", false),
         // Ollama
         // Anthropic
         // LG
         // Naver
         // OpenAI
         // Upstage
+        (ConnectorType.Upstage, "--base-url", false),
+        (ConnectorType.Upstage, "--api-key", false),
+        (ConnectorType.Upstage, "--model", false)
     ];
 
     /// <summary>
@@ -147,6 +150,13 @@ public abstract class ArgumentOptions
                 settings.HuggingFace ??= new HuggingFaceSettings();
                 settings.HuggingFace.BaseUrl = huggingFace.BaseUrl ?? settings.HuggingFace.BaseUrl;
                 settings.HuggingFace.Model = huggingFace.Model ?? settings.HuggingFace.Model;
+                break;
+
+            case UpstageArgumentOptions upstage:
+                settings.Upstage ??= new UpstageSettings();
+                settings.Upstage.BaseUrl = upstage.BaseUrl ?? settings.Upstage.BaseUrl;
+                settings.Upstage.ApiKey = upstage.ApiKey ?? settings.Upstage.ApiKey;
+                settings.Upstage.Model = upstage.Model ?? settings.Upstage.Model;
                 break;
 
             default:
@@ -356,7 +366,9 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** Upstage: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  TBD");
+        Console.WriteLine("  --base-url           The base URL for Upstage API. Default to 'https://api.upstage.ai/v1/solar'");
+        Console.WriteLine("  --api-key            The Upstage API key.");
+        Console.WriteLine("  --model              The model name. Default to 'solar-mini'");
         Console.WriteLine();
     }
 }
