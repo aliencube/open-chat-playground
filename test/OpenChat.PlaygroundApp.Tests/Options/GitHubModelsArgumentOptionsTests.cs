@@ -376,7 +376,7 @@ public class GitHubModelsArgumentOptionsTests
 
         // Assert
         settings.GitHubModels.ShouldNotBeNull();
-        settings.GitHubModels.Endpoint.ShouldBe(cliEndpoint);  // CLI s (highest priority)
+        settings.GitHubModels.Endpoint.ShouldBe(cliEndpoint);  // CLI wins (highest priority)
         settings.GitHubModels.Token.ShouldBe(envToken);        // Env wins over config (medium priority)
         settings.GitHubModels.Model.ShouldBe(configModel);     // Config only (lowest priority)
     }
