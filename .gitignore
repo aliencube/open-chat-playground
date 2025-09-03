@@ -513,9 +513,9 @@ model-*.json
 # azd infra synth
 manifests
 next-steps.md
-main.bicep
-main.parameters.json
-resources.bicep
+# main.bicep
+# main.parameters.json
+# resources.bicep
 
 # Aspire
 aspire-manifest.json

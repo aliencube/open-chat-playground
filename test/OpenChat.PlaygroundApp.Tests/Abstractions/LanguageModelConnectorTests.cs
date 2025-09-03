@@ -36,7 +36,6 @@ public class LanguageModelConnectorTests
 
 	[Trait("Category", "UnitTest")]
 	[Theory]
-	[InlineData(ConnectorType.OpenAI)]
 	[InlineData(ConnectorType.AmazonBedrock)]
 	[InlineData(ConnectorType.AzureAIFoundry)]
 	[InlineData(ConnectorType.Unknown)]

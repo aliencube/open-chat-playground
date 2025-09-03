@@ -7,4 +7,8 @@ namespace OpenChat.PlaygroundApp.Options;
 /// </summary>
 public class FoundryLocalArgumentOptions : ArgumentOptions
 {
+    /// <summary>
+    /// Gets or sets the alias of Foundry Local.
+    /// </summary>
+    public string? Alias { get; set; }
 }
