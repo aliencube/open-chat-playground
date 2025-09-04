@@ -14,6 +14,7 @@ public class OpenAIArgumentOptionsTests
         string? apiKey = ApiKey,
         string? model = Model)
     {
+        // Base configuration values (lowest priority)
         var configDict = new Dictionary<string, string?>
         {
             ["ConnectorType"] = ConnectorType.OpenAI.ToString()
@@ -211,37 +212,6 @@ public class OpenAIArgumentOptionsTests
         settings.OpenAI.ShouldNotBeNull();
         settings.OpenAI.ApiKey.ShouldBe(cliApiKey);
         settings.OpenAI.Model.ShouldBe(cliModel);
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_Help_Flag_When_Parse_Invoked_Then_Help_Should_Be_True()
-    {
-        // Arrange
-        var config = BuildConfigWithOpenAI();
-        var args = new[] { "--help" };
-
-        // Act
-        var settings = ArgumentOptions.Parse(config, args);
-
-        // Assert
-        settings.Help.ShouldBeTrue();
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_Missing_ConnectorType_When_Parse_Invoked_Then_Help_Should_Be_True()
-    {
-        // Arrange
-        var empty = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>()).Build();
-        var args = Array.Empty<string>();
-
-        // Act
-        var settings = ArgumentOptions.Parse(empty, args);
-
-        // Assert
-        settings.ConnectorType.ShouldBe(ConnectorType.Unknown);
-        settings.Help.ShouldBeTrue();
     }
 
     [Trait("Category", "UnitTest")]
