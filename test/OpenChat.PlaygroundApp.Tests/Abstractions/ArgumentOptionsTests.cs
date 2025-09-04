@@ -34,10 +34,16 @@ public class ArgumentOptionsTests
     [InlineData("ConnectorType", "AmazonBedrock", ConnectorType.AmazonBedrock)]
     [InlineData("ConnectorType", "AzureAIFoundry", ConnectorType.AzureAIFoundry)]
     [InlineData("ConnectorType", "GitHubModels", ConnectorType.GitHubModels)]
+    [InlineData("ConnectorType", "GoogleVertexAI", ConnectorType.GoogleVertexAI)]
+    [InlineData("ConnectorType", "DockerModelRunner", ConnectorType.DockerModelRunner)]
     [InlineData("ConnectorType", "FoundryLocal", ConnectorType.FoundryLocal)]
     [InlineData("ConnectorType", "HuggingFace", ConnectorType.HuggingFace)]
     [InlineData("ConnectorType", "Ollama", ConnectorType.Ollama)]
+    [InlineData("ConnectorType", "Anthropic", ConnectorType.Anthropic)]
+    [InlineData("ConnectorType", "LG", ConnectorType.LG)]
+    [InlineData("ConnectorType", "Naver", ConnectorType.Naver)]
     [InlineData("ConnectorType", "OpenAI", ConnectorType.OpenAI)]
+    [InlineData("ConnectorType", "Upstage", ConnectorType.Upstage)]
     public void Given_ConnectorType_When_VerifyConnectorType_Invoked_Then_It_Should_Return_Result(string key, string value, ConnectorType expected)
     {
         var config = BuildConfig((key, value));
