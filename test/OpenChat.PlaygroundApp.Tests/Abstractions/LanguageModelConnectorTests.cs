@@ -7,10 +7,10 @@ namespace OpenChat.PlaygroundApp.Tests.Abstractions;
 public class LanguageModelConnectorTests
 {
 	private static AppSettings BuildAppSettings(
-        ConnectorType connectorType = ConnectorType.GitHubModels,
-        string? endpoint = "https://models.github.ai/inference",
-        string? token = "test-token",
-        string? model = "openai/gpt-4o-mini")
+		ConnectorType connectorType = ConnectorType.GitHubModels,
+		string? endpoint = "https://models.github.ai/inference",
+		string? token = "test-token",
+		string? model = "openai/gpt-4o-mini")
 	{
 		return new AppSettings
 		{
