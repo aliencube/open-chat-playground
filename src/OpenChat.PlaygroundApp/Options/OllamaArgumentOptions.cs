@@ -1,9 +1,11 @@
+using OpenChat.PlaygroundApp.Abstractions;
+
 namespace OpenChat.PlaygroundApp.Options;
 
 /// <summary>
 /// Represents the command-line argument options for Ollama.
 /// </summary>
-public class OllamaArgumentOptions
+public class OllamaArgumentOptions : ArgumentOptions
 {
     /// <summary>
     /// Gets or sets the base URL for Ollama API.
