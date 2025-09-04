@@ -64,7 +64,6 @@ public class ArgumentOptionsTests
     [InlineData("ConnectorType", "HuggingFace", "-c", "Ollama", ConnectorType.Ollama)]
     [InlineData("ConnectorType", "Ollama", "-c", "HuggingFace", ConnectorType.HuggingFace)]
     [InlineData("ConnectorType", "OpenAI", "-c", "FoundryLocal", ConnectorType.FoundryLocal)]
-    
     public void Given_ConnectorType_And_Argument_When_VerifyConnectorType_Invoked_Then_It_Should_Return_Result(string key, string value, string argument1, string argument2, ConnectorType expected)
     {
         var config = BuildConfig((key, value));

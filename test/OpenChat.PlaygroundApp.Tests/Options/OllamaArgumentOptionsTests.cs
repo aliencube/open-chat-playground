@@ -37,6 +37,22 @@ public class OllamaArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Fact]
+    public void OllamaArgumentOptions_Should_Inherit_ArgumentOptions()
+    {
+        // Arrange
+        var ollamaArgumentOptionsType = typeof(OpenChat.PlaygroundApp.Options.OllamaArgumentOptions);
+        var argumentOptionsType = typeof(ArgumentOptions);
+
+        // Act
+        var baseType = ollamaArgumentOptionsType.BaseType;
+
+        // Assert
+        baseType.ShouldNotBeNull();
+        baseType.ShouldBe(argumentOptionsType);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Fact]
     public void Given_Nothing_When_Parse_Invoked_Then_It_Should_Set_Config()
     {
         // Arrange
