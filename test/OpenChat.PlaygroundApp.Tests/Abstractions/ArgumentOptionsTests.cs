@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Connectors;
+using OpenChat.PlaygroundApp.Options;
 
 namespace OpenChat.PlaygroundApp.Tests.Abstractions;
 
@@ -276,5 +277,22 @@ public class ArgumentOptionsTests
         var settings = ArgumentOptions.Parse(config, args);
 
         settings.Help.ShouldBe(expected);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData(typeof(AmazonBedrockArgumentOptions))]
+    [InlineData(typeof(AzureAIFoundryArgumentOptions))]
+    [InlineData(typeof(GitHubModelsArgumentOptions))]
+    [InlineData(typeof(GoogleVertexAIArgumentOptions))]
+    [InlineData(typeof(FoundryLocalArgumentOptions))]
+    [InlineData(typeof(HuggingFaceArgumentOptions))]
+    [InlineData(typeof(OllamaArgumentOptions))]
+    [InlineData(typeof(LGArgumentOptions))]
+    [InlineData(typeof(OpenAIArgumentOptions))]
+    [InlineData(typeof(UpstageArgumentOptions))]
+    public void Given_Concrete_ArgumentOptions_When_Checking_Inheritance_Then_Should_Inherit_From_ArgumentOptions(Type type)
+    {
+        type.IsSubclassOf(typeof(ArgumentOptions)).ShouldBeTrue();
     }
 }

@@ -47,4 +47,13 @@ public class LanguageModelConnectorTests
 
 		ex.Message.ShouldContain($"Connector type '{connectorType}'");
 	}
+
+	[Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData(typeof(GitHubModelsConnector))]
+    [InlineData(typeof(OpenAIConnector))]
+    public void Given_Concrete_Connectors_When_Checking_Inheritance_Then_Should_Inherit_From_LanguageModelConnector(Type type)
+    {
+        type.IsSubclassOf(typeof(LanguageModelConnector)).ShouldBeTrue();
+    }
 }
