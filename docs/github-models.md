@@ -24,18 +24,18 @@ This page describes to run OpenChat Playground (OCP) with GitHub Models integrat
     cd $REPOSITORY_ROOT
     ```
 
-1. Add GitHub Personal Access Token (PAT) for GitHub Models connection. Make sure you should replace `{{GITHUB_TOKEN}}` with your GitHub PAT.
+1. Add GitHub Personal Access Token (PAT) for GitHub Models connection. Make sure you should replace `{{GH_PAT}}` with your GitHub PAT.
 
     ```bash
     # bash/zsh
     dotnet user-secrets --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp \
-        set GitHubModels:Token "{{GITHUB_TOKEN}}"
+        set GitHubModels:Token "{{GH_PAT}}"
     ```
 
     ```bash
     # PowerShell
     dotnet user-secrets --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp `
-        set GitHubModels:Token "{{GITHUB_TOKEN}}"
+        set GitHubModels:Token "{{GH_PAT}}"
     ```
 
     > For more details about GitHub PAT, refer to the doc, [Managing your personal access tokens](https://docs.github.com/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
