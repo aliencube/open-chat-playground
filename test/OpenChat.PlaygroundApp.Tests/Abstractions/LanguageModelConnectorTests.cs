@@ -49,11 +49,26 @@ public class LanguageModelConnectorTests
 	}
 
 	[Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData(typeof(GitHubModelsConnector))]
-    [InlineData(typeof(OpenAIConnector))]
+	[Theory]
+	// [InlineData(typeof(AmazonBedrockConnector))]
+	// [InlineData(typeof(AzureAIFoundryConnector))]
+	[InlineData(typeof(GitHubModelsConnector))]
+	// [InlineData(typeof(GoogleVertexAIConnector))]
+	// [InlineData(typeof(DockerModelRunnerConnector))]
+	// [InlineData(typeof(FoundryLocalConnector))]
+	// [InlineData(typeof(HuggingFaceConnector))]
+	// [InlineData(typeof(OllamaConnector))]
+	// [InlineData(typeof(AnthropicConnector))]
+	// [InlineData(typeof(LGConnector))]
+	// [InlineData(typeof(NaverConnector))]
+	[InlineData(typeof(OpenAIConnector))]
+	// [InlineData(typeof(UpstageConnector))]
     public void Given_Concrete_Connectors_When_Checking_Inheritance_Then_Should_Inherit_From_LanguageModelConnector(Type type)
-    {
-        type.IsSubclassOf(typeof(LanguageModelConnector)).ShouldBeTrue();
-    }
+	{
+		// Act
+		var isSubclass = type.IsSubclassOf(typeof(LanguageModelConnector));
+
+		// Assert
+		isSubclass.ShouldBeTrue();
+	}
 }
