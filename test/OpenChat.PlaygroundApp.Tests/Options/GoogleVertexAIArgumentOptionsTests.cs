@@ -12,9 +12,7 @@ public class GoogleVertexAIArgumentOptionsTests
 
     private static IConfiguration BuildConfigWithGoogleVertexAI(
         string? configApiKey = ApiKey,
-        string? configModel = Model,
-        string? envApiKey = null,
-        string? envModel = null)
+        string? configModel = Model)
     {
         var configDict = new Dictionary<string, string?>
         {
@@ -29,25 +27,9 @@ public class GoogleVertexAIArgumentOptionsTests
         {
             configDict["GoogleVertexAI:Model"] = configModel;
         }
-
-        if (string.IsNullOrWhiteSpace(envApiKey) == true &&
-            string.IsNullOrWhiteSpace(envModel) == true)
-        {
-            return new ConfigurationBuilder()
-                       .AddInMemoryCollection(configDict!)
-                       .Build();
-        }
-
+        
         var envDict = new Dictionary<string, string?>();
-        if (string.IsNullOrWhiteSpace(envApiKey) == false)
-        {
-            envDict["GoogleVertexAI:ApiKey"] = envApiKey;
-        }
-        if (string.IsNullOrWhiteSpace(envModel) == false)
-        {
-            envDict["GoogleVertexAI:Model"] = envModel;
-        }
-
+        
         return new ConfigurationBuilder()
                    .AddInMemoryCollection(configDict!)
                    .AddInMemoryCollection(envDict!)
