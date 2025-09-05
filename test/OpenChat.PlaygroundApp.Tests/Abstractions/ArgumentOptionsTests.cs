@@ -44,7 +44,6 @@ public class ArgumentOptionsTests
     [InlineData("ConnectorType", "Naver", ConnectorType.Naver)]
     [InlineData("ConnectorType", "OpenAI", ConnectorType.OpenAI)]
     [InlineData("ConnectorType", "Upstage", ConnectorType.Upstage)]
-    [InlineData("ConnectorType", "GoogleVertexAI", ConnectorType.GoogleVertexAI)]
     public void Given_ConnectorType_When_VerifyConnectorType_Invoked_Then_It_Should_Return_Result(string key, string value, ConnectorType expected)
     {
         var config = BuildConfig((key, value));
