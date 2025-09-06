@@ -4,15 +4,6 @@
     // Auto-resize whenever the user types or if the value is set programmatically
     elem.addEventListener('input', () => resizeToFit(elem));
     afterPropertyWritten(elem, 'value', () => resizeToFit(elem));
-
-    // Auto-submit the form on 'enter' keypress
-    elem.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            elem.dispatchEvent(new CustomEvent('change', { bubbles: true }));
-            elem.closest('form').dispatchEvent(new CustomEvent('submit', { bubbles: true, cancelable: true }));
-        }
-    });
 }
 
 function resizeToFit(elem) {

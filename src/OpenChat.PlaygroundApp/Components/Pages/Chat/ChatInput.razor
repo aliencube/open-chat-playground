@@ -2,7 +2,7 @@
 
 <EditForm Model="@this" OnValidSubmit="@SendMessageAsync">
     <label class="input-box page-width">
-        <textarea aria-label="User Message Textarea" @ref="@textArea" @bind="@messageText" placeholder="Type your message..." rows="1"></textarea>
+        <textarea aria-label="User Message Textarea" @ref="@textArea" @bind="@messageText" @bind:event="oninput" @onkeydown="HandleKeyDown" placeholder="Type your message..." rows="1"></textarea>
 
         <div class="tools">
             <button type="submit" title="Send" class="send-button" aria-label="User Message Send Button">
@@ -17,6 +17,7 @@
 @code {
     private ElementReference textArea;
     private string? messageText;
+    private bool justSent;
 
     [Parameter]
     public EventCallback<ChatMessage> OnSend { get; set; }
@@ -26,11 +27,57 @@
 
     private async Task SendMessageAsync()
     {
-        if (messageText is { Length: > 0 } text)
+        if (messageText is { Length: > 0 } raw)
         {
+            var text = raw.Trim();
+            if (text.Length == 0)
+            {
+                messageText = null;
+                return;
+            }
+
+            justSent = true;
             messageText = null;
             await OnSend.InvokeAsync(new ChatMessage(ChatRole.User, text));
         }
+    }
+
+    private Task HandleKeyDown(Microsoft.AspNetCore.Components.Web.KeyboardEventArgs e)
+    {
+        // Ignore while composing (IME) to avoid duplicate Enter keydown on macOS
+        if (e.IsComposing)
+        {
+            return Task.CompletedTask;
+        }
+
+        // Ignore auto-repeat from holding the Enter key
+        if (e.Repeat)
+        {
+            return Task.CompletedTask;
+        }
+
+        var isEnter = e.Key == "Enter" && !e.ShiftKey;
+        if (!isEnter)
+        {
+            // Any non-Enter key press clears the justSent guard
+            justSent = false;
+            return Task.CompletedTask;
+        }
+
+        // Ignore immediate Enter after a send until user types again
+        if (justSent)
+        {
+            return Task.CompletedTask;
+        }
+
+        // Don't submit on empty Enter
+        var isEmpty = string.IsNullOrWhiteSpace(messageText);
+        if (isEmpty)
+        {
+            return Task.CompletedTask;
+        }
+
+        return SendMessageAsync();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
