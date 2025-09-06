@@ -16,6 +16,4 @@ public class AnthropicArgumentOptions : ArgumentOptions
     /// Gets or sets the model name of Anthropic Claude.
     /// </summary>
     public string? Model { get; set; }
-
-    /// <inheritdoc/>
 }
