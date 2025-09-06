@@ -139,6 +139,13 @@ public abstract class ArgumentOptions
 
         switch (options)
         {
+            case AzureAIFoundryArgumentOptions azureAIFoundry:
+                settings.AzureAIFoundry ??= new AzureAIFoundrySettings();
+                settings.AzureAIFoundry.Endpoint = azureAIFoundry.Endpoint ?? settings.AzureAIFoundry.Endpoint;
+                settings.AzureAIFoundry.ApiKey = azureAIFoundry.ApiKey ?? settings.AzureAIFoundry.ApiKey;
+                settings.AzureAIFoundry.DeploymentName = azureAIFoundry.DeploymentName ?? settings.AzureAIFoundry.DeploymentName;
+                break;
+
             case GitHubModelsArgumentOptions github:
                 settings.GitHubModels ??= new GitHubModelsSettings();
                 settings.GitHubModels.Endpoint = github.Endpoint ?? settings.GitHubModels.Endpoint;
@@ -150,13 +157,6 @@ public abstract class ArgumentOptions
                 settings.HuggingFace ??= new HuggingFaceSettings();
                 settings.HuggingFace.BaseUrl = huggingFace.BaseUrl ?? settings.HuggingFace.BaseUrl;
                 settings.HuggingFace.Model = huggingFace.Model ?? settings.HuggingFace.Model;
-                break;
-
-            case AzureAIFoundryArgumentOptions azureAIFoundry:
-                settings.AzureAIFoundry ??= new AzureAIFoundrySettings();
-                settings.AzureAIFoundry.Endpoint = azureAIFoundry.Endpoint ?? settings.AzureAIFoundry.Endpoint;
-                settings.AzureAIFoundry.ApiKey = azureAIFoundry.ApiKey ?? settings.AzureAIFoundry.ApiKey;
-                settings.AzureAIFoundry.DeploymentName = azureAIFoundry.DeploymentName ?? settings.AzureAIFoundry.DeploymentName;
                 break;
 
             default:
