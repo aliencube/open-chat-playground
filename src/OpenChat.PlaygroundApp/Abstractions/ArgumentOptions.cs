@@ -20,6 +20,7 @@ public abstract class ArgumentOptions
         // Google Vertex AI
         // Docker Model Runner
         // Foundry Local
+        (ConnectorType.FoundryLocal, "--alias", false),
         // Hugging Face
         (ConnectorType.HuggingFace, "--base-url", false),
         (ConnectorType.HuggingFace, "--model", false),
@@ -143,6 +144,11 @@ public abstract class ArgumentOptions
                 settings.GitHubModels.Endpoint = github.Endpoint ?? settings.GitHubModels.Endpoint;
                 settings.GitHubModels.Token = github.Token ?? settings.GitHubModels.Token;
                 settings.GitHubModels.Model = github.Model ?? settings.GitHubModels.Model;
+                break;
+
+            case FoundryLocalArgumentOptions foundryLocal:
+                settings.FoundryLocal ??= new FoundryLocalSettings();
+                settings.FoundryLocal.Alias = foundryLocal.Alias ?? settings.FoundryLocal.Alias;
                 break;
 
             case HuggingFaceArgumentOptions huggingFace:
