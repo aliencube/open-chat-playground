@@ -18,6 +18,8 @@ public abstract class ArgumentOptions
         (ConnectorType.GitHubModels, "--token", false),
         (ConnectorType.GitHubModels, "--model", false),
         // Google Vertex AI
+        (ConnectorType.GoogleVertexAI, "--api-key", false),
+        (ConnectorType.GoogleVertexAI, "--model", false),
         // Docker Model Runner
         // Foundry Local
         (ConnectorType.FoundryLocal, "--alias", false),
@@ -155,6 +157,12 @@ public abstract class ArgumentOptions
                 settings.HuggingFace ??= new HuggingFaceSettings();
                 settings.HuggingFace.BaseUrl = huggingFace.BaseUrl ?? settings.HuggingFace.BaseUrl;
                 settings.HuggingFace.Model = huggingFace.Model ?? settings.HuggingFace.Model;
+                break;
+                
+            case GoogleVertexAIArgumentOptions googleVertexAI:
+                settings.GoogleVertexAI ??= new GoogleVertexAISettings();
+                settings.GoogleVertexAI.ApiKey = googleVertexAI.ApiKey ?? settings.GoogleVertexAI.ApiKey;
+                settings.GoogleVertexAI.Model = googleVertexAI.Model ?? settings.GoogleVertexAI.Model;
                 break;
 
             case OpenAIArgumentOptions openai:
