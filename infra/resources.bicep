@@ -22,9 +22,9 @@ param githubModelsToken string = ''
 // LG
 // Naver
 // OpenAI
-param openaiModel string = ''
+param openAIModel string = ''
 @secure()
-param openaiApiKey string = ''
+param openAIApiKey string = ''
 // Upstage
 
 param openchatPlaygroundappExists bool
@@ -125,17 +125,17 @@ var envGitHubModels = (connectorType == '' || connectorType == 'GitHubModels') ?
 // LG
 // Naver
 // OpenAI
-var envOpenAI = (connectorType == '' || connectorType == 'OpenAI') ? concat(openaiModel != '' ? [
+var envOpenAI = connectorType == 'OpenAI' ? concat(openAIModel != '' ? [
   {
     name: 'OpenAI__Model'
-    value: openaiModel
+    value: openAIModel
   }
-] : [], [
+] : [], openAIApiKey != '' ? [
   {
     name: 'OpenAI__ApiKey'
     secretRef: 'openai-api-key'
   }
-]) : []
+] : []) : []
 // Upstage
 
 module openchatPlaygroundapp 'br/public:avm/res/app/container-app:0.18.1' = {
@@ -152,10 +152,10 @@ module openchatPlaygroundapp 'br/public:avm/res/app/container-app:0.18.1' = {
         name: 'github-models-token'
         value: githubModelsToken
       }
-    ], openaiApiKey != '' ? [
+    ], openAIApiKey != '' ? [
       {
         name: 'openai-api-key'
-        value: openaiApiKey
+        value: openAIApiKey
       }
     ] : [])
     containers: [

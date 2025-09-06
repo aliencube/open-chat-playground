@@ -27,9 +27,9 @@ param githubModelsToken string = ''
 // LG
 // Naver
 // OpenAI
-param openaiModel string = ''
+param openAIModel string = ''
 @secure()
-param openaiApiKey string = ''
+param openAIApiKey string = ''
 // Upstage
 
 param openchatPlaygroundappExists bool
@@ -67,8 +67,8 @@ module resources 'resources.bicep' = {
     connectorType: connectorType
     githubModelsModel: githubModelsModel
     githubModelsToken: githubModelsToken
-    openaiModel: openaiModel
-    openaiApiKey: openaiApiKey
+    openAIModel: openAIModel
+    openAIApiKey: openAIApiKey
     openchatPlaygroundappExists: openchatPlaygroundappExists
   }
 }

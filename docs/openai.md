@@ -40,33 +40,18 @@ This page describes how to run OpenChat Playground (OCP) with OpenAI GPT integra
 
     > For more details about OpenAI API Keys, refer to the doc, [API Keys](https://platform.openai.com/api-keys).
 
-1. Optionally, set a specific model (default is `gpt-4.1-mini`).
-
-    ```bash
-    # bash/zsh
-    dotnet user-secrets --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp \
-        set OpenAI:Model "gpt-4o"
-    ```
-
-    ```bash
-    # PowerShell
-    dotnet user-secrets --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp `
-        set OpenAI:Model "gpt-4o"
-    ```
-
 1. Run the app.
 
     ```bash
     dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- --connector-type OpenAI
     ```
 
-    Alternatively, you can specify the API key and model directly via command line arguments:
+    Alternatively, you can specify a different model via command line arguments (API key will be read from user-secrets):
 
     ```bash
     dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- \
         --connector-type OpenAI \
-        --api-key "{{OPENAI_API_KEY}}" \
-        --model "gpt-4o"
+        --model "gpt-4.1-mini"
     ```
 
 1. Open your web browser, navigate to `http://localhost:5280`, and enter prompts.
@@ -111,7 +96,7 @@ This page describes how to run OpenChat Playground (OCP) with OpenAI GPT integra
     docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest --connector-type OpenAI --api-key $API_KEY
     ```
 
-    Optionally, you can specify a different model:
+    Optionally, if you want to run with a different model, say [GPT-4o](https://openai.com/index/hello-gpt-4o/), other than the default one, you can specify it via command line:
 
     ```bash
     # From locally built container with custom model
@@ -148,7 +133,7 @@ This page describes how to run OpenChat Playground (OCP) with OpenAI GPT integra
     azd init
     ```
 
-   > **NOTE**: You will be asked to provide environment name for provisioning.
+    > **NOTE**: You will be asked to provide environment name for provisioning.
 
 1. Get OpenAI API Key.
 
@@ -170,10 +155,10 @@ This page describes how to run OpenChat Playground (OCP) with OpenAI GPT integra
     azd env set OPENAI_API_KEY $API_KEY
     ```
 
-   Optionally, if you want to run with a different model, say [GPT-4o](https://openai.com/index/hello-gpt-4o/), other than the default one, add it to azd environment variables.
+    Optionally, if you want to run with a different model, say [gpt-4.1-mini](https://openai.com/index/hello-gpt-4.1-mini/), other than the default one, add it to azd environment variables.
 
     ```bash
-    azd env set OPENAI_MODEL "gpt-4o"
+    azd env set OPENAI_MODEL "gpt-4.1-mini"
     ```
 
 1. Set the connector type to `OpenAI`.
@@ -188,10 +173,11 @@ This page describes how to run OpenChat Playground (OCP) with OpenAI GPT integra
     azd up
     ```
 
-   > **NOTE**: You will be asked to provide Azure subscription and location for deployment.
+    > **NOTE**: You will be asked to provide Azure subscription and location for deployment.
 
 1. Clean up all the resources.
 
     ```bash
     azd down --force --purge
     ```
+
