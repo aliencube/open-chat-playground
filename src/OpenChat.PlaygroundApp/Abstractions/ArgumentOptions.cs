@@ -22,12 +22,14 @@ public abstract class ArgumentOptions
         // Foundry Local
         // Hugging Face
         (ConnectorType.HuggingFace, "--base-url", false),
-        (ConnectorType.HuggingFace, "--model", false)
+        (ConnectorType.HuggingFace, "--model", false),
         // Ollama
         // Anthropic
         // LG
         // Naver
         // OpenAI
+        (ConnectorType.OpenAI, "--api-key", false),
+        (ConnectorType.OpenAI, "--model", false),
         // Upstage
     ];
 
@@ -147,6 +149,12 @@ public abstract class ArgumentOptions
                 settings.HuggingFace ??= new HuggingFaceSettings();
                 settings.HuggingFace.BaseUrl = huggingFace.BaseUrl ?? settings.HuggingFace.BaseUrl;
                 settings.HuggingFace.Model = huggingFace.Model ?? settings.HuggingFace.Model;
+                break;
+
+            case OpenAIArgumentOptions openai:
+                settings.OpenAI ??= new OpenAISettings();
+                settings.OpenAI.ApiKey = openai.ApiKey ?? settings.OpenAI.ApiKey;
+                settings.OpenAI.Model = openai.Model ?? settings.OpenAI.Model;
                 break;
 
             default:
@@ -345,7 +353,8 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** OpenAI: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  TBD");
+        Console.WriteLine("  --api-key            The OpenAI API key. (Env: OPENAI_API_KEY)");
+        Console.WriteLine("  --model              The OpenAI model name. Default to 'gpt-4.1-mini'");
         Console.WriteLine();
     }
 
