@@ -100,7 +100,7 @@ This page describes how to run OpenChat Playground (OCP) with OpenAI GPT integra
 
     ```bash
     # From locally built container with custom model
-    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type OpenAI --api-key $API_KEY --model gpt-4o
+    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type OpenAI --model gpt-4o
     ```
 
 1. Open your web browser, navigate to `http://localhost:8080`, and enter prompts.
