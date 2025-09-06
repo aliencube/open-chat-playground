@@ -14,7 +14,10 @@ public class AzureAIFoundryArgumentOptionsTests
     private static IConfiguration BuildConfigWithAzureAIFoundry(
         string? configEndpoint = Endpoint,
         string? configApiKey = ApiKey,
-        string? configDeploymentName = DeploymentName)
+        string? configDeploymentName = DeploymentName,
+        string? envEndpoint = null,
+        string? envApiKey = null,
+        string? envDeploymentName = null)
     {
         var configDict = new Dictionary<string, string?>
         {
@@ -34,8 +37,31 @@ public class AzureAIFoundryArgumentOptionsTests
             configDict["AzureAIFoundry:DeploymentName"] = configDeploymentName;
         }
 
+        if (string.IsNullOrWhiteSpace(envEndpoint) && string.IsNullOrWhiteSpace(envApiKey) && string.IsNullOrWhiteSpace(envDeploymentName))
+        {
+            return new ConfigurationBuilder()
+                       .AddInMemoryCollection(configDict!)
+                       .Build();
+        }
+
+        // Environment variables (medium priority)
+        var envDict = new Dictionary<string, string?>();
+        if (string.IsNullOrWhiteSpace(envEndpoint) == false)
+        {
+            envDict["AzureAIFoundry:Endpoint"] = envEndpoint;
+        }
+        if (string.IsNullOrWhiteSpace(envApiKey) == false)
+        {
+            envDict["AzureAIFoundry:ApiKey"] = envApiKey;
+        }
+        if (string.IsNullOrWhiteSpace(envDeploymentName) == false)
+        {
+            envDict["AzureAIFoundry:DeploymentName"] = envDeploymentName;
+        }
+
         return new ConfigurationBuilder()
                    .AddInMemoryCollection(configDict!)  // Base configuration (lowest priority)
+                   .AddInMemoryCollection(envDict!)     // Environment variables (medium priority)
                    .Build();
     }
 
@@ -232,6 +258,128 @@ public class AzureAIFoundryArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
+    [InlineData("https://env.azure-ai-foundry/inference", "env-api-key", "env-deployment-name")]
+    public void Given_EnvironmentVariables_And_No_Config_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(
+        string envEndpoint, string envApiKey, string envDeploymentName)
+    {
+        // Arrange
+        var config = BuildConfigWithAzureAIFoundry(
+            configEndpoint: null, configApiKey: null, configDeploymentName: null,
+            envEndpoint: envEndpoint, envApiKey: envApiKey, envDeploymentName: envDeploymentName);
+        var args = Array.Empty<string>();
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.AzureAIFoundry.ShouldNotBeNull();
+        settings.AzureAIFoundry.Endpoint.ShouldBe(envEndpoint);
+        settings.AzureAIFoundry.ApiKey.ShouldBe(envApiKey);
+        settings.AzureAIFoundry.DeploymentName.ShouldBe(envDeploymentName);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://config.azure-ai-foundry/inference", "config-api-key", "config-deployment-name",
+                "https://env.azure-ai-foundry/inference", "env-api-key", "env-deployment-name")]
+    public void Given_ConfigValues_And_EnvironmentVariables_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(
+        string configEndpoint, string configApiKey, string configDeploymentName,
+        string envEndpoint, string envApiKey, string envDeploymentName)
+    {
+        // Arrange
+        var config = BuildConfigWithAzureAIFoundry(
+            configEndpoint, configApiKey, configDeploymentName,
+            envEndpoint, envApiKey, envDeploymentName);
+        var args = Array.Empty<string>();
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.AzureAIFoundry.ShouldNotBeNull();
+        settings.AzureAIFoundry.Endpoint.ShouldBe(envEndpoint);
+        settings.AzureAIFoundry.ApiKey.ShouldBe(envApiKey);
+        settings.AzureAIFoundry.DeploymentName.ShouldBe(envDeploymentName);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://config.azure-ai-foundry/inference", "config-api-key", "config-deployment-name",
+                "https://env.azure-ai-foundry/inference", "env-api-key", "env-deployment-name",
+                "https://cli.azure-ai-foundry/inference", "cli-api-key", "cli-deployment-name")]
+    public void Given_ConfigValues_And_EnvironmentVariables_And_CLI_When_Parse_Invoked_Then_It_Should_Use_CLI(
+        string configEndpoint, string configApiKey, string configDeploymentName,
+        string envEndpoint, string envApiKey, string envDeploymentName,
+        string cliEndpoint, string cliApiKey, string cliDeploymentName)
+    {
+        // Arrange
+        var config = BuildConfigWithAzureAIFoundry(
+            configEndpoint, configApiKey, configDeploymentName,
+            envEndpoint, envApiKey, envDeploymentName);
+        var args = new[] { "--endpoint", cliEndpoint, "--api-key", cliApiKey, "--deployment-name", cliDeploymentName };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.AzureAIFoundry.ShouldNotBeNull();
+        settings.AzureAIFoundry.Endpoint.ShouldBe(cliEndpoint);
+        settings.AzureAIFoundry.ApiKey.ShouldBe(cliApiKey);
+        settings.AzureAIFoundry.DeploymentName.ShouldBe(cliDeploymentName);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://config.azure-ai-foundry/inference", "config-api-key", "config-deployment-name",
+                "https://env.azure-ai-foundry/inference", null, "env-deployment-name")]
+    public void Given_Partial_EnvironmentVariables_When_Parse_Invoked_Then_It_Should_Mix_Config_And_Environment(
+        string configEndpoint, string configApiKey, string configDeploymentName,
+        string envEndpoint, string? envApiKey, string envDeploymentName)
+    {
+        // Arrange
+        var config = BuildConfigWithAzureAIFoundry(
+            configEndpoint, configApiKey, configDeploymentName,
+            envEndpoint, envApiKey, envDeploymentName);
+        var args = Array.Empty<string>();
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.AzureAIFoundry.ShouldNotBeNull();
+        settings.AzureAIFoundry.Endpoint.ShouldBe(envEndpoint); // From environment
+        settings.AzureAIFoundry.ApiKey.ShouldBe(configApiKey);  // From config (no env override)
+        settings.AzureAIFoundry.DeploymentName.ShouldBe(envDeploymentName); // From environment
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://config.azure-ai-foundry/inference", "config-api-key", "config-deployment-name",
+                null, "env-api-key", null,
+                "https://cli.azure-ai-foundry/inference", null, null)]
+    public void Given_Mixed_Priority_Sources_When_Parse_Invoked_Then_It_Should_Respect_Priority_Order(
+        string configEndpoint, string configApiKey, string configDeploymentName,
+        string? envEndpoint, string envApiKey, string? envDeploymentName,
+        string cliEndpoint, string? cliApiKey, string? cliDeploymentName)
+    {
+        // Arrange
+        var config = BuildConfigWithAzureAIFoundry(
+            configEndpoint, configApiKey, configDeploymentName,
+            envEndpoint, envApiKey, envDeploymentName);
+        var args = new[] { "--endpoint", cliEndpoint, "--api-key", cliApiKey, "--deployment-name", cliDeploymentName };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args!);
+
+        // Assert
+        settings.AzureAIFoundry.ShouldNotBeNull();
+        settings.AzureAIFoundry.Endpoint.ShouldBe(cliEndpoint);  // CLI wins (highest priority)
+        settings.AzureAIFoundry.ApiKey.ShouldBe(envApiKey);      // Env wins over config (medium priority)
+        settings.AzureAIFoundry.DeploymentName.ShouldBe(configDeploymentName); // Config only (lowest priority)
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
     [InlineData("https://cli.azure-ai-foundry/inference", "cli-api-key", "cli-deployment-name")]
     public void Given_AzureAIFoundry_With_KnownArguments_When_Parse_Invoked_Then_Help_ShouldBe_False(string cliEndpoint, string cliApiKey, string cliDeploymentName)
     {
@@ -247,7 +395,6 @@ public class AzureAIFoundryArgumentOptionsTests
     }
 
     [Trait("Category", "UnitTest")]
-    [Trait("Category", "AzureAIFoundry")]
     [Theory]
     [InlineData("--endpoint")]
     [InlineData("--api-key")]
@@ -279,5 +426,40 @@ public class AzureAIFoundryArgumentOptionsTests
 
         // Assert
         settings.Help.ShouldBeTrue();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://env.azure-ai-foundry/inference", "env-api-key", "env-deployment-name")]
+    public void Given_EnvironmentVariables_Only_When_Parse_Invoked_Then_Help_Should_Be_False(
+        string envEndpoint, string envApiKey, string envDeploymentName)
+    {
+        // Arrange
+        var config = BuildConfigWithAzureAIFoundry(
+            configEndpoint: null, configApiKey: null, configDeploymentName: null,
+            envEndpoint: envEndpoint, envApiKey: envApiKey, envDeploymentName: envDeploymentName);
+        var args = Array.Empty<string>();
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.Help.ShouldBeFalse();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://cli.azure-ai-foundry/inference", "cli-api-key", "cli-deployment-name")]
+    public void Given_CLI_Only_When_Parse_Invoked_Then_Help_Should_Be_False(string cliEndpoint, string cliApiKey, string cliDeploymentName)
+    {
+        // Arrange
+        var config = BuildConfigWithAzureAIFoundry();
+        var args = new[] { "--endpoint", cliEndpoint, "--api-key", cliApiKey, "--deployment-name", cliDeploymentName };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.Help.ShouldBeFalse();
     }
 }
