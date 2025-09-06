@@ -1,5 +1,4 @@
 using OpenChat.PlaygroundApp.Abstractions;
-using OpenChat.PlaygroundApp.Configurations;
 
 namespace OpenChat.PlaygroundApp.Options;
 
