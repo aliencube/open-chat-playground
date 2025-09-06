@@ -18,16 +18,21 @@ public abstract class ArgumentOptions
         (ConnectorType.GitHubModels, "--token", false),
         (ConnectorType.GitHubModels, "--model", false),
         // Google Vertex AI
+        (ConnectorType.GoogleVertexAI, "--api-key", false),
+        (ConnectorType.GoogleVertexAI, "--model", false),
         // Docker Model Runner
         // Foundry Local
+        (ConnectorType.FoundryLocal, "--alias", false),
         // Hugging Face
         (ConnectorType.HuggingFace, "--base-url", false),
-        (ConnectorType.HuggingFace, "--model", false)
+        (ConnectorType.HuggingFace, "--model", false),
         // Ollama
         // Anthropic
         // LG
         // Naver
         // OpenAI
+        (ConnectorType.OpenAI, "--api-key", false),
+        (ConnectorType.OpenAI, "--model", false),
         // Upstage
     ];
 
@@ -143,10 +148,27 @@ public abstract class ArgumentOptions
                 settings.GitHubModels.Model = github.Model ?? settings.GitHubModels.Model;
                 break;
 
+            case FoundryLocalArgumentOptions foundryLocal:
+                settings.FoundryLocal ??= new FoundryLocalSettings();
+                settings.FoundryLocal.Alias = foundryLocal.Alias ?? settings.FoundryLocal.Alias;
+                break;
+
             case HuggingFaceArgumentOptions huggingFace:
                 settings.HuggingFace ??= new HuggingFaceSettings();
                 settings.HuggingFace.BaseUrl = huggingFace.BaseUrl ?? settings.HuggingFace.BaseUrl;
                 settings.HuggingFace.Model = huggingFace.Model ?? settings.HuggingFace.Model;
+                break;
+                
+            case GoogleVertexAIArgumentOptions googleVertexAI:
+                settings.GoogleVertexAI ??= new GoogleVertexAISettings();
+                settings.GoogleVertexAI.ApiKey = googleVertexAI.ApiKey ?? settings.GoogleVertexAI.ApiKey;
+                settings.GoogleVertexAI.Model = googleVertexAI.Model ?? settings.GoogleVertexAI.Model;
+                break;
+
+            case OpenAIArgumentOptions openai:
+                settings.OpenAI ??= new OpenAISettings();
+                settings.OpenAI.ApiKey = openai.ApiKey ?? settings.OpenAI.ApiKey;
+                settings.OpenAI.Model = openai.Model ?? settings.OpenAI.Model;
                 break;
 
             default:
@@ -345,7 +367,8 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** OpenAI: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  TBD");
+        Console.WriteLine("  --api-key            The OpenAI API key. (Env: OPENAI_API_KEY)");
+        Console.WriteLine("  --model              The OpenAI model name. Default to 'gpt-4.1-mini'");
         Console.WriteLine();
     }
 
