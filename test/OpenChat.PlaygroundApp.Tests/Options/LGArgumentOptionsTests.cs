@@ -7,8 +7,8 @@ namespace OpenChat.PlaygroundApp.Tests.Options;
 
 public class LGArgumentOptionsTests
 {
-    private const string BaseUrl = "http://localhost:11434";
-    private const string Model = "hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B";
+    private const string BaseUrl = "https://test.lg-exaone/api";
+    private const string Model = "lg-exaone-model";
 
     private static IConfiguration BuildConfigWithLG(
         string? configBaseUrl = BaseUrl,
