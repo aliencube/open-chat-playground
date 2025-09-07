@@ -36,7 +36,6 @@ public class AzureAIFoundryArgumentOptionsTests
         {
             configDict["AzureAIFoundry:DeploymentName"] = configDeploymentName;
         }
-
         if (string.IsNullOrWhiteSpace(envEndpoint) && string.IsNullOrWhiteSpace(envApiKey) && string.IsNullOrWhiteSpace(envDeploymentName))
         {
             return new ConfigurationBuilder()
