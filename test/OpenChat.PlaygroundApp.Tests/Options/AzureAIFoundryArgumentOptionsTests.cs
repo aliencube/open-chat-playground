@@ -2,7 +2,6 @@ using Microsoft.Extensions.Configuration;
 
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Connectors;
-
 using OpenChat.PlaygroundApp.Options;
 
 namespace OpenChat.PlaygroundApp.Tests.Options;
@@ -69,15 +68,17 @@ public class AzureAIFoundryArgumentOptionsTests
                    .Build();
     }
 
-    [Fact]
     [Trait("Category", "UnitTest")]
-    public void Given_AzureAIFoundryArgumentOptions_Then_ShouldInheritArgumentOptions()
+    [Theory]
+    [InlineData(typeof(ArgumentOptions), typeof(AzureAIFoundryArgumentOptions), true)]
+    [InlineData(typeof(AzureAIFoundryArgumentOptions), typeof(ArgumentOptions), false)]
+    public void Given_BaseType_Then_It_Should_Be_AssignableFrom_DerivedType(Type baseType, Type derivedType, bool expected)
     {
         // Act
-        var isAssignableTo = typeof(AzureAIFoundryArgumentOptions).IsAssignableTo(typeof(ArgumentOptions));
+        var result = baseType.IsAssignableFrom(derivedType);
 
         // Assert
-        Assert.True(isAssignableTo);
+        result.ShouldBe(expected);
     }
 
     [Trait("Category", "UnitTest")]
