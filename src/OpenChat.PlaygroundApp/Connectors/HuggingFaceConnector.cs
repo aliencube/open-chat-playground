@@ -32,10 +32,10 @@ public class HuggingFaceConnector(AppSettings settings) : LanguageModelConnector
         }
 
         // Accepts formats like:
-        // - hf.co/{org}/{model}-gguf
+        // - hf.co/{org}/{model}gguf e.g hf.co/Qwen/Qwen3-0.6B-GGUF hf.co/Qwen/Qwen3-0.6B_GGUF
         if (IsValidHuggingFaceModelFormat(settings.Model) == false)
         {
-            throw new InvalidOperationException("Invalid configuration: HuggingFace:Model format. Expected 'hf.co/{org}/{model}-gguf' format.");
+            throw new InvalidOperationException("Invalid configuration: HuggingFace:Model format. Expected 'hf.co/{org}/{model}gguf' format.");
         }
 
         return true;
@@ -74,7 +74,7 @@ public class HuggingFaceConnector(AppSettings settings) : LanguageModelConnector
             return false;
         }
 
-        if (segments.Last().EndsWith("-gguf", StringComparison.InvariantCultureIgnoreCase) == false)
+        if (segments.Last().EndsWith("gguf", StringComparison.InvariantCultureIgnoreCase) == false)
         {
             return false;
         }

@@ -59,7 +59,6 @@ public class HuggingFaceConnectorTests
 	[InlineData("hf.co/org/model", typeof(InvalidOperationException), "HuggingFace:Model format")]
 	[InlineData("org/model-gguf", typeof(InvalidOperationException), "HuggingFace:Model format")]
 	[InlineData("hf.co//model-gguf", typeof(InvalidOperationException), "HuggingFace:Model format")]
-	[InlineData("hf.co/org/model_GGUF", typeof(InvalidOperationException), "HuggingFace:Model format")]
 	public void Given_Invalid_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? model, Type expectedType, string expectedMessage)
 	{
 		// Arrange
