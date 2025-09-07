@@ -31,7 +31,6 @@ public abstract class LanguageModelConnector(LanguageModelSettings? settings)
         LanguageModelConnector connector = settings.ConnectorType switch
         {
             ConnectorType.GitHubModels => new GitHubModelsConnector(settings),
-            // ConnectorType.AzureAIFoundry => new AzureAIFoundryConnector(settings),
             _ => throw new NotSupportedException($"Connector type '{settings.ConnectorType}' is not supported.")
         };
 
