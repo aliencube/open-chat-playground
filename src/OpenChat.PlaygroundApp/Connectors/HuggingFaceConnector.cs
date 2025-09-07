@@ -12,6 +12,9 @@ namespace OpenChat.PlaygroundApp.Connectors;
 /// </summary>
 public class HuggingFaceConnector(AppSettings settings) : LanguageModelConnector(settings.HuggingFace)
 {
+    private const string HuggingFaceHost = "hf.co";
+    private const string ModelSuffix = "gguf";
+
     /// <inheritdoc/>
     public override bool EnsureLanguageModelSettingsValid()
     {
@@ -33,7 +36,7 @@ public class HuggingFaceConnector(AppSettings settings) : LanguageModelConnector
 
         // Accepts formats like:
         // - hf.co/{org}/{model}gguf e.g hf.co/Qwen/Qwen3-0.6B-GGUF hf.co/Qwen/Qwen3-0.6B_GGUF
-        if (IsValidHuggingFaceModelFormat(settings.Model) == false)
+        if (IsValidModel(settings.Model) == false)
         {
             throw new InvalidOperationException("Invalid configuration: HuggingFace:Model format. Expected 'hf.co/{org}/{model}gguf' format.");
         }
@@ -46,8 +49,8 @@ public class HuggingFaceConnector(AppSettings settings) : LanguageModelConnector
     {
         var settings = this.Settings as HuggingFaceSettings;
 
-        var baseUrl = settings?.BaseUrl ?? throw new InvalidOperationException("Missing configuration: HuggingFace:BaseUrl.");
-        var model = settings?.Model ?? throw new InvalidOperationException("Missing configuration: HuggingFace:Model.");
+        var baseUrl = settings!.BaseUrl!;
+        var model = settings!.Model!;
 
         var config = new OllamaApiClient.Configuration
         {
@@ -60,21 +63,21 @@ public class HuggingFaceConnector(AppSettings settings) : LanguageModelConnector
         return await Task.FromResult(chatClient).ConfigureAwait(false);
     }
 
-    private bool IsValidHuggingFaceModelFormat(string input)
+    private static bool IsValidModel(string model)
     {
-        var segments = input.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+        var segments = model.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
 
         if (segments.Length != 3)
         {
             return false;
         }
 
-        if (segments.First().Equals("hf.co", StringComparison.InvariantCultureIgnoreCase) == false)
+        if (segments.First().Equals(HuggingFaceHost, StringComparison.InvariantCultureIgnoreCase) == false)
         {
             return false;
         }
 
-        if (segments.Last().EndsWith("gguf", StringComparison.InvariantCultureIgnoreCase) == false)
+        if (segments.Last().EndsWith(ModelSuffix, StringComparison.InvariantCultureIgnoreCase) == false)
         {
             return false;
         }
