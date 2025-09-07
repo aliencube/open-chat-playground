@@ -52,10 +52,6 @@ public class OpenAIConnectorTests
 		client.ShouldBeAssignableTo<IChatClient>();
 	}
 
-
-
-	// Constructor Tests
-
 	[Trait("Category", "UnitTest")]
 	[Fact]
 	public void Given_Valid_AppSettings_When_Constructor_Invoked_Then_It_Should_Create_Instance()
@@ -148,8 +144,6 @@ public class OpenAIConnectorTests
 		ex.Message.ShouldContain("OpenAI:ApiKey is required");
 	}
 
-	// Type Casting and Inheritance Tests
-
 	[Trait("Category", "UnitTest")]
 	[Fact]
 	public void Given_OpenAIConnector_When_Cast_To_LanguageModelConnector_Then_It_Should_Succeed()
@@ -195,8 +189,6 @@ public class OpenAIConnectorTests
 		client.ShouldNotBeNull();
 		client.ShouldBeAssignableTo<IChatClient>();
 	}
-
-	// Boundary Value Tests
 
 	[Trait("Category", "UnitTest")]
 	[Theory]

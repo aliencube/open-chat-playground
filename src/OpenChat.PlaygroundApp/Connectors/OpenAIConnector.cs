@@ -23,22 +23,32 @@ public class OpenAIConnector(AppSettings settings) : LanguageModelConnector(Vali
             throw new InvalidOperationException("Missing configuration: OpenAI settings are required.");
         }
         
-        if (string.IsNullOrWhiteSpace(settings.OpenAI.ApiKey))
+        var trimmedApiKey = settings.OpenAI.ApiKey?.Trim();
+        if (string.IsNullOrEmpty(trimmedApiKey))
         {
             throw new InvalidOperationException("Missing configuration: OpenAI:ApiKey is required.");
         }
         
-        if (string.IsNullOrWhiteSpace(settings.OpenAI.Model))
+        var trimmedModel = settings.OpenAI.Model?.Trim();
+        if (string.IsNullOrEmpty(trimmedModel))
         {
             throw new InvalidOperationException("Missing configuration: OpenAI:Model is required.");
         }
         
-        return settings.OpenAI;
+        return new OpenAISettings
+        {
+            ApiKey = trimmedApiKey,
+            Model = trimmedModel
+        };
     }
     /// <inheritdoc/>
     public override async Task<IChatClient> GetChatClientAsync()
     {
-        var settings = (OpenAISettings)this.Settings!;
+        var settings = this.Settings as OpenAISettings;
+        if (settings is null)
+        {
+            throw new InvalidOperationException("Invalid settings type: Expected OpenAISettings.");
+        }
 
         var credential = new ApiKeyCredential(settings.ApiKey!);
         var client = new OpenAIClient(credential);
