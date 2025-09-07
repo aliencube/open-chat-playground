@@ -9,12 +9,6 @@ namespace OpenChat.PlaygroundApp.Tests.Options;
 
 public class AzureAIFoundryArgumentOptionsTests
 {
-    [Fact]
-    public void AzureAIFoundryArgumentOptions_Should_Inherit_ArgumentOptions()
-    {
-        // Assert
-        Assert.True(typeof(ArgumentOptions).IsAssignableFrom(typeof(AzureAIFoundryArgumentOptions)));
-    }
     private const string Endpoint = "https://test.azure-ai-foundry/inference";
     private const string ApiKey = "azure-api-key";
     private const string DeploymentName = "azure-deployment-name";
@@ -45,7 +39,9 @@ public class AzureAIFoundryArgumentOptionsTests
             configDict["AzureAIFoundry:DeploymentName"] = configDeploymentName;
         }
 
-        if (string.IsNullOrWhiteSpace(envEndpoint) == true && string.IsNullOrWhiteSpace(envApiKey) && string.IsNullOrWhiteSpace(envDeploymentName))
+        if (string.IsNullOrWhiteSpace(envEndpoint) == true &&
+            string.IsNullOrWhiteSpace(envApiKey) == true &&
+            string.IsNullOrWhiteSpace(envDeploymentName) == true)
         {
             return new ConfigurationBuilder()
                        .AddInMemoryCollection(configDict!)
@@ -71,6 +67,17 @@ public class AzureAIFoundryArgumentOptionsTests
                    .AddInMemoryCollection(configDict!)  // Base configuration (lowest priority)
                    .AddInMemoryCollection(envDict!)     // Environment variables (medium priority)
                    .Build();
+    }
+
+    [Fact]
+    [Trait("Category", "UnitTest")]
+    public void Given_AzureAIFoundryArgumentOptions_Then_ShouldInheritArgumentOptions()
+    {
+        // Act
+        var isAssignableTo = typeof(AzureAIFoundryArgumentOptions).IsAssignableTo(typeof(ArgumentOptions));
+
+        // Assert
+        Assert.True(isAssignableTo);
     }
 
     [Trait("Category", "UnitTest")]
