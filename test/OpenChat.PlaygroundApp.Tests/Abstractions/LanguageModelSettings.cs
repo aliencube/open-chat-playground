@@ -11,7 +11,7 @@ public class LanguageModelSettingsTests
     [InlineData(typeof(AzureAIFoundrySettings))]
     [InlineData(typeof(GitHubModelsSettings))]
     [InlineData(typeof(GoogleVertexAISettings))]
-    // [InlineData(typeof(DockerModelRunnerSettings))]
+    [InlineData(typeof(DockerModelRunnerSettings))]
     [InlineData(typeof(FoundryLocalSettings))]
     [InlineData(typeof(HuggingFaceSettings))]
     [InlineData(typeof(OllamaSettings))]
