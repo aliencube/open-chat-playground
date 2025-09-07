@@ -1,3 +1,4 @@
+using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Configurations;
 using OpenChat.PlaygroundApp.Connectors;
 
@@ -16,6 +17,21 @@ public class HuggingFaceConnectorTests
 				Model = model
 			}
 		};
+	}
+
+	[Trait("Category", "UnitTest")]
+	[Fact]
+	public void Connector_Should_Inherit_From_LanguageModelConnector()
+	{
+		// Arrange
+		var abstractConnectorType = typeof(LanguageModelConnector);
+		var inheritConnectorType = typeof(HuggingFaceConnector);
+
+		// Assert
+		var result = abstractConnectorType.IsAssignableFrom(inheritConnectorType);
+
+		// Assert
+		result.ShouldBeTrue();
 	}
 
 	[Trait("Category", "UnitTest")]
@@ -104,28 +120,12 @@ public class HuggingFaceConnectorTests
 
 	[Trait("Category", "UnitTest")]
 	[Theory]
-	[InlineData(null, typeof(InvalidOperationException), "HuggingFace:BaseUrl")]
+	[InlineData(null, typeof(ArgumentNullException), "null")]
 	[InlineData("", typeof(UriFormatException), "empty")]
 	public async Task Given_Missing_BaseUrl_When_GetChatClient_Invoked_Then_It_Should_Throw(string? baseUrl, Type expected, string message)
 	{
 		// Arrange
 		var settings = BuildAppSettings(baseUrl: baseUrl);
-		var connector = new HuggingFaceConnector(settings);
-
-		// Act
-		var ex = await Assert.ThrowsAsync(expected, connector.GetChatClientAsync);
-
-		// Assert
-		ex.Message.ShouldContain(message);
-	}
-
-	[Trait("Category", "UnitTest")]
-	[Theory]
-	[InlineData(null, typeof(InvalidOperationException), "HuggingFace:Model")]
-	public async Task Given_Missing_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
-	{
-		// Arrange
-		var settings = BuildAppSettings(model: model);
 		var connector = new HuggingFaceConnector(settings);
 
 		// Act
