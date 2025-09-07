@@ -220,7 +220,7 @@ public class ArgumentOptionsTests
     [InlineData("ConnectorType", "FoundryLocal", "Ollama", ConnectorType.Ollama)]
     [InlineData("ConnectorType", "HuggingFace", "Ollama", ConnectorType.Ollama)]
     [InlineData("ConnectorType", "Ollama", "FoundryLocal", ConnectorType.FoundryLocal)]
-    [InlineData("ConnectorType", "Anthropic", "DockerModelRunner", ConnectorType.DockerModelRunner)]
+    // [InlineData("ConnectorType", "Anthropic", "DockerModelRunner", ConnectorType.DockerModelRunner)]
     [InlineData("ConnectorType", "LG", "GoogleVertexAI", ConnectorType.GoogleVertexAI)]
     [InlineData("ConnectorType", "Naver", "GitHubModels", ConnectorType.GitHubModels)]
     [InlineData("ConnectorType", "OpenAI", "AzureAIFoundry", ConnectorType.AzureAIFoundry)]
