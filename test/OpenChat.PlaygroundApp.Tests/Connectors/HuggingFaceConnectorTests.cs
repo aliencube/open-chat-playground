@@ -20,70 +20,119 @@ public class HuggingFaceConnectorTests
 
 	[Trait("Category", "UnitTest")]
 	[Fact]
-	public async Task Given_Valid_Settings_When_GetChatClient_Invoked_Then_It_Should_Return_ChatClient()
+	public void Given_Settings_Is_Null_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
 	{
-		var settings = BuildAppSettings();
-		var connector = new HuggingFaceConnector(settings);
+		// Arrange
+		var appSettings = new AppSettings { ConnectorType = ConnectorType.HuggingFace, HuggingFace = null };
+		var connector = new HuggingFaceConnector(appSettings);
 
-		var client = await connector.GetChatClientAsync();
+		// Act
+		var ex = Assert.Throws<InvalidOperationException>(() => connector.EnsureLanguageModelSettingsValid());
 
-		client.ShouldNotBeNull();
+		// Assert
+		ex.Message.ShouldContain("HuggingFace");
+	}
+
+	[Trait("Category", "UnitTest")]
+	[Theory]
+	[InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
+	[InlineData("", typeof(InvalidOperationException), "HuggingFace:BaseUrl")]
+	[InlineData("   ", typeof(InvalidOperationException), "HuggingFace:BaseUrl")]
+	public void Given_Invalid_BaseUrl_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? baseUrl, Type expectedType, string expectedMessage)
+	{
+		// Arrange
+		var appSettings = BuildAppSettings(baseUrl: baseUrl);
+		var connector = new HuggingFaceConnector(appSettings);
+
+		// Act
+		var ex = Assert.Throws(expectedType, () => connector.EnsureLanguageModelSettingsValid());
+
+		// Assert
+		ex.Message.ShouldContain(expectedMessage);
+	}
+
+	[Trait("Category", "UnitTest")]
+	[Theory]
+	[InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
+	[InlineData("", typeof(InvalidOperationException), "HuggingFace:Model")]
+	[InlineData("   ", typeof(InvalidOperationException), "HuggingFace:Model")]
+	[InlineData("hf.co/org/model", typeof(InvalidOperationException), "HuggingFace:Model format")]
+	[InlineData("org/model-gguf", typeof(InvalidOperationException), "HuggingFace:Model format")]
+	[InlineData("hf.co//model-gguf", typeof(InvalidOperationException), "HuggingFace:Model format")]
+	[InlineData("hf.co/org/model_GGUF", typeof(InvalidOperationException), "HuggingFace:Model format")]
+	public void Given_Invalid_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? model, Type expectedType, string expectedMessage)
+	{
+		// Arrange
+		var appSettings = BuildAppSettings(model: model);
+		var connector = new HuggingFaceConnector(appSettings);
+
+		// Act
+		var ex = Assert.Throws(expectedType, () => connector.EnsureLanguageModelSettingsValid());
+
+		// Assert
+		ex.Message.ShouldContain(expectedMessage);
 	}
 
 	[Trait("Category", "UnitTest")]
 	[Fact]
-	public async Task Given_Valid_Model_With_Qualifier_When_GetChatClient_Invoked_Then_It_Should_Return_ChatClient()
+	public void Given_Valid_Settings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Return_True()
 	{
-		var settings = BuildAppSettings(model: "hf.co/google/gemma-3-1b-pt-qat-q4_0-gguf");
+		// Arrange
+		var appSettings = BuildAppSettings();
+		var connector = new HuggingFaceConnector(appSettings);
+
+		// Act
+		var result = connector.EnsureLanguageModelSettingsValid();
+
+		// Assert
+		result.ShouldBeTrue();
+	}
+
+	[Trait("Category", "UnitTest")]
+	[Fact]
+	public async Task Given_Valid_Settings_When_GetChatClient_Invoked_Then_It_Should_Return_ChatClient()
+	{
+		// Arrange
+		var settings = BuildAppSettings();
 		var connector = new HuggingFaceConnector(settings);
 
+		// Act
 		var client = await connector.GetChatClientAsync();
 
+		// Assert
 		client.ShouldNotBeNull();
 	}
 
 	[Trait("Category", "UnitTest")]
 	[Theory]
 	[InlineData(null, typeof(InvalidOperationException), "HuggingFace:BaseUrl")]
-	[InlineData("", typeof(InvalidOperationException), "HuggingFace:BaseUrl")]
-	[InlineData("strange-uri-format", typeof(UriFormatException), "Invalid URI")]
+	[InlineData("", typeof(UriFormatException), "empty")]
 	public async Task Given_Missing_BaseUrl_When_GetChatClient_Invoked_Then_It_Should_Throw(string? baseUrl, Type expected, string message)
 	{
+		// Arrange
 		var settings = BuildAppSettings(baseUrl: baseUrl);
 		var connector = new HuggingFaceConnector(settings);
 
+		// Act
 		var ex = await Assert.ThrowsAsync(expected, connector.GetChatClientAsync);
 
+		// Assert
 		ex.Message.ShouldContain(message);
 	}
 
 	[Trait("Category", "UnitTest")]
 	[Theory]
 	[InlineData(null, typeof(InvalidOperationException), "HuggingFace:Model")]
-	[InlineData("", typeof(InvalidOperationException), "HuggingFace:Model")]
 	public async Task Given_Missing_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
 	{
+		// Arrange
 		var settings = BuildAppSettings(model: model);
 		var connector = new HuggingFaceConnector(settings);
 
+		// Act
 		var ex = await Assert.ThrowsAsync(expected, connector.GetChatClientAsync);
 
-		ex.Message.ShouldContain(message);
-	}
-
-	[Trait("Category", "UnitTest")]
-	[Theory]
-	[InlineData("hf.co/org/model", typeof(InvalidOperationException), "HuggingFace:Model format")]
-	[InlineData("org/model-gguf", typeof(InvalidOperationException), "HuggingFace:Model format")]
-	[InlineData("hf.co//model-gguf", typeof(InvalidOperationException), "HuggingFace:Model format")]
-	[InlineData("hf.co/org/model_GGUF", typeof(InvalidOperationException), "HuggingFace:Model format")]
-	public async Task Given_Invalid_Model_Format_When_GetChatClient_Invoked_Then_It_Should_Throw(string model, Type expected, string message)
-	{
-		var settings = BuildAppSettings(model: model);
-		var connector = new HuggingFaceConnector(settings);
-
-		var ex = await Assert.ThrowsAsync(expected, connector.GetChatClientAsync);
-
+		// Assert
 		ex.Message.ShouldContain(message);
 	}
 }

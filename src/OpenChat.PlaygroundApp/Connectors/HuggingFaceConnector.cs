@@ -1,7 +1,6 @@
 using Microsoft.Extensions.AI;
 
 using OllamaSharp;
-using System.Text.RegularExpressions;
 
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Configurations;
@@ -14,31 +13,46 @@ namespace OpenChat.PlaygroundApp.Connectors;
 public class HuggingFaceConnector(AppSettings settings) : LanguageModelConnector(settings.HuggingFace)
 {
     /// <inheritdoc/>
-    public override async Task<IChatClient> GetChatClientAsync()
+    public override bool EnsureLanguageModelSettingsValid()
     {
         var settings = this.Settings as HuggingFaceSettings;
+        if (settings is null)
+        {
+            throw new InvalidOperationException("Missing configuration: HuggingFace.");
+        }
 
-        if (string.IsNullOrWhiteSpace(settings?.BaseUrl) == true)
+        if (string.IsNullOrWhiteSpace(settings.BaseUrl!.Trim()) == true)
         {
             throw new InvalidOperationException("Missing configuration: HuggingFace:BaseUrl.");
         }
 
-        if (string.IsNullOrWhiteSpace(settings.Model) == true)
+        if (string.IsNullOrWhiteSpace(settings.Model!.Trim()) == true)
         {
             throw new InvalidOperationException("Missing configuration: HuggingFace:Model.");
         }
 
         // Accepts formats like:
         // - hf.co/{org}/{model}-gguf
-        if (IsValidHuggingFaceModel(settings.Model) == false)
+        if (IsValidHuggingFaceModelFormat(settings.Model) == false)
         {
             throw new InvalidOperationException("Invalid configuration: HuggingFace:Model format. Expected 'hf.co/{org}/{model}-gguf' format.");
         }
 
+        return true;
+    }
+
+    /// <inheritdoc/>
+    public override async Task<IChatClient> GetChatClientAsync()
+    {
+        var settings = this.Settings as HuggingFaceSettings;
+
+        var baseUrl = settings?.BaseUrl ?? throw new InvalidOperationException("Missing configuration: HuggingFace:BaseUrl.");
+        var model = settings?.Model ?? throw new InvalidOperationException("Missing configuration: HuggingFace:Model.");
+
         var config = new OllamaApiClient.Configuration
         {
-            Uri = new Uri(settings.BaseUrl),
-            Model = settings.Model,
+            Uri = new Uri(baseUrl),
+            Model = model,
         };
 
         var chatClient = new OllamaApiClient(config);
@@ -46,21 +60,21 @@ public class HuggingFaceConnector(AppSettings settings) : LanguageModelConnector
         return await Task.FromResult(chatClient).ConfigureAwait(false);
     }
 
-    bool IsValidHuggingFaceModel(string input)
+    private bool IsValidHuggingFaceModelFormat(string input)
     {
-        var segments = input.Split('/', StringSplitOptions.RemoveEmptyEntries);
+        var segments = input.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
 
         if (segments.Length != 3)
         {
             return false;
         }
 
-        if (segments[0].Equals("hf.co", StringComparison.OrdinalIgnoreCase) == false)
+        if (segments.First().Equals("hf.co", StringComparison.InvariantCultureIgnoreCase) == false)
         {
             return false;
         }
 
-        if (segments[^1].EndsWith("-gguf", StringComparison.OrdinalIgnoreCase) == false)
+        if (segments[^1].EndsWith("-gguf", StringComparison.InvariantCultureIgnoreCase) == false)
         {
             return false;
         }
