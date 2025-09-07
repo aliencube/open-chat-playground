@@ -74,7 +74,7 @@ public class HuggingFaceConnector(AppSettings settings) : LanguageModelConnector
             return false;
         }
 
-        if (segments[^1].EndsWith("-gguf", StringComparison.InvariantCultureIgnoreCase) == false)
+        if (segments.Last().EndsWith("-gguf", StringComparison.InvariantCultureIgnoreCase) == false)
         {
             return false;
         }
