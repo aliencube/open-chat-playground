@@ -23,7 +23,7 @@ public class GitHubModelsConnector(AppSettings settings) : LanguageModelConnecto
             throw new InvalidOperationException("Missing configuration: GitHubModels.");
         }
 
-        if (string.IsNullOrWhiteSpace(settings?.Endpoint!.Trim()) == true)
+        if (string.IsNullOrWhiteSpace(settings.Endpoint!.Trim()) == true)
         {
             throw new InvalidOperationException("Missing configuration: GitHubModels:Endpoint.");
         }
