@@ -6,69 +6,74 @@ namespace OpenChat.PlaygroundApp.Tests.Abstractions;
 
 public class LanguageModelConnectorTests
 {
-	private static AppSettings BuildAppSettings(
+    private static AppSettings BuildAppSettings(
         ConnectorType connectorType = ConnectorType.GitHubModels,
         string? endpoint = "https://models.github.ai/inference",
         string? token = "test-token",
         string? model = "openai/gpt-4o-mini")
-	{
-		return new AppSettings
-		{
-			ConnectorType = connectorType,
-			GitHubModels = new GitHubModelsSettings
-			{
-				Endpoint = endpoint,
-				Token = token,
-				Model = model
-			}
-		};
-	}
+    {
+        return new AppSettings
+        {
+            ConnectorType = connectorType,
+            GitHubModels = new GitHubModelsSettings
+            {
+                Endpoint = endpoint,
+                Token = token,
+                Model = model
+            }
+        };
+    }
 
-	[Trait("Category", "UnitTest")]
-	[Fact]
-	public async Task Given_GitHubModels_Settings_When_CreateChatClient_Invoked_Then_It_Should_Return_ChatClient()
-	{
-		var settings = BuildAppSettings();
-		var client = await LanguageModelConnector.CreateChatClientAsync(settings);
+    [Trait("Category", "UnitTest")]
+    [Fact]
+    public async Task Given_GitHubModels_Settings_When_CreateChatClient_Invoked_Then_It_Should_Return_ChatClient()
+    {
+        // Arrange
+        var settings = BuildAppSettings();
 
-		client.ShouldNotBeNull();
-	}
+        // Act
+        var client = await LanguageModelConnector.CreateChatClientAsync(settings);
 
-	[Trait("Category", "UnitTest")]
-	[Theory]
-	[InlineData(ConnectorType.AmazonBedrock)]
-	[InlineData(ConnectorType.AzureAIFoundry)]
-	[InlineData(ConnectorType.Unknown)]
-	public async Task Given_Unsupported_ConnectorType_When_CreateChatClient_Invoked_Then_It_Should_Throw(ConnectorType connectorType)
-	{
-		var settings = BuildAppSettings(connectorType: connectorType);
+        // Assert
+        client.ShouldNotBeNull();
+    }
 
-		var ex = await Assert.ThrowsAsync<NotSupportedException>(() => LanguageModelConnector.CreateChatClientAsync(settings));
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData(ConnectorType.Unknown)]
+    public async Task Given_Unsupported_ConnectorType_When_CreateChatClient_Invoked_Then_It_Should_Throw(ConnectorType connectorType)
+    {
+        // Arrange
+        var settings = BuildAppSettings(connectorType: connectorType);
 
-		ex.Message.ShouldContain($"Connector type '{connectorType}'");
-	}
+        // Act
+        var ex = await Assert.ThrowsAsync<NotSupportedException>(() => LanguageModelConnector.CreateChatClientAsync(settings));
 
-	[Trait("Category", "UnitTest")]
-	[Theory]
-	// [InlineData(typeof(AmazonBedrockConnector))]
-	// [InlineData(typeof(AzureAIFoundryConnector))]
-	[InlineData(typeof(GitHubModelsConnector))]
-	// [InlineData(typeof(GoogleVertexAIConnector))]
-	// [InlineData(typeof(DockerModelRunnerConnector))]
-	// [InlineData(typeof(FoundryLocalConnector))]
-	// [InlineData(typeof(HuggingFaceConnector))]
-	// [InlineData(typeof(OllamaConnector))]
-	// [InlineData(typeof(AnthropicConnector))]
-	// [InlineData(typeof(LGConnector))]
-	// [InlineData(typeof(NaverConnector))]
-	[InlineData(typeof(OpenAIConnector))]
-	// [InlineData(typeof(UpstageConnector))]
+        // Assert
+        ex.Message.ShouldContain($"Connector type '{connectorType}'");
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    // [InlineData(typeof(AmazonBedrockConnector))]
+    // [InlineData(typeof(AzureAIFoundryConnector))]
+    [InlineData(typeof(GitHubModelsConnector))]
+    // [InlineData(typeof(GoogleVertexAIConnector))]
+    // [InlineData(typeof(DockerModelRunnerConnector))]
+    // [InlineData(typeof(FoundryLocalConnector))]
+    // [InlineData(typeof(HuggingFaceConnector))]
+    // [InlineData(typeof(OllamaConnector))]
+    // [InlineData(typeof(AnthropicConnector))]
+    // [InlineData(typeof(LGConnector))]
+    // [InlineData(typeof(NaverConnector))]
+    [InlineData(typeof(OpenAIConnector))]
+    // [InlineData(typeof(UpstageConnector))]
     public void Given_Concrete_Connectors_When_Checking_Inheritance_Then_Should_Inherit_From_LanguageModelConnector(Type type)
-	{
-		// Act
-		var isSubclass = type.IsSubclassOf(typeof(LanguageModelConnector));
+    {
+        // Act
+        var isSubclass = type.IsSubclassOf(typeof(LanguageModelConnector));
 
-		// Assert
-		isSubclass.ShouldBeTrue();
-	}
+        // Assert
+        isSubclass.ShouldBeTrue();
+    }
 }
