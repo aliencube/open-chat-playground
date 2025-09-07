@@ -3,10 +3,18 @@ using Microsoft.Extensions.Configuration;
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Connectors;
 
+using OpenChat.PlaygroundApp.Options;
+
 namespace OpenChat.PlaygroundApp.Tests.Options;
 
 public class AzureAIFoundryArgumentOptionsTests
 {
+    [Fact]
+    public void AzureAIFoundryArgumentOptions_Should_Inherit_ArgumentOptions()
+    {
+        // Assert
+        Assert.True(typeof(ArgumentOptions).IsAssignableFrom(typeof(AzureAIFoundryArgumentOptions)));
+    }
     private const string Endpoint = "https://test.azure-ai-foundry/inference";
     private const string ApiKey = "azure-api-key";
     private const string DeploymentName = "azure-deployment-name";
@@ -36,7 +44,8 @@ public class AzureAIFoundryArgumentOptionsTests
         {
             configDict["AzureAIFoundry:DeploymentName"] = configDeploymentName;
         }
-        if (string.IsNullOrWhiteSpace(envEndpoint) && string.IsNullOrWhiteSpace(envApiKey) && string.IsNullOrWhiteSpace(envDeploymentName))
+
+        if (string.IsNullOrWhiteSpace(envEndpoint) == true && string.IsNullOrWhiteSpace(envApiKey) && string.IsNullOrWhiteSpace(envDeploymentName))
         {
             return new ConfigurationBuilder()
                        .AddInMemoryCollection(configDict!)
