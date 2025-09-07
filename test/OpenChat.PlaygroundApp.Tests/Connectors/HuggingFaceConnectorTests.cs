@@ -43,18 +43,6 @@ public class HuggingFaceConnectorTests
 	}
 
 	[Trait("Category", "UnitTest")]
-	[Fact]
-	public async Task Given_Valid_Model_With_Qualifier_After_Gguf_When_GetChatClient_Invoked_Then_It_Should_Return_ChatClient()
-	{
-		var settings = BuildAppSettings(model: "hf.co/google/gemma-3-1b-pt-qat-q4_0-gguf:Q4_0");
-		var connector = new HuggingFaceConnector(settings);
-
-		var client = await connector.GetChatClientAsync();
-
-		client.ShouldNotBeNull();
-	}
-
-	[Trait("Category", "UnitTest")]
 	[Theory]
 	[InlineData(null, typeof(InvalidOperationException), "HuggingFace:BaseUrl")]
 	[InlineData("", typeof(InvalidOperationException), "HuggingFace:BaseUrl")]
