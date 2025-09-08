@@ -17,7 +17,7 @@
 @code {
     private ElementReference textArea;
     private string? messageText;
-    private bool justSent;
+    private bool hasJustSent;
 
     [Parameter]
     public EventCallback<ChatMessage> OnSend { get; set; }
@@ -36,7 +36,7 @@
                 return;
             }
 
-            justSent = true;
+            hasJustSent = true;
             messageText = null;
             await OnSend.InvokeAsync(new ChatMessage(ChatRole.User, text));
         }
@@ -60,12 +60,12 @@
         if (!isEnter)
         {
             // Any non-Enter key press clears the justSent guard
-            justSent = false;
+            hasJustSent = false;
             return Task.CompletedTask;
         }
 
         // Ignore immediate Enter after a send until user types again
-        if (justSent)
+        if (hasJustSent)
         {
             return Task.CompletedTask;
         }
