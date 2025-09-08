@@ -174,12 +174,6 @@ public abstract class ArgumentOptions
             // case DockerModelRunnerArgumentOptions dockerModelRunner:
             //     break;
 
-            case GoogleVertexAIArgumentOptions googleVertexAI:
-                settings.GoogleVertexAI ??= new GoogleVertexAISettings();
-                settings.GoogleVertexAI.ApiKey = googleVertexAI.ApiKey ?? settings.GoogleVertexAI.ApiKey;
-                settings.GoogleVertexAI.Model = googleVertexAI.Model ?? settings.GoogleVertexAI.Model;
-                break;
-
             case FoundryLocalArgumentOptions foundryLocal:
                 settings.FoundryLocal ??= new FoundryLocalSettings();
                 settings.FoundryLocal.Alias = foundryLocal.Alias ?? settings.FoundryLocal.Alias;
@@ -196,11 +190,12 @@ public abstract class ArgumentOptions
                 settings.Ollama.BaseUrl = ollama.BaseUrl ?? settings.Ollama.BaseUrl;
                 settings.Ollama.Model = ollama.Model ?? settings.Ollama.Model;
                 break;
-            
+
             case AnthropicArgumentOptions anthropic:
                 settings.Anthropic ??= new AnthropicSettings();
                 settings.Anthropic.ApiKey = anthropic.ApiKey ?? settings.Anthropic.ApiKey;
                 settings.Anthropic.Model = anthropic.Model ?? settings.Anthropic.Model;
+                break;
 
             case OpenAIArgumentOptions openai:
                 settings.OpenAI ??= new OpenAISettings();
