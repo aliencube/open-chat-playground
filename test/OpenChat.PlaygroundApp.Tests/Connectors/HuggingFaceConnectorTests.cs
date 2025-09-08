@@ -8,6 +8,7 @@ public class HuggingFaceConnectorTests
 {
 	private const string BaseUrl = "https://test.huggingface.co/api";
 	private const string Model = "hf.co/test-org/model-gguf";
+
 	private static AppSettings BuildAppSettings(string? baseUrl = BaseUrl, string? model = Model)
 	{
 		return new AppSettings
