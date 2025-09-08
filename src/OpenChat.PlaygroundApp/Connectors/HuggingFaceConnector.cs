@@ -48,7 +48,6 @@ public class HuggingFaceConnector(AppSettings settings) : LanguageModelConnector
     public override async Task<IChatClient> GetChatClientAsync()
     {
         var settings = this.Settings as HuggingFaceSettings;
-
         var baseUrl = settings!.BaseUrl!;
         var model = settings!.Model!;
 

@@ -6,7 +6,9 @@ namespace OpenChat.PlaygroundApp.Tests.Connectors;
 
 public class HuggingFaceConnectorTests
 {
-	private static AppSettings BuildAppSettings(string? baseUrl = "https://test.huggingface.co/api", string? model = "hf.co/test-org/model-gguf")
+	private const string BaseUrl = "https://test.huggingface.co/api";
+	private const string Model = "hf.co/test-org/model-gguf";
+	private static AppSettings BuildAppSettings(string? baseUrl = BaseUrl, string? model = Model)
 	{
 		return new AppSettings
 		{
@@ -20,18 +22,16 @@ public class HuggingFaceConnectorTests
 	}
 
 	[Trait("Category", "UnitTest")]
-	[Fact]
-	public void Connector_Should_Inherit_From_LanguageModelConnector()
+	[Theory]
+	[InlineData(typeof(LanguageModelConnector), typeof(HuggingFaceConnector), true)]
+	[InlineData(typeof(HuggingFaceConnector), typeof(LanguageModelConnector), false)]
+	public void Given_BaseType_Then_It_Should_Be_AssignableFrom_DerivedType(Type baseType, Type derivedType, bool expected)
 	{
-		// Arrange
-		var abstractConnectorType = typeof(LanguageModelConnector);
-		var inheritConnectorType = typeof(HuggingFaceConnector);
+		// Act
+		var result = baseType.IsAssignableFrom(derivedType);
 
 		// Assert
-		var result = abstractConnectorType.IsAssignableFrom(inheritConnectorType);
-
-		// Assert
-		result.ShouldBeTrue();
+		result.ShouldBe(expected);
 	}
 
 	[Trait("Category", "UnitTest")]
