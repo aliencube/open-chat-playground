@@ -188,12 +188,6 @@ public abstract class ArgumentOptions
                 settings.Ollama.BaseUrl = ollama.BaseUrl ?? settings.Ollama.BaseUrl;
                 settings.Ollama.Model = ollama.Model ?? settings.Ollama.Model;
                 break;
-                
-            case GoogleVertexAIArgumentOptions googleVertexAI:
-                settings.GoogleVertexAI ??= new GoogleVertexAISettings();
-                settings.GoogleVertexAI.ApiKey = googleVertexAI.ApiKey ?? settings.GoogleVertexAI.ApiKey;
-                settings.GoogleVertexAI.Model = googleVertexAI.Model ?? settings.GoogleVertexAI.Model;
-                break;
 
             case OpenAIArgumentOptions openai:
                 settings.OpenAI ??= new OpenAISettings();
