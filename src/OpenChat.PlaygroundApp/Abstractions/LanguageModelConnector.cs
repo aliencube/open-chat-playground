@@ -16,6 +16,12 @@ public abstract class LanguageModelConnector(LanguageModelSettings? settings)
     protected LanguageModelSettings? Settings { get; } = settings;
 
     /// <summary>
+    /// Ensures that the language model settings are valid or not.
+    /// </summary>
+    /// <returns>Returns <c>True</c> if the settings are valid; otherwise, throws <see cref="InvalidOperationException"/>.</returns>
+    public abstract bool EnsureLanguageModelSettingsValid();
+
+    /// <summary>
     /// Gets an <see cref="IChatClient"/> instance.
     /// </summary>
     /// <returns>Returns <see cref="IChatClient"/> instance.</returns>
@@ -34,6 +40,8 @@ public abstract class LanguageModelConnector(LanguageModelSettings? settings)
             ConnectorType.OpenAI => new OpenAIConnector(settings),
             _ => throw new NotSupportedException($"Connector type '{settings.ConnectorType}' is not supported.")
         };
+
+        connector.EnsureLanguageModelSettingsValid();
 
         return await connector.GetChatClientAsync().ConfigureAwait(false);
     }
