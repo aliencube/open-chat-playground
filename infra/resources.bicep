@@ -17,6 +17,7 @@ param githubModelsToken string = ''
 // Docker Model Runner
 // Foundry Local
 // Hugging Face
+param huggingFaceModel string = ''
 // Ollama
 // Anthropic
 // LG
@@ -117,6 +118,16 @@ var envGitHubModels = (connectorType == '' || connectorType == 'GitHubModels') ?
 // Docker Model Runner
 // Foundry Local
 // Hugging Face
+var envHuggingFace = (connectorType == '' || connectorType == 'HuggingFace')
+  ? huggingFaceModel != ''
+      ? [
+          {
+            name: 'HuggingFace__Model'
+            value: huggingFaceModel
+          }
+        ]
+      : []
+  : []
 // Ollama
 // Anthropic
 // LG
@@ -161,7 +172,9 @@ module openchatPlaygroundapp 'br/public:avm/res/app/container-app:0.18.1' = {
             value: '8080'
           }],
           envConnectorType,
-          envGitHubModels)
+          envGitHubModels,
+          envHuggingFace
+        )
       }
     ]
     managedIdentities:{
