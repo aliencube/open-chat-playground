@@ -261,54 +261,18 @@ public class OpenAIConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Fact]
-    public void Given_Settings_Is_Null_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
+    public void Given_Settings_Is_Null_When_Constructor_Invoked_Then_It_Should_Throw()
     {
         // Arrange
         var appSettings = new AppSettings { ConnectorType = ConnectorType.OpenAI, OpenAI = null };
-        var connector = new OpenAIConnector(appSettings);
 
         // Act
-        var ex = Assert.Throws<InvalidOperationException>(() => connector.EnsureLanguageModelSettingsValid());
+        var ex = Assert.Throws<InvalidOperationException>(() => new OpenAIConnector(appSettings));
 
         // Assert
-        ex.Message.ShouldContain("OpenAI");
+        ex.Message.ShouldContain("OpenAI settings are required");
     }
 
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData(null, typeof(InvalidOperationException), "OpenAI:ApiKey")]
-    [InlineData("", typeof(InvalidOperationException), "OpenAI:ApiKey")]
-    [InlineData("   ", typeof(InvalidOperationException), "OpenAI:ApiKey")]
-    public void Given_Invalid_ApiKey_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? apiKey, Type expectedType, string expectedMessage)
-    {
-        // Arrange
-        var appSettings = BuildAppSettings(apiKey: apiKey);
-        var connector = new OpenAIConnector(appSettings);
-
-        // Act
-        var ex = Assert.Throws(expectedType, () => connector.EnsureLanguageModelSettingsValid());
-
-        // Assert
-        ex.Message.ShouldContain(expectedMessage);
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData(null, typeof(InvalidOperationException), "OpenAI:Model")]
-    [InlineData("", typeof(InvalidOperationException), "OpenAI:Model")]
-    [InlineData("   ", typeof(InvalidOperationException), "OpenAI:Model")]
-    public void Given_Invalid_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? model, Type expectedType, string expectedMessage)
-    {
-        // Arrange
-        var appSettings = BuildAppSettings(model: model);
-        var connector = new OpenAIConnector(appSettings);
-
-        // Act
-        var ex = Assert.Throws(expectedType, () => connector.EnsureLanguageModelSettingsValid());
-
-        // Assert
-        ex.Message.ShouldContain(expectedMessage);
-    }
 
     [Trait("Category", "UnitTest")]
     [Fact]
@@ -339,30 +303,30 @@ public class OpenAIConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(InvalidOperationException), "OpenAI:ApiKey")]
-    [InlineData("", typeof(InvalidOperationException), "OpenAI:ApiKey")]
-    public async Task Given_Missing_ApiKey_When_GetChatClient_Invoked_Then_It_Should_Throw(string? apiKey, Type expected, string message)
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public void Given_Missing_ApiKey_When_Constructor_Invoked_Then_It_Should_Throw(string? apiKey)
     {
         var settings = BuildAppSettings(apiKey: apiKey);
-        var connector = new OpenAIConnector(settings);
 
-        var ex = await Assert.ThrowsAsync(expected, connector.GetChatClientAsync);
+        var ex = Assert.Throws<InvalidOperationException>(() => new OpenAIConnector(settings));
 
-        ex.Message.ShouldContain(message);
+        ex.Message.ShouldContain("OpenAI:ApiKey is required");
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(InvalidOperationException), "OpenAI:Model")]
-    [InlineData("", typeof(InvalidOperationException), "OpenAI:Model")]
-    public async Task Given_Missing_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public void Given_Missing_Model_When_Constructor_Invoked_Then_It_Should_Throw(string? model)
     {
         var settings = BuildAppSettings(model: model);
-        var connector = new OpenAIConnector(settings);
 
-        var ex = await Assert.ThrowsAsync(expected, connector.GetChatClientAsync);
+        var ex = Assert.Throws<InvalidOperationException>(() => new OpenAIConnector(settings));
 
-        ex.Message.ShouldContain(message);
+        ex.Message.ShouldContain("OpenAI:Model is required");
     }
 
 }
