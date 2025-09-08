@@ -30,6 +30,8 @@ public abstract class ArgumentOptions
         (ConnectorType.HuggingFace, "--base-url", false),
         (ConnectorType.HuggingFace, "--model", false),
         // Ollama
+        (ConnectorType.Ollama, "--base-url", false),
+        (ConnectorType.Ollama, "--model", false),
         // Anthropic
         // LG
         // Naver
@@ -180,27 +182,18 @@ public abstract class ArgumentOptions
                 settings.HuggingFace.BaseUrl = huggingFace.BaseUrl ?? settings.HuggingFace.BaseUrl;
                 settings.HuggingFace.Model = huggingFace.Model ?? settings.HuggingFace.Model;
                 break;
-
-            // case OllamaArgumentOptions ollama:
-            //     break;
-
-            // case AnthropicArgumentOptions anthropic:
-            //     break;
-
-            // case LGArgumentOptions lg:
-            //     break;
-
-            // case NaverArgumentOptions naver:
-            //     break;
+            
+            case OllamaArgumentOptions ollama:
+                settings.Ollama ??= new OllamaSettings();
+                settings.Ollama.BaseUrl = ollama.BaseUrl ?? settings.Ollama.BaseUrl;
+                settings.Ollama.Model = ollama.Model ?? settings.Ollama.Model;
+                break;
 
             case OpenAIArgumentOptions openai:
                 settings.OpenAI ??= new OpenAISettings();
                 settings.OpenAI.ApiKey = openai.ApiKey ?? settings.OpenAI.ApiKey;
                 settings.OpenAI.Model = openai.Model ?? settings.OpenAI.Model;
                 break;
-
-            // case UpstageArgumentOptions upstage:
-            //     break;
 
             default:
                 break;
@@ -356,7 +349,8 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** Ollama: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  TBD");
+        Console.WriteLine("  --base-url           The baseURL. Default to 'http://localhost:11434'");
+        Console.WriteLine("  --model              The model name. Default to 'llama3.2'");
         Console.WriteLine();
     }
 
