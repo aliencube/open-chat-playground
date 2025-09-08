@@ -160,6 +160,12 @@ public abstract class ArgumentOptions
                 settings.GitHubModels.Model = github.Model ?? settings.GitHubModels.Model;
                 break;
 
+            case GoogleVertexAIArgumentOptions googleVertexAI:
+                settings.GoogleVertexAI ??= new GoogleVertexAISettings();
+                settings.GoogleVertexAI.ApiKey = googleVertexAI.ApiKey ?? settings.GoogleVertexAI.ApiKey;
+                settings.GoogleVertexAI.Model = googleVertexAI.Model ?? settings.GoogleVertexAI.Model;
+                break;
+
             case FoundryLocalArgumentOptions foundryLocal:
                 settings.FoundryLocal ??= new FoundryLocalSettings();
                 settings.FoundryLocal.Alias = foundryLocal.Alias ?? settings.FoundryLocal.Alias;
@@ -170,23 +176,17 @@ public abstract class ArgumentOptions
                 settings.HuggingFace.BaseUrl = huggingFace.BaseUrl ?? settings.HuggingFace.BaseUrl;
                 settings.HuggingFace.Model = huggingFace.Model ?? settings.HuggingFace.Model;
                 break;
-                
-            case GoogleVertexAIArgumentOptions googleVertexAI:
-                settings.GoogleVertexAI ??= new GoogleVertexAISettings();
-                settings.GoogleVertexAI.ApiKey = googleVertexAI.ApiKey ?? settings.GoogleVertexAI.ApiKey;
-                settings.GoogleVertexAI.Model = googleVertexAI.Model ?? settings.GoogleVertexAI.Model;
+            
+            case AnthropicArgumentOptions anthropic:
+                settings.Anthropic ??= new AnthropicSettings();
+                settings.Anthropic.ApiKey = anthropic.ApiKey ?? settings.Anthropic.ApiKey;
+                settings.Anthropic.Model = anthropic.Model ?? settings.Anthropic.Model;
                 break;
 
             case OpenAIArgumentOptions openai:
                 settings.OpenAI ??= new OpenAISettings();
                 settings.OpenAI.ApiKey = openai.ApiKey ?? settings.OpenAI.ApiKey;
                 settings.OpenAI.Model = openai.Model ?? settings.OpenAI.Model;
-                break;
-
-            case AnthropicArgumentOptions anthropic:
-                settings.Anthropic ??= new AnthropicSettings();
-                settings.Anthropic.ApiKey = anthropic.ApiKey ?? settings.Anthropic.ApiKey;
-                settings.Anthropic.Model = anthropic.Model ?? settings.Anthropic.Model;
                 break;
 
             default:
