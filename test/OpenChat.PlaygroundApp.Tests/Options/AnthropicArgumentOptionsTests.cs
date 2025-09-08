@@ -35,11 +35,32 @@ public class AnthropicArgumentOptionsTests
     }
 
     [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_Nothing_When_Parse_Invoked_Then_It_Should_Set_Config()
+    [Theory]
+    [InlineData(typeof(ArgumentOptions), typeof(AnthropicArgumentOptions), true)]
+    [InlineData(typeof(AnthropicArgumentOptions), typeof(ArgumentOptions), false)]
+    public void Given_AnthropicArgumentOptions_When_Checking_Inheritance_Then_Should_Inherit_From_ArgumentOptions(Type baseType, Type derivedType, bool expectedResult)
+    {
+        // Act
+        var isSubclass = derivedType.IsSubclassOf(baseType);
+        
+        // Assert
+        if (expectedResult)
+        {
+            isSubclass.ShouldBeTrue();
+        }
+        else
+        {
+            isSubclass.ShouldBeFalse();
+        }
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("test-api-key", "test-model")]
+    public void Given_Nothing_When_Parse_Invoked_Then_It_Should_Set_Config(string expectedApiKey, string expectedModel)
     {
         // Arrange
-        var config = BuildConfigWithAnthropic();
+        var config = BuildConfigWithAnthropic(expectedApiKey, expectedModel);
         var args = Array.Empty<string>();
 
         // Act
@@ -47,8 +68,8 @@ public class AnthropicArgumentOptionsTests
 
         // Assert
         settings.Anthropic.ShouldNotBeNull();
-        settings.Anthropic.ApiKey.ShouldBe(ApiKey);
-        settings.Anthropic.Model.ShouldBe(Model);
+        settings.Anthropic.ApiKey.ShouldBe(expectedApiKey);
+        settings.Anthropic.Model.ShouldBe(expectedModel);
     }
 
     [Trait("Category", "UnitTest")]
@@ -262,28 +283,18 @@ public class AnthropicArgumentOptionsTests
     }
 
     [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_AnthropicArgumentOptions_When_Checking_Inheritance_Then_Should_Inherit_From_ArgumentOptions()
-    {
-        // Act
-        var isSubclass = typeof(AnthropicArgumentOptions).IsSubclassOf(typeof(ArgumentOptions));
-        
-        // Assert
-        isSubclass.ShouldBeTrue();
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_AnthropicArgumentOptions_When_Creating_Instance_Then_Should_Have_Correct_Properties()
+    [Theory]
+    [InlineData(null, null, ConnectorType.Unknown, false)]
+    public void Given_AnthropicArgumentOptions_When_Creating_Instance_Then_Should_Have_Correct_Properties(string? expectedApiKey, string? expectedModel, ConnectorType expectedConnectorType, bool expectedHelp)
     {
         // Act
         var options = new AnthropicArgumentOptions();
         
         // Assert
         options.ShouldNotBeNull();
-        options.ApiKey.ShouldBeNull();
-        options.Model.ShouldBeNull();
-        options.ConnectorType.ShouldBe(ConnectorType.Unknown);
-        options.Help.ShouldBeFalse();
+        options.ApiKey.ShouldBe(expectedApiKey);
+        options.Model.ShouldBe(expectedModel);
+        options.ConnectorType.ShouldBe(expectedConnectorType);
+        options.Help.ShouldBe(expectedHelp);
     }
 }
