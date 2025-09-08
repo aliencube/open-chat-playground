@@ -12,28 +12,31 @@ public class GoogleVertexAIArgumentOptionsTests
 
     private static IConfiguration BuildConfigWithGoogleVertexAI(
         string? configApiKey = ApiKey,
-        string? configModel = Model)
+        string? configModel = Model,
+        string? envApiKey = null,
+        string? envModel = null)
     {
         var configDict = new Dictionary<string, string?>
         {
             ["ConnectorType"] = ConnectorType.GoogleVertexAI.ToString()
         };
 
-        if (string.IsNullOrWhiteSpace(configApiKey) == false)
-        {
+        if (!string.IsNullOrWhiteSpace(configApiKey))
             configDict["GoogleVertexAI:ApiKey"] = configApiKey;
-        }
-        if (string.IsNullOrWhiteSpace(configModel) == false)
-        {
+        if (!string.IsNullOrWhiteSpace(configModel))
             configDict["GoogleVertexAI:Model"] = configModel;
-        }
-        
+
+        // For future extensibility, but envDict is not used in this PR
         var envDict = new Dictionary<string, string?>();
-        
+        // if (!string.IsNullOrWhiteSpace(envApiKey))
+        //     envDict["GoogleVertexAI:ApiKey"] = envApiKey;
+        // if (!string.IsNullOrWhiteSpace(envModel))
+        //     envDict["GoogleVertexAI:Model"] = envModel;
+
         return new ConfigurationBuilder()
-                   .AddInMemoryCollection(configDict!)
-                   .AddInMemoryCollection(envDict!)
-                   .Build();
+            .AddInMemoryCollection(configDict)
+            .AddInMemoryCollection(envDict)
+            .Build();
     }
 
     [Trait("Category", "UnitTest")]
