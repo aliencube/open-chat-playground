@@ -27,10 +27,10 @@
 
     private async Task SendMessageAsync()
     {
-        if (messageText is { Length: > 0 } raw)
+        if (messageText is { Length: > 0 } rawText)
         {
-            var text = raw.Trim();
-            if (text.Length == 0)
+            var trimmedText = rawText.Trim();
+            if (trimmedText.Length == 0)
             {
                 messageText = null;
                 return;
@@ -38,7 +38,7 @@
 
             hasJustSent = true;
             messageText = null;
-            await OnSend.InvokeAsync(new ChatMessage(ChatRole.User, text));
+            await OnSend.InvokeAsync(new ChatMessage(ChatRole.User, trimmedText));
         }
     }
 
