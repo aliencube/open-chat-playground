@@ -2,13 +2,14 @@ using Microsoft.Extensions.Configuration;
 
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Connectors;
+using OpenChat.PlaygroundApp.Options;
 
 namespace OpenChat.PlaygroundApp.Tests.Options;
 
 public class OllamaArgumentOptionsTests
 {
     private const string BaseUrl = "http://localhost:11434";
-    private const string Model = "ollama-model-name";
+    private const string Model = "llama3.2";
 
     private static IConfiguration BuildConfigWithOllama(
         string? configBaseUrl = BaseUrl,
@@ -37,18 +38,14 @@ public class OllamaArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Fact]
-    public void OllamaArgumentOptions_Should_Inherit_ArgumentOptions()
+    public void Given_OllamaArgumentOptions_When_Checking_Inheritance_Then_Should_Inherit_From_ArgumentOptions()
     {
         // Arrange
-        var ollamaArgumentOptionsType = typeof(OpenChat.PlaygroundApp.Options.OllamaArgumentOptions);
+        var ollamaArgumentOptionsType = typeof(OllamaArgumentOptions);
         var argumentOptionsType = typeof(ArgumentOptions);
-
-        // Act
-        var baseType = ollamaArgumentOptionsType.BaseType;
-
-        // Assert
-        baseType.ShouldNotBeNull();
-        baseType.ShouldBe(argumentOptionsType);
+    
+        // Act & Assert
+        ollamaArgumentOptionsType.IsSubclassOf(argumentOptionsType).ShouldBeTrue();
     }
 
     [Trait("Category", "UnitTest")]
@@ -70,7 +67,7 @@ public class OllamaArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://localhost:8080")]
+    [InlineData("cli-base-url")]
     public void Given_CLI_BaseUrl_When_Parse_Invoked_Then_It_Should_Use_CLI_BaseUrl(string cliBaseUrl)
     {
         // Arrange
@@ -88,7 +85,7 @@ public class OllamaArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("mistral:7b")]
+    [InlineData("cli-model")]
     public void Given_CLI_Model_When_Parse_Invoked_Then_It_Should_Use_CLI_Model(string cliModel)
     {
         // Arrange
@@ -106,7 +103,7 @@ public class OllamaArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://localhost:8080", "mistral:7b")]
+    [InlineData("cli-base-url", "cli-model")]
     public void Given_All_CLI_Arguments_When_Parse_Invoked_Then_It_Should_Use_CLI(string cliBaseUrl, string cliModel)
     {
         // Arrange
@@ -177,7 +174,7 @@ public class OllamaArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://config.ollama.com:8080", "config-model")]
+    [InlineData("config-base-url", "config-model")]
     public void Given_ConfigValues_And_No_CLI_When_Parse_Invoked_Then_It_Should_Use_Config(string configBaseUrl, string configModel)
     {
         // Arrange
@@ -195,8 +192,8 @@ public class OllamaArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://config.ollama.com:8080", "config-model",
-                "http://cli.ollama.com:8080", "cli-model")]
+    [InlineData("config-base-url", "config-model",
+                "cli-base-url", "cli-model")]
     public void Given_ConfigValues_And_CLI_When_Parse_Invoked_Then_It_Should_Use_CLI(
         string configBaseUrl, string configModel,
         string cliBaseUrl, string cliModel)
@@ -216,7 +213,7 @@ public class OllamaArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://localhost:8080", "mistral:7b")]
+    [InlineData("cli-base-url", "cli-model")]
     public void Given_Ollama_With_KnownArguments_When_Parse_Invoked_Then_Help_Should_Be_False(string cliBaseUrl, string cliModel)
     {
         // Arrange
@@ -249,7 +246,7 @@ public class OllamaArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://localhost:8080", "--unknown-flag")]
+    [InlineData("cli-base-url", "--unknown-flag")]
     public void Given_Ollama_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_Should_Be_True(string cliBaseUrl, string argument)
     {
         // Arrange
@@ -265,7 +262,7 @@ public class OllamaArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://localhost:8080", "mistral:7b")]
+    [InlineData("cli-base-url", "cli-model")]
     public void Given_CLI_Only_When_Parse_Invoked_Then_Help_Should_Be_False(string cliBaseUrl, string cliModel)
     {
         // Arrange

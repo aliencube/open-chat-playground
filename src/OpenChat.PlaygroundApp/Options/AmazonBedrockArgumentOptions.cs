@@ -7,4 +7,13 @@ namespace OpenChat.PlaygroundApp.Options;
 /// </summary>
 public class AmazonBedrockArgumentOptions : ArgumentOptions
 {
+    /// <summary>
+    ///  Gets or sets the AWS region for the Amazon Bedrock service.
+    /// </summary>
+    public string? Region { get; set; }
+
+    /// <summary>
+    ///  Gets or sets the model for the Amazon Bedrock service.
+    /// </summary>
+    public string? Model { get; set; }
 }
