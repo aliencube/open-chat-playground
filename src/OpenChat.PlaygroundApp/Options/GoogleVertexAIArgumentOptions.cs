@@ -3,48 +3,51 @@ using OpenChat.PlaygroundApp.Configurations;
 
 namespace OpenChat.PlaygroundApp.Options;
 
-
 /// <summary>
-/// Represents the command-line argument options for Ollama.
+/// This represents the argument options entity for Google Vertex AI.
 /// </summary>
-public class OllamaArgumentOptions : ArgumentOptions
+public class GoogleVertexAIArgumentOptions : ArgumentOptions
 {
     /// <summary>
-    /// Gets or sets the base URL for Ollama API.
+    /// Gets or sets the Google Vertex AI API Key.
     /// </summary>
-    public string? BaseUrl { get; set; }
+    public string? ApiKey { get; set; }
 
     /// <summary>
-    /// Gets or sets the model name for Ollama.
+    /// Gets or sets the model name of Google Vertex AI.
     /// </summary>
     public string? Model { get; set; }
 
+
+    /// <inheritdoc/>
     protected override void ParseOptions(IConfiguration config, string[] args)
     {
         var settings = new AppSettings();
         config.Bind(settings);
 
-        var ollama = settings.Ollama;
+        var googleVertexAI = settings.GoogleVertexAI;
 
-        this.BaseUrl ??= ollama?.BaseUrl;
-        this.Model ??= ollama?.Model;
+        this.ApiKey ??= googleVertexAI?.ApiKey;
+        this.Model ??= googleVertexAI?.Model;
 
         for (var i = 0; i < args.Length; i++)
         {
             switch (args[i])
             {
-                case "--base-url":
+                case "--api-key":
                     if (i + 1 < args.Length)
                     {
-                        this.BaseUrl = args[++i];
+                        this.ApiKey = args[++i];
                     }
                     break;
+
                 case "--model":
                     if (i + 1 < args.Length)
                     {
                         this.Model = args[++i];
                     }
                     break;
+
                 default:
                     break;
             }

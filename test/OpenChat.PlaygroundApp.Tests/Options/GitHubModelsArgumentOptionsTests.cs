@@ -38,7 +38,9 @@ public class GitHubModelsArgumentOptionsTests
             configDict["GitHubModels:Model"] = configModel;
         }
 
-        if (string.IsNullOrWhiteSpace(envEndpoint) && string.IsNullOrWhiteSpace(envToken) && string.IsNullOrWhiteSpace(envModel))
+        if (string.IsNullOrWhiteSpace(envEndpoint) == true &&
+            string.IsNullOrWhiteSpace(envToken) == true &&
+            string.IsNullOrWhiteSpace(envModel) == true)
         {
             return new ConfigurationBuilder()
                        .AddInMemoryCollection(configDict!)

@@ -11,8 +11,10 @@ public class HuggingFaceArgumentOptionsTests
     private const string Model = "hf-model-name";
 
     private static IConfiguration BuildConfigWithHuggingFace(
-        string? baseUrl = BaseUrl,
-        string? model = Model
+        string? configBaseUrl = BaseUrl,
+        string? configModel = Model,
+        string? envBaseUrl = null,
+        string? envModel = null
     )
     {
         // Base configuration values (lowest priority)
@@ -21,18 +23,37 @@ public class HuggingFaceArgumentOptionsTests
             ["ConnectorType"] = ConnectorType.HuggingFace.ToString(),
         };
 
-        if (string.IsNullOrWhiteSpace(baseUrl) == false)
+        if (string.IsNullOrWhiteSpace(configBaseUrl) == false)
         {
-            configDict["HuggingFace:BaseUrl"] = baseUrl;
+            configDict["HuggingFace:BaseUrl"] = configBaseUrl;
         }
-        if (string.IsNullOrWhiteSpace(model) == false)
+        if (string.IsNullOrWhiteSpace(configModel) == false)
         {
-            configDict["HuggingFace:Model"] = model;
+            configDict["HuggingFace:Model"] = configModel;
+        }
+
+        if (string.IsNullOrWhiteSpace(envBaseUrl) == true && string.IsNullOrWhiteSpace(envModel) == true)
+        {
+            return new ConfigurationBuilder()
+                       .AddInMemoryCollection(configDict!)
+                       .Build();
+        }
+
+        // Environment variables (medium priority)
+        var envDict = new Dictionary<string, string?>();
+        if (string.IsNullOrWhiteSpace(envBaseUrl) == false)
+        {
+            envDict["HuggingFace:BaseUrl"] = envBaseUrl;
+        }
+        if (string.IsNullOrWhiteSpace(envModel) == false)
+        {
+            envDict["HuggingFace:Model"] = envModel;
         }
 
         return new ConfigurationBuilder()
-                               .AddInMemoryCollection(configDict!)
-                               .Build();
+                   .AddInMemoryCollection(configDict!)  // Base configuration (lowest priority)
+                   .AddInMemoryCollection(envDict!)     // Environment variables (medium priority)
+                   .Build();
     }
 
     [Trait("Category", "UnitTest")]
@@ -201,6 +222,125 @@ public class HuggingFaceArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
+    [InlineData("https://env.huggingface.co/api", "env-model")]
+    public void Given_EnvironmentVariables_And_No_Config_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(
+        string envBaseUrl, string envModel)
+    {
+        // Arrange
+        var config = BuildConfigWithHuggingFace(
+            configBaseUrl: null, configModel: null,
+            envBaseUrl: envBaseUrl, envModel: envModel
+        );
+        var args = Array.Empty<string>();
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.HuggingFace.ShouldNotBeNull();
+        settings.HuggingFace.BaseUrl.ShouldBe(envBaseUrl);
+        settings.HuggingFace.Model.ShouldBe(envModel);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://config.huggingface.co/api", "config-model",
+                "https://env.huggingface.co/api", "env-model")]
+    public void Given_ConfigValues_And_EnvironmentVariables_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(
+        string configBaseUrl, string configModel,
+        string envBaseUrl, string envModel)
+    {
+        // Arrange
+        var config = BuildConfigWithHuggingFace(
+            configBaseUrl, configModel,
+            envBaseUrl, envModel);
+        var args = Array.Empty<string>();
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.HuggingFace.ShouldNotBeNull();
+        settings.HuggingFace.BaseUrl.ShouldBe(envBaseUrl);
+        settings.HuggingFace.Model.ShouldBe(envModel);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://config.huggingface.co/api", "config-model",
+                "https://env.huggingface.co/api", "env-model",
+                "https://cli.huggingface.co/api", "cli-model")]
+    public void Given_ConfigValues_And_EnvironmentVariables_And_CLI_When_Parse_Invoked_Then_It_Should_Use_CLI(
+        string configBaseUrl, string configModel,
+        string envBaseUrl, string envModel,
+        string cliBaseUrl, string cliModel)
+    {
+        // Arrange
+        var config = BuildConfigWithHuggingFace(
+            configBaseUrl, configModel,
+            envBaseUrl, envModel);
+        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.HuggingFace.ShouldNotBeNull();
+        settings.HuggingFace.BaseUrl.ShouldBe(cliBaseUrl);
+        settings.HuggingFace.Model.ShouldBe(cliModel);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://config.huggingface.co/api", "config-model",
+                "https://env.huggingface.co/api", null)]
+    public void Given_Partial_EnvironmentVariables_When_Parse_Invoked_Then_It_Should_Mix_Config_And_Environment(
+        string configBaseUrl, string configModel,
+        string envBaseUrl, string? envModel)
+    {
+        // Arrange
+        var config = BuildConfigWithHuggingFace(
+            configBaseUrl, configModel,
+            envBaseUrl, envModel);
+        var args = Array.Empty<string>();
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.HuggingFace.ShouldNotBeNull();
+        settings.HuggingFace.BaseUrl.ShouldBe(envBaseUrl);  // From environment
+        settings.HuggingFace.Model.ShouldBe(configModel);   // From config (no env override)
+    }
+
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://config.huggingface.co/api", "config-model",
+                null, "env-model",
+                "https://cli.huggingface.co/api", null)]
+    public void Given_Mixed_Priority_Sources_When_Parse_Invoked_Then_It_Should_Respect_Priority_Order(
+        string configBaseUrl, string configModel,
+        string? envBaseUrl, string envModel,
+        string cliBaseUrl, string? cliModel)
+    {
+        // Arrange
+        var config = BuildConfigWithHuggingFace(
+            configBaseUrl, configModel,
+            envBaseUrl, envModel);
+        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args!);
+
+        // Assert
+        settings.HuggingFace.ShouldNotBeNull();
+        settings.HuggingFace.BaseUrl.ShouldBe(cliBaseUrl);  // CLI wins (highest priority)
+        settings.HuggingFace.Model.ShouldBe(envModel);      // Env wins over config (medium priority)
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
     [InlineData("https://cli.huggingface.co/api", "cli-model")]
     public void Given_HuggingFace_With_KnownArguments_When_Parse_Invoked_Then_Help_Should_Be_False(string cliBaseUrl, string cliModel)
     {
@@ -246,6 +386,26 @@ public class HuggingFaceArgumentOptionsTests
 
         // Assert
         settings.Help.ShouldBeTrue();
+    }
+
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://env.huggingface.co/api", "env-model")]
+    public void Given_EnvironmentVariables_Only_When_Parse_Invoked_Then_Help_Should_Be_False(
+        string envBaseUrl, string envModel)
+    {
+        // Arrange
+        var config = BuildConfigWithHuggingFace(
+            configBaseUrl: null, configModel: null,
+            envBaseUrl: envBaseUrl, envModel: envModel);
+        var args = Array.Empty<string>();
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.Help.ShouldBeFalse();
     }
 
 
