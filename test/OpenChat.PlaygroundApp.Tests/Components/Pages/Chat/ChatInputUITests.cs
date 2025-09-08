@@ -38,9 +38,9 @@ public class ChatInputUITest : PageTest
     [Trait("Category", "IntegrationTest")]
     [Theory]
     [InlineData("", 0)]
-    //[InlineData(" ", 0)]
-    //[InlineData("\n", 0)]
-    //[InlineData("\r\n", 0)]
+    [InlineData(" ", 0)]
+    [InlineData("\n", 0)]
+    [InlineData("\r\n", 0)]
     public async Task Given_Empty_UserMessage_When_SendButton_Clicked_Then_It_Should_Not_SendMessage(string userMessage, int expectedMessageCount)
     {
         // Arrange
@@ -82,9 +82,9 @@ public class ChatInputUITest : PageTest
     [Trait("Category", "IntegrationTest")]
     [Theory]
     [InlineData("", 0)]
-    //[InlineData(" ", 0)]
-    //[InlineData("\n", 0)]
-    //[InlineData("\r\n", 0)]
+    [InlineData(" ", 0)]
+    [InlineData("\n", 0)]
+    [InlineData("\r\n", 0)]
     public async Task Given_Empty_UserMessage_When_EnterKey_Pressed_Then_It_Should_Not_SendMessage(string userMessage, int expectedMessageCount)
     {
         // Arrange
@@ -121,9 +121,9 @@ public class ChatInputUITest : PageTest
     [Trait("Category", "IntegrationTest")]
     [Theory]
     [InlineData("", "rgb(170, 170, 170)")]
-    //[InlineData(" ", "rgb(170, 170, 170)")]
-    //[InlineData("\n", "rgb(170, 170, 170)")]
-    //[InlineData("\r\n", "rgb(170, 170, 170)")]
+    [InlineData(" ", "rgb(170, 170, 170)")]
+    [InlineData("\n", "rgb(170, 170, 170)")]
+    [InlineData("\r\n", "rgb(170, 170, 170)")]
     public async Task Given_Empty_UserMessage_Then_It_Should_Not_Change_Color_Of_SendButton(string userMessage, string expectedButtonColor)
     {
         // Arrange
