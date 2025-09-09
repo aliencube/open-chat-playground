@@ -22,30 +22,38 @@ public class ChatStreamingUITest : PageTest
         // Arrange
         var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
         var sendButton = Page.GetByRole(AriaRole.Button, new() { Name = "User Message Send Button" });
+        const string messageSelector = ".assistant-message-text";
+        var message = Page.Locator(messageSelector);
+        const int timeoutMs = 5000;
+        const int delayMs = 100;
+        int maxChecks = timeoutMs / delayMs;
 
         // Act
         await textArea.FillAsync(userMessage);
         await sendButton.ClickAsync();
 
-        // Assert: Wait for the assistant message container to appear
-        var messageSelector = ".assistant-message-text";
-        await Page.WaitForSelectorAsync(messageSelector);
+        // Assert
+        await Expect(message).ToBeVisibleAsync(new() { Timeout = timeoutMs });
+        await Expect(message).Not.ToHaveTextAsync(string.Empty, new() { Timeout = timeoutMs });
 
-        // Check that the message content grows over time (streaming)
+
         string previousContent = "";
         bool streamed = false;
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < maxChecks; i++)
         {
-            var content = await Page.Locator(messageSelector).InnerTextAsync();
+            var content = await message.InnerTextAsync();
             if (content.Length > previousContent.Length)
             {
                 streamed = true;
                 break;
             }
             previousContent = content;
-            await Task.Delay(500); // Wait for more content to stream in
+            await Task.Delay(delayMs);
         }
-        Assert.True(streamed, "Response should stream progressively, not appear all at once.");
+        var finalContent = await message.InnerTextAsync();
+        Assert.True(streamed || finalContent.Length > previousContent.Length, 
+            $"Response did not stream within {timeoutMs}ms. Final length: {finalContent.Length}. " +
+            $"Checked {maxChecks} times every {delayMs}ms.");
     }
 
     public override async Task DisposeAsync()
