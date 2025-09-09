@@ -15,8 +15,8 @@ public class ChatStreamingUITest : PageTest
     [Trait("Category", "IntegrationTest")]
     [Trait("Category", "LLMRequired")]
     [Theory]
-    [InlineData("하늘은 왜 푸른 색인가요?")]
-    [InlineData("Why is the sky blue?")]
+    [InlineData("하늘은 왜 푸른 색인가요? 다섯 개의 단락으로 자세히 설명해주세요.")]
+    [InlineData("Why is the sky blue? Please explain in five paragraphs.")]
     public async Task Given_UserMessage_When_SendButton_Clicked_Then_Response_Should_Stream_Progressively(string userMessage)
     {
         // Arrange
@@ -25,8 +25,7 @@ public class ChatStreamingUITest : PageTest
         const string messageSelector = ".assistant-message-text";
         var message = Page.Locator(messageSelector);
         const int timeoutMs = 5000;
-        const int delayMs = 100;
-        int maxChecks = timeoutMs / delayMs;
+        const int streamingCheckDelayMs = 3000;
 
         // Act
         await textArea.FillAsync(userMessage);
@@ -36,24 +35,21 @@ public class ChatStreamingUITest : PageTest
         await Expect(message).ToBeVisibleAsync(new() { Timeout = timeoutMs });
         await Expect(message).Not.ToHaveTextAsync(string.Empty, new() { Timeout = timeoutMs });
 
+        var initialContent = await message.InnerTextAsync();
 
-        string previousContent = "";
-        bool streamed = false;
-        for (int i = 0; i < maxChecks; i++)
+        try
         {
-            var content = await message.InnerTextAsync();
-            if (content.Length > previousContent.Length)
-            {
-                streamed = true;
-                break;
-            }
-            previousContent = content;
-            await Task.Delay(delayMs);
+            await Page.WaitForFunctionAsync(
+                $"selector => document.querySelector(selector).innerText.length > {initialContent.Length}",
+                messageSelector,
+                new() { Timeout = streamingCheckDelayMs } 
+            );
         }
-        var finalContent = await message.InnerTextAsync();
-        Assert.True(streamed || finalContent.Length > previousContent.Length, 
-            $"Response did not stream within {timeoutMs}ms. Final length: {finalContent.Length}. " +
-            $"Checked {maxChecks} times every {delayMs}ms.");
+        catch (TimeoutException)
+        {
+            var finalContent = await message.InnerTextAsync();
+            Assert.Fail($"Streaming was not detected. The content did not grow after the initial part. Initial length: {initialContent.Length}, Final length: {finalContent.Length}.");
+        }
     }
 
     public override async Task DisposeAsync()
