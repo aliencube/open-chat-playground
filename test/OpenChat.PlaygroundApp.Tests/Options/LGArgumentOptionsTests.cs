@@ -200,7 +200,7 @@ public class LGArgumentOptionsTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("https://cli.lg-exaone/api", "cli-model")]
-    public void Given_LG_With_KnownArguments_When_Parse_Invoked_Then_Help_ShouldBe_False(string cliBaseUrl, string cliModel)
+    public void Given_LG_With_KnownArguments_When_Parse_Invoked_Then_Help_Should_Be_False(string cliBaseUrl, string cliModel)
     {
         // Arrange
         var config = BuildConfigWithLG(BaseUrl, Model);
@@ -217,7 +217,7 @@ public class LGArgumentOptionsTests
     [Theory]
     [InlineData("--base-url")]
     [InlineData("--model")]
-    public void Given_LG_With_KnownArgument_WithoutValue_When_Parse_Invoked_Then_Help_ShouldBe_False(string argument)
+    public void Given_LG_With_KnownArgument_WithoutValue_When_Parse_Invoked_Then_Help_Should_Be_False(string argument)
     {
         // Arrange
         var config = BuildConfigWithLG();
@@ -233,7 +233,7 @@ public class LGArgumentOptionsTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("https://cli.lg-exaone/api", "--unknown-flag")]
-    public void Given_LG_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_ShouldBe_True(string cliBaseUrl, string argument)
+    public void Given_LG_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_Should_Be_True(string cliBaseUrl, string argument)
     {
         // Arrange
         var config = BuildConfigWithLG();
@@ -247,19 +247,4 @@ public class LGArgumentOptionsTests
     }
 
 
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData("https://cli.lg-exaone/api", "cli-model")]
-    public void Given_CLI_Only_When_Parse_Invoked_Then_Help_Should_Be_False(string cliBaseUrl, string cliModel)
-    {
-        // Arrange
-        var config = BuildConfigWithLG();
-        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
-
-        // Act
-        var settings = ArgumentOptions.Parse(config, args);
-
-        // Assert
-        settings.Help.ShouldBeFalse();
-    }
 }
