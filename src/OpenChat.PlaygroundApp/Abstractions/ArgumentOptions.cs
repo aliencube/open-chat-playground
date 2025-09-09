@@ -12,6 +12,8 @@ public abstract class ArgumentOptions
     private static readonly (ConnectorType ConnectorType, string Argument, bool IsSwitch)[] arguments =
     [
         // Amazon Bedrock
+        (ConnectorType.AmazonBedrock, "--region", false),
+        (ConnectorType.AmazonBedrock, "--model", false),
         // Azure AI Foundry
         (ConnectorType.AzureAIFoundry, "--endpoint", false),
         (ConnectorType.AzureAIFoundry, "--api-key", false),
@@ -146,8 +148,11 @@ public abstract class ArgumentOptions
 
         switch (options)
         {
-            // case AmazonBedrockArgumentOptions amazonBedrock:
-            //     break;
+            case AmazonBedrockArgumentOptions amazonBedrock:
+                settings.AmazonBedrock ??= new AmazonBedrockSettings();
+                settings.AmazonBedrock.Region = amazonBedrock.Region ?? settings.AmazonBedrock.Region;
+                settings.AmazonBedrock.Model = amazonBedrock.Model ?? settings.AmazonBedrock.Model;
+                break;
 
             case AzureAIFoundryArgumentOptions azureAIFoundry:
                 settings.AzureAIFoundry ??= new AzureAIFoundrySettings();
@@ -267,7 +272,8 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** Amazon Bedrock: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  TBD");
+        Console.WriteLine("  --region             The AWS region.");
+        Console.WriteLine("  --model              The model name. Default to 'anthropic.claude-sonnet-4'");
         Console.WriteLine();
     }
 
