@@ -171,7 +171,6 @@ public abstract class ArgumentOptions
             // case DockerModelRunnerArgumentOptions dockerModelRunner:
             //     break;
             
-            // Local providers
             case FoundryLocalArgumentOptions foundryLocal:
                 settings.FoundryLocal ??= new FoundryLocalSettings();
                 settings.FoundryLocal.Alias = foundryLocal.Alias ?? settings.FoundryLocal.Alias;
@@ -190,7 +189,6 @@ public abstract class ArgumentOptions
                 settings.Ollama.Model = ollama.Model ?? settings.Ollama.Model;
                 break;
 
-            // Vendor providers
             case LGArgumentOptions lg:
                 settings.LG ??= new LGSettings();
                 settings.LG.BaseUrl = lg.BaseUrl ?? settings.LG.BaseUrl;
