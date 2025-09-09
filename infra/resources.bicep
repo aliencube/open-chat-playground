@@ -118,8 +118,7 @@ var envGitHubModels = (connectorType == '' || connectorType == 'GitHubModels') ?
 // Docker Model Runner
 // Foundry Local
 // Hugging Face
-var envHuggingFace = (connectorType == '' || connectorType == 'HuggingFace')
-  ? huggingFaceModel != ''
+var envHuggingFace = connectorType == 'HuggingFace' ? huggingFaceModel != ''
       ? [
           {
             name: 'HuggingFace__Model'
@@ -173,8 +172,7 @@ module openchatPlaygroundapp 'br/public:avm/res/app/container-app:0.18.1' = {
           }],
           envConnectorType,
           envGitHubModels,
-          envHuggingFace
-        )
+          envHuggingFace)
       }
     ]
     managedIdentities:{
