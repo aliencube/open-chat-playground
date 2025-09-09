@@ -34,6 +34,8 @@ public abstract class ArgumentOptions
         (ConnectorType.Ollama, "--model", false),
         // Anthropic
         // LG
+        (ConnectorType.LG, "--base-url", false),
+        (ConnectorType.LG, "--model", false),
         // Naver
         // OpenAI
         (ConnectorType.OpenAI, "--api-key", false),
@@ -146,9 +148,6 @@ public abstract class ArgumentOptions
 
         switch (options)
         {
-            // case AmazonBedrockArgumentOptions amazonBedrock:
-            //     break;
-
             case AzureAIFoundryArgumentOptions azureAIFoundry:
                 settings.AzureAIFoundry ??= new AzureAIFoundrySettings();
                 settings.AzureAIFoundry.Endpoint = azureAIFoundry.Endpoint ?? settings.AzureAIFoundry.Endpoint;
@@ -171,7 +170,8 @@ public abstract class ArgumentOptions
 
             // case DockerModelRunnerArgumentOptions dockerModelRunner:
             //     break;
-
+            
+            // Local providers
             case FoundryLocalArgumentOptions foundryLocal:
                 settings.FoundryLocal ??= new FoundryLocalSettings();
                 settings.FoundryLocal.Alias = foundryLocal.Alias ?? settings.FoundryLocal.Alias;
@@ -182,11 +182,19 @@ public abstract class ArgumentOptions
                 settings.HuggingFace.BaseUrl = huggingFace.BaseUrl ?? settings.HuggingFace.BaseUrl;
                 settings.HuggingFace.Model = huggingFace.Model ?? settings.HuggingFace.Model;
                 break;
+
             
             case OllamaArgumentOptions ollama:
                 settings.Ollama ??= new OllamaSettings();
                 settings.Ollama.BaseUrl = ollama.BaseUrl ?? settings.Ollama.BaseUrl;
                 settings.Ollama.Model = ollama.Model ?? settings.Ollama.Model;
+                break;
+
+            // Vendor providers
+            case LGArgumentOptions lg:
+                settings.LG ??= new LGSettings();
+                settings.LG.BaseUrl = lg.BaseUrl ?? settings.LG.BaseUrl;
+                settings.LG.Model = lg.Model ?? settings.LG.Model;
                 break;
 
             case OpenAIArgumentOptions openai:
