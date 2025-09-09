@@ -118,15 +118,12 @@ var envGitHubModels = (connectorType == '' || connectorType == 'GitHubModels') ?
 // Docker Model Runner
 // Foundry Local
 // Hugging Face
-var envHuggingFace = connectorType == 'HuggingFace' ? huggingFaceModel != ''
-      ? [
-          {
-            name: 'HuggingFace__Model'
-            value: huggingFaceModel
-          }
-        ]
-      : []
-  : []
+var envHuggingFace = connectorType == 'HuggingFace' ? huggingFaceModel != '' ? [
+  {
+    name: 'HuggingFace__Model'
+    value: huggingFaceModel
+  }
+] : [] : []
 // Ollama
 // Anthropic
 // LG
