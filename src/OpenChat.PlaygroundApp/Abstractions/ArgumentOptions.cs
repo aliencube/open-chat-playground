@@ -189,11 +189,23 @@ public abstract class ArgumentOptions
                 settings.Ollama.Model = ollama.Model ?? settings.Ollama.Model;
                 break;
 
+            // case AnthropicArgumentOptions anthropic:
+            //     break;
+
+            // case LGArgumentOptions lg:
+            //     break;
+
+            // case NaverArgumentOptions naver:
+            //     break;
+
             case OpenAIArgumentOptions openai:
                 settings.OpenAI ??= new OpenAISettings();
                 settings.OpenAI.ApiKey = openai.ApiKey ?? settings.OpenAI.ApiKey;
                 settings.OpenAI.Model = openai.Model ?? settings.OpenAI.Model;
                 break;
+
+            // case UpstageArgumentOptions upstage:
+            //     break;
 
             default:
                 break;
