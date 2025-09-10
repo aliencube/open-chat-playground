@@ -170,7 +170,6 @@ public abstract class ArgumentOptions
 
             // case DockerModelRunnerArgumentOptions dockerModelRunner:
             //     break;
-            
             case FoundryLocalArgumentOptions foundryLocal:
                 settings.FoundryLocal ??= new FoundryLocalSettings();
                 settings.FoundryLocal.Alias = foundryLocal.Alias ?? settings.FoundryLocal.Alias;
@@ -181,7 +180,6 @@ public abstract class ArgumentOptions
                 settings.HuggingFace.BaseUrl = huggingFace.BaseUrl ?? settings.HuggingFace.BaseUrl;
                 settings.HuggingFace.Model = huggingFace.Model ?? settings.HuggingFace.Model;
                 break;
-
             
             case OllamaArgumentOptions ollama:
                 settings.Ollama ??= new OllamaSettings();

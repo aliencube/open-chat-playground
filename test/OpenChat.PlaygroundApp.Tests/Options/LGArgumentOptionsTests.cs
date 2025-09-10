@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Connectors;
+using OpenChat.PlaygroundApp.Options;
 
 namespace OpenChat.PlaygroundApp.Tests.Options;
 
@@ -245,6 +246,4 @@ public class LGArgumentOptionsTests
         // Assert
         settings.Help.ShouldBeTrue();
     }
-
-
 }
