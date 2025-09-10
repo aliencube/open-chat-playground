@@ -36,7 +36,7 @@ public class OllamaArgumentOptionsTests
             string.IsNullOrWhiteSpace(envModel) == true)
         {
             return new ConfigurationBuilder()
-                       .AddInMemoryCollection(configDict!)
+                    .AddInMemoryCollection(configDict!)
                     .Build();
         }
 
