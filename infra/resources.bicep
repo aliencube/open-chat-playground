@@ -172,18 +172,18 @@ module openchatPlaygroundapp 'br/public:avm/res/app/container-app:0.18.1' = {
           memory: '1.0Gi'
         }
         env: concat([
-            {
-              name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
-              value: monitoring.outputs.applicationInsightsConnectionString
-            }
-            {
-              name: 'AZURE_CLIENT_ID'
-              value: openchatPlaygroundappIdentity.outputs.clientId
-            }
-            {
-              name: 'PORT'
-              value: '8080'
-            }],
+          {
+            name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+            value: monitoring.outputs.applicationInsightsConnectionString
+          }
+          {
+            name: 'AZURE_CLIENT_ID'
+            value: openchatPlaygroundappIdentity.outputs.clientId
+          }
+          {
+            name: 'PORT'
+            value: '8080'
+          }],
           envConnectorType,
           envAzureAIFoundry,
           envGitHubModels)
