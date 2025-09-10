@@ -38,20 +38,13 @@ public class AnthropicArgumentOptionsTests
     [Theory]
     [InlineData(typeof(ArgumentOptions), typeof(AnthropicArgumentOptions), true)]
     [InlineData(typeof(AnthropicArgumentOptions), typeof(ArgumentOptions), false)]
-    public void Given_AnthropicArgumentOptions_When_Checking_Inheritance_Then_Should_Inherit_From_ArgumentOptions(Type baseType, Type derivedType, bool expectedResult)
+    public void Given_AnthropicArgumentOptions_When_Checking_Inheritance_Then_Should_Inherit_From_ArgumentOptions(Type baseType, Type derivedType, bool expected)
     {
         // Act
-        var isSubclass = derivedType.IsSubclassOf(baseType);
-        
+        var result = baseType.IsAssignableFrom(derivedType);
+
         // Assert
-        if (expectedResult)
-        {
-            isSubclass.ShouldBeTrue();
-        }
-        else
-        {
-            isSubclass.ShouldBeFalse();
-        }
+        result.ShouldBe(expected);
     }
 
     [Trait("Category", "UnitTest")]
