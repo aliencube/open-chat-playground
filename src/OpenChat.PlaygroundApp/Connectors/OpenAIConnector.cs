@@ -12,35 +12,9 @@ namespace OpenChat.PlaygroundApp.Connectors;
 /// <summary>
 /// This represents the connector entity for OpenAI.
 /// </summary>
-public class OpenAIConnector(AppSettings settings) : LanguageModelConnector(ValidateAndGetSettings(settings))
+public class OpenAIConnector(AppSettings settings) : LanguageModelConnector(settings.OpenAI)
 {
-    private static OpenAISettings ValidateAndGetSettings(AppSettings settings)
-    {
-        ArgumentNullException.ThrowIfNull(settings, nameof(settings));
-        
-        if (settings.OpenAI is null)
-        {
-            throw new InvalidOperationException("Missing configuration: OpenAI settings are required.");
-        }
-        
-        var trimmedApiKey = settings.OpenAI.ApiKey?.Trim();
-        if (string.IsNullOrEmpty(trimmedApiKey))
-        {
-            throw new InvalidOperationException("Missing configuration: OpenAI:ApiKey is required.");
-        }
-        
-        var trimmedModel = settings.OpenAI.Model?.Trim();
-        if (string.IsNullOrEmpty(trimmedModel))
-        {
-            throw new InvalidOperationException("Missing configuration: OpenAI:Model is required.");
-        }
-        
-        return new OpenAISettings
-        {
-            ApiKey = trimmedApiKey,
-            Model = trimmedModel
-        };
-    }
+    
     /// <inheritdoc/>
     public override bool EnsureLanguageModelSettingsValid()
     {
@@ -67,10 +41,6 @@ public class OpenAIConnector(AppSettings settings) : LanguageModelConnector(Vali
     public override async Task<IChatClient> GetChatClientAsync()
     {
         var settings = this.Settings as OpenAISettings;
-        if (settings is null)
-        {
-            throw new InvalidOperationException("Invalid settings type: Expected OpenAISettings.");
-        }
 
         var credential = new ApiKeyCredential(settings?.ApiKey ?? throw new InvalidOperationException("Missing configuration: OpenAI:ApiKey."));
 
