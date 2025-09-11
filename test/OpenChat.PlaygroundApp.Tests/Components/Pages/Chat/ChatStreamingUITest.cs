@@ -20,12 +20,13 @@ public class ChatStreamingUITest : PageTest
     public async Task Given_UserMessage_When_SendButton_Clicked_Then_Response_Should_Stream_Progressively(string userMessage)
     {
         // Arrange
+        const int timeoutMs = 5000;
+
+        const string messageSelector = ".assistant-message-text";
+
         var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
         var sendButton = Page.GetByRole(AriaRole.Button, new() { Name = "User Message Send Button" });
-        const string messageSelector = ".assistant-message-text";
         var message = Page.Locator(messageSelector);
-        const int timeoutMs = 5000;
-        const int streamingCheckDelayMs = 3000;
 
         // Act
         await textArea.FillAsync(userMessage);
@@ -37,19 +38,13 @@ public class ChatStreamingUITest : PageTest
 
         var initialContent = await message.InnerTextAsync();
 
-        try
-        {
-            await Page.WaitForFunctionAsync(
-                $"selector => document.querySelector(selector).innerText.length > {initialContent.Length}",
-                messageSelector,
-                new() { Timeout = streamingCheckDelayMs } 
-            );
-        }
-        catch (TimeoutException)
-        {
-            var finalContent = await message.InnerTextAsync();
-            Assert.Fail($"Streaming was not detected. The content did not grow after the initial part. Initial length: {initialContent.Length}, Final length: {finalContent.Length}.");
-        }
+        await Expect(message).Not.ToHaveTextAsync(initialContent, new() { Timeout = timeoutMs });
+
+        var finalContent = await message.InnerTextAsync();
+        
+        finalContent.ShouldNotBe(initialContent);
+        finalContent.ShouldStartWith(initialContent); 
+        finalContent.Length.ShouldBeGreaterThan(initialContent.Length); 
     }
 
     public override async Task DisposeAsync()
