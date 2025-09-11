@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.AI;
 
 namespace OpenChat.PlaygroundApp.Components.Pages.Chat;
@@ -18,9 +19,10 @@ public partial class Chat : ComponentBase, IDisposable
     protected ChatInput? chatInput;
 
     [Inject]
-    protected IChatClient ChatClient { get; set; } = default!;
+    protected IChatClient? ChatClient { get; set; }
+    
     [Inject]
-    protected NavigationManager Nav { get; set; } = default!;
+    protected NavigationManager? Nav { get; set; }
 
     protected override void OnInitialized()
     {
@@ -39,7 +41,7 @@ public partial class Chat : ComponentBase, IDisposable
         var responseText = new TextContent("");
         currentResponseMessage = new ChatMessage(ChatRole.Assistant, [responseText]);
         currentResponseCancellation = new();
-        await foreach (var update in ChatClient.GetStreamingResponseAsync([.. messages], chatOptions, currentResponseCancellation.Token))
+        await foreach (var update in ChatClient!.GetStreamingResponseAsync([.. messages], chatOptions, currentResponseCancellation.Token))
         {
             messages.AddMessages(update, filter: c => c is not TextContent);
             responseText.Text += update.Text;

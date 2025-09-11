@@ -3,7 +3,7 @@ using Microsoft.Playwright.Xunit;
 
 namespace OpenChat.PlaygroundApp.Tests.Components.Pages.Chat;
 
-public class ChatPageUITests : PageTest
+public class ChatUITests : PageTest
 {
     public override async Task InitializeAsync()
     {
@@ -21,26 +21,47 @@ public class ChatPageUITests : PageTest
 
         // Act
         var isVisible = await noMessages.IsVisibleAsync();
-        var text = isVisible ? await noMessages.InnerTextAsync() : string.Empty;
 
         // Assert
         isVisible.ShouldBeTrue();
+    }
+
+    [Trait("Category", "IntegrationTest")]
+    [Fact]
+    public async Task Given_Root_Page_When_Loaded_Then_NoMessagesContent_Text_Should_Match()
+    {
+        // Arrange
+        var noMessages = Page.Locator(".no-messages");
+
+        // Act
+        var text = await noMessages.InnerTextAsync();
+
+        // Assert
         text.ShouldBe("To get started, try asking about anything.");
     }
 
     [Trait("Category", "IntegrationTest")]
     [Fact]
-    public async Task Given_Root_Page_When_Loaded_Then_PageTitle_Should_Be_Set()
+    public async Task Given_Root_Page_When_Loaded_Then_PageTitle_Should_Exist()
     {
-        // Arrange
-        // (no specific arrangement required)
+        // Act
+        var title = await Page.TitleAsync();
 
+        // Assert
+        title.ShouldNotBeNullOrWhiteSpace();
+    }
+
+    [Trait("Category", "IntegrationTest")]
+    [Fact]
+    public async Task Given_Root_Page_When_Loaded_Then_PageTitle_Text_Should_Match()
+    {
         // Act
         var title = await Page.TitleAsync();
 
         // Assert
         title.ShouldBe("OpenChat Playground");
     }
+    
 
     [Trait("Category", "IntegrationTest")]
     [Fact]
