@@ -35,6 +35,19 @@ public class LGArgumentOptionsTests
     }
 
     [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData(typeof(ArgumentOptions), typeof(LGArgumentOptions), true)]
+    [InlineData(typeof(LGArgumentOptions), typeof(ArgumentOptions), false)]
+    public void Given_BaseType_Then_It_Should_Be_AssignableFrom_DerivedType(Type baseType, Type derivedType, bool expected)
+    {
+        // Act
+        var result = baseType.IsAssignableFrom(derivedType);
+
+        // Assert
+        result.ShouldBe(expected);
+    }
+
+    [Trait("Category", "UnitTest")]
     [Fact]
     public void Given_Nothing_When_Parse_Invoked_Then_It_Should_Set_Config()
     {
