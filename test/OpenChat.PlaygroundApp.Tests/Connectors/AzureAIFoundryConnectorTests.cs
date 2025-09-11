@@ -1,11 +1,16 @@
 using OpenChat.PlaygroundApp.Configurations;
 using OpenChat.PlaygroundApp.Connectors;
+using OpenChat.PlaygroundApp.Abstractions;
 
 namespace OpenChat.PlaygroundApp.Tests.Connectors;
 
 public class AzureAIFoundryConnectorTests
 {
-    private static AppSettings BuildAppSettings(string? endpoint = "https://test.services.ai.azure.com/api/projects/test", string? apiKey = "test-api-key", string? deploymentName = "gpt-4o-mini")
+    private const string Endpoint = "http://test.azure-ai-foundry/api";
+    private const string ApiKey = "test-api-key";
+    private const string DeploymentName = "test-deployment-name";
+
+    private static AppSettings BuildAppSettings(string? endpoint = Endpoint, string? apiKey = ApiKey, string? deploymentName = DeploymentName)
     {
         return new AppSettings
         {
@@ -17,6 +22,19 @@ public class AzureAIFoundryConnectorTests
                 DeploymentName = deploymentName
             }
         };
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData(typeof(LanguageModelConnector), typeof(AzureAIFoundryConnector), true)]
+    [InlineData(typeof(AzureAIFoundryConnector), typeof(LanguageModelConnector), false)]
+    public void Given_BaseType_Then_It_Should_Be_AssignableFrom_DerivedType(Type baseType, Type derivedType, bool expected)
+    {
+        // Act
+        var result = baseType.IsAssignableFrom(derivedType);
+
+        // Assert
+        result.ShouldBe(expected);
     }
 
     [Trait("Category", "UnitTest")]
