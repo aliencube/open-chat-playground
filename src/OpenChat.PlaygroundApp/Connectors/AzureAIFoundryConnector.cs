@@ -47,9 +47,9 @@ public class AzureAIFoundryConnector(AppSettings settings) : LanguageModelConnec
     {
         var settings = this.Settings as AzureAIFoundrySettings;
 
-        var endpoint = new Uri(settings?.Endpoint ?? throw new InvalidOperationException("Missing configuration: AzureAIFoundry:Endpoint."));
-        var deploymentName = settings.DeploymentName ?? throw new InvalidOperationException("Missing configuration: AzureAIFoundry:DeploymentName.");
-        var apiKey = settings.ApiKey ?? throw new InvalidOperationException("Missing configuration: AzureAIFoundry:ApiKey.");
+        var endpoint = new Uri(settings!.Endpoint!);
+        var deploymentName = settings.DeploymentName!;
+        var apiKey = settings.ApiKey!;
 
         var credential = new AzureKeyCredential(apiKey); 
         var azureClient = new AzureOpenAIClient(endpoint, credential);
