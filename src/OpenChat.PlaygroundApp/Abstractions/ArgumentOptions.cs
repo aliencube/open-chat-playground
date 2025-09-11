@@ -33,6 +33,8 @@ public abstract class ArgumentOptions
         (ConnectorType.Ollama, "--base-url", false),
         (ConnectorType.Ollama, "--model", false),
         // Anthropic
+        (ConnectorType.Anthropic, "--api-key", false),
+        (ConnectorType.Anthropic, "--model", false),
         // LG
         // Naver
         // OpenAI
@@ -189,11 +191,26 @@ public abstract class ArgumentOptions
                 settings.Ollama.Model = ollama.Model ?? settings.Ollama.Model;
                 break;
 
+            case AnthropicArgumentOptions anthropic:
+                settings.Anthropic ??= new AnthropicSettings();
+                settings.Anthropic.ApiKey = anthropic.ApiKey ?? settings.Anthropic.ApiKey;
+                settings.Anthropic.Model = anthropic.Model ?? settings.Anthropic.Model;
+                break;
+
+            // case LGArgumentOptions lg:
+            //     break;
+
+            // case NaverArgumentOptions naver:
+            //     break;
+
             case OpenAIArgumentOptions openai:
                 settings.OpenAI ??= new OpenAISettings();
                 settings.OpenAI.ApiKey = openai.ApiKey ?? settings.OpenAI.ApiKey;
                 settings.OpenAI.Model = openai.Model ?? settings.OpenAI.Model;
                 break;
+
+            // case UpstageArgumentOptions upstage:
+            //     break;
 
             default:
                 break;
@@ -361,7 +378,8 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** Anthropic: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  TBD");
+        Console.WriteLine("  --api-key            The Anthropic API key.");
+        Console.WriteLine("  --model              The Anthropic model name. Default to 'claude-sonnet-4-0'");
         Console.WriteLine();
     }
 
