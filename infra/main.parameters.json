@@ -18,7 +18,7 @@
         "value": "${GH_MODELS_TOKEN}"
       },
       "huggingFaceModel": {
-        "value": "${HUGGINGFACE_MODEL}"
+        "value": "${HUGGING_FACE_MODEL}"
       },
       "openchatPlaygroundappExists": {
         "value": "${SERVICE_OPENCHAT_PLAYGROUNDAPP_RESOURCE_EXISTS=false}"
