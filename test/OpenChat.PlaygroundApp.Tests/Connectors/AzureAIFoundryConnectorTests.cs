@@ -139,7 +139,7 @@ public class AzureAIFoundryConnectorTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, typeof(InvalidOperationException), "AzureAIFoundry:ApiKey")]
-    [InlineData("", typeof(ArgumentException), "key")]
+    [InlineData("", typeof(InvalidOperationException), "Missing configuration: AzureAIFoundry:ApiKey.")]
     public async Task Given_Missing_ApiKey_When_GetChatClient_Invoked_Then_It_Should_Throw(string? apiKey, Type expected, string message)
     {
         // Arrange
@@ -156,7 +156,7 @@ public class AzureAIFoundryConnectorTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, typeof(InvalidOperationException), "AzureAIFoundry:Endpoint")]
-    [InlineData("", typeof(UriFormatException), "empty")]
+    [InlineData("", typeof(InvalidOperationException), "Missing configuration: AzureAIFoundry:Endpoint.")]
     public async Task Given_Missing_Endpoint_When_GetChatClient_Invoked_Then_It_Should_Throw(string? endpoint, Type expected, string message)
     {
         // Arrange
@@ -173,7 +173,7 @@ public class AzureAIFoundryConnectorTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, typeof(InvalidOperationException), "AzureAIFoundry:DeploymentName")]
-    [InlineData("", typeof(ArgumentException), "model")]
+    [InlineData("", typeof(InvalidOperationException), "Missing configuration: AzureAIFoundry:DeploymentName.")]
     public async Task Given_Missing_DeploymentName_When_GetChatClient_Invoked_Then_It_Should_Throw(string? deploymentName, Type expected, string message)
     {
         // Arrange
