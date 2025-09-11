@@ -49,7 +49,7 @@ This page describes how to run OpenChat Playground (OCP) with OpenAI GPT integra
 
     ```powershell
     # PowerShell
-    dotnet run --project ${REPOSITORY_ROOT}\src\OpenChat.PlaygroundApp -- --connector-type OpenAI
+    dotnet run --project "$REPOSITORY_ROOT\src\OpenChat.PlaygroundApp" -- --connector-type OpenAI
     ```
 
     Alternatively, you can specify a different model via command line arguments (API key will be read from user-secrets):
@@ -75,14 +75,12 @@ This page describes how to run OpenChat Playground (OCP) with OpenAI GPT integra
 1. Make sure you are at the repository root.
 
     ```bash
-    # Works in both bash/zsh and PowerShell
     cd $REPOSITORY_ROOT
     ```
 
 1. Build a container.
 
     ```bash
-    # Works in both bash/zsh and PowerShell
     docker build -f Dockerfile -t openchat-playground:latest .
     ```
 
@@ -96,7 +94,7 @@ This page describes how to run OpenChat Playground (OCP) with OpenAI GPT integra
 
     ```bash
     # PowerShell
-    $API_KEY = (dotnet user-secrets --project ./src/OpenChat.PlaygroundApp list --json | `
+    $$env:API_KEY = (dotnet user-secrets --project ./src/OpenChat.PlaygroundApp list --json | `
                 Select-String -NotMatch '^//(BEGIN|END)' | ConvertFrom-Json).'OpenAI:ApiKey'
     ```
 
@@ -109,7 +107,7 @@ This page describes how to run OpenChat Playground (OCP) with OpenAI GPT integra
 
     ```powershell
     # PowerShell - From locally built container
-    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type OpenAI --api-key "${API_KEY}"
+    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type OpenAI --api-key $env:API_KEY
     ```
 
     ```bash
@@ -119,7 +117,7 @@ This page describes how to run OpenChat Playground (OCP) with OpenAI GPT integra
 
     ```powershell
     # PowerShell - From GitHub Container Registry
-    docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest --connector-type OpenAI --api-key "${API_KEY}"
+    docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest --connector-type OpenAI --api-key $env:API_KEY
     ```
 
     Optionally, if you want to run with a different model, say [GPT-4o](https://openai.com/index/hello-gpt-4o/), other than the default one, you can specify it via command line:
@@ -131,7 +129,7 @@ This page describes how to run OpenChat Playground (OCP) with OpenAI GPT integra
 
     ```powershell
     # PowerShell - From locally built container with custom model
-    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type OpenAI --api-key "${API_KEY}" --model gpt-4o
+    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type OpenAI --api-key $env:API_KEY --model gpt-4o
     ```
 
 1. Open your web browser, navigate to `http://localhost:8080`, and enter prompts.
@@ -141,28 +139,24 @@ This page describes how to run OpenChat Playground (OCP) with OpenAI GPT integra
 1. Make sure you are at the repository root.
 
     ```bash
-    # Works in both bash/zsh and PowerShell
     cd $REPOSITORY_ROOT
     ```
 
 1. Login to Azure.
 
     ```bash
-    # Works in both bash/zsh and PowerShell - Login to Azure Dev CLI
     azd auth login
     ```
 
 1. Check login status.
 
     ```bash
-    # Works in both bash/zsh and PowerShell - Azure Dev CLI
     azd auth login --check-status
     ```
 
 1. Initialize `azd` template.
 
     ```bash
-    # Works in both bash/zsh and PowerShell
     azd init
     ```
 
@@ -185,28 +179,24 @@ This page describes how to run OpenChat Playground (OCP) with OpenAI GPT integra
 1. Set OpenAI API Key to azd environment variables.
 
     ```bash
-    # Works in both bash/zsh and PowerShell
     azd env set OPENAI_API_KEY $API_KEY
     ```
 
     Optionally, if you want to run with a different model, say [gpt-4o](https://openai.com/index/hello-gpt-4o/), other than the default one, add it to azd environment variables.
 
     ```bash
-    # Works in both bash/zsh and PowerShell
     azd env set OPENAI_MODEL "gpt-4o"
     ```
 
 1. Set the connector type to `OpenAI`.
 
     ```bash
-    # Works in both bash/zsh and PowerShell
     azd env set CONNECTOR_TYPE "OpenAI"
     ```
 
 1. Run the following commands in order to provision and deploy the app.
 
     ```bash
-    # Works in both bash/zsh and PowerShell
     azd up
     ```
 
@@ -215,7 +205,6 @@ This page describes how to run OpenChat Playground (OCP) with OpenAI GPT integra
 1. Clean up all the resources.
 
     ```bash
-    # Works in both bash/zsh and PowerShell
     azd down --force --purge
     ```
 

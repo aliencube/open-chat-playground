@@ -12,16 +12,8 @@ namespace OpenChat.PlaygroundApp.Connectors;
 /// <summary>
 /// This represents the connector entity for OpenAI.
 /// </summary>
-public class OpenAIConnector : LanguageModelConnector
+public class OpenAIConnector(AppSettings settings) : LanguageModelConnector(settings.OpenAI)
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="OpenAIConnector"/> class.
-    /// </summary>
-    public OpenAIConnector(AppSettings settings) : base((settings ?? throw new ArgumentNullException(nameof(settings))).OpenAI)
-    {
-        this.EnsureLanguageModelSettingsValid();
-    }
-    
     /// <inheritdoc/>
     public override bool EnsureLanguageModelSettingsValid()
     {

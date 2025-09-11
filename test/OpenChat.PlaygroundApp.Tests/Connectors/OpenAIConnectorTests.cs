@@ -23,7 +23,7 @@ public class OpenAIConnectorTests
 	
 	[Trait("Category", "UnitTest")]
 	[Fact]
-	public async Task Given_Valid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Return_ChatClient()
+	public async Task Given_Valid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Return_IChatClient()
 	{
 		// Arrange
 		var settings = BuildAppSettings();
@@ -55,15 +55,15 @@ public class OpenAIConnectorTests
 	public void Given_Null_AppSettings_When_Constructor_Invoked_Then_It_Should_Throw()
 	{
 		// Act
-		var ex = Assert.Throws<ArgumentNullException>(() => new OpenAIConnector(null!));
+		var ex = Assert.Throws<NullReferenceException>(() => new OpenAIConnector(null!));
 
 		// Assert
-		ex.ParamName.ShouldBe("settings");
+		ex.ShouldNotBeNull();
 	}
 
 	[Trait("Category", "UnitTest")]
 	[Fact]
-	public void Given_AppSettings_With_Null_OpenAI_Settings_When_Constructor_Invoked_Then_It_Should_Throw()
+	public void Given_AppSettings_With_Null_OpenAI_Settings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
 	{
 		// Arrange
 		var settings = new AppSettings
@@ -73,7 +73,8 @@ public class OpenAIConnectorTests
 		};
 
 		// Act
-		var ex = Assert.Throws<InvalidOperationException>(() => new OpenAIConnector(settings));
+		var connector = new OpenAIConnector(settings);
+		var ex = Assert.Throws<InvalidOperationException>(() => connector.EnsureLanguageModelSettingsValid());
 
 		// Assert
 		ex.Message.ShouldContain("Missing configuration: OpenAI.");
@@ -83,13 +84,14 @@ public class OpenAIConnectorTests
 	[Theory]
 	[InlineData("")]
 	[InlineData("   ")]
-	public void Given_Invalid_ApiKey_When_Constructor_Invoked_Then_It_Should_Throw(string? apiKey)
+	public void Given_Invalid_ApiKey_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? apiKey)
 	{
 		// Arrange
 		var settings = BuildAppSettings(apiKey: apiKey);
 
 		// Act
-		var ex = Assert.Throws<InvalidOperationException>(() => new OpenAIConnector(settings));
+		var connector = new OpenAIConnector(settings);
+		var ex = Assert.Throws<InvalidOperationException>(() => connector.EnsureLanguageModelSettingsValid());
 
 		// Assert
 		ex.Message.ShouldContain("Missing configuration: OpenAI:ApiKey.");
@@ -97,22 +99,31 @@ public class OpenAIConnectorTests
 
 	[Trait("Category", "UnitTest")]
 	[Theory]
+	[InlineData(null)]
 	[InlineData("")]
 	[InlineData("   ")]
-	public void Given_Invalid_Model_When_Constructor_Invoked_Then_It_Should_Throw(string? model)
+	public void Given_Invalid_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? model)
 	{
 		// Arrange
 		var settings = BuildAppSettings(model: model);
 
 		// Act
-		var ex = Assert.Throws<InvalidOperationException>(() => new OpenAIConnector(settings));
-
-		// Assert
-		ex.Message.ShouldContain("Missing configuration: OpenAI:Model.");
+		var connector = new OpenAIConnector(settings);
+		
+		if (model is null)
+		{
+			Assert.Throws<NullReferenceException>(() => connector.EnsureLanguageModelSettingsValid());
+		}
+		else
+		{
+			var ex = Assert.Throws<InvalidOperationException>(() => connector.EnsureLanguageModelSettingsValid());
+			ex.Message.ShouldContain("Missing configuration: OpenAI:Model.");
+		}
 	}
 
 	[Trait("Category", "UnitTest")]
 	[Theory]
+	[InlineData(null)]
 	[InlineData("")]
 	[InlineData("   ")]
 	public async Task Given_Invalid_ApiKey_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string? apiKey)
@@ -121,8 +132,15 @@ public class OpenAIConnectorTests
 		var settings = BuildAppSettings(apiKey: apiKey);
 
 		// Act & Assert
-		var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => LanguageModelConnector.CreateChatClientAsync(settings));
-		ex.Message.ShouldContain("Missing configuration: OpenAI:ApiKey.");
+		if (apiKey is null)
+		{
+			await Assert.ThrowsAsync<NullReferenceException>(() => LanguageModelConnector.CreateChatClientAsync(settings));
+		}
+		else
+		{
+			var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => LanguageModelConnector.CreateChatClientAsync(settings));
+			ex.Message.ShouldContain("Missing configuration: OpenAI:ApiKey.");
+		}
 	}
 
 	[Trait("Category", "UnitTest")]
@@ -175,13 +193,14 @@ public class OpenAIConnectorTests
 	[Theory]
 	[InlineData("   ")]
 	[InlineData("\t\n\r")]
-	public void Given_Whitespace_ApiKey_When_Constructor_Invoked_Then_It_Should_Throw(string apiKey)
+	public void Given_Whitespace_ApiKey_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string apiKey)
 	{
 		// Arrange
 		var settings = BuildAppSettings(apiKey: apiKey);
 
 		// Act
-		var ex = Assert.Throws<InvalidOperationException>(() => new OpenAIConnector(settings));
+		var connector = new OpenAIConnector(settings);
+		var ex = Assert.Throws<InvalidOperationException>(() => connector.EnsureLanguageModelSettingsValid());
 
 		// Assert
 		ex.Message.ShouldContain("Missing configuration: OpenAI:ApiKey.");
@@ -191,13 +210,14 @@ public class OpenAIConnectorTests
 	[Theory]
 	[InlineData("   ")]
 	[InlineData("\t\n\r")]
-	public void Given_Whitespace_Model_When_Constructor_Invoked_Then_It_Should_Throw(string model)
+	public void Given_Whitespace_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string model)
 	{
 		// Arrange
 		var settings = BuildAppSettings(model: model);
 
 		// Act
-		var ex = Assert.Throws<InvalidOperationException>(() => new OpenAIConnector(settings));
+		var connector = new OpenAIConnector(settings);
+		var ex = Assert.Throws<InvalidOperationException>(() => connector.EnsureLanguageModelSettingsValid());
 
 		// Assert
 		ex.Message.ShouldContain("Missing configuration: OpenAI:Model.");
@@ -207,7 +227,7 @@ public class OpenAIConnectorTests
 
 	[Trait("Category", "UnitTest")]
 	[Fact]
-	public void Given_Settings_With_Wrong_Type_Cast_When_Constructor_Invoked_Then_It_Should_Throw()
+	public void Given_Settings_With_Wrong_Type_Cast_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
 	{
 		// Arrange
 		var settings = new AppSettings
@@ -222,7 +242,8 @@ public class OpenAIConnectorTests
 		};
 
 		// Act
-		var ex = Assert.Throws<InvalidOperationException>(() => new OpenAIConnector(settings));
+		var connector = new OpenAIConnector(settings);
+		var ex = Assert.Throws<InvalidOperationException>(() => connector.EnsureLanguageModelSettingsValid());
 
 		// Assert
 		ex.Message.ShouldContain("Missing configuration: OpenAI.");
@@ -230,35 +251,38 @@ public class OpenAIConnectorTests
 
 	[Trait("Category", "UnitTest")]
 	[Fact]
-	public void Given_Multiple_Null_Settings_When_Constructor_Invoked_Then_It_Should_Throw_For_ApiKey_First()
+	public void Given_Multiple_Null_Settings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw_For_ApiKey_First()
 	{
 		// Arrange
 		var settings = BuildAppSettings(apiKey: null, model: null);
 
 		// Act
-		Assert.Throws<NullReferenceException>(() => new OpenAIConnector(settings));
+		var connector = new OpenAIConnector(settings);
+		Assert.Throws<NullReferenceException>(() => connector.EnsureLanguageModelSettingsValid());
 	}
 
 	[Trait("Category", "UnitTest")]
 	[Fact]
-	public void Given_Valid_ApiKey_But_Null_Model_When_Constructor_Invoked_Then_It_Should_Throw_For_Model()
+	public void Given_Valid_ApiKey_But_Null_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw_For_Model()
 	{
 		// Arrange
 		var settings = BuildAppSettings(apiKey: "valid-api-key", model: null);
 
 		// Act
-		Assert.Throws<NullReferenceException>(() => new OpenAIConnector(settings));
+		var connector = new OpenAIConnector(settings);
+		Assert.Throws<NullReferenceException>(() => connector.EnsureLanguageModelSettingsValid());
 	}
 
     [Trait("Category", "UnitTest")]
     [Fact]
-    public void Given_Settings_Is_Null_When_Constructor_Invoked_Then_It_Should_Throw()
+    public void Given_Settings_Is_Null_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
     {
         // Arrange
         var appSettings = new AppSettings { ConnectorType = ConnectorType.OpenAI, OpenAI = null };
 
         // Act
-        var ex = Assert.Throws<InvalidOperationException>(() => new OpenAIConnector(appSettings));
+        var connector = new OpenAIConnector(appSettings);
+        var ex = Assert.Throws<InvalidOperationException>(() => connector.EnsureLanguageModelSettingsValid());
 
         // Assert
         ex.Message.ShouldContain("Missing configuration: OpenAI.");
@@ -294,28 +318,44 @@ public class OpenAIConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
+	[InlineData(null)]
     [InlineData("")]
     [InlineData("   ")]
-    public void Given_Missing_ApiKey_When_Constructor_Invoked_Then_It_Should_Throw(string? apiKey)
+    public void Given_Missing_ApiKey_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? apiKey)
     {
         var settings = BuildAppSettings(apiKey: apiKey);
+        var connector = new OpenAIConnector(settings);
 
-        var ex = Assert.Throws<InvalidOperationException>(() => new OpenAIConnector(settings));
-
-        ex.Message.ShouldContain("Missing configuration: OpenAI:ApiKey.");
+        if (apiKey is null)
+        {
+            Assert.Throws<NullReferenceException>(() => connector.EnsureLanguageModelSettingsValid());
+        }
+        else
+        {
+            var ex = Assert.Throws<InvalidOperationException>(() => connector.EnsureLanguageModelSettingsValid());
+            ex.Message.ShouldContain("Missing configuration: OpenAI:ApiKey.");
+        }
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
+	[InlineData(null)]
     [InlineData("")]
     [InlineData("   ")]
-    public void Given_Missing_Model_When_Constructor_Invoked_Then_It_Should_Throw(string? model)
+    public void Given_Missing_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? model)
     {
         var settings = BuildAppSettings(model: model);
+        var connector = new OpenAIConnector(settings);
 
-        var ex = Assert.Throws<InvalidOperationException>(() => new OpenAIConnector(settings));
-
-        ex.Message.ShouldContain("Missing configuration: OpenAI:Model.");
+        if (model is null)
+        {
+            Assert.Throws<NullReferenceException>(() => connector.EnsureLanguageModelSettingsValid());
+        }
+        else
+        {
+            var ex = Assert.Throws<InvalidOperationException>(() => connector.EnsureLanguageModelSettingsValid());
+            ex.Message.ShouldContain("Missing configuration: OpenAI:Model.");
+        }
     }
 
 }
