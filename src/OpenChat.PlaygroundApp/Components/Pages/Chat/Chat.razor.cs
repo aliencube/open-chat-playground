@@ -17,8 +17,10 @@ public partial class Chat : ComponentBase, IDisposable
     protected ChatMessage? currentResponseMessage;
     protected ChatInput? chatInput;
 
-    [Inject] protected IChatClient ChatClient { get; set; } = default!;
-    [Inject] protected NavigationManager Nav { get; set; } = default!;
+    [Inject]
+    protected IChatClient ChatClient { get; set; } = default!;
+    [Inject]
+    protected NavigationManager Nav { get; set; } = default!;
 
     protected override void OnInitialized()
     {
