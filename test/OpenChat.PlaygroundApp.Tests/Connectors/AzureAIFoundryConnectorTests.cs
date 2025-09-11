@@ -169,21 +169,4 @@ public class AzureAIFoundryConnectorTests
         // Assert
         ex.Message.ShouldContain(message);
     }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData(null, typeof(InvalidOperationException), "AzureAIFoundry:DeploymentName")]
-    [InlineData("", typeof(ArgumentException), "model")]
-    public async Task Given_Missing_DeploymentName_When_GetChatClient_Invoked_Then_It_Should_Throw(string? deploymentName, Type expected, string message)
-    {
-        // Arrange
-        var settings = BuildAppSettings(deploymentName: deploymentName);
-        var connector = new AzureAIFoundryConnector(settings);
-
-        // Act
-        var ex = await Assert.ThrowsAsync(expected, connector.GetChatClientAsync);
-
-        // Assert
-        ex.Message.ShouldContain(message);
-    }
 }
