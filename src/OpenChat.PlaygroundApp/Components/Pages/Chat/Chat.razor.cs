@@ -3,7 +3,7 @@ using Microsoft.Extensions.AI;
 
 namespace OpenChat.PlaygroundApp.Components.Pages.Chat;
 
-public partial class Chat : IDisposable
+public partial class Chat : ComponentBase, IDisposable
 {
     private const string SystemPrompt = @"
         You are an assistant who answers questions about anything.
