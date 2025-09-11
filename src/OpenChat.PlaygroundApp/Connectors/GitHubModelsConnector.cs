@@ -46,10 +46,10 @@ public class GitHubModelsConnector(AppSettings settings) : LanguageModelConnecto
     {
         var settings = this.Settings as GitHubModelsSettings;
 
-        var credential = new ApiKeyCredential(settings?.Token ?? throw new InvalidOperationException("Missing configuration: GitHubModels:Token."));
+        var credential = new ApiKeyCredential(settings?.Token!);
         var options = new OpenAIClientOptions()
         {
-            Endpoint = new Uri(settings.Endpoint ?? throw new InvalidOperationException("Missing configuration: GitHubModels:Endpoint."))
+            Endpoint = new Uri(settings.Endpoint!)
         };
 
         var client = new OpenAIClient(credential, options);
