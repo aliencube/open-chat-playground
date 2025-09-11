@@ -118,7 +118,7 @@ var envGitHubModels = (connectorType == '' || connectorType == 'GitHubModels') ?
 // Docker Model Runner
 // Foundry Local
 // Hugging Face
-var envHuggingFace = connectorType == 'HuggingFace' && huggingFaceModel != '' ? [
+var envHuggingFace = connectorType == 'HuggingFaceModel' && huggingFaceModel != '' ? [
   {
     name: 'HuggingFace__Model'
     value: huggingFaceModel
