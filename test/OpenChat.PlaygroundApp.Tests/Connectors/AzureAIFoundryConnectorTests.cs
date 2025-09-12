@@ -42,7 +42,11 @@ public class AzureAIFoundryConnectorTests
     public void Given_Settings_Is_Null_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
     {
         // Arrange
-        var appSettings = new AppSettings { ConnectorType = ConnectorType.AzureAIFoundry, AzureAIFoundry = null };
+        var appSettings = new AppSettings
+        {
+            ConnectorType = ConnectorType.AzureAIFoundry,
+            AzureAIFoundry = null
+        };
         var connector = new AzureAIFoundryConnector(appSettings);
 
         // Act
@@ -140,7 +144,7 @@ public class AzureAIFoundryConnectorTests
     [Theory]
     [InlineData(null, typeof(InvalidOperationException), "AzureAIFoundry:ApiKey")]
     [InlineData("", typeof(InvalidOperationException), "Missing configuration: AzureAIFoundry:ApiKey.")]
-    public async Task Given_Missing_ApiKey_When_GetChatClient_Invoked_Then_It_Should_Throw(string? apiKey, Type expected, string message)
+    public void Given_Missing_ApiKey_When_GetChatClient_Invoked_Then_It_Should_Throw(string? apiKey, Type expected, string message)
     {
         // Arrange
         var settings = BuildAppSettings(apiKey: apiKey);
@@ -157,7 +161,7 @@ public class AzureAIFoundryConnectorTests
     [Theory]
     [InlineData(null, typeof(InvalidOperationException), "AzureAIFoundry:Endpoint")]
     [InlineData("", typeof(InvalidOperationException), "Missing configuration: AzureAIFoundry:Endpoint.")]
-    public async Task Given_Missing_Endpoint_When_GetChatClient_Invoked_Then_It_Should_Throw(string? endpoint, Type expected, string message)
+    public void Given_Missing_Endpoint_When_GetChatClient_Invoked_Then_It_Should_Throw(string? endpoint, Type expected, string message)
     {
         // Arrange
         var settings = BuildAppSettings(endpoint: endpoint);
@@ -174,7 +178,7 @@ public class AzureAIFoundryConnectorTests
     [Theory]
     [InlineData(null, typeof(InvalidOperationException), "AzureAIFoundry:DeploymentName")]
     [InlineData("", typeof(InvalidOperationException), "Missing configuration: AzureAIFoundry:DeploymentName.")]
-    public async Task Given_Missing_DeploymentName_When_GetChatClient_Invoked_Then_It_Should_Throw(string? deploymentName, Type expected, string message)
+    public void Given_Missing_DeploymentName_When_GetChatClient_Invoked_Then_It_Should_Throw(string? deploymentName, Type expected, string message)
     {
         // Arrange
         var settings = BuildAppSettings(deploymentName: deploymentName);
