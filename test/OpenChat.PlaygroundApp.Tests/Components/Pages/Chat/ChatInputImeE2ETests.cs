@@ -14,13 +14,15 @@ public class ChatInputImeE2ETests : PageTest
 
     [Trait("Category", "IntegrationTest")]
     [Trait("Category", "LLMRequired")]
-    [Fact]
-    public async Task Given_Korean_IME_Composition_When_Enter_Key_Pressed_Then_It_Should_Not_Submit_Until_Composition_End()
+    [Theory]
+    [InlineData("안녕하세요", "안")]
+    [InlineData("테스트", "테")]
+    public async Task Given_Korean_IME_Composition_When_Enter_Key_Pressed_Then_It_Should_Not_Submit_Until_Composition_End(string testMessage, string compositionData)
     {
         // Arrange
         var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
         await textArea.FocusAsync();
-        await textArea.FillAsync("가나다 테스트");
+        await textArea.FillAsync(testMessage);
         var userCountBefore = await Page.Locator(".user-message").CountAsync();
 
         // Act: Enter during composition should NOT submit
@@ -32,7 +34,7 @@ public class ChatInputImeE2ETests : PageTest
         userCountAfterComposeEnter.ShouldBe(userCountBefore);
 
         // Act: Composition ends, then Enter should submit once
-        await Page.DispatchEventAsync("textarea", "compositionend", new { data = "가" });
+        await Page.DispatchEventAsync("textarea", "compositionend", new { data = compositionData });
         await Page.DispatchEventAsync("textarea", "keydown", new { bubbles = true, cancelable = true, key = "Enter" });
 
         // Assert: exactly one user message added
@@ -42,13 +44,15 @@ public class ChatInputImeE2ETests : PageTest
 
     [Trait("Category", "IntegrationTest")]
     [Trait("Category", "LLMRequired")]
-    [Fact]
-    public async Task Given_Message_Sent_When_Enter_Pressed_Immediately_Then_It_Should_Not_Send_Twice()
+    [Theory]
+    [InlineData("테스트 메시지")]
+    [InlineData("안녕하세요")]
+    public async Task Given_Message_Sent_When_Enter_Pressed_Immediately_Then_It_Should_Not_Send_Twice(string testMessage)
     {
         // Arrange
         var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
         await textArea.FocusAsync();
-        await textArea.FillAsync("중복 전송 방지 테스트");
+        await textArea.FillAsync(testMessage);
         var userCountBefore = await Page.Locator(".user-message").CountAsync();
 
         // Act: Send via Enter
@@ -73,13 +77,15 @@ public class ChatInputImeE2ETests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
-    [Fact]
-    public async Task Given_Text_Input_When_Shift_Enter_Pressed_Then_It_Should_Insert_Newline_Not_Submit()
+    [Theory]
+    [InlineData("첫 줄")]
+    [InlineData("테스트")]
+    public async Task Given_Text_Input_When_Shift_Enter_Pressed_Then_It_Should_Insert_Newline_Not_Submit(string initialText)
     {
         // Arrange
         var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
         await textArea.FocusAsync();
-        await textArea.FillAsync("첫 줄");
+        await textArea.FillAsync(initialText);
         var userCountBefore = await Page.Locator(".user-message").CountAsync();
 
         // Act: Shift+Enter should insert newline (not submit)
