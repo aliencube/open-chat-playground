@@ -29,22 +29,22 @@ textarea {
     align-items: center;
 }
 
-.tools.blank {
-    --send-button-color: #aaa;
-}
-
 .tool-icon {
     width: 1.25rem;
     height: 1.25rem;
 }
 
 .send-button {
-    color: var(--send-button-color);
+    color: var(--send-button-color, black);
     margin-left: auto;
 }
 
     .send-button:hover {
         color: black;
+    }
+
+    .send-button:disabled {
+        color: #aaa;
     }
 
 .attach {
