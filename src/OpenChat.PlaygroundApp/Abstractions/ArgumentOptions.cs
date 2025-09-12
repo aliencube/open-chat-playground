@@ -36,6 +36,8 @@ public abstract class ArgumentOptions
         (ConnectorType.Anthropic, "--api-key", false),
         (ConnectorType.Anthropic, "--model", false),
         // LG
+        (ConnectorType.LG, "--base-url", false),
+        (ConnectorType.LG, "--model", false),
         // Naver
         // OpenAI
         (ConnectorType.OpenAI, "--api-key", false),
@@ -197,8 +199,11 @@ public abstract class ArgumentOptions
                 settings.Anthropic.Model = anthropic.Model ?? settings.Anthropic.Model;
                 break;
 
-            // case LGArgumentOptions lg:
-            //     break;
+            case LGArgumentOptions lg:
+                settings.LG ??= new LGSettings();
+                settings.LG.BaseUrl = lg.BaseUrl ?? settings.LG.BaseUrl;
+                settings.LG.Model = lg.Model ?? settings.LG.Model;
+                break;
 
             // case NaverArgumentOptions naver:
             //     break;
