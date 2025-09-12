@@ -35,9 +35,14 @@ public class ChatInputImeE2ETests : PageTest
 
         // Act: Composition ends, then Enter should submit once
         await Page.DispatchEventAsync("textarea", "compositionend", new { data = compositionData });
+        var assistantCountBefore = await Page.Locator(".assistant-message-header").CountAsync();
         await Page.DispatchEventAsync("textarea", "keydown", new { bubbles = true, cancelable = true, key = "Enter" });
 
-        // Assert: exactly one user message added
+        // Assert: assistant response begins and user message added once
+        await Page.WaitForFunctionAsync(
+            "args => document.querySelectorAll(args.selector).length >= args.expected",
+            new { selector = ".assistant-message-header", expected = assistantCountBefore + 1 }
+        );
         var userCountAfterSubmit = await Page.Locator(".user-message").CountAsync();
         userCountAfterSubmit.ShouldBe(userCountBefore + 1);
     }
@@ -56,9 +61,14 @@ public class ChatInputImeE2ETests : PageTest
         var userCountBefore = await Page.Locator(".user-message").CountAsync();
 
         // Act: Send via Enter
+        var assistantCountBefore = await Page.Locator(".assistant-message-header").CountAsync();
         await textArea.PressAsync("Enter");
 
-        // Assert: one user message
+        // Assert: assistant response begins and one user message
+        await Page.WaitForFunctionAsync(
+            "args => document.querySelectorAll(args.selector).length >= args.expected",
+            new { selector = ".assistant-message-header", expected = assistantCountBefore + 1 }
+        );
         var userCountAfterFirst = await Page.Locator(".user-message").CountAsync();
         userCountAfterFirst.ShouldBe(userCountBefore + 1);
 

@@ -29,6 +29,11 @@ public class ChatInputUITest : PageTest
         await sendButton.ClickAsync();
 
         // Assert
+        // Wait until an assistant message appears
+        await Page.WaitForFunctionAsync(
+            "args => document.querySelectorAll(args.selector).length >= args.expected",
+            new { selector = ".assistant-message-header", expected = messageCountBefore + expectedMessageCount }
+        );
         var textAreaAfter = await textArea.InnerTextAsync();
         textAreaAfter.ShouldBeEmpty();
         var messageCountAfter = await Page.Locator(".assistant-message-header").CountAsync();
@@ -74,6 +79,11 @@ public class ChatInputUITest : PageTest
         await textArea.PressAsync("Enter");
 
         // Assert
+        // Wait until an assistant message appears
+        await Page.WaitForFunctionAsync(
+            "args => document.querySelectorAll(args.selector).length >= args.expected",
+            new { selector = ".assistant-message-header", expected = messageCountBefore + expectedMessageCount }
+        );
         var textAreaAfter = await textArea.InnerTextAsync();
         textAreaAfter.ShouldBeEmpty();
         var messageCountAfter = await Page.Locator(".assistant-message-header").CountAsync();
