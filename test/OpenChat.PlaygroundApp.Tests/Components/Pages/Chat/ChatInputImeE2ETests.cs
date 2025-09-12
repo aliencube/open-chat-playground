@@ -58,12 +58,6 @@ public class ChatInputImeE2ETests : PageTest
         // Act: Send via Enter
         await textArea.PressAsync("Enter");
 
-        // Wait for the user message to be added (submit completes)
-        await Page.WaitForFunctionAsync(
-            "([expected]) => document.querySelectorAll('.user-message').length >= expected",
-            new object[] { userCountBefore + 1 }
-        );
-
         // Assert: one user message
         var userCountAfterFirst = await Page.Locator(".user-message").CountAsync();
         userCountAfterFirst.ShouldBe(userCountBefore + 1);
