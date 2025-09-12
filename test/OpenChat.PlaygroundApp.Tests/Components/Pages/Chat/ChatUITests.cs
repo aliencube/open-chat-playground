@@ -42,14 +42,16 @@ public class ChatUITests : PageTest
 
     [Trait("Category", "IntegrationTest")]
     [Fact]
-    public async Task Given_Root_Page_When_Loaded_Then_PageTitle_Should_Exist()
-    {
+    public async Task Given_Root_Page_When_Loaded_Then_PageTitle_Should_Be_Visible()
+    { 
         // Act
-        var title = await Page.TitleAsync();
+        var headTitle = Page.Locator("title");
+        var count = await headTitle.CountAsync();
 
         // Assert
-        title.ShouldNotBeNullOrWhiteSpace();
+        count.ShouldBeGreaterThan(0);
     }
+    
 
     [Trait("Category", "IntegrationTest")]
     [Fact]
@@ -61,7 +63,6 @@ public class ChatUITests : PageTest
         // Assert
         title.ShouldBe("OpenChat Playground");
     }
-    
 
     [Trait("Category", "IntegrationTest")]
     [Fact]

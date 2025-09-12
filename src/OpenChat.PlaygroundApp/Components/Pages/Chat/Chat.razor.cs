@@ -11,11 +11,11 @@ public partial class Chat : ComponentBase, IDisposable
         Use only simple markdown to format your responses.
         ";
 
-    protected readonly ChatOptions chatOptions = new();
-    protected readonly List<ChatMessage> messages = new();
-    protected CancellationTokenSource? currentResponseCancellation;
-    protected ChatMessage? currentResponseMessage;
-    protected ChatInput? chatInput;
+    private readonly ChatOptions chatOptions = new();
+    private readonly List<ChatMessage> messages = new();
+    private CancellationTokenSource? currentResponseCancellation;
+    private ChatMessage? currentResponseMessage;
+    private ChatInput? chatInput;
 
     [Inject]
     public required IChatClient ChatClient { get; set; }
@@ -28,7 +28,7 @@ public partial class Chat : ComponentBase, IDisposable
         messages.Add(new(ChatRole.System, SystemPrompt));
     }
 
-    protected async Task AddUserMessageAsync(ChatMessage userMessage)
+    private async Task AddUserMessageAsync(ChatMessage userMessage)
     {
         CancelAnyCurrentResponse();
 
@@ -40,21 +40,22 @@ public partial class Chat : ComponentBase, IDisposable
         var responseText = new TextContent("");
         currentResponseMessage = new ChatMessage(ChatRole.Assistant, [responseText]);
         currentResponseCancellation = new();
+
+        await InvokeAsync(StateHasChanged);
+
         await foreach (var update in ChatClient.GetStreamingResponseAsync([.. messages], chatOptions, currentResponseCancellation.Token))
         {
             messages.AddMessages(update, filter: c => c is not TextContent);
             responseText.Text += update.Text;
             ChatMessageItem.NotifyChanged(currentResponseMessage);
-            StateHasChanged();
         }
 
         // Store the final response in the conversation, and begin getting suggestions
         messages.Add(currentResponseMessage!);
         currentResponseMessage = null;
-        StateHasChanged();
     }
 
-    protected void CancelAnyCurrentResponse()
+    private void CancelAnyCurrentResponse()
     {
         // If a response was cancelled while streaming, include it in the conversation so it's not lost
         if (currentResponseMessage is not null)
@@ -66,13 +67,12 @@ public partial class Chat : ComponentBase, IDisposable
         currentResponseMessage = null;
     }
 
-    protected async Task ResetConversationAsync()
+    private async Task ResetConversationAsync()
     {
         CancelAnyCurrentResponse();
         messages.Clear();
         messages.Add(new(ChatRole.System, SystemPrompt));
         await chatInput!.FocusAsync();
-        StateHasChanged();
     }
 
     public void Dispose()
