@@ -50,9 +50,10 @@ public class ChatInputUITest : PageTest
 
         // Act
         await textArea.FillAsync(userMessage);
-        await sendButton.ClickAsync();
 
-        // Assert
+        // Assert: button should be disabled for empty/whitespace input
+        var isDisabled = (await sendButton.GetAttributeAsync("disabled")) is not null;
+        isDisabled.ShouldBeTrue();
         var messageCountAfter = await Page.Locator(".assistant-message-header").CountAsync();
         messageCountAfter.ShouldBe(messageCountBefore + expectedMessageCount);
     }
