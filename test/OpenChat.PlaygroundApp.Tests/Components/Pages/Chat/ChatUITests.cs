@@ -74,10 +74,24 @@ public class ChatUITests : PageTest
 
         // Act
         await newChatButton.ClickAsync();
-        var isFocused = await textArea.EvaluateAsync<bool>("el => el === document.activeElement");
 
         // Assert
-        isFocused.ShouldBeTrue();
+        await Expect(textArea).ToBeFocusedAsync();
+    }
+
+    [Trait("Category", "IntegrationTest")]
+    [Fact]
+    public async Task Given_NewChat_Clicked_Then_Conversation_Should_Reset_To_No_UserMessages()
+    {
+        // Arrange
+        var newChatButton = Page.GetByRole(AriaRole.Button, new() { Name = "New chat" });
+        var userMessageLocator = Page.Locator(".user-message");
+
+        // Act
+        await newChatButton.ClickAsync();
+
+        // Assert
+        await Expect(userMessageLocator).ToHaveCountAsync(0);
     }
 
     public override async Task DisposeAsync()
