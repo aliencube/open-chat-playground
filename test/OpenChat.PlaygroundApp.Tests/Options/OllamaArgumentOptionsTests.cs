@@ -36,8 +36,8 @@ public class OllamaArgumentOptionsTests
             string.IsNullOrWhiteSpace(envModel) == true)
         {
             return new ConfigurationBuilder()
-                    .AddInMemoryCollection(configDict!)
-                    .Build();
+                .AddInMemoryCollection(configDict!)
+                .Build();
         }
 
         // Environment variables (medium priority)
@@ -52,9 +52,9 @@ public class OllamaArgumentOptionsTests
         }
 
         return new ConfigurationBuilder()
-                   .AddInMemoryCollection(configDict!)    // Base configuration (lowest priority)
-                   .AddInMemoryCollection(envDict!)      // Environment variables (medium priority)
-                   .Build();
+                .AddInMemoryCollection(configDict!)    // Base configuration (lowest priority)
+                .AddInMemoryCollection(envDict!)      // Environment variables (medium priority)
+                .Build();
     }
 
     [Trait("Category", "UnitTest")]
