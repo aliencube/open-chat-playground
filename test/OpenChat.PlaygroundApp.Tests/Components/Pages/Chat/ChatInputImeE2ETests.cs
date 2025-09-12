@@ -15,7 +15,7 @@ public class ChatInputImeE2ETests : PageTest
     [Trait("Category", "IntegrationTest")]
     [Trait("Category", "LLMRequired")]
     [Fact]
-    public async Task KoreanIme_Composition_Enter_DoesNotSubmit_UntilCompositionEnd()
+    public async Task Given_Korean_IME_Composition_When_Enter_Key_Pressed_Then_It_Should_Not_Submit_Until_Composition_End()
     {
         // Arrange
         var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
@@ -43,7 +43,7 @@ public class ChatInputImeE2ETests : PageTest
     [Trait("Category", "IntegrationTest")]
     [Trait("Category", "LLMRequired")]
     [Fact]
-    public async Task AfterSend_ImmediateEnter_DoesNotDuplicateSend()
+    public async Task Given_Message_Sent_When_Enter_Pressed_Immediately_Then_It_Should_Not_Send_Twice()
     {
         // Arrange
         var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
@@ -74,7 +74,7 @@ public class ChatInputImeE2ETests : PageTest
 
     [Trait("Category", "IntegrationTest")]
     [Fact]
-    public async Task ShiftEnter_InsertsNewline_DoesNotSubmit()
+    public async Task Given_Text_Input_When_Shift_Enter_Pressed_Then_It_Should_Insert_Newline_Not_Submit()
     {
         // Arrange
         var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
