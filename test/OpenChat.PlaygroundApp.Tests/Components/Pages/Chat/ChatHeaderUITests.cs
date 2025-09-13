@@ -24,6 +24,28 @@ public class ChatHeaderUITests : PageTest
         title.ShouldBe(expected);
     }
 
+    [Trait("Category", "IntegrationTest")]
+    [Fact]
+    public async Task Given_Root_Page_When_Loaded_Then_NewChat_Button_Should_Be_Visible()
+    {
+        // Arrange
+        var newChatButton = Page.GetByRole(AriaRole.Button, new() { Name = "New chat" });
+
+        // Assert
+        await Expect(newChatButton).ToBeVisibleAsync();
+    }
+
+    [Trait("Category", "IntegrationTest")]
+    [Fact]
+    public async Task Given_Header_When_Loaded_Then_NewChat_Icon_Should_Be_Visible()
+    {
+        // Arrange
+        var icon = Page.Locator("button svg.new-chat-icon");
+
+        // Assert
+        await Expect(icon).ToBeVisibleAsync();
+    }
+
     public override async Task DisposeAsync()
     {
         await Page.CloseAsync();
