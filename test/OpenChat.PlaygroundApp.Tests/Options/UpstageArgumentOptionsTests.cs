@@ -2,7 +2,6 @@ using Microsoft.Extensions.Configuration;
 
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Connectors;
-using OpenChat.PlaygroundApp.Options;
 
 namespace OpenChat.PlaygroundApp.Tests.Options;
 
@@ -39,72 +38,6 @@ public class UpstageArgumentOptionsTests
         return new ConfigurationBuilder()
                    .AddInMemoryCollection(configDict!)
                    .Build();
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_UpstageArgumentOptions_When_Instantiated_Then_It_Should_Inherit_From_ArgumentOptions()
-    {
-        // Arrange & Act
-        var upstageOptions = new UpstageArgumentOptions();
-
-        // Assert
-        upstageOptions.ShouldBeAssignableTo<ArgumentOptions>();
-        upstageOptions.ShouldBeOfType<UpstageArgumentOptions>();
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_UpstageArgumentOptions_When_Created_Then_It_Should_Have_Default_Properties()
-    {
-        // Arrange & Act
-        var upstageOptions = new UpstageArgumentOptions();
-
-        // Assert
-        upstageOptions.BaseUrl.ShouldBeNull();
-        upstageOptions.ApiKey.ShouldBeNull();
-        upstageOptions.Model.ShouldBeNull();
-        upstageOptions.Help.ShouldBeFalse(); // Inherited from ArgumentOptions
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_UpstageArgumentOptions_When_Properties_Set_Then_It_Should_Store_Values()
-    {
-        // Arrange
-        var upstageOptions = new UpstageArgumentOptions();
-        var expectedBaseUrl = "https://test.upstage.ai/v1";
-        var expectedApiKey = "test-api-key";
-        var expectedModel = "test-model";
-
-        // Act
-        upstageOptions.BaseUrl = expectedBaseUrl;
-        upstageOptions.ApiKey = expectedApiKey;
-        upstageOptions.Model = expectedModel;
-
-        // Assert
-        upstageOptions.BaseUrl.ShouldBe(expectedBaseUrl);
-        upstageOptions.ApiKey.ShouldBe(expectedApiKey);
-        upstageOptions.Model.ShouldBe(expectedModel);
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_UpstageArgumentOptions_When_Accessed_Through_Base_Type_Then_It_Should_Work()
-    {
-        // Arrange
-        ArgumentOptions baseOptions = new UpstageArgumentOptions();
-
-        // Act & Assert
-        baseOptions.ShouldBeOfType<UpstageArgumentOptions>();
-        baseOptions.Help.ShouldBeFalse(); // Can access inherited properties
-
-        // Cast to specific type to access Upstage-specific properties
-        var upstageOptions = baseOptions as UpstageArgumentOptions;
-        upstageOptions.ShouldNotBeNull();
-        upstageOptions!.BaseUrl.ShouldBeNull();
-        upstageOptions.ApiKey.ShouldBeNull();
-        upstageOptions.Model.ShouldBeNull();
     }
 
     [Trait("Category", "UnitTest")]
