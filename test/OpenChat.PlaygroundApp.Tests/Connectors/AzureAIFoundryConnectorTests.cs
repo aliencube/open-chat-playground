@@ -141,53 +141,88 @@ public class AzureAIFoundryConnectorTests
     }
 
     [Trait("Category", "UnitTest")]
+    [Fact]
+    public async Task Given_Settings_Is_Null_When_GetChatClientAsync_Invoked_Then_It_Should_Throw()
+    {
+        // Arrange
+        var appSettings = new AppSettings
+        {
+            ConnectorType = ConnectorType.AzureAIFoundry,
+            AzureAIFoundry = null
+        };
+        var connector = new AzureAIFoundryConnector(appSettings);
+
+        // Act & Assert
+        var ex = await Assert.ThrowsAsync<NullReferenceException>(async () => 
+            await connector.GetChatClientAsync());
+    }
+
+    [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(InvalidOperationException), "AzureAIFoundry:ApiKey")]
-    [InlineData("", typeof(InvalidOperationException), "Missing configuration: AzureAIFoundry:ApiKey.")]
-    public void Given_Missing_ApiKey_When_GetChatClient_Invoked_Then_It_Should_Throw(string? apiKey, Type expected, string message)
+    [InlineData(null, typeof(ArgumentNullException), "key")]
+    [InlineData("", typeof(ArgumentException), "key")]
+    public async Task Given_Missing_ApiKey_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? apiKey, Type expected, string message)
     {
         // Arrange
         var settings = BuildAppSettings(apiKey: apiKey);
         var connector = new AzureAIFoundryConnector(settings);
 
         // Act
-        var ex = Assert.Throws(expected, () => connector.EnsureLanguageModelSettingsValid());
+        var ex = await Assert.ThrowsAsync(expected, connector.GetChatClientAsync);
 
-        // Assert
+        // Assert  
         ex.Message.ShouldContain(message);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(InvalidOperationException), "AzureAIFoundry:Endpoint")]
-    [InlineData("", typeof(InvalidOperationException), "Missing configuration: AzureAIFoundry:Endpoint.")]
-    public void Given_Missing_Endpoint_When_GetChatClient_Invoked_Then_It_Should_Throw(string? endpoint, Type expected, string message)
+    [InlineData("invalid-uri-format")]
+    [InlineData("not-a-url")]
+    public async Task Given_Invalid_Endpoint_Format_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string invalidEndpoint)
     {
         // Arrange
-        var settings = BuildAppSettings(endpoint: endpoint);
+        var settings = BuildAppSettings(endpoint: invalidEndpoint);
         var connector = new AzureAIFoundryConnector(settings);
 
-        // Act
-        var ex = Assert.Throws(expected, () => connector.EnsureLanguageModelSettingsValid());
-
-        // Assert
-        ex.Message.ShouldContain(message);
+        // Act & Assert
+        await Assert.ThrowsAsync<UriFormatException>(async () => 
+            await connector.GetChatClientAsync());
     }
 
     [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData(null, typeof(InvalidOperationException), "AzureAIFoundry:DeploymentName")]
-    [InlineData("", typeof(InvalidOperationException), "Missing configuration: AzureAIFoundry:DeploymentName.")]
-    public void Given_Missing_DeploymentName_When_GetChatClient_Invoked_Then_It_Should_Throw(string? deploymentName, Type expected, string message)
+    [Fact]
+    public async Task Given_Valid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Return_ChatClient()
     {
         // Arrange
-        var settings = BuildAppSettings(deploymentName: deploymentName);
-        var connector = new AzureAIFoundryConnector(settings);
+        var settings = BuildAppSettings();
 
         // Act
-        var ex = Assert.Throws(expected, () => connector.EnsureLanguageModelSettingsValid());
+        var client = await LanguageModelConnector.CreateChatClientAsync(settings);
 
         // Assert
-        ex.Message.ShouldContain(message);
+        client.ShouldNotBeNull();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Fact]
+    public async Task Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw()
+    {
+        // Arrange
+        var settings = new AppSettings
+        {
+            ConnectorType = ConnectorType.AzureAIFoundry,
+            AzureAIFoundry = new AzureAIFoundrySettings
+            {
+                Endpoint = null, // Invalid
+                ApiKey = ApiKey,
+                DeploymentName = DeploymentName
+            }
+        };
+
+        // Act & Assert
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(async () => 
+            await LanguageModelConnector.CreateChatClientAsync(settings));
+        
+        ex.Message.ShouldContain("AzureAIFoundry:Endpoint");
     }
 }
