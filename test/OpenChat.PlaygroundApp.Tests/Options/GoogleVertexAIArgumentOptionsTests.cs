@@ -29,7 +29,6 @@ public class GoogleVertexAIArgumentOptionsTests
         {
             configDict["GoogleVertexAI:Model"] = configModel;
         }
-
         if (string.IsNullOrWhiteSpace(envApiKey) == true &&
             string.IsNullOrWhiteSpace(envModel) == true)
         {
@@ -49,8 +48,8 @@ public class GoogleVertexAIArgumentOptionsTests
         }
 
         return new ConfigurationBuilder()
-            .AddInMemoryCollection(configDict)
-            .AddInMemoryCollection(envDict)
+            .AddInMemoryCollection(configDict!)
+            .AddInMemoryCollection(envDict!)
             .Build();
     }
 
@@ -58,11 +57,14 @@ public class GoogleVertexAIArgumentOptionsTests
     [Fact]
     public void Given_Nothing_When_Parse_Invoked_Then_It_Should_Set_Config()
     {
+        // Arrange
         var config = BuildConfigWithGoogleVertexAI();
         var args = Array.Empty<string>();
 
+        // Act
         var settings = ArgumentOptions.Parse(config, args);
 
+        // Assert
         settings.GoogleVertexAI.ShouldNotBeNull();
         settings.GoogleVertexAI.ApiKey.ShouldBe(ApiKey);
         settings.GoogleVertexAI.Model.ShouldBe(Model);
@@ -73,11 +75,14 @@ public class GoogleVertexAIArgumentOptionsTests
     [InlineData("cli-api-key")]
     public void Given_CLI_ApiKey_When_Parse_Invoked_Then_It_Should_Use_CLI_ApiKey(string cliApiKey)
     {
+        // Arrange
         var config = BuildConfigWithGoogleVertexAI();
         var args = new[] { "--api-key", cliApiKey };
 
+        // Act
         var settings = ArgumentOptions.Parse(config, args);
 
+        // Assert
         settings.GoogleVertexAI.ShouldNotBeNull();
         settings.GoogleVertexAI.ApiKey.ShouldBe(cliApiKey);
         settings.GoogleVertexAI.Model.ShouldBe(Model);
@@ -88,11 +93,14 @@ public class GoogleVertexAIArgumentOptionsTests
     [InlineData("cli-model")]
     public void Given_CLI_Model_When_Parse_Invoked_Then_It_Should_Use_CLI_Model(string cliModel)
     {
+        // Arrange
         var config = BuildConfigWithGoogleVertexAI();
         var args = new[] { "--model", cliModel };
 
+        // Act
         var settings = ArgumentOptions.Parse(config, args);
 
+        // Assert
         settings.GoogleVertexAI.ShouldNotBeNull();
         settings.GoogleVertexAI.ApiKey.ShouldBe(ApiKey);
         settings.GoogleVertexAI.Model.ShouldBe(cliModel);
@@ -103,11 +111,14 @@ public class GoogleVertexAIArgumentOptionsTests
     [InlineData("cli-api-key", "cli-model")]
     public void Given_All_CLI_Arguments_When_Parse_Invoked_Then_It_Should_Use_CLI(string cliApiKey, string cliModel)
     {
+        // Arrange
         var config = BuildConfigWithGoogleVertexAI();
         var args = new[] { "--api-key", cliApiKey, "--model", cliModel };
 
+        // Act
         var settings = ArgumentOptions.Parse(config, args);
 
+        // Assert
         settings.GoogleVertexAI.ShouldNotBeNull();
         settings.GoogleVertexAI.ApiKey.ShouldBe(cliApiKey);
         settings.GoogleVertexAI.Model.ShouldBe(cliModel);
@@ -119,11 +130,14 @@ public class GoogleVertexAIArgumentOptionsTests
     [InlineData("--model")]
     public void Given_CLI_ArgumentWithoutValue_When_Parse_Invoked_Then_It_Should_Use_Config(string argument)
     {
+        // Arrange
         var config = BuildConfigWithGoogleVertexAI();
         var args = new[] { argument };
 
+        // Act
         var settings = ArgumentOptions.Parse(config, args);
 
+        // Assert
         settings.GoogleVertexAI.ShouldNotBeNull();
         settings.GoogleVertexAI.ApiKey.ShouldBe(ApiKey);
         settings.GoogleVertexAI.Model.ShouldBe(Model);
@@ -134,10 +148,13 @@ public class GoogleVertexAIArgumentOptionsTests
     [InlineData("--something", "else", "--another", "value")]
     public void Given_Unrelated_CLI_Arguments_When_Parse_Invoked_Then_It_Should_Use_Config(params string[] args)
     {
+        // Arrange
         var config = BuildConfigWithGoogleVertexAI();
 
+        // Act
         var settings = ArgumentOptions.Parse(config, args);
 
+        // Assert
         settings.GoogleVertexAI.ShouldNotBeNull();
         settings.GoogleVertexAI.ApiKey.ShouldBe(ApiKey);
         settings.GoogleVertexAI.Model.ShouldBe(Model);
@@ -148,13 +165,35 @@ public class GoogleVertexAIArgumentOptionsTests
     [InlineData("--strange-model-name")]
     public void Given_GoogleVertexAI_With_ModelName_StartingWith_Dashes_When_Parse_Invoked_Then_It_Should_Treat_As_Value(string model)
     {
+        // Arrange
         var config = BuildConfigWithGoogleVertexAI();
         var args = new[] { "--model", model };
 
+        // Act
         var settings = ArgumentOptions.Parse(config, args);
 
+        // Assert
         settings.GoogleVertexAI.ShouldNotBeNull();
+        settings.GoogleVertexAI.ApiKey.ShouldBe(ApiKey);
         settings.GoogleVertexAI.Model.ShouldBe(model);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("--strange-api-name")]
+    public void Given_GoogleVertexAI_With_ApiKey_StartingWith_Dashes_When_Parse_Invoked_Then_It_Should_Treat_As_Value(string cliApiKey)
+    {
+        // Arrange
+        var config = BuildConfigWithGoogleVertexAI();
+        var args = new[] { "--api-key", cliApiKey };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.GoogleVertexAI.ShouldNotBeNull();
+        settings.GoogleVertexAI.ApiKey.ShouldBe(cliApiKey);
+        settings.GoogleVertexAI.Model.ShouldBe(Model);
     }
 
     [Trait("Category", "UnitTest")]
@@ -162,14 +201,57 @@ public class GoogleVertexAIArgumentOptionsTests
     [InlineData("config-api-key", "config-model")]
     public void Given_ConfigValues_And_No_CLI_When_Parse_Invoked_Then_It_Should_Use_Config(string configApiKey, string configModel)
     {
+        // Arrange
         var config = BuildConfigWithGoogleVertexAI(configApiKey, configModel);
         var args = Array.Empty<string>();
 
+        // Act
         var settings = ArgumentOptions.Parse(config, args);
 
+        // Assert
         settings.GoogleVertexAI.ShouldNotBeNull();
         settings.GoogleVertexAI.ApiKey.ShouldBe(configApiKey);
         settings.GoogleVertexAI.Model.ShouldBe(configModel);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("config-key", "config-model", "cli-key", "cli-model")]
+    public void Given_Config_And_CLI_When_Parse_Invoked_Then_It_Should_Use_CLI(
+        string configApiKey, string configModel,
+        string cliApiKey, string cliModel)
+    {
+        // Arrange
+        var config = BuildConfigWithGoogleVertexAI(configApiKey, configModel);
+        var args = new[] { "--api-key", cliApiKey, "--model", cliModel };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args!);
+
+        // Assert
+        settings.GoogleVertexAI.ShouldNotBeNull();
+        settings.GoogleVertexAI.ApiKey.ShouldBe(cliApiKey);
+        settings.GoogleVertexAI.Model.ShouldBe(cliModel);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("env-key", "env-model")]
+    public void Given_EnvironmentVariables_And_No_Config_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(string envApiKey, string envModel)
+    {
+        // Arrange
+        var config = BuildConfigWithGoogleVertexAI(
+            configApiKey: null, configModel: null,
+            envApiKey: envApiKey, envModel: envModel);
+        var args = Array.Empty<string>();
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.GoogleVertexAI.ShouldNotBeNull();
+        settings.GoogleVertexAI.ApiKey.ShouldBe(envApiKey);
+        settings.GoogleVertexAI.Model.ShouldBe(envModel);
     }
     
     [Trait("Category", "UnitTest")]
@@ -179,13 +261,14 @@ public class GoogleVertexAIArgumentOptionsTests
         string configApiKey, string configModel,
         string envApiKey, string envModel)
     {
-        var config = BuildConfigWithGoogleVertexAI(
-            configApiKey, configModel,
-            envApiKey, envModel);
+        // Arrange
+        var config = BuildConfigWithGoogleVertexAI(configApiKey, configModel, envApiKey, envModel);
         var args = Array.Empty<string>();
 
+        // Act
         var settings = ArgumentOptions.Parse(config, args);
 
+        // Assert
         settings.GoogleVertexAI.ShouldNotBeNull();
         settings.GoogleVertexAI.ApiKey.ShouldBe(envApiKey);
         settings.GoogleVertexAI.Model.ShouldBe(envModel);
@@ -199,13 +282,14 @@ public class GoogleVertexAIArgumentOptionsTests
         string envApiKey, string envModel,
         string cliApiKey, string cliModel)
     {
-        var config = BuildConfigWithGoogleVertexAI(
-            configApiKey, configModel,
-            envApiKey, envModel);
+        // Arrange
+        var config = BuildConfigWithGoogleVertexAI(configApiKey, configModel, envApiKey, envModel);
         var args = new[] { "--api-key", cliApiKey, "--model", cliModel };
 
+        // Act
         var settings = ArgumentOptions.Parse(config, args);
 
+        // Assert
         settings.GoogleVertexAI.ShouldNotBeNull();
         settings.GoogleVertexAI.ApiKey.ShouldBe(cliApiKey);
         settings.GoogleVertexAI.Model.ShouldBe(cliModel);
@@ -218,13 +302,14 @@ public class GoogleVertexAIArgumentOptionsTests
         string configApiKey, string configModel,
         string? envApiKey, string envModel)
     {
-        var config = BuildConfigWithGoogleVertexAI(
-            configApiKey, configModel,
-            envApiKey, envModel);
+        // Arrange
+        var config = BuildConfigWithGoogleVertexAI(configApiKey, configModel, envApiKey, envModel);
         var args = Array.Empty<string>();
 
+        // Act
         var settings = ArgumentOptions.Parse(config, args);
 
+        // Assert
         settings.GoogleVertexAI.ShouldNotBeNull();
         settings.GoogleVertexAI.ApiKey.ShouldBe(configApiKey); // From config (no env override)
         settings.GoogleVertexAI.Model.ShouldBe(envModel);      // From environment
@@ -232,14 +317,38 @@ public class GoogleVertexAIArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
+    [InlineData("config-api-key", "config-model", "env-key", null, null, "cli-model")]
+    public void Given_Mixed_Priority_Sources_When_Parse_Invoked_Then_It_Should_Respect_Priority_Order(
+        string configApiKey, string configModel,
+        string envApiKey, string? envModel,
+        string? cliApiKey, string cliModel)
+    {
+        // Arrange
+        var config = BuildConfigWithGoogleVertexAI(configApiKey, configModel, envApiKey, envModel);
+        var args = new[] { "--api-key", cliApiKey, "--model", cliModel };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args!);
+
+        // Assert
+        settings.GoogleVertexAI.ShouldNotBeNull();
+        settings.GoogleVertexAI.ApiKey.ShouldBe(envApiKey);
+        settings.GoogleVertexAI.Model.ShouldBe(cliModel);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
     [InlineData("cli-api-key", "cli-model")]
     public void Given_GoogleVertexAI_With_KnownArguments_When_Parse_Invoked_Then_Help_ShouldBe_False(string cliApiKey, string cliModel)
     {
+        // Arrange
         var config = BuildConfigWithGoogleVertexAI(ApiKey, Model);
         var args = new[] { "--api-key", cliApiKey, "--model", cliModel };
 
+        // Act
         var settings = ArgumentOptions.Parse(config, args);
 
+        // Assert
         settings.Help.ShouldBeFalse();
     }
 
@@ -249,11 +358,14 @@ public class GoogleVertexAIArgumentOptionsTests
     [InlineData("--model")]
     public void Given_GoogleVertexAI_With_KnownArgument_WithoutValue_When_Parse_Invoked_Then_Help_ShouldBe_False(string argument)
     {
+        // Arrange
         var config = BuildConfigWithGoogleVertexAI();
         var args = new[] { argument };
 
+        // Act
         var settings = ArgumentOptions.Parse(config, args);
 
+        // Assert
         settings.Help.ShouldBeFalse();
     }
 
@@ -262,11 +374,14 @@ public class GoogleVertexAIArgumentOptionsTests
     [InlineData("cli-api-key", "--unknown-flag")]
     public void Given_GoogleVertexAI_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_ShouldBe_True(string cliApiKey, string argument)
     {
+        // Arrange
         var config = BuildConfigWithGoogleVertexAI();
         var args = new[] { "--api-key", cliApiKey, argument };
 
+        // Act
         var settings = ArgumentOptions.Parse(config, args);
 
+        // Assert
         settings.Help.ShouldBeTrue();
     }
 
@@ -276,13 +391,16 @@ public class GoogleVertexAIArgumentOptionsTests
     public void Given_EnvironmentVariables_Only_When_Parse_Invoked_Then_Help_Should_Be_False(
         string envApiKey, string envModel)
     {
+        // Arrange
         var config = BuildConfigWithGoogleVertexAI(
             configApiKey: null, configModel: null,
             envApiKey: envApiKey, envModel: envModel);
         var args = Array.Empty<string>();
 
+        // Act
         var settings = ArgumentOptions.Parse(config, args);
 
+        // Assert
         settings.Help.ShouldBeFalse();
     }
 
@@ -291,11 +409,14 @@ public class GoogleVertexAIArgumentOptionsTests
     [InlineData("cli-api-key", "cli-model")]
     public void Given_CLI_Only_When_Parse_Invoked_Then_Help_Should_Be_False(string cliApiKey, string cliModel)
     {
+        // Arrange
         var config = BuildConfigWithGoogleVertexAI();
         var args = new[] { "--api-key", cliApiKey, "--model", cliModel };
 
+        // Act
         var settings = ArgumentOptions.Parse(config, args);
 
+        // Assert
         settings.Help.ShouldBeFalse();
     }
 }
