@@ -152,9 +152,12 @@ public class AzureAIFoundryConnectorTests
         };
         var connector = new AzureAIFoundryConnector(appSettings);
 
-        // Act & Assert
+        // Act
         var ex = await Assert.ThrowsAsync<NullReferenceException>(async () => 
             await connector.GetChatClientAsync());
+
+        // Assert
+        ex.ShouldNotBeNull();
     }
 
     [Trait("Category", "UnitTest")]
@@ -184,9 +187,11 @@ public class AzureAIFoundryConnectorTests
         var settings = BuildAppSettings(endpoint: invalidEndpoint);
         var connector = new AzureAIFoundryConnector(settings);
 
-        // Act & Assert
-        await Assert.ThrowsAsync<UriFormatException>(async () => 
-            await connector.GetChatClientAsync());
+        // Act
+        var ex = await Assert.ThrowsAsync<UriFormatException>(async () => await connector.GetChatClientAsync());
+
+        // Assert
+        ex.ShouldNotBeNull();
     }
 
     [Trait("Category", "UnitTest")]
@@ -219,10 +224,11 @@ public class AzureAIFoundryConnectorTests
             }
         };
 
-        // Act & Assert
+        // Act
         var ex = await Assert.ThrowsAsync<InvalidOperationException>(async () => 
             await LanguageModelConnector.CreateChatClientAsync(settings));
         
+        // Assert
         ex.Message.ShouldContain("AzureAIFoundry:Endpoint");
     }
 }
