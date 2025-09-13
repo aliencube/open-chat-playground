@@ -31,10 +31,17 @@ public class UpstageArgumentOptions : ArgumentOptions
 
         var upstage = settings.Upstage;
 
-        this.BaseUrl ??= upstage?.BaseUrl;
-        this.ApiKey ??= upstage?.ApiKey;
-        this.Model ??= upstage?.Model;
+        // Priority 1: appsettings.json (lowest priority)
+        this.BaseUrl = upstage?.BaseUrl;
+        this.ApiKey = upstage?.ApiKey;
+        this.Model = upstage?.Model;
 
+        // Priority 2: Environment variables (middle priority)
+        this.BaseUrl = Environment.GetEnvironmentVariable("UPSTAGE_BASE_URL") ?? this.BaseUrl;
+        this.ApiKey = Environment.GetEnvironmentVariable("UPSTAGE_API_KEY") ?? this.ApiKey;
+        this.Model = Environment.GetEnvironmentVariable("UPSTAGE_MODEL") ?? this.Model;
+
+        // Priority 3: Command-line arguments (highest priority)
         for (var i = 0; i < args.Length; i++)
         {
             switch (args[i])
