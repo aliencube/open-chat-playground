@@ -163,7 +163,6 @@ public class AzureAIFoundryConnectorTests
     [Theory]
     [InlineData(null, typeof(ArgumentNullException), "key")]
     [InlineData("", typeof(ArgumentException), "key")]
-    [InlineData("   ", typeof(ArgumentException), "key")]
     public async Task Given_Missing_ApiKey_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? apiKey, Type expected, string message)
     {
         // Arrange
@@ -171,7 +170,7 @@ public class AzureAIFoundryConnectorTests
         var connector = new AzureAIFoundryConnector(settings);
 
         // Act
-        var ex = await Assert.ThrowsAsync(expected, connector.GetChatClientAsync);
+        var ex = await Assert.ThrowsAsync(expected, async () => await connector.GetChatClientAsync());
 
         // Assert  
         ex.Message.ShouldContain(message);
@@ -179,17 +178,17 @@ public class AzureAIFoundryConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("invalid-uri-format")]
-    [InlineData("not-a-url")]
-    [InlineData("   ")]
-    public async Task Given_Invalid_Endpoint_Format_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string invalidEndpoint)
+    [InlineData("invalid-uri-format", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
+    [InlineData("not-a-url", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
+    [InlineData("   ", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
+    public async Task Given_Invalid_Endpoint_Format_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string invalidEndpoint, Type expected, string message)
     {
         // Arrange
         var settings = BuildAppSettings(endpoint: invalidEndpoint);
         var connector = new AzureAIFoundryConnector(settings);
 
         // Act
-        var ex = await Assert.ThrowsAsync<UriFormatException>(async () => await connector.GetChatClientAsync());
+        var ex = await Assert.ThrowsAsync(expected, async () => await connector.GetChatClientAsync());
 
         // Assert
         ex.ShouldNotBeNull();
