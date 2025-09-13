@@ -142,7 +142,7 @@ public class AzureAIFoundryConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Fact]
-    public async Task Given_Settings_Is_Null_When_GetChatClientAsync_Invoked_Then_It_Should_Throw()
+    public void Given_Settings_Is_Null_When_GetChatClientAsync_Invoked_Then_It_Should_Throw()
     {
         // Arrange
         var appSettings = new AppSettings
@@ -153,17 +153,17 @@ public class AzureAIFoundryConnectorTests
         var connector = new AzureAIFoundryConnector(appSettings);
 
         // Act
-        var ex = await Assert.ThrowsAsync<NullReferenceException>(async () => 
-            await connector.GetChatClientAsync());
+        Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert
-        ex.ShouldNotBeNull();
+        func.ShouldThrow<NullReferenceException>();
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, typeof(ArgumentNullException), "key")]
     [InlineData("", typeof(ArgumentException), "key")]
+    [InlineData("   ", typeof(ArgumentException), "key")]
     public async Task Given_Missing_ApiKey_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? apiKey, Type expected, string message)
     {
         // Arrange
@@ -181,6 +181,7 @@ public class AzureAIFoundryConnectorTests
     [Theory]
     [InlineData("invalid-uri-format")]
     [InlineData("not-a-url")]
+    [InlineData("   ")]
     public async Task Given_Invalid_Endpoint_Format_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string invalidEndpoint)
     {
         // Arrange
@@ -209,8 +210,17 @@ public class AzureAIFoundryConnectorTests
     }
 
     [Trait("Category", "UnitTest")]
-    [Fact]
-    public async Task Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw()
+    [Theory]
+    [InlineData(null, ApiKey, DeploymentName, "AzureAIFoundry:Endpoint")]
+    [InlineData("", ApiKey, DeploymentName, "AzureAIFoundry:Endpoint")]
+    [InlineData("   ", ApiKey, DeploymentName, "AzureAIFoundry:Endpoint")]
+    [InlineData(Endpoint, null, DeploymentName, "AzureAIFoundry:ApiKey")]
+    [InlineData(Endpoint, "", DeploymentName, "AzureAIFoundry:ApiKey")]
+    [InlineData(Endpoint, "   ", DeploymentName, "AzureAIFoundry:ApiKey")]
+    [InlineData(Endpoint, ApiKey, null, "AzureAIFoundry:DeploymentName")]
+    [InlineData(Endpoint, ApiKey, "", "AzureAIFoundry:DeploymentName")]
+    [InlineData(Endpoint, ApiKey, "   ", "AzureAIFoundry:DeploymentName")]
+    public async Task Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string? endpoint, string? apiKey, string? deploymentName, string expectedMessage)
     {
         // Arrange
         var settings = new AppSettings
@@ -218,9 +228,9 @@ public class AzureAIFoundryConnectorTests
             ConnectorType = ConnectorType.AzureAIFoundry,
             AzureAIFoundry = new AzureAIFoundrySettings
             {
-                Endpoint = null, // Invalid
-                ApiKey = ApiKey,
-                DeploymentName = DeploymentName
+                Endpoint = endpoint,
+                ApiKey = apiKey,
+                DeploymentName = deploymentName
             }
         };
 
@@ -229,6 +239,6 @@ public class AzureAIFoundryConnectorTests
             await LanguageModelConnector.CreateChatClientAsync(settings));
         
         // Assert
-        ex.Message.ShouldContain("AzureAIFoundry:Endpoint");
+        ex.Message.ShouldContain(expectedMessage);
     }
 }
