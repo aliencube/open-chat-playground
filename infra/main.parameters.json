@@ -17,6 +17,12 @@
       "githubModelsToken": {
         "value": "${GH_MODELS_TOKEN}"
       },
+      "openAIModel": {
+        "value": "${OPENAI_MODEL}"
+      },
+      "openAIApiKey": {
+        "value": "${OPENAI_API_KEY}"
+      },
       "openchatPlaygroundappExists": {
         "value": "${SERVICE_OPENCHAT_PLAYGROUNDAPP_RESOURCE_EXISTS=false}"
       },
