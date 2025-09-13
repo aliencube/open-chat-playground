@@ -44,12 +44,14 @@ This page describes how to run OpenChat Playground (OCP) with OpenAI GPT integra
 
     ```bash
     # bash/zsh
-    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- --connector-type OpenAI
+    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- \
+        --connector-type OpenAI
     ```
 
     ```powershell
     # PowerShell
-    dotnet run --project "$REPOSITORY_ROOT\src\OpenChat.PlaygroundApp" -- --connector-type OpenAI
+    dotnet run --project "$REPOSITORY_ROOT/src/OpenChat.PlaygroundApp" -- `
+        --connector-type OpenAI
     ```
 
     Alternatively, you can specify a different model via command line arguments (API key will be read from user-secrets):
@@ -63,7 +65,7 @@ This page describes how to run OpenChat Playground (OCP) with OpenAI GPT integra
 
     ```powershell
     # PowerShell
-    dotnet run --project "${REPOSITORY_ROOT}\src\OpenChat.PlaygroundApp" -- `
+    dotnet run --project "$REPOSITORY_ROOT/src/OpenChat.PlaygroundApp" -- `
         --connector-type OpenAI `
         --model "gpt-4o"
     ```
@@ -94,7 +96,7 @@ This page describes how to run OpenChat Playground (OCP) with OpenAI GPT integra
 
     ```bash
     # PowerShell
-    $$env:API_KEY = (dotnet user-secrets --project ./src/OpenChat.PlaygroundApp list --json | `
+    $API_KEY = (dotnet user-secrets --project ./src/OpenChat.PlaygroundApp list --json | `
                 Select-String -NotMatch '^//(BEGIN|END)' | ConvertFrom-Json).'OpenAI:ApiKey'
     ```
 
@@ -102,34 +104,40 @@ This page describes how to run OpenChat Playground (OCP) with OpenAI GPT integra
 
     ```bash
     # bash/zsh - From locally built container
-    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type OpenAI --api-key $API_KEY
+    docker run -i --rm -p 8080:8080 openchat-playground:latest \
+        --connector-type OpenAI --api-key $API_KEY
     ```
 
     ```powershell
     # PowerShell - From locally built container
-    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type OpenAI --api-key $env:API_KEY
+    docker run -i --rm -p 8080:8080 openchat-playground:latest `
+        --connector-type OpenAI --api-key $API_KEY
     ```
 
     ```bash
     # bash/zsh - From GitHub Container Registry
-    docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest --connector-type OpenAI --api-key $API_KEY
+    docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest \
+        --connector-type OpenAI --api-key $API_KEY
     ```
 
     ```powershell
     # PowerShell - From GitHub Container Registry
-    docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest --connector-type OpenAI --api-key $env:API_KEY
+    docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest `
+        --connector-type OpenAI --api-key $API_KEY
     ```
 
     Optionally, if you want to run with a different model, say [GPT-4o](https://openai.com/index/hello-gpt-4o/), other than the default one, you can specify it via command line:
 
     ```bash
     # bash/zsh - From locally built container with custom model
-    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type OpenAI --api-key $API_KEY --model gpt-4o
+    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type OpenAI \
+        --api-key $API_KEY --model gpt-4o
     ```
 
     ```powershell
     # PowerShell - From locally built container with custom model
-    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type OpenAI --api-key $env:API_KEY --model gpt-4o
+    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type OpenAI `
+        --api-key $API_KEY --model gpt-4o
     ```
 
 1. Open your web browser, navigate to `http://localhost:8080`, and enter prompts.
