@@ -30,7 +30,11 @@ public abstract class ArgumentOptions
         (ConnectorType.HuggingFace, "--base-url", false),
         (ConnectorType.HuggingFace, "--model", false),
         // Ollama
+        (ConnectorType.Ollama, "--base-url", false),
+        (ConnectorType.Ollama, "--model", false),
         // Anthropic
+        (ConnectorType.Anthropic, "--api-key", false),
+        (ConnectorType.Anthropic, "--model", false),
         // LG
         // Naver
         // OpenAI
@@ -144,6 +148,9 @@ public abstract class ArgumentOptions
 
         switch (options)
         {
+            // case AmazonBedrockArgumentOptions amazonBedrock:
+            //     break;
+
             case AzureAIFoundryArgumentOptions azureAIFoundry:
                 settings.AzureAIFoundry ??= new AzureAIFoundrySettings();
                 settings.AzureAIFoundry.Endpoint = azureAIFoundry.Endpoint ?? settings.AzureAIFoundry.Endpoint;
@@ -157,6 +164,15 @@ public abstract class ArgumentOptions
                 settings.GitHubModels.Token = github.Token ?? settings.GitHubModels.Token;
                 settings.GitHubModels.Model = github.Model ?? settings.GitHubModels.Model;
                 break;
+            
+            case GoogleVertexAIArgumentOptions googleVertexAI:
+                settings.GoogleVertexAI ??= new GoogleVertexAISettings();
+                settings.GoogleVertexAI.ApiKey = googleVertexAI.ApiKey ?? settings.GoogleVertexAI.ApiKey;
+                settings.GoogleVertexAI.Model = googleVertexAI.Model ?? settings.GoogleVertexAI.Model;
+                break;
+
+            // case DockerModelRunnerArgumentOptions dockerModelRunner:
+            //     break;
 
             case FoundryLocalArgumentOptions foundryLocal:
                 settings.FoundryLocal ??= new FoundryLocalSettings();
@@ -168,18 +184,33 @@ public abstract class ArgumentOptions
                 settings.HuggingFace.BaseUrl = huggingFace.BaseUrl ?? settings.HuggingFace.BaseUrl;
                 settings.HuggingFace.Model = huggingFace.Model ?? settings.HuggingFace.Model;
                 break;
-                
-            case GoogleVertexAIArgumentOptions googleVertexAI:
-                settings.GoogleVertexAI ??= new GoogleVertexAISettings();
-                settings.GoogleVertexAI.ApiKey = googleVertexAI.ApiKey ?? settings.GoogleVertexAI.ApiKey;
-                settings.GoogleVertexAI.Model = googleVertexAI.Model ?? settings.GoogleVertexAI.Model;
+            
+            case OllamaArgumentOptions ollama:
+                settings.Ollama ??= new OllamaSettings();
+                settings.Ollama.BaseUrl = ollama.BaseUrl ?? settings.Ollama.BaseUrl;
+                settings.Ollama.Model = ollama.Model ?? settings.Ollama.Model;
                 break;
+
+            case AnthropicArgumentOptions anthropic:
+                settings.Anthropic ??= new AnthropicSettings();
+                settings.Anthropic.ApiKey = anthropic.ApiKey ?? settings.Anthropic.ApiKey;
+                settings.Anthropic.Model = anthropic.Model ?? settings.Anthropic.Model;
+                break;
+
+            // case LGArgumentOptions lg:
+            //     break;
+
+            // case NaverArgumentOptions naver:
+            //     break;
 
             case OpenAIArgumentOptions openai:
                 settings.OpenAI ??= new OpenAISettings();
                 settings.OpenAI.ApiKey = openai.ApiKey ?? settings.OpenAI.ApiKey;
                 settings.OpenAI.Model = openai.Model ?? settings.OpenAI.Model;
                 break;
+
+            // case UpstageArgumentOptions upstage:
+            //     break;
 
             default:
                 break;
@@ -335,7 +366,8 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** Ollama: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  TBD");
+        Console.WriteLine("  --base-url           The baseURL. Default to 'http://localhost:11434'");
+        Console.WriteLine("  --model              The model name. Default to 'llama3.2'");
         Console.WriteLine();
     }
 
@@ -346,7 +378,8 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** Anthropic: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  TBD");
+        Console.WriteLine("  --api-key            The Anthropic API key.");
+        Console.WriteLine("  --model              The Anthropic model name. Default to 'claude-sonnet-4-0'");
         Console.WriteLine();
     }
 
