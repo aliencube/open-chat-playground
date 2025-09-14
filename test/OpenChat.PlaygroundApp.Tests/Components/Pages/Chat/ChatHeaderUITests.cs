@@ -58,23 +58,22 @@ public class ChatHeaderUITests : PageTest
         var sendButton = Page.GetByRole(AriaRole.Button, new() { Name = "User Message Send Button" });
         var newChatButton = Page.GetByRole(AriaRole.Button, new() { Name = "New chat" });
 
+        var loadingSpinner = Page.Locator(".lds-ellipsis");
         var userMessages = Page.Locator(".user-message");
         var assistantMessages = Page.Locator(".assistant-message-header");
         var noMessagesPlaceholder = Page.Locator(".no-messages");
-        var loadingSpinner = Page.Locator(".lds-ellipsis");
-
-        await textArea.FillAsync(userMessage);
-        await sendButton.ClickAsync();
 
         // Act
+        await textArea.FillAsync(userMessage);
+        await sendButton.ClickAsync();
         await newChatButton.ClickAsync();
 
         // Assert
         await Expect(textArea).ToBeFocusedAsync();
+        await Expect(loadingSpinner).Not.ToBeVisibleAsync(); 
         await Expect(userMessages).ToHaveCountAsync(0);
         await Expect(assistantMessages).ToHaveCountAsync(0);
         await Expect(noMessagesPlaceholder).ToBeVisibleAsync();
-        await Expect(loadingSpinner).Not.ToBeVisibleAsync(); 
     }
 
     public override async Task DisposeAsync()
