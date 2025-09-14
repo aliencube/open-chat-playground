@@ -24,7 +24,7 @@ This page describes how to run OpenChat Playground (OCP) with Hugging Face integ
     cd $REPOSITORY_ROOT
     ```
 
-1. Get Huggingface models with ollama
+1. Get Huggingface models with ollama.
 
     ```bash
     ollama pull "hf.co/Qwen/Qwen3-0.6B-GGUF"
@@ -85,7 +85,7 @@ This page describes how to run OpenChat Playground (OCP) with Hugging Face integ
     docker build -f Dockerfile -t openchat-playground:latest .
     ```
 
-1. Get Huggingface models with ollama
+1. Get Huggingface models with ollama.
 
     ```bash
     ollama pull "hf.co/Qwen/Qwen3-0.6B-GGUF"
