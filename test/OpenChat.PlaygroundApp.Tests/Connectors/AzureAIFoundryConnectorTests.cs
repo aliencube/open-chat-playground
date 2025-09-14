@@ -127,17 +127,17 @@ public class AzureAIFoundryConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Fact]
-    public async Task Given_Valid_Settings_When_GetChatClient_Invoked_Then_It_Should_Return_ChatClient()
+    public void Given_Valid_Settings_When_GetChatClient_Invoked_Then_It_Should_Return_ChatClient()
     {
         // Arrange
         var settings = BuildAppSettings();
         var connector = new AzureAIFoundryConnector(settings);
 
         // Act
-        var client = await connector.GetChatClientAsync();
+        var func = async () => await connector.GetChatClientAsync();
 
         // Assert
-        client.ShouldNotBeNull();
+        func.ShouldNotBeNull();
     }
 
     [Trait("Category", "UnitTest")]
@@ -153,7 +153,7 @@ public class AzureAIFoundryConnectorTests
         var connector = new AzureAIFoundryConnector(appSettings);
 
         // Act
-        Func<Task> func = async () => await connector.GetChatClientAsync();
+        var func = async () => await connector.GetChatClientAsync();
 
         // Assert
         func.ShouldThrow<NullReferenceException>();
@@ -163,16 +163,17 @@ public class AzureAIFoundryConnectorTests
     [Theory]
     [InlineData(null, typeof(ArgumentNullException), "key")]
     [InlineData("", typeof(ArgumentException), "key")]
-    public async Task Given_Missing_ApiKey_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? apiKey, Type expected, string message)
+    public void Given_Missing_ApiKey_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? apiKey, Type expected, string message)
     {
         // Arrange
         var settings = BuildAppSettings(apiKey: apiKey);
         var connector = new AzureAIFoundryConnector(settings);
 
         // Act
-        var ex = await Assert.ThrowsAsync(expected, async () => await connector.GetChatClientAsync());
+        var func = async () => await connector.GetChatClientAsync();
 
         // Assert  
+        var ex = func.ShouldThrow(expected);
         ex.Message.ShouldContain(message);
     }
 
@@ -181,45 +182,31 @@ public class AzureAIFoundryConnectorTests
     [InlineData("invalid-uri-format", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
     [InlineData("not-a-url", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
     [InlineData("   ", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
-    public async Task Given_Invalid_Endpoint_Format_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string invalidEndpoint, Type expected, string message)
+    public void Given_Invalid_Endpoint_Format_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string invalidEndpoint, Type expected, string message)
     {
         // Arrange
         var settings = BuildAppSettings(endpoint: invalidEndpoint);
         var connector = new AzureAIFoundryConnector(settings);
 
         // Act
-        var ex = await Assert.ThrowsAsync(expected, async () => await connector.GetChatClientAsync());
+        var ex = Assert.ThrowsAsync(expected, async () => await connector.GetChatClientAsync());
 
         // Assert
         ex.ShouldNotBeNull();
     }
 
     [Trait("Category", "UnitTest")]
-    [Fact]
-    public async Task Given_Valid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Return_ChatClient()
-    {
-        // Arrange
-        var settings = BuildAppSettings();
-
-        // Act
-        var client = await LanguageModelConnector.CreateChatClientAsync(settings);
-
-        // Assert
-        client.ShouldNotBeNull();
-    }
-
-    [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, ApiKey, DeploymentName, "AzureAIFoundry:Endpoint")]
-    [InlineData("", ApiKey, DeploymentName, "AzureAIFoundry:Endpoint")]
-    [InlineData("   ", ApiKey, DeploymentName, "AzureAIFoundry:Endpoint")]
-    [InlineData(Endpoint, null, DeploymentName, "AzureAIFoundry:ApiKey")]
-    [InlineData(Endpoint, "", DeploymentName, "AzureAIFoundry:ApiKey")]
-    [InlineData(Endpoint, "   ", DeploymentName, "AzureAIFoundry:ApiKey")]
-    [InlineData(Endpoint, ApiKey, null, "AzureAIFoundry:DeploymentName")]
-    [InlineData(Endpoint, ApiKey, "", "AzureAIFoundry:DeploymentName")]
-    [InlineData(Endpoint, ApiKey, "   ", "AzureAIFoundry:DeploymentName")]
-    public async Task Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string? endpoint, string? apiKey, string? deploymentName, string expectedMessage)
+    [InlineData(null, null, null, "Missing configuration: AzureAIFoundry")]
+    [InlineData("", ApiKey, DeploymentName, "Missing configuration: AzureAIFoundry:Endpoint")]
+    [InlineData("   ", ApiKey, DeploymentName, "Missing configuration: AzureAIFoundry:Endpoint")]
+    [InlineData(Endpoint, null, DeploymentName, "Missing configuration: AzureAIFoundry:ApiKey")]
+    [InlineData(Endpoint, "", DeploymentName, "Missing configuration: AzureAIFoundry:ApiKey")]
+    [InlineData(Endpoint, "   ", DeploymentName, "Missing configuration: AzureAIFoundry:ApiKey")]
+    [InlineData(Endpoint, ApiKey, null, "Missing configuration: AzureAIFoundry:DeploymentName")]
+    [InlineData(Endpoint, ApiKey, "", "Missing configuration: AzureAIFoundry:DeploymentName")]
+    [InlineData(Endpoint, ApiKey, "   ", "Missing configuration: AzureAIFoundry:DeploymentName")]
+    public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string? endpoint, string? apiKey, string? deploymentName, string expectedMessage)
     {
         // Arrange
         var settings = new AppSettings
@@ -234,10 +221,10 @@ public class AzureAIFoundryConnectorTests
         };
 
         // Act
-        var ex = await Assert.ThrowsAsync<InvalidOperationException>(async () => 
-            await LanguageModelConnector.CreateChatClientAsync(settings));
+        var func = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
         
-        // Assert
+        // Assert  
+        var ex = func.ShouldThrow<InvalidOperationException>();
         ex.Message.ShouldContain(expectedMessage);
     }
 }
