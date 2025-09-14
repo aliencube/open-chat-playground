@@ -46,6 +46,37 @@ public class ChatHeaderUITests : PageTest
         await Expect(icon).ToBeVisibleAsync();
     }
 
+    [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "LLMRequired")]
+    [Theory]
+    [InlineData("1+1의 결과는 무엇인가요?")]
+    [InlineData("what is the result of 1 + 1?")]
+    public async Task Given_UserAndAssistantMessages_When_NewChat_Clicked_Then_Conversation_Should_Reset(string userMessage)
+    {
+        // Arrange
+        var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
+        var sendButton = Page.GetByRole(AriaRole.Button, new() { Name = "User Message Send Button" });
+        var newChatButton = Page.GetByRole(AriaRole.Button, new() { Name = "New chat" });
+
+        var userMessages = Page.Locator(".user-message");
+        var assistantMessages = Page.Locator(".assistant-message-header");
+        var noMessagesPlaceholder = Page.Locator(".no-messages");
+        var loadingSpinner = Page.Locator(".lds-ellipsis");
+
+        await textArea.FillAsync(userMessage);
+        await sendButton.ClickAsync();
+
+        // Act
+        await newChatButton.ClickAsync();
+
+        // Assert
+        await Expect(textArea).ToBeFocusedAsync();
+        await Expect(userMessages).ToHaveCountAsync(0);
+        await Expect(assistantMessages).ToHaveCountAsync(0);
+        await Expect(noMessagesPlaceholder).ToBeVisibleAsync();
+        await Expect(loadingSpinner).Not.ToBeVisibleAsync(); 
+    }
+
     public override async Task DisposeAsync()
     {
         await Page.CloseAsync();
