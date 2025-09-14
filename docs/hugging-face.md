@@ -20,7 +20,7 @@ This page describes how to run OpenChat Playground (OCP) with Hugging Face integ
 
 1. Make sure the Ollama server is up and running. 
     
-    ```bash 
+    ```bash
     ollama serve
     ```
 
@@ -160,3 +160,66 @@ This page describes how to run OpenChat Playground (OCP) with Hugging Face integ
 
 1. Open your web browser, navigate to `http://localhost:8080`, and enter prompts.
 
+## Run on Azure
+
+1. Make sure you are at the repository root.
+
+    ```bash
+    cd $REPOSITORY_ROOT
+    ```
+
+1. Login to Azure.
+
+    ```bash
+    # Login to Azure Dev CLI
+    azd auth login
+    ```
+
+1. Check login status.
+
+    ```bash
+    # Azure Dev CLI
+    azd auth login --check-status
+    ```
+
+1. Initialize `azd` template.
+
+    ```bash
+    azd init
+    ```
+
+   > **NOTE**: You will be asked to provide environment name for provisioning.
+
+1. Set HuggingFace BaseUrl to azd environment variables.
+
+    ```bash
+    azd env set HUGGING_FACE_BASE_URL {{OLLAMA_SERVER_URL}}
+    ```
+
+    Optionally, if you want to run with a different model, say [microsoft/phi-4-gguf](https://huggingface.co/microsoft/phi-4-gguf), other than the default one, add it to azd environment variables.
+
+    ```bash
+    azd env set HUGGING_FACE_MODEL "hf.co/microsoft/phi-4-gguf"
+    ```
+
+    Make sure to follow the exact format like `hf.co/{{org}}/{{model}}` and the model MUST include `GGUF`.
+
+1. Set the connector type to `HuggingFace`.
+
+    ```bash
+    azd env set CONNECTOR_TYPE "HuggingFace"
+    ```
+
+1. Run the following commands in order to provision and deploy the app.
+
+    ```bash
+    azd up
+    ```
+
+   > **NOTE**: You will be asked to provide Azure subscription and location for deployment.
+
+1. Clean up all the resources.
+
+    ```bash
+    azd down --force --purge
+    ```
