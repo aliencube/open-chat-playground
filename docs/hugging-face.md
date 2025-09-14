@@ -30,7 +30,7 @@ This page describes how to run OpenChat Playground (OCP) with Hugging Face integ
     ollama pull "hf.co/Qwen/Qwen3-0.6B-GGUF"
     ```
 
-    **Optionally, if you want to run with a different model**
+    Optionally, if you want to run with a different model
 
 
     ```bash
@@ -53,7 +53,7 @@ This page describes how to run OpenChat Playground (OCP) with Hugging Face integ
         --connector-type HuggingFace
     ```
 
-    **Optionally, if you want to run with a different model**
+    Optionally, if you want to run with a different model
 
     ```bash
     # bash/zsh
@@ -91,7 +91,7 @@ This page describes how to run OpenChat Playground (OCP) with Hugging Face integ
     ollama pull "hf.co/Qwen/Qwen3-0.6B-GGUF"
     ```
 
-    **Optionally, if you want to run with a different model**
+    Optionally, if you want to run with a different model
 
     ```bash
     # Model name must end with "gguf"
@@ -129,7 +129,7 @@ This page describes how to run OpenChat Playground (OCP) with Hugging Face integ
         --base-url http://host.docker.internal:11434
     ```
 
-    **Optionally, if you want to run with a different model**
+    Optionally, if you want to run with a different model
 
     ```bash
     # bash/zsh - From locally built container with custom model
