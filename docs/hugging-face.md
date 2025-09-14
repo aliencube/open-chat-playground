@@ -43,30 +43,30 @@ This page describes how to run OpenChat Playground (OCP) with Hugging Face integ
 
     ```bash
     # bash/zsh
-    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp \
-        -- --connector-type HuggingFace
+    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- \
+        --connector-type HuggingFace
     ```
 
     ```powershell
     # PowerShell
-    dotnet run --project "$REPOSITORY_ROOT\src\OpenChat.PlaygroundApp" ` 
-        -- --connector-type HuggingFace
+    dotnet run --project "$REPOSITORY_ROOT\src\OpenChat.PlaygroundApp" -- `
+        --connector-type HuggingFace
     ```
 
     **Optionally, if you want to run with a different model**
 
     ```bash
     # bash/zsh
-    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp \
-        -- --connector-type HuggingFace \
-           --model hf.co/{org}/{model}
+    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- \ 
+        --connector-type HuggingFace \
+        --model hf.co/{org}/{model}
     ```
 
     ```powershell
     # PowerShell
-    dotnet run --project "$REPOSITORY_ROOT\src\OpenChat.PlaygroundApp" ` 
-        -- --connector-type HuggingFace `
-           --model hf.co/{org}/{model}
+    dotnet run --project "$REPOSITORY_ROOT\src\OpenChat.PlaygroundApp" -- `
+        --connector-type HuggingFace `
+        --model hf.co/{org}/{model}
     ```
 
 1. Open your web browser, navigate to `http://localhost:5280`, and enter prompts.
