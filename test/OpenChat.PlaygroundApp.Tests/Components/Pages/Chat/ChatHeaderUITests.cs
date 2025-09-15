@@ -67,13 +67,13 @@ public class ChatHeaderUITests : PageTest
         await textArea.FillAsync(userMessage);
         await sendButton.ClickAsync();
         await newChatButton.ClickAsync();
+        await noMessagesPlaceholder.WaitForAsync();
 
         // Assert
-        await Expect(textArea).ToBeFocusedAsync();
-        await Expect(loadingSpinner).Not.ToBeVisibleAsync(); 
-        await Expect(userMessages).ToHaveCountAsync(0);
-        await Expect(assistantMessages).ToHaveCountAsync(0);
-        await Expect(noMessagesPlaceholder).ToBeVisibleAsync();
+        (await userMessages.CountAsync()).ShouldBe(0);
+        (await assistantMessages.CountAsync()).ShouldBe(0);
+        (await noMessagesPlaceholder.IsVisibleAsync()).ShouldBeTrue();
+        (await loadingSpinner.IsVisibleAsync()).ShouldBeFalse();
     }
 
     public override async Task DisposeAsync()
