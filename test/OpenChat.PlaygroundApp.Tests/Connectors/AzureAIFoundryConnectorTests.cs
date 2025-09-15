@@ -1,3 +1,4 @@
+using Microsoft.Extensions.AI;
 using OpenChat.PlaygroundApp.Configurations;
 using OpenChat.PlaygroundApp.Connectors;
 using OpenChat.PlaygroundApp.Abstractions;
@@ -50,9 +51,10 @@ public class AzureAIFoundryConnectorTests
         var connector = new AzureAIFoundryConnector(appSettings);
 
         // Act
-        var ex = Assert.Throws<InvalidOperationException>(() => connector.EnsureLanguageModelSettingsValid());
+        Action act = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
+        var ex = Assert.Throws<InvalidOperationException>(act);
         ex.Message.ShouldContain("AzureAIFoundry");
     }
 
@@ -68,9 +70,10 @@ public class AzureAIFoundryConnectorTests
         var connector = new AzureAIFoundryConnector(appSettings);
 
         // Act
-        var ex = Assert.Throws(expectedType, () => connector.EnsureLanguageModelSettingsValid());
+        Action act = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
+        var ex = Assert.Throws(expectedType, act);
         ex.Message.ShouldContain(expectedMessage);
     }
 
@@ -86,9 +89,10 @@ public class AzureAIFoundryConnectorTests
         var connector = new AzureAIFoundryConnector(appSettings);
 
         // Act
-        var ex = Assert.Throws(expectedType, () => connector.EnsureLanguageModelSettingsValid());
+        Action act = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
+        var ex = Assert.Throws(expectedType, act);
         ex.Message.ShouldContain(expectedMessage);
     }
 
@@ -104,9 +108,10 @@ public class AzureAIFoundryConnectorTests
         var connector = new AzureAIFoundryConnector(appSettings);
 
         // Act
-        var ex = Assert.Throws(expectedType, () => connector.EnsureLanguageModelSettingsValid());
+        Action act = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
+        var ex = Assert.Throws(expectedType, act);
         ex.Message.ShouldContain(expectedMessage);
     }
 
@@ -189,10 +194,29 @@ public class AzureAIFoundryConnectorTests
         var connector = new AzureAIFoundryConnector(settings);
 
         // Act
-        var ex = Assert.ThrowsAsync(expected, async () => await connector.GetChatClientAsync());
+        var func = async () => await connector.GetChatClientAsync();
 
         // Assert
-        ex.ShouldNotBeNull();
+        var ex = func.ShouldThrow(expected);
+        ex.Message.ShouldContain(message);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData(Endpoint, DeploymentName, ApiKey)]  // 기본 설정 테스트
+    [InlineData("  https://test.openai.azure.com/  ", "  gpt-4  ", "  valid-api-key-123  ")]  // 공백 처리 테스트
+    public async Task Given_Valid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Return_IChatClient(
+        string endpoint, string deploymentName, string apiKey)
+    {
+        // Arrange
+        var settings = BuildAppSettings(endpoint, apiKey, deploymentName);
+
+        // Act
+        var result = await LanguageModelConnector.CreateChatClientAsync(settings);
+
+        // Assert
+        result.ShouldNotBeNull();
+        result.ShouldBeAssignableTo<IChatClient>();
     }
 
     [Trait("Category", "UnitTest")]
