@@ -50,11 +50,11 @@ This page describes how to run OpenChat Playground (OCP) with OpenAI GPT integra
 
     ```powershell
     # PowerShell
-    dotnet run --project "$REPOSITORY_ROOT/src/OpenChat.PlaygroundApp" -- `
+    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- `
         --connector-type OpenAI
     ```
 
-    Alternatively, you can specify a different model via command line arguments (API key will be read from user-secrets):
+    Optionally, if you want to run with a different model, say [GPT-4o](https://openai.com/index/hello-gpt-4o/), other than the default one, you can specify it via command line:
 
     ```bash
     # bash/zsh
@@ -65,7 +65,7 @@ This page describes how to run OpenChat Playground (OCP) with OpenAI GPT integra
 
     ```powershell
     # PowerShell
-    dotnet run --project "$REPOSITORY_ROOT/src/OpenChat.PlaygroundApp" -- `
+    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- `
         --connector-type OpenAI `
         --model "gpt-4o"
     ```
