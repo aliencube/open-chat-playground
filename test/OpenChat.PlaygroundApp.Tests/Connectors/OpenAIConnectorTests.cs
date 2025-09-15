@@ -40,85 +40,80 @@ public class OpenAIConnectorTests
 	}
 
 	[Trait("Category", "UnitTest")]
-	[Theory]
-	[InlineData("")]
-	[InlineData("   ")]
-	public void Given_Invalid_ApiKey_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? apiKey)
-	{
-		// Arrange
-		var settings = BuildAppSettings(apiKey: apiKey);
+    [Theory]
+    [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
+    [InlineData("", typeof(InvalidOperationException), "OpenAI:ApiKey")]
+    [InlineData("   ", typeof(InvalidOperationException), "OpenAI:ApiKey")]
+    public void Given_Invalid_ApiKey_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? apiKey, Type expectedType, string expectedMessage)
+    {
+        // Arrange
+        var appSettings = BuildAppSettings(apiKey: apiKey);
+        var connector = new OpenAIConnector(appSettings);
 
-		// Act
-		var connector = new OpenAIConnector(settings);
-		var ex = Assert.Throws<InvalidOperationException>(() => connector.EnsureLanguageModelSettingsValid());
+        // Act
+        var ex = Assert.Throws(expectedType, () => connector.EnsureLanguageModelSettingsValid());
 
-		// Assert
-		ex.Message.ShouldContain("Missing configuration: OpenAI:ApiKey.");
-	}
-
-	[Trait("Category", "UnitTest")]
-	[Theory]
-	[InlineData(null)]
-	[InlineData("")]
-	[InlineData("   ")]
-	public void Given_Invalid_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? model)
-	{
-		// Arrange
-		var settings = BuildAppSettings(model: model);
-
-		// Act
-		var connector = new OpenAIConnector(settings);
-		
-		if (model is null)
-		{
-			Assert.Throws<NullReferenceException>(() => connector.EnsureLanguageModelSettingsValid());
-		}
-		else
-		{
-			var ex = Assert.Throws<InvalidOperationException>(() => connector.EnsureLanguageModelSettingsValid());
-			ex.Message.ShouldContain("Missing configuration: OpenAI:Model.");
-		}
-	}
+        // Assert
+        ex.Message.ShouldContain(expectedMessage);
+    }
 
 	[Trait("Category", "UnitTest")]
-	[Fact]
-	public void Given_Valid_Settings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Return_True()
-	{
-		// Arrange
-		var appSettings = BuildAppSettings();
-		var connector = new OpenAIConnector(appSettings);
+    [Theory]
+    [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
+    [InlineData("", typeof(InvalidOperationException), "OpenAI:Model")]
+    [InlineData("   ", typeof(InvalidOperationException), "OpenAI:Model")]
+    public void Given_Invalid_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? model, Type expectedType, string expectedMessage)
+    {
+        // Arrange
+        var appSettings = BuildAppSettings(model: model);
+        var connector = new OpenAIConnector(appSettings);
 
-		// Act
-		var result = connector.EnsureLanguageModelSettingsValid();
+        // Act
+        var ex = Assert.Throws(expectedType, () => connector.EnsureLanguageModelSettingsValid());
 
-		// Assert
-		result.ShouldBeTrue();
-	}
+        // Assert
+        ex.Message.ShouldContain(expectedMessage);
+    }
 
 	[Trait("Category", "UnitTest")]
-	[Fact]
-	public async Task Given_Valid_Settings_When_GetChatClient_Invoked_Then_It_Should_Return_ChatClient()
-	{
-		var settings = BuildAppSettings();
-		var connector = new OpenAIConnector(settings);
+    [Fact]
+    public void Given_Valid_Settings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Return_True()
+    {
+        // Arrange
+        var appSettings = BuildAppSettings();
+        var connector = new OpenAIConnector(appSettings);
 
-		var client = await connector.GetChatClientAsync();
+        // Act
+        var result = connector.EnsureLanguageModelSettingsValid();
 
-		client.ShouldNotBeNull();
-	}
+        // Assert
+        result.ShouldBeTrue();
+    }
+
+	[Trait("Category", "UnitTest")]
+    [Fact]
+    public async Task Given_Valid_Settings_When_GetChatClient_Invoked_Then_It_Should_Return_ChatClient()
+    {
+        var settings = BuildAppSettings();
+        var connector = new OpenAIConnector(settings);
+
+        var client = await connector.GetChatClientAsync();
+
+        client.ShouldNotBeNull();
+    }
 
 	[Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, typeof(InvalidOperationException), "OpenAI:ApiKey")]
     [InlineData("", typeof(ArgumentException), "key")]
-	public async Task Given_Missing_ApiKey_When_GetChatClient_Invoked_Then_It_Should_Throw(string? apiKey, Type expected, string message)
-	{
-		var settings = BuildAppSettings(apiKey: apiKey);
-		var connector = new OpenAIConnector(settings);
+    public async Task Given_Missing_ApiKey_When_GetChatClient_Invoked_Then_It_Should_Throw(string? apiKey, Type expected, string message)
+    {
+        var settings = BuildAppSettings(apiKey: apiKey);
+        var connector = new OpenAIConnector(settings);
 
 		var ex = await Assert.ThrowsAsync(expected, connector.GetChatClientAsync);
 
-  		ex.Message.ShouldContain(message);
+        ex.Message.ShouldContain(message);
     }
 
 	[Trait("Category", "UnitTest")]
