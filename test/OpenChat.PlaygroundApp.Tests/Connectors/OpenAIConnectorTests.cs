@@ -117,7 +117,7 @@ public class OpenAIConnectorTests
         // Assert
         ex.Message.ShouldContain(expectedMessage);
     }
-    
+
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("   ")]
@@ -490,7 +490,7 @@ public class OpenAIConnectorTests
         var settings = BuildAppSettings();
         var connector = new OpenAIConnector(settings);
 
-        // Act & Assert
+        // Assert
         connector.ShouldBeAssignableTo<LanguageModelConnector>();
         typeof(OpenAIConnector).IsSubclassOf(typeof(LanguageModelConnector)).ShouldBeTrue();
     }
