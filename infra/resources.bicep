@@ -17,7 +17,6 @@ param githubModelsToken string = ''
 // Docker Model Runner
 // Foundry Local
 // Hugging Face
-param huggingFaceBaseUrl string = ''
 param huggingFaceModel string = ''
 // Ollama
 // Anthropic
@@ -119,20 +118,12 @@ var envGitHubModels = (connectorType == '' || connectorType == 'GitHubModels') ?
 // Docker Model Runner
 // Foundry Local
 // Hugging Face
-var envHuggingFace = connectorType == 'HuggingFace' ? concat(
-  huggingFaceBaseUrl != '' ? [
-    {
-      name: 'HuggingFace__BaseUrl'
-      value: huggingFaceBaseUrl
-    }
-  ] : [],
-    huggingFaceModel != '' ? [
-    {
-      name: 'HuggingFace__Model'
-      value: huggingFaceModel
-    }
-  ] : []
-) : []
+var envHuggingFace = connectorType == 'HuggingFace' && huggingFaceModel != '' ? [
+  {
+    name: 'HuggingFace__Model'
+    value: huggingFaceModel
+  }
+] : []
 // Ollama
 // Anthropic
 // LG

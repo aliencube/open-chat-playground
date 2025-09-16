@@ -58,7 +58,7 @@ This page describes how to run OpenChat Playground (OCP) with Hugging Face integ
         --connector-type HuggingFace
     ```
 
-    Optionally, if you want to run with a different model, say [microsoft/phi-4-gguf](https://huggingface.co/microsoft/phi-4-gguf), other than the default one, download it first by running the following command.
+    Optionally, if you want to run with a different model, say [microsoft/phi-4-gguf](https://huggingface.co/microsoft/phi-4-gguf), make sure you've already downloaded the model by running the `ollama pull hf.co/microsoft/phi-4-gguf` command.
 
     ```bash
     # bash/zsh
@@ -115,38 +115,33 @@ This page describes how to run OpenChat Playground (OCP) with Hugging Face integ
     ```bash
     # bash/zsh - From locally built container
     docker run -i --rm -p 8080:8080 openchat-playground:latest \
-        --connector-type HuggingFace \
-        --base-url http://host.docker.internal:11434
+        --connector-type HuggingFace
     ```
 
     ```powershell
     # PowerShell - From locally built container
     docker run -i --rm -p 8080:8080 openchat-playground:latest `
-        --connector-type HuggingFace `
-        --base-url http://host.docker.internal:11434
+        --connector-type HuggingFace
     ```
 
     ```bash
     # bash/zsh - From GitHub Container Registry
     docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest \
-        --connector-type HuggingFace \
-        --base-url http://host.docker.internal:11434
+        --connector-type HuggingFace
     ```
 
     ```powershell
     # PowerShell - From GitHub Container Registry
     docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest `
-        --connector-type HuggingFace `
-        --base-url http://host.docker.internal:11434
+        --connector-type HuggingFace
     ```
 
-    Optionally, if you want to run with a different model, say [microsoft/phi-4-gguf](https://huggingface.co/microsoft/phi-4-gguf), other than the default one, download it first by running the following command.
+    Optionally, if you want to run with a different model, say [microsoft/phi-4-gguf](https://huggingface.co/microsoft/phi-4-gguf), make sure you've already downloaded the model by running the `ollama pull hf.co/microsoft/phi-4-gguf` command.
 
     ```bash
     # bash/zsh - From locally built container with custom model
     docker run -i --rm -p 8080:8080 openchat-playground:latest \
         --connector-type HuggingFace \
-        --base-url http://host.docker.internal:11434 \
         --model hf.co/microsoft/phi-4-gguf
     ```
 
@@ -154,7 +149,6 @@ This page describes how to run OpenChat Playground (OCP) with Hugging Face integ
     # PowerShell - From locally built container with custom model
     docker run -i --rm -p 8080:8080 openchat-playground:latest `
         --connector-type HuggingFace `
-        --base-url http://host.docker.internal:11434 `
         --model hf.co/microsoft/phi-4-gguf
     ```
 
@@ -190,10 +184,10 @@ This page describes how to run OpenChat Playground (OCP) with Hugging Face integ
 
    > **NOTE**: You will be asked to provide environment name for provisioning.
 
-1. Set HuggingFace BaseUrl to azd environment variables.
+1. Set the connector type to `HuggingFace`.
 
     ```bash
-    azd env set HUGGING_FACE_BASE_URL {{OLLAMA_SERVER_URL}}
+    azd env set CONNECTOR_TYPE "HuggingFace"
     ```
 
     Optionally, if you want to run with a different model, say [microsoft/phi-4-gguf](https://huggingface.co/microsoft/phi-4-gguf), other than the default one, add it to azd environment variables.
@@ -203,12 +197,6 @@ This page describes how to run OpenChat Playground (OCP) with Hugging Face integ
     ```
 
     Make sure to follow the exact format like `hf.co/{{org}}/{{model}}` and the model MUST include `GGUF`.
-
-1. Set the connector type to `HuggingFace`.
-
-    ```bash
-    azd env set CONNECTOR_TYPE "HuggingFace"
-    ```
 
 1. Run the following commands in order to provision and deploy the app.
 
