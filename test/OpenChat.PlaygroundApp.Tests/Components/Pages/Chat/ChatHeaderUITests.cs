@@ -32,7 +32,8 @@ public class ChatHeaderUITests : PageTest
         var newChatButton = Page.GetByRole(AriaRole.Button, new() { Name = "New chat" });
 
         // Assert
-        await Expect(newChatButton).ToBeVisibleAsync();
+        var isVisible = await newChatButton.IsVisibleAsync();
+        isVisible.ShouldBeTrue();
     }
 
     [Trait("Category", "IntegrationTest")]
@@ -43,7 +44,8 @@ public class ChatHeaderUITests : PageTest
         var icon = Page.Locator("button svg.new-chat-icon");
 
         // Assert
-        await Expect(icon).ToBeVisibleAsync();
+        var isVisible = await icon.IsVisibleAsync();
+        isVisible.ShouldBeTrue();
     }
 
     [Trait("Category", "IntegrationTest")]
@@ -70,10 +72,17 @@ public class ChatHeaderUITests : PageTest
         await noMessagesPlaceholder.WaitForAsync();
 
         // Assert
-        (await userMessages.CountAsync()).ShouldBe(0);
-        (await assistantMessages.CountAsync()).ShouldBe(0);
-        (await noMessagesPlaceholder.IsVisibleAsync()).ShouldBeTrue();
-        (await loadingSpinner.IsVisibleAsync()).ShouldBeFalse();
+        var userMessageCount = await userMessages.CountAsync();
+        userMessageCount.ShouldBe(0);
+
+        var assistantMessageCount = await assistantMessages.CountAsync();
+        assistantMessageCount.ShouldBe(0);
+
+        var placeholderVisible = await noMessagesPlaceholder.IsVisibleAsync();
+        placeholderVisible.ShouldBeTrue();
+
+        var spinnerVisible = await loadingSpinner.IsVisibleAsync();
+        spinnerVisible.ShouldBeFalse();
     }
 
     public override async Task DisposeAsync()
