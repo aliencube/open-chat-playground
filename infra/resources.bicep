@@ -14,6 +14,9 @@ param githubModelsModel string = ''
 @secure()
 param githubModelsToken string = ''
 // Google Vertex AI
+param googleVertexAIModel string = ''
+@secure()
+param googleVertexAIApiKey string = ''
 // Docker Model Runner
 // Foundry Local
 // Hugging Face
@@ -114,6 +117,17 @@ var envGitHubModels = (connectorType == '' || connectorType == 'GitHubModels') ?
   }
 ]) : []
 // Google Vertex AI
+var envGoogleVertexAI = (connectorType == '' || connectorType == 'GoogleVertexAI') ? concat(googleVertexAIModel != '' ? [
+  {
+    name: 'GoogleVertexAI__Model'
+    value: googleVertexAIModel
+  }
+] : [], googleVertexAIApiKey != '' ? [
+  {
+    name: 'GoogleVertexAI__ApiKey'
+    secretRef: 'google-vertex-ai-api-key'
+  }
+] : []) : []
 // Docker Model Runner
 // Foundry Local
 // Hugging Face
