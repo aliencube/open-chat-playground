@@ -35,7 +35,7 @@ public class OpenAIArgumentOptionsTests
         {
             return new ConfigurationBuilder()
                        .AddInMemoryCollection(configDict!)
-                    .Build();
+                       .Build();
         }
 
         // Environment variables (medium priority)

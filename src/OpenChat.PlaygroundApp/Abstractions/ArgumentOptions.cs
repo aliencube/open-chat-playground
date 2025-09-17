@@ -35,12 +35,19 @@ public abstract class ArgumentOptions
         (ConnectorType.Ollama, "--base-url", false),
         (ConnectorType.Ollama, "--model", false),
         // Anthropic
+        (ConnectorType.Anthropic, "--api-key", false),
+        (ConnectorType.Anthropic, "--model", false),
         // LG
+        (ConnectorType.LG, "--base-url", false),
+        (ConnectorType.LG, "--model", false),
         // Naver
         // OpenAI
         (ConnectorType.OpenAI, "--api-key", false),
         (ConnectorType.OpenAI, "--model", false),
         // Upstage
+        (ConnectorType.Upstage, "--base-url", false),
+        (ConnectorType.Upstage, "--api-key", false),
+        (ConnectorType.Upstage, "--model", false)
     ];
 
     /// <summary>
@@ -194,10 +201,32 @@ public abstract class ArgumentOptions
                 settings.Ollama.Model = ollama.Model ?? settings.Ollama.Model;
                 break;
 
+            case AnthropicArgumentOptions anthropic:
+                settings.Anthropic ??= new AnthropicSettings();
+                settings.Anthropic.ApiKey = anthropic.ApiKey ?? settings.Anthropic.ApiKey;
+                settings.Anthropic.Model = anthropic.Model ?? settings.Anthropic.Model;
+                break;
+
+            case LGArgumentOptions lg:
+                settings.LG ??= new LGSettings();
+                settings.LG.BaseUrl = lg.BaseUrl ?? settings.LG.BaseUrl;
+                settings.LG.Model = lg.Model ?? settings.LG.Model;
+                break;
+
+            // case NaverArgumentOptions naver:
+            //     break;
+
             case OpenAIArgumentOptions openai:
                 settings.OpenAI ??= new OpenAISettings();
                 settings.OpenAI.ApiKey = openai.ApiKey ?? settings.OpenAI.ApiKey;
                 settings.OpenAI.Model = openai.Model ?? settings.OpenAI.Model;
+                break;
+
+            case UpstageArgumentOptions upstage:
+                settings.Upstage ??= new UpstageSettings();
+                settings.Upstage.BaseUrl = upstage.BaseUrl ?? settings.Upstage.BaseUrl;
+                settings.Upstage.ApiKey = upstage.ApiKey ?? settings.Upstage.ApiKey;
+                settings.Upstage.Model = upstage.Model ?? settings.Upstage.Model;
                 break;
 
             default:
@@ -367,7 +396,8 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** Anthropic: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  TBD");
+        Console.WriteLine("  --api-key            The Anthropic API key.");
+        Console.WriteLine("  --model              The Anthropic model name. Default to 'claude-sonnet-4-0'");
         Console.WriteLine();
     }
 
@@ -412,7 +442,9 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** Upstage: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  TBD");
+        Console.WriteLine("  --base-url           The base URL for Upstage API. Default to 'https://api.upstage.ai/v1/solar'");
+        Console.WriteLine("  --api-key            The Upstage API key.");
+        Console.WriteLine("  --model              The model name. Default to 'solar-mini'");
         Console.WriteLine();
     }
 }
