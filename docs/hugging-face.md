@@ -58,7 +58,7 @@ This page describes how to run OpenChat Playground (OCP) with Hugging Face integ
         --connector-type HuggingFace
     ```
 
-    Optionally, if you want to run with a different model, say [microsoft/phi-4-gguf](https://huggingface.co/microsoft/phi-4-gguf), make sure you've already downloaded the model by running the `ollama pull hf.co/microsoft/phi-4-gguf` command.
+    Alternatively, if you want to run with a different model, say [microsoft/phi-4-gguf](https://huggingface.co/microsoft/phi-4-gguf), make sure you've already downloaded the model by running the `ollama pull hf.co/microsoft/phi-4-gguf` command.
 
     ```bash
     # bash/zsh
@@ -136,7 +136,7 @@ This page describes how to run OpenChat Playground (OCP) with Hugging Face integ
         --connector-type HuggingFace
     ```
 
-    Optionally, if you want to run with a different model, say [microsoft/phi-4-gguf](https://huggingface.co/microsoft/phi-4-gguf), make sure you've already downloaded the model by running the `ollama pull hf.co/microsoft/phi-4-gguf` command.
+    Alternatively, if you want to run with a different model, say [microsoft/phi-4-gguf](https://huggingface.co/microsoft/phi-4-gguf), make sure you've already downloaded the model by running the `ollama pull hf.co/microsoft/phi-4-gguf` command.
 
     ```bash
     # bash/zsh - From locally built container with custom model
@@ -190,7 +190,7 @@ This page describes how to run OpenChat Playground (OCP) with Hugging Face integ
     azd env set CONNECTOR_TYPE "HuggingFace"
     ```
 
-    Optionally, if you want to run with a different model, say [microsoft/phi-4-gguf](https://huggingface.co/microsoft/phi-4-gguf), other than the default one, add it to azd environment variables.
+    Alternatively, if you want to run with a different model, say [microsoft/phi-4-gguf](https://huggingface.co/microsoft/phi-4-gguf), other than the default one, add it to azd environment variables.
 
     ```bash
     azd env set HUGGING_FACE_MODEL "hf.co/microsoft/phi-4-gguf"
