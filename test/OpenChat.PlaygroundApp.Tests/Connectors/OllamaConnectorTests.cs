@@ -2,7 +2,6 @@ using Microsoft.Extensions.AI;
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Configurations;
 using OpenChat.PlaygroundApp.Connectors;
-using Shouldly;
 
 namespace OpenChat.PlaygroundApp.Tests.Connectors;
 
