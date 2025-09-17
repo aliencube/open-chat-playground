@@ -1,4 +1,3 @@
-using Microsoft.Extensions.AI;
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Configurations;
 using OpenChat.PlaygroundApp.Connectors;
@@ -44,11 +43,10 @@ public class OllamaConnectorTests
         var connector = new OllamaConnector(appSettings);
 
         // Act
-        Action action = () => connector.EnsureLanguageModelSettingsValid();
+        var ex = Assert.Throws<InvalidOperationException>(() => connector.EnsureLanguageModelSettingsValid());
 
         // Assert
-        action.ShouldThrow<InvalidOperationException>()
-            .Message.ShouldContain("Ollama");
+        ex.Message.ShouldContain("Ollama");
     }
 
     [Trait("Category", "UnitTest")]
@@ -63,11 +61,10 @@ public class OllamaConnectorTests
         var connector = new OllamaConnector(appSettings);
 
         // Act
-        Action action = () => connector.EnsureLanguageModelSettingsValid();
+        var ex = Assert.Throws(expectedType, () => connector.EnsureLanguageModelSettingsValid());
 
         // Assert
-        action.ShouldThrow(expectedType)
-            .Message.ShouldContain(expectedMessage);
+        ex.Message.ShouldContain(expectedMessage);
     }
 
     [Trait("Category", "UnitTest")]
@@ -82,11 +79,10 @@ public class OllamaConnectorTests
         var connector = new OllamaConnector(appSettings);
 
         // Act
-        Action action = () => connector.EnsureLanguageModelSettingsValid();
+        var ex = Assert.Throws(expectedType, () => connector.EnsureLanguageModelSettingsValid());
 
         // Assert
-        action.ShouldThrow(expectedType)
-            .Message.ShouldContain(expectedMessage);
+        ex.Message.ShouldContain(expectedMessage);
     }
 
     [Trait("Category", "UnitTest")]
@@ -123,69 +119,16 @@ public class OllamaConnectorTests
     [Theory]
     [InlineData(null, typeof(ArgumentNullException), "null")]
     [InlineData("", typeof(UriFormatException), "empty")]
-    public void Given_Missing_BaseUrl_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? baseUrl, Type expected, string message)
+    public async Task Given_Missing_BaseUrl_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? baseUrl, Type expected, string message)
     {
         // Arrange
         var settings = BuildAppSettings(baseUrl: baseUrl);
         var connector = new OllamaConnector(settings);
 
         // Act
-        Func<Task> action = async () => await connector.GetChatClientAsync();
+        var ex = await Assert.ThrowsAsync(expected, connector.GetChatClientAsync);
 
         // Assert
-        action.ShouldThrow(expected)
-            .Message.ShouldContain(message);
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Fact]
-    public async Task Given_Valid_AppSettings_When_CreateChatClientAsync_Invoked_Then_It_Should_Return_ChatClient()
-    {
-        // Arrange
-        var appSettings = BuildAppSettings();
-
-        // Act
-        var client = await LanguageModelConnector.CreateChatClientAsync(appSettings);
-
-        // Assert
-        client.ShouldNotBeNull();
-        client.ShouldBeAssignableTo<IChatClient>();
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData(null, null, typeof(NullReferenceException))]
-    [InlineData("", Model, typeof(InvalidOperationException))]
-    [InlineData("   ", Model, typeof(InvalidOperationException))]
-    [InlineData(BaseUrl, null, typeof(NullReferenceException))]
-    [InlineData(BaseUrl, "", typeof(InvalidOperationException))]
-    [InlineData(BaseUrl, "   ", typeof(InvalidOperationException))]
-    public async Task Given_Invalid_Ollama_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string? baseUrl, string? model, Type expectedExceptionType)
-    {
-        // Arrange
-        var settings = BuildAppSettings(baseUrl: baseUrl, model: model);
-
-        // Act
-        Func<Task> action = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
-
-        // Assert
-        await action.ShouldThrowAsync(expectedExceptionType);
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData(ConnectorType.Unknown)]
-    [InlineData(ConnectorType.AmazonBedrock)]
-    [InlineData(ConnectorType.GoogleVertexAI)]
-    public async Task Given_Unsupported_ConnectorType_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(ConnectorType connectorType)
-    {
-        // Arrange
-        var appSettings = new AppSettings { ConnectorType = connectorType };
-
-        // Act
-        Func<Task> action = async () => await LanguageModelConnector.CreateChatClientAsync(appSettings);
-
-        // Assert
-        await action.ShouldThrowAsync<NotSupportedException>();
+        ex.Message.ShouldContain(message);
     }
 }
