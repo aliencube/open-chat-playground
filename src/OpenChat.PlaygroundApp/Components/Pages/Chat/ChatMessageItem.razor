@@ -28,6 +28,10 @@ else if (Message.Role == ChatRole.Assistant)
                 </div>
             </div>
         }
+        else if (InProgress && content is TextContent { Text: "" })
+        {
+            <LoadingSpinner />
+        }
     }
 }
 
