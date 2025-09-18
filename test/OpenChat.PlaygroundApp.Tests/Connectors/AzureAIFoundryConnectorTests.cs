@@ -54,8 +54,8 @@ public class AzureAIFoundryConnectorTests
         Action act = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
-        var ex = Assert.Throws<InvalidOperationException>(act);
-        ex.Message.ShouldContain("AzureAIFoundry");
+        Assert.Throws<InvalidOperationException>(act)
+            .Message.ShouldContain("AzureAIFoundry");
     }
 
     [Trait("Category", "UnitTest")]
@@ -73,8 +73,8 @@ public class AzureAIFoundryConnectorTests
         Action act = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
-        var ex = Assert.Throws(expectedType, act);
-        ex.Message.ShouldContain(expectedMessage);
+        Assert.Throws(expectedType, act)
+            .Message.ShouldContain(expectedMessage);
     }
 
     [Trait("Category", "UnitTest")]
@@ -92,8 +92,8 @@ public class AzureAIFoundryConnectorTests
         Action act = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
-        var ex = Assert.Throws(expectedType, act);
-        ex.Message.ShouldContain(expectedMessage);
+        Assert.Throws(expectedType, act)
+            .Message.ShouldContain(expectedMessage);
     }
 
     [Trait("Category", "UnitTest")]
@@ -111,8 +111,8 @@ public class AzureAIFoundryConnectorTests
         Action act = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
-        var ex = Assert.Throws(expectedType, act);
-        ex.Message.ShouldContain(expectedMessage);
+        Assert.Throws(expectedType, act)
+            .Message.ShouldContain(expectedMessage);
     }
 
     [Trait("Category", "UnitTest")]
@@ -139,7 +139,7 @@ public class AzureAIFoundryConnectorTests
         var connector = new AzureAIFoundryConnector(settings);
 
         // Act
-        var func = async () => await connector.GetChatClientAsync();
+        Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert
         func.ShouldNotBeNull();
@@ -158,7 +158,7 @@ public class AzureAIFoundryConnectorTests
         var connector = new AzureAIFoundryConnector(appSettings);
 
         // Act
-        var func = async () => await connector.GetChatClientAsync();
+        Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert
         func.ShouldThrow<NullReferenceException>();
@@ -175,11 +175,11 @@ public class AzureAIFoundryConnectorTests
         var connector = new AzureAIFoundryConnector(settings);
 
         // Act
-        var func = async () => await connector.GetChatClientAsync();
+        Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert  
-        var ex = func.ShouldThrow(expected);
-        ex.Message.ShouldContain(message);
+        func.ShouldThrow(expected)
+            .Message.ShouldContain(message);
     }
 
     [Trait("Category", "UnitTest")]
@@ -194,11 +194,11 @@ public class AzureAIFoundryConnectorTests
         var connector = new AzureAIFoundryConnector(settings);
 
         // Act
-        var func = async () => await connector.GetChatClientAsync();
+        Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert
-        var ex = func.ShouldThrow(expected);
-        ex.Message.ShouldContain(message);
+        func.ShouldThrow(expected)
+            .Message.ShouldContain(message);
     }
 
     [Trait("Category", "UnitTest")]
@@ -245,10 +245,10 @@ public class AzureAIFoundryConnectorTests
         };
 
         // Act
-        var func = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
-        
+        Func<Task> func = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
+
         // Assert  
-        var ex = func.ShouldThrow<InvalidOperationException>();
-        ex.Message.ShouldContain(expectedMessage);
+        func.ShouldThrow<InvalidOperationException>()
+            .Message.ShouldContain(expectedMessage);
     }
 }
