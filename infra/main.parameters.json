@@ -17,6 +17,12 @@
       "githubModelsToken": {
         "value": "${GH_MODELS_TOKEN}"
       },
+      "googleVertexAIModel": {
+        "value": "${GOOGLE_VERTEX_AI_MODEL}"
+      },
+      "googleVertexAIApiKey": {
+        "value": "${GOOGLE_VERTEX_AI_API_KEY}"
+      },
       "openchatPlaygroundappExists": {
         "value": "${SERVICE_OPENCHAT_PLAYGROUNDAPP_RESOURCE_EXISTS=false}"
       },

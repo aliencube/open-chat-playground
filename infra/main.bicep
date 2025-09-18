@@ -19,6 +19,9 @@ param githubModelsModel string = ''
 @secure()
 param githubModelsToken string = ''
 // Google Vertex AI
+param googleVertexAIModel string = ''
+@secure()
+param googleVertexAIApiKey string = ''
 // Docker Model Runner
 // Foundry Local
 // Hugging Face
@@ -64,6 +67,8 @@ module resources 'resources.bicep' = {
     connectorType: connectorType
     githubModelsModel: githubModelsModel
     githubModelsToken: githubModelsToken
+    googleVertexAIModel: googleVertexAIModel
+    googleVertexAIApiKey: googleVertexAIApiKey
     openchatPlaygroundappExists: openchatPlaygroundappExists
   }
 }
