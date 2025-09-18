@@ -31,9 +31,9 @@ public class UpstageArgumentOptions : ArgumentOptions
 
         var upstage = settings.Upstage;
 
-        this.BaseUrl = upstage?.BaseUrl;
-        this.ApiKey = upstage?.ApiKey;
-        this.Model = upstage?.Model;
+        this.BaseUrl ??= upstage?.BaseUrl;
+        this.ApiKey ??= upstage?.ApiKey;
+        this.Model ??= upstage?.Model;
 
         for (var i = 0; i < args.Length; i++)
         {
