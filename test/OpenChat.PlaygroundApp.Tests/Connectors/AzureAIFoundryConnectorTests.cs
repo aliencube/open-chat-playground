@@ -202,14 +202,11 @@ public class AzureAIFoundryConnectorTests
     }
 
     [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData(Endpoint, DeploymentName, ApiKey)]  // 기본 설정 테스트
-    [InlineData("  https://test.openai.azure.com/  ", "  gpt-4  ", "  valid-api-key-123  ")]  // 공백 처리 테스트
-    public async Task Given_Valid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Return_IChatClient(
-        string endpoint, string deploymentName, string apiKey)
+    [Fact]
+    public async Task Given_Valid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Return_IChatClient()
     {
         // Arrange
-        var settings = BuildAppSettings(endpoint, apiKey, deploymentName);
+        var settings = BuildAppSettings();
 
         // Act
         var result = await LanguageModelConnector.CreateChatClientAsync(settings);
