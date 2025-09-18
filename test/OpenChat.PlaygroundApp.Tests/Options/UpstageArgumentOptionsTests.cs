@@ -7,14 +7,17 @@ namespace OpenChat.PlaygroundApp.Tests.Options;
 
 public class UpstageArgumentOptionsTests
 {
-    private const string BaseUrl = "https://test.upstage.ai/api/v1";
-    private const string ApiKey = "upstage-api-key";
-    private const string Model = "upstage-model-name";
+    private const string BaseUrl = "https://test.upstage";
+    private const string ApiKey = "test-api-key";
+    private const string Model = "test-model";
 
     private static IConfiguration BuildConfigWithUpstage(
         string? configBaseUrl = BaseUrl,
         string? configApiKey = ApiKey,
-        string? configModel = Model)
+        string? configModel = Model,
+        string? envBaseUrl = null,
+        string? envApiKey = null,
+        string? envModel = null)
     {
         // Base configuration values
         var configDict = new Dictionary<string, string?>
@@ -34,10 +37,33 @@ public class UpstageArgumentOptionsTests
         {
             configDict["Upstage:Model"] = configModel;
         }
+        if (string.IsNullOrWhiteSpace(envBaseUrl) == true &&
+           string.IsNullOrWhiteSpace(envApiKey) == true &&
+           string.IsNullOrWhiteSpace(envModel) == true)
+        {
+            return new ConfigurationBuilder()
+                        .AddInMemoryCollection(configDict!)
+                        .Build();
+        }
+
+        var envDict = new Dictionary<string, string?>();
+        if (string.IsNullOrWhiteSpace(envBaseUrl) == false)
+        {
+            envDict["Upstage:BaseUrl"] = envBaseUrl;
+        }
+        if (string.IsNullOrWhiteSpace(envApiKey) == false)
+        {
+            envDict["Upstage:ApiKey"] = envApiKey;
+        }
+        if (string.IsNullOrWhiteSpace(envModel) == false)
+        {
+            envDict["Upstage:Model"] = envModel;
+        }
 
         return new ConfigurationBuilder()
-                   .AddInMemoryCollection(configDict!)
-                   .Build();
+                    .AddInMemoryCollection(configDict!)
+                    .AddInMemoryCollection(envDict)
+                    .Build();
     }
 
     [Trait("Category", "UnitTest")]
