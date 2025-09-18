@@ -329,31 +329,17 @@ public class UpstageArgumentOptionsTests
     public void Given_Environment_Variables_When_Parse_Invoked_Then_It_Should_Use_Environment_Variables(string envBaseUrl, string envApiKey, string envModel)
     {
         // Arrange
-        var config = BuildConfigWithUpstage();
+        var config = BuildConfigWithUpstage(envBaseUrl: envBaseUrl, envApiKey: envApiKey, envModel: envModel);
         var args = Array.Empty<string>();
 
-        Environment.SetEnvironmentVariable("UPSTAGE_BASE_URL", envBaseUrl);
-        Environment.SetEnvironmentVariable("UPSTAGE_API_KEY", envApiKey);
-        Environment.SetEnvironmentVariable("UPSTAGE_MODEL", envModel);
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
 
-        try
-        {
-            // Act
-            var settings = ArgumentOptions.Parse(config, args);
-
-            // Assert
-            settings.Upstage.ShouldNotBeNull();
-            settings.Upstage.BaseUrl.ShouldBe(envBaseUrl);
-            settings.Upstage.ApiKey.ShouldBe(envApiKey);
-            settings.Upstage.Model.ShouldBe(envModel);
-        }
-        finally
-        {
-            // Cleanup
-            Environment.SetEnvironmentVariable("UPSTAGE_BASE_URL", null);
-            Environment.SetEnvironmentVariable("UPSTAGE_API_KEY", null);
-            Environment.SetEnvironmentVariable("UPSTAGE_MODEL", null);
-        }
+        // Assert
+        settings.Upstage.ShouldNotBeNull();
+        settings.Upstage.BaseUrl.ShouldBe(envBaseUrl);
+        settings.Upstage.ApiKey.ShouldBe(envApiKey);
+        settings.Upstage.Model.ShouldBe(envModel);
     }
 
     [Trait("Category", "UnitTest")]
@@ -365,31 +351,17 @@ public class UpstageArgumentOptionsTests
         string cliBaseUrl, string cliApiKey, string cliModel)
     {
         // Arrange
-        var config = BuildConfigWithUpstage();
+        var config = BuildConfigWithUpstage(envBaseUrl: envBaseUrl, envApiKey: envApiKey, envModel: envModel);
         var args = new[] { "--base-url", cliBaseUrl, "--api-key", cliApiKey, "--model", cliModel };
 
-        Environment.SetEnvironmentVariable("UPSTAGE_BASE_URL", envBaseUrl);
-        Environment.SetEnvironmentVariable("UPSTAGE_API_KEY", envApiKey);
-        Environment.SetEnvironmentVariable("UPSTAGE_MODEL", envModel);
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
 
-        try
-        {
-            // Act
-            var settings = ArgumentOptions.Parse(config, args);
-
-            // Assert
-            settings.Upstage.ShouldNotBeNull();
-            settings.Upstage.BaseUrl.ShouldBe(cliBaseUrl); // CLI should win
-            settings.Upstage.ApiKey.ShouldBe(cliApiKey);   // CLI should win
-            settings.Upstage.Model.ShouldBe(cliModel);     // CLI should win
-        }
-        finally
-        {
-            // Cleanup
-            Environment.SetEnvironmentVariable("UPSTAGE_BASE_URL", null);
-            Environment.SetEnvironmentVariable("UPSTAGE_API_KEY", null);
-            Environment.SetEnvironmentVariable("UPSTAGE_MODEL", null);
-        }
+        // Assert
+        settings.Upstage.ShouldNotBeNull();
+        settings.Upstage.BaseUrl.ShouldBe(cliBaseUrl); // CLI should win
+        settings.Upstage.ApiKey.ShouldBe(cliApiKey);   // CLI should win
+        settings.Upstage.Model.ShouldBe(cliModel);     // CLI should win
     }
 
     [Trait("Category", "UnitTest")]
@@ -401,31 +373,17 @@ public class UpstageArgumentOptionsTests
         string envBaseUrl, string envApiKey, string envModel)
     {
         // Arrange
-        var config = BuildConfigWithUpstage(configBaseUrl, configApiKey, configModel);
+        var config = BuildConfigWithUpstage(configBaseUrl, configApiKey, configModel, envBaseUrl, envApiKey, envModel);
         var args = Array.Empty<string>();
 
-        Environment.SetEnvironmentVariable("UPSTAGE_BASE_URL", envBaseUrl);
-        Environment.SetEnvironmentVariable("UPSTAGE_API_KEY", envApiKey);
-        Environment.SetEnvironmentVariable("UPSTAGE_MODEL", envModel);
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
 
-        try
-        {
-            // Act
-            var settings = ArgumentOptions.Parse(config, args);
-
-            // Assert
-            settings.Upstage.ShouldNotBeNull();
-            settings.Upstage.BaseUrl.ShouldBe(envBaseUrl); // Environment should win over config
-            settings.Upstage.ApiKey.ShouldBe(envApiKey);   // Environment should win over config
-            settings.Upstage.Model.ShouldBe(envModel);     // Environment should win over config
-        }
-        finally
-        {
-            // Cleanup
-            Environment.SetEnvironmentVariable("UPSTAGE_BASE_URL", null);
-            Environment.SetEnvironmentVariable("UPSTAGE_API_KEY", null);
-            Environment.SetEnvironmentVariable("UPSTAGE_MODEL", null);
-        }
+        // Assert
+        settings.Upstage.ShouldNotBeNull();
+        settings.Upstage.BaseUrl.ShouldBe(envBaseUrl); // Environment should win over config
+        settings.Upstage.ApiKey.ShouldBe(envApiKey);   // Environment should win over config
+        settings.Upstage.Model.ShouldBe(envModel);     // Environment should win over config
     }
 
     [Trait("Category", "UnitTest")]
@@ -439,30 +397,16 @@ public class UpstageArgumentOptionsTests
         string cliBaseUrl, string cliApiKey, string cliModel)
     {
         // Arrange
-        var config = BuildConfigWithUpstage(configBaseUrl, configApiKey, configModel);
+        var config = BuildConfigWithUpstage(configBaseUrl, configApiKey, configModel, envBaseUrl, envApiKey, envModel);
         var args = new[] { "--base-url", cliBaseUrl, "--api-key", cliApiKey, "--model", cliModel };
 
-        Environment.SetEnvironmentVariable("UPSTAGE_BASE_URL", envBaseUrl);
-        Environment.SetEnvironmentVariable("UPSTAGE_API_KEY", envApiKey);
-        Environment.SetEnvironmentVariable("UPSTAGE_MODEL", envModel);
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
 
-        try
-        {
-            // Act
-            var settings = ArgumentOptions.Parse(config, args);
-
-            // Assert - CLI should have highest priority
-            settings.Upstage.ShouldNotBeNull();
-            settings.Upstage.BaseUrl.ShouldBe(cliBaseUrl);
-            settings.Upstage.ApiKey.ShouldBe(cliApiKey);
-            settings.Upstage.Model.ShouldBe(cliModel);
-        }
-        finally
-        {
-            // Cleanup
-            Environment.SetEnvironmentVariable("UPSTAGE_BASE_URL", null);
-            Environment.SetEnvironmentVariable("UPSTAGE_API_KEY", null);
-            Environment.SetEnvironmentVariable("UPSTAGE_MODEL", null);
-        }
+        // Assert - CLI should have highest priority
+        settings.Upstage.ShouldNotBeNull();
+        settings.Upstage.BaseUrl.ShouldBe(cliBaseUrl);
+        settings.Upstage.ApiKey.ShouldBe(cliApiKey);
+        settings.Upstage.Model.ShouldBe(cliModel);
     }
 }
