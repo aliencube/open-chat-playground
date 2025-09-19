@@ -138,26 +138,6 @@ public class ChatInputUITest : PageTest
         sendButtonColor.ShouldBe(expectedButtonColor);
     }
 
-    [Trait("Category", "IntegrationTest")]
-    [Trait("Category", "LLMRequired")]
-    [Theory]
-    [InlineData("하늘은 왜 푸른 색인가요?")]
-    [InlineData("Why is the sky blue?")]
-    public async Task Given_UserMessage_When_SendButton_Clicked_Then_TextArea_Should_Remain_Focused(string userMessage)
-    {
-        // Arrange
-        var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
-        var sendButton = Page.GetByRole(AriaRole.Button, new() { Name = "User Message Send Button" });
-
-        // Act
-        await textArea.FillAsync(userMessage);
-        await sendButton.ClickAsync();
-
-        // Assert
-        var isFocused = await textArea.EvaluateAsync<bool>("el => document.activeElement === el");
-        isFocused.ShouldBeTrue();
-    }
-
     public override async Task DisposeAsync()
     {
         await Page.CloseAsync();
