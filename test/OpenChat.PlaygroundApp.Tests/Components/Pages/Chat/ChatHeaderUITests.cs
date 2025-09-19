@@ -1,4 +1,4 @@
-using Microsoft.Playwright;
+﻿using Microsoft.Playwright;
 using Microsoft.Playwright.Xunit;
 
 namespace OpenChat.PlaygroundApp.Tests.Components.Pages.Chat;
