@@ -23,6 +23,7 @@ param githubModelsToken string = ''
 // Foundry Local
 // Hugging Face
 // Ollama
+param ollamaModel string = ''
 // Anthropic
 // LG
 // Naver
@@ -64,6 +65,7 @@ module resources 'resources.bicep' = {
     connectorType: connectorType
     githubModelsModel: githubModelsModel
     githubModelsToken: githubModelsToken
+    ollamaModel: ollamaModel
     openchatPlaygroundappExists: openchatPlaygroundappExists
   }
 }

@@ -17,6 +17,9 @@
       "githubModelsToken": {
         "value": "${GH_MODELS_TOKEN}"
       },
+      "ollamaModel": {
+        "value": "${OLLAMA_MODEL}"
+      },
       "openchatPlaygroundappExists": {
         "value": "${SERVICE_OPENCHAT_PLAYGROUNDAPP_RESOURCE_EXISTS=false}"
       },

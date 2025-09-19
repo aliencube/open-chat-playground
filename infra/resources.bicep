@@ -18,6 +18,7 @@ param githubModelsToken string = ''
 // Foundry Local
 // Hugging Face
 // Ollama
+param ollamaModel string = ''
 // Anthropic
 // LG
 // Naver
@@ -118,6 +119,12 @@ var envGitHubModels = (connectorType == '' || connectorType == 'GitHubModels') ?
 // Foundry Local
 // Hugging Face
 // Ollama
+var envOllama = (connectorType == '' || connectorType == 'Ollama') ? (ollamaModel != '' ? [
+  {
+    name: 'Ollama__Model'
+    value: ollamaModel
+  }
+] : []) : []
 // Anthropic
 // LG
 // Naver
@@ -161,7 +168,8 @@ module openchatPlaygroundapp 'br/public:avm/res/app/container-app:0.18.1' = {
             value: '8080'
           }],
           envConnectorType,
-          envGitHubModels)
+          envGitHubModels,
+          envOllama)
       }
     ]
     managedIdentities:{
