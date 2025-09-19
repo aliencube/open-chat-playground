@@ -166,9 +166,9 @@ public class AzureAIFoundryConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(ArgumentNullException), "key")]
-    [InlineData("", typeof(ArgumentException), "key")]
-    public void Given_Missing_ApiKey_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? apiKey, Type expected, string message)
+    [InlineData(null, "key")]
+    [InlineData("", "key")]
+    public void Given_Missing_ApiKey_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? apiKey, string message)
     {
         // Arrange
         var settings = BuildAppSettings(apiKey: apiKey);
@@ -178,16 +178,16 @@ public class AzureAIFoundryConnectorTests
         Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert  
-        func.ShouldThrow(expected)
+        func.ShouldThrow<ArgumentException>()
             .Message.ShouldContain(message);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("invalid-uri-format", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
-    [InlineData("not-a-url", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
-    [InlineData("   ", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
-    public void Given_Invalid_Endpoint_Format_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string invalidEndpoint, Type expected, string message)
+    [InlineData("invalid-uri-format", "Invalid URI: The format of the URI could not be determined.")]
+    [InlineData("not-a-url", "Invalid URI: The format of the URI could not be determined.")]
+    [InlineData("   ", "Invalid URI: The format of the URI could not be determined.")]
+    public void Given_Invalid_Endpoint_Format_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string invalidEndpoint, string message)
     {
         // Arrange
         var settings = BuildAppSettings(endpoint: invalidEndpoint);
@@ -197,7 +197,7 @@ public class AzureAIFoundryConnectorTests
         Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert
-        func.ShouldThrow(expected)
+        func.ShouldThrow<UriFormatException>()
             .Message.ShouldContain(message);
     }
 
