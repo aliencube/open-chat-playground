@@ -132,14 +132,14 @@ public class AzureAIFoundryConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Fact]
-    public void Given_Valid_Settings_When_GetChatClient_Invoked_Then_It_Should_Return_ChatClient()
+    public async Task Given_Valid_Settings_When_GetChatClient_Invoked_Then_It_Should_Return_ChatClient()
     {
         // Arrange
         var settings = BuildAppSettings();
         var connector = new AzureAIFoundryConnector(settings);
 
         // Act
-        Func<Task> func = async () => await connector.GetChatClientAsync();
+        var func = await connector.GetChatClientAsync();
 
         // Assert
         func.ShouldNotBeNull();
