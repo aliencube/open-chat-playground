@@ -161,7 +161,7 @@ public class AmazonBedrockArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("{{AWS_REGION}}", "anthropic.claude-sonnet-4-20250514-v1:0")]
+    [InlineData("config-region", "config-model")]
     public void Given_ConfigValues_And_No_CLI_When_Parse_Invoked_Then_It_Should_Use_Config(string configRegion, string configModel)
     {
         // Arrange
