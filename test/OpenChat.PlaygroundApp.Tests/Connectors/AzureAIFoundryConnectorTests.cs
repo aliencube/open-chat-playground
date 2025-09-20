@@ -51,11 +51,11 @@ public class AzureAIFoundryConnectorTests
         var connector = new AzureAIFoundryConnector(appSettings);
 
         // Act
-        Action act = () => connector.EnsureLanguageModelSettingsValid();
+        Action action = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
-        Assert.Throws<InvalidOperationException>(act)
-            .Message.ShouldContain("AzureAIFoundry");
+        action.ShouldThrow<InvalidOperationException>()
+              .Message.ShouldContain("AzureAIFoundry");
     }
 
     [Trait("Category", "UnitTest")]
@@ -70,11 +70,11 @@ public class AzureAIFoundryConnectorTests
         var connector = new AzureAIFoundryConnector(appSettings);
 
         // Act
-        Action act = () => connector.EnsureLanguageModelSettingsValid();
+        Action action = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
-        Assert.Throws(expectedType, act)
-            .Message.ShouldContain(expectedMessage);
+        action.ShouldThrow(expectedType)
+              .Message.ShouldContain(expectedMessage);
     }
 
     [Trait("Category", "UnitTest")]
@@ -89,11 +89,11 @@ public class AzureAIFoundryConnectorTests
         var connector = new AzureAIFoundryConnector(appSettings);
 
         // Act
-        Action act = () => connector.EnsureLanguageModelSettingsValid();
+        Action action = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
-        Assert.Throws(expectedType, act)
-            .Message.ShouldContain(expectedMessage);
+        action.ShouldThrow(expectedType)
+              .Message.ShouldContain(expectedMessage);
     }
 
     [Trait("Category", "UnitTest")]
@@ -108,11 +108,11 @@ public class AzureAIFoundryConnectorTests
         var connector = new AzureAIFoundryConnector(appSettings);
 
         // Act
-        Action act = () => connector.EnsureLanguageModelSettingsValid();
+        Action action = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
-        Assert.Throws(expectedType, act)
-            .Message.ShouldContain(expectedMessage);
+        action.ShouldThrow(expectedType)
+              .Message.ShouldContain(expectedMessage);
     }
 
     [Trait("Category", "UnitTest")]
@@ -139,10 +139,10 @@ public class AzureAIFoundryConnectorTests
         var connector = new AzureAIFoundryConnector(settings);
 
         // Act
-        var func = await connector.GetChatClientAsync();
+        var result = await connector.GetChatClientAsync();
 
         // Assert
-        func.ShouldNotBeNull();
+        result.ShouldNotBeNull();
     }
 
     [Trait("Category", "UnitTest")]
@@ -161,7 +161,8 @@ public class AzureAIFoundryConnectorTests
         Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert
-        func.ShouldThrow<NullReferenceException>();
+        func.ShouldThrow<NullReferenceException>()
+            .Message.ShouldContain("Object reference not set to an instance of an object");
     }
 
     [Trait("Category", "UnitTest")]
