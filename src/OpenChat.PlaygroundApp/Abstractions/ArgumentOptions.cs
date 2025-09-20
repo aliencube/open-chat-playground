@@ -302,7 +302,7 @@ public abstract class ArgumentOptions
         Console.ForegroundColor = foregroundColor;
 
         Console.WriteLine("  --region             The AWS region.");
-        Console.WriteLine("  --model              The model name. Default to 'anthropic.claude-sonnet-4'");
+        Console.WriteLine("  --model              The model name. Default to 'anthropic.claude-sonnet-4-20250514-v1:0'");
         Console.WriteLine();
     }
 
