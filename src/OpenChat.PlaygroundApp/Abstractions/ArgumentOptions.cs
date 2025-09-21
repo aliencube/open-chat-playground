@@ -12,6 +12,8 @@ public abstract class ArgumentOptions
     private static readonly (ConnectorType ConnectorType, string Argument, bool IsSwitch)[] arguments =
     [
         // Amazon Bedrock
+        (ConnectorType.AmazonBedrock, "--access-key-id", false),
+        (ConnectorType.AmazonBedrock, "--secret-access-key", false),
         (ConnectorType.AmazonBedrock, "--region", false),
         (ConnectorType.AmazonBedrock, "--model", false),
         // Azure AI Foundry
@@ -157,6 +159,8 @@ public abstract class ArgumentOptions
         {
             case AmazonBedrockArgumentOptions amazonBedrock:
                 settings.AmazonBedrock ??= new AmazonBedrockSettings();
+                settings.AmazonBedrock.AccessKeyId = amazonBedrock.AccessKeyId ?? settings.AmazonBedrock.AccessKeyId;
+                settings.AmazonBedrock.SecretAccessKey = amazonBedrock.SecretAccessKey ?? settings.AmazonBedrock.SecretAccessKey;
                 settings.AmazonBedrock.Region = amazonBedrock.Region ?? settings.AmazonBedrock.Region;
                 settings.AmazonBedrock.Model = amazonBedrock.Model ?? settings.AmazonBedrock.Model;
                 break;
@@ -301,8 +305,10 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** Amazon Bedrock: **");
         Console.ForegroundColor = foregroundColor;
 
+        Console.WriteLine("  --access-key-id     The AWSCredentials Access Key ID.");
+        Console.WriteLine("  --secret-access-key The AWSCredentials Secret Access Key.");
         Console.WriteLine("  --region             The AWS region.");
-        Console.WriteLine("  --model              The model name. Default to 'anthropic.claude-sonnet-4-20250514-v1:0'");
+        Console.WriteLine("  --model              The model ID. Default to 'anthropic.claude-sonnet-4-20250514-v1:0'");
         Console.WriteLine();
     }
 

@@ -17,12 +17,22 @@ public partial class AppSettings
 public class AmazonBedrockSettings : LanguageModelSettings
 {
     /// <summary>
+    /// Gets or sets the AWSCredentials Access Key ID for the Amazon Bedrock service.
+    /// </summary>
+    public string? AccessKeyId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the AWSCredentials Secret Access Key for the Amazon Bedrock service.
+    /// </summary>
+    public string? SecretAccessKey { get; set; }
+
+    /// <summary>
     /// Gets or sets the AWS region for the Amazon Bedrock service.
     /// </summary>
     public string? Region { get; set; }
 
     /// <summary>
-    /// Gets or sets the model name for the Amazon Bedrock service.
+    /// Gets or sets the model ID for the Amazon Bedrock service.
     /// </summary>
     public string? Model { get; set; }
 }
