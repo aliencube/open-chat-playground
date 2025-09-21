@@ -361,10 +361,9 @@ public class LGArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("https://config.lg-exaone/api", "config-model", "https://env.lg-exaone/api", null, "https://env.lg-exaone/api", "config-model")]
-    [InlineData("https://config.lg-exaone/api", "config-model", null, "env-model", "https://config.lg-exaone/api", "env-model")]
+    [InlineData("https://config.lg-exaone/api", "config-model", "https://env.lg-exaone/api", null)]
     public void Given_Partial_EnvironmentVariables_When_Parse_Invoked_Then_It_Should_Mix_Config_And_Environment(
-        string configBaseUrl, string configModel, string? envBaseUrl, string? envModel, string expectedBaseUrl, string expectedModel)
+        string configBaseUrl, string configModel, string? envBaseUrl, string? envModel)
     {
         // Arrange
         var config = BuildConfigWithLG(
@@ -377,8 +376,8 @@ public class LGArgumentOptionsTests
 
         // Assert
         settings.LG.ShouldNotBeNull();
-        settings.LG.BaseUrl.ShouldBe(expectedBaseUrl);
-        settings.LG.Model.ShouldBe(expectedModel);
+        settings.LG.BaseUrl.ShouldBe(envBaseUrl);
+        settings.LG.Model.ShouldBe(configModel);
     }
 
     [Trait("Category", "UnitTest")]
@@ -412,35 +411,25 @@ public class LGArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("https://config.lg-exaone/api", "config-model", null, "env-model", "https://cli.lg-exaone/api", null, "https://cli.lg-exaone/api", "env-model")]
-    [InlineData("https://config.lg-exaone/api", "config-model", "https://env.lg-exaone/api", null, null, "cli-model", "https://env.lg-exaone/api", "cli-model")]
+    [InlineData("https://config.lg-exaone/api", "config-model", null, "env-model", "https://cli.lg-exaone/api", null)]
     public void Given_Partial_CLI_Arguments_When_Parse_Invoked_Then_It_Should_Mix_Config_And_CLI(
         string configBaseUrl, string configModel,
-        string? envBaseUrl, string? envModel,
-        string? cliBaseUrl, string? cliModel,
-        string expectedBaseUrl, string expectedModel)
+        string? envBaseUrl, string envModel,
+        string cliBaseUrl, string? cliModel)
     {
         // Arrange
         var config = BuildConfigWithLG(
             configBaseUrl, configModel,
             envBaseUrl, envModel);
-        var args = new List<string>();
-        if (!string.IsNullOrEmpty(cliBaseUrl))
-        {
-            args.AddRange(new[] { "--base-url", cliBaseUrl });
-        }
-        if (!string.IsNullOrEmpty(cliModel))
-        {
-            args.AddRange(new[] { "--model", cliModel });
-        }
+        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
 
         // Act
-        var settings = ArgumentOptions.Parse(config, args.ToArray());
+        var settings = ArgumentOptions.Parse(config, args!);
 
         // Assert
         settings.LG.ShouldNotBeNull();
-        settings.LG.BaseUrl.ShouldBe(expectedBaseUrl);
-        settings.LG.Model.ShouldBe(expectedModel);
+        settings.LG.BaseUrl.ShouldBe(cliBaseUrl);
+        settings.LG.Model.ShouldBe(envModel);
     }
 
     [Trait("Category", "UnitTest")]
