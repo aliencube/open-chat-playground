@@ -34,5 +34,5 @@ public class AmazonBedrockSettings : LanguageModelSettings
     /// <summary>
     /// Gets or sets the model ID for the Amazon Bedrock service.
     /// </summary>
-    public string? Model { get; set; }
+    public string? ModelId { get; set; }
 }

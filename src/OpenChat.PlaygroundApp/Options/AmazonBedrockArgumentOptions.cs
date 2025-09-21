@@ -26,7 +26,7 @@ public class AmazonBedrockArgumentOptions : ArgumentOptions
     /// <summary>
     ///  Gets or sets the model for the Amazon Bedrock service.
     /// </summary>
-    public string? Model { get; set; }
+    public string? ModelId { get; set; }
 
     /// <inheritdoc/>
     protected override void ParseOptions(IConfiguration config, string[] args)
@@ -39,7 +39,7 @@ public class AmazonBedrockArgumentOptions : ArgumentOptions
         this.AccessKeyId ??= amazonBedrock?.AccessKeyId;
         this.SecretAccessKey ??= amazonBedrock?.SecretAccessKey;
         this.Region ??= amazonBedrock?.Region;
-        this.Model ??= amazonBedrock?.Model;
+        this.ModelId ??= amazonBedrock?.ModelId;
 
         for (var i = 0; i < args.Length; i++)
         {
@@ -66,10 +66,10 @@ public class AmazonBedrockArgumentOptions : ArgumentOptions
                     }
                     break;
 
-                case "--model":
+                case "--model-id":
                     if (i + 1 < args.Length)
                     {
-                        this.Model = args[++i];
+                        this.ModelId = args[++i];
                     }
                     break;
 

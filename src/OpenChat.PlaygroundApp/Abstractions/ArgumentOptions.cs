@@ -15,7 +15,7 @@ public abstract class ArgumentOptions
         (ConnectorType.AmazonBedrock, "--access-key-id", false),
         (ConnectorType.AmazonBedrock, "--secret-access-key", false),
         (ConnectorType.AmazonBedrock, "--region", false),
-        (ConnectorType.AmazonBedrock, "--model", false),
+        (ConnectorType.AmazonBedrock, "--model-id", false),
         // Azure AI Foundry
         (ConnectorType.AzureAIFoundry, "--endpoint", false),
         (ConnectorType.AzureAIFoundry, "--api-key", false),
@@ -162,7 +162,7 @@ public abstract class ArgumentOptions
                 settings.AmazonBedrock.AccessKeyId = amazonBedrock.AccessKeyId ?? settings.AmazonBedrock.AccessKeyId;
                 settings.AmazonBedrock.SecretAccessKey = amazonBedrock.SecretAccessKey ?? settings.AmazonBedrock.SecretAccessKey;
                 settings.AmazonBedrock.Region = amazonBedrock.Region ?? settings.AmazonBedrock.Region;
-                settings.AmazonBedrock.Model = amazonBedrock.Model ?? settings.AmazonBedrock.Model;
+                settings.AmazonBedrock.ModelId = amazonBedrock.ModelId ?? settings.AmazonBedrock.ModelId;
                 break;
 
             case AzureAIFoundryArgumentOptions azureAIFoundry:
@@ -307,8 +307,8 @@ public abstract class ArgumentOptions
 
         Console.WriteLine("  --access-key-id     The AWSCredentials Access Key ID.");
         Console.WriteLine("  --secret-access-key The AWSCredentials Secret Access Key.");
-        Console.WriteLine("  --region             The AWS region.");
-        Console.WriteLine("  --model              The model ID. Default to 'anthropic.claude-sonnet-4-20250514-v1:0'");
+        Console.WriteLine("  --region            The AWS region.");
+        Console.WriteLine("  --model-id          The model ID. Default to 'anthropic.claude-sonnet-4-20250514-v1:0'");
         Console.WriteLine();
     }
 
