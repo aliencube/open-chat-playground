@@ -36,21 +36,8 @@ public class OpenAIConnectorTests
         Action action = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
-        action.ShouldThrow<InvalidOperationException>().Message.ShouldContain("Missing configuration: OpenAI.");
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_Invalid_Endpoint_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
-    {
-        // Note: Current OpenAISettings doesn't have Endpoint property
-        // This test is prepared for future implementation
-        var settings = BuildAppSettings();
-        var connector = new OpenAIConnector(settings);
-
-        // This test will pass as current implementation doesn't validate Endpoint
-        var result = connector.EnsureLanguageModelSettingsValid();
-        result.ShouldBeTrue();
+        action.ShouldThrow<InvalidOperationException>()
+              .Message.ShouldContain("Missing configuration: OpenAI.");
     }
 
     [Trait("Category", "UnitTest")]
@@ -58,6 +45,7 @@ public class OpenAIConnectorTests
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData("", typeof(InvalidOperationException), "OpenAI:ApiKey")]
     [InlineData("   ", typeof(InvalidOperationException), "OpenAI:ApiKey")]
+    [InlineData("\t\n\r", typeof(InvalidOperationException), "OpenAI:ApiKey")]
     public void Given_Invalid_ApiKey_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? apiKey, Type expectedType, string expectedMessage)
     {
         // Arrange
@@ -65,24 +53,19 @@ public class OpenAIConnectorTests
         var connector = new OpenAIConnector(appSettings);
 
         // Act
-        var ex = Assert.Throws(expectedType, () => connector.EnsureLanguageModelSettingsValid());
+        Action action = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
-        ex.Message.ShouldContain(expectedMessage);
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_Invalid_DeploymentName_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
-    {
-        // Note: Current OpenAISettings doesn't have DeploymentName property
-        // This test is prepared for future implementation
-        var settings = BuildAppSettings();
-        var connector = new OpenAIConnector(settings);
-
-        // This test will pass as current implementation doesn't validate DeploymentName
-        var result = connector.EnsureLanguageModelSettingsValid();
-        result.ShouldBeTrue();
+        if (expectedType == typeof(NullReferenceException))
+        {
+            action.ShouldThrow<NullReferenceException>()
+                  .Message.ShouldContain(expectedMessage);
+        }
+        else
+        {
+            action.ShouldThrow<InvalidOperationException>()
+                  .Message.ShouldContain(expectedMessage);
+        }
     }
 
     [Trait("Category", "UnitTest")]
@@ -105,177 +88,70 @@ public class OpenAIConnectorTests
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData("", typeof(InvalidOperationException), "OpenAI:Model")]
     [InlineData("   ", typeof(InvalidOperationException), "OpenAI:Model")]
+    [InlineData("\t\n\r", typeof(InvalidOperationException), "OpenAI:Model")]
     public void Given_Invalid_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? model, Type expectedType, string expectedMessage)
     {
         // Arrange
-        var appSettings = BuildAppSettings(model: model);
+        var appSettings = BuildAppSettings(apiKey: "valid-key", model: model);
         var connector = new OpenAIConnector(appSettings);
 
         // Act
-        var ex = Assert.Throws(expectedType, () => connector.EnsureLanguageModelSettingsValid());
-
-        // Assert
-        ex.Message.ShouldContain(expectedMessage);
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData("   ")]
-    [InlineData("\t\n\r")]
-    public void Given_Whitespace_ApiKey_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string apiKey)
-    {
-        // Arrange
-        var settings = BuildAppSettings(apiKey: apiKey);
-
-        // Act
-        var connector = new OpenAIConnector(settings);
         Action action = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
-        action.ShouldThrow<InvalidOperationException>();
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData("   ")]
-    [InlineData("\t\n\r")]
-    public void Given_Whitespace_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string model)
-    {
-        // Arrange
-        var settings = BuildAppSettings(model: model);
-
-        // Act
-        var connector = new OpenAIConnector(settings);
-        Action action = () => connector.EnsureLanguageModelSettingsValid();
-
-        // Assert
-        action.ShouldThrow<InvalidOperationException>();
-    }
-
-    // Exception Handling Tests
-
-    [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_Settings_With_Wrong_Type_Cast_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
-    {
-        // Arrange
-        var settings = new AppSettings
+        if (expectedType == typeof(NullReferenceException))
         {
-            ConnectorType = ConnectorType.OpenAI,
-            GitHubModels = new GitHubModelsSettings // Wrong settings type
-            {
-                Token = "test-token",
-                Model = "test-model"
-            }
-            // OpenAI is null, so validation will fail
-        };
-
-        // Act
-        var connector = new OpenAIConnector(settings);
-        Action action = () => connector.EnsureLanguageModelSettingsValid();
-
-        // Assert
-        action.ShouldThrow<InvalidOperationException>();
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_Multiple_Null_Settings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw_For_ApiKey_First()
-    {
-        // Arrange
-        var settings = BuildAppSettings(apiKey: null, model: null);
-
-        // Act
-        var connector = new OpenAIConnector(settings);
-        Assert.Throws<NullReferenceException>(() => connector.EnsureLanguageModelSettingsValid());
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_Valid_ApiKey_But_Null_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw_For_Model()
-    {
-        // Arrange
-        var settings = BuildAppSettings(apiKey: "valid-api-key", model: null);
-
-        // Act
-        var connector = new OpenAIConnector(settings);
-        Assert.Throws<NullReferenceException>(() => connector.EnsureLanguageModelSettingsValid());
+            action.ShouldThrow<NullReferenceException>()
+                  .Message.ShouldContain(expectedMessage);
+        }
+        else
+        {
+            action.ShouldThrow<InvalidOperationException>()
+                  .Message.ShouldContain(expectedMessage);
+        }
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData("   ")]
-    public void Given_Missing_ApiKey_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? apiKey)
+    [InlineData(null, null)]
+    [InlineData("", "")]
+    [InlineData("   ", "   ")]
+    [InlineData(null, "")]
+    [InlineData("", null)]
+    public void Given_Both_ApiKey_And_Model_Invalid_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw_ApiKey_First(string? apiKey, string? model)
     {
-        var settings = BuildAppSettings(apiKey: apiKey);
-        var connector = new OpenAIConnector(settings);
+        // Arrange
+        var appSettings = BuildAppSettings(apiKey: apiKey, model: model);
+        var connector = new OpenAIConnector(appSettings);
 
+        // Act
         Action action = () => connector.EnsureLanguageModelSettingsValid();
-        
+
+        // Assert
         if (apiKey is null)
         {
             action.ShouldThrow<NullReferenceException>();
         }
         else
         {
-            var ex = Assert.Throws<InvalidOperationException>(action);
-            ex.Message.ShouldContain("Missing configuration: OpenAI:ApiKey.");
+            // ApiKey가 먼저 검증되므로 ApiKey 에러가 먼저 발생해야 함
+            action.ShouldThrow<InvalidOperationException>()
+                  .Message.ShouldContain("OpenAI:ApiKey");
         }
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData("   ")]
-    public void Given_Missing_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? model)
-    {
-        var settings = BuildAppSettings(model: model);
-        var connector = new OpenAIConnector(settings);
-
-        Action action = () => connector.EnsureLanguageModelSettingsValid();
-        
-        if (model is null)
-        {
-            action.ShouldThrow<NullReferenceException>();
-        }
-        else
-        {
-            var ex = Assert.Throws<InvalidOperationException>(action);
-            ex.Message.ShouldContain("Missing configuration: OpenAI:Model.");
-        }
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_AppSettings_With_Null_OpenAI_Settings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
-    {
-        // Arrange
-        var settings = new AppSettings
-        {
-            ConnectorType = ConnectorType.OpenAI,
-            OpenAI = null
-        };
-
-        // Act
-        var connector = new OpenAIConnector(settings);
-        Action action = () => connector.EnsureLanguageModelSettingsValid();
-
-        // Assert
-        action.ShouldThrow<InvalidOperationException>();
     }
     
     [Trait("Category", "UnitTest")]
     [Fact]
-    public async Task Given_Valid_Settings_When_GetChatClient_Invoked_Then_It_Should_Return_ChatClient()
+    public async Task Given_Valid_Settings_When_GetChatClientAsync_Invoked_Then_It_Should_Return_ChatClient()
     {
+        // Arrange
         var settings = BuildAppSettings();
         var connector = new OpenAIConnector(settings);
 
+        // Act
         var client = await connector.GetChatClientAsync();
 
+        // Assert
         client.ShouldNotBeNull();
     }
     
@@ -296,9 +172,9 @@ public class OpenAIConnectorTests
     
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    public void Given_Missing_ApiKey_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? apiKey)
+    [InlineData(null, typeof(InvalidOperationException), "OpenAI:ApiKey")]
+    [InlineData("", typeof(ArgumentException), "key")]
+    public void Given_Missing_ApiKey_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? apiKey, Type expected, string message)
     {
         // Arrange
         var settings = BuildAppSettings(apiKey: apiKey);
@@ -308,62 +184,82 @@ public class OpenAIConnectorTests
         Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert
-        if (apiKey is null)
+        if (expected == typeof(InvalidOperationException))
         {
-            func.ShouldThrow<InvalidOperationException>();
+            func.ShouldThrow<InvalidOperationException>()
+                .Message.ShouldContain(message);
         }
-        else
+        else if (expected == typeof(ArgumentException))
         {
-            func.ShouldThrow<ArgumentException>();
+            func.ShouldThrow<ArgumentException>()
+                .Message.ShouldContain(message);
         }
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_Invalid_Endpoint_Format_When_GetChatClientAsync_Invoked_Then_It_Should_Throw()
-    {
-        // Note: Current OpenAI implementation doesn't use custom endpoints
-        // This test is prepared for future implementation
-        var settings = BuildAppSettings();
-        var connector = new OpenAIConnector(settings);
-
-        // Current implementation should work with valid settings
-        Func<Task<IChatClient>> func = async () => await connector.GetChatClientAsync();
-        var result = func.ShouldNotThrow();
-        result.ShouldNotBeNull();
-    }
-    
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData(null, typeof(InvalidOperationException), "OpenAI:ApiKey")]
-    [InlineData("", typeof(ArgumentException), "key")]
-    public async Task Given_Missing_ApiKey_When_GetChatClient_Invoked_Then_It_Should_Throw(string? apiKey, Type expected, string message)
-    {
-        var settings = BuildAppSettings(apiKey: apiKey);
-        var connector = new OpenAIConnector(settings);
-
-        var ex = await Assert.ThrowsAsync(expected, connector.GetChatClientAsync);
-
-        ex.Message.ShouldContain(message);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, typeof(ArgumentNullException), "model")]
     [InlineData("", typeof(ArgumentException), "model")]
-    public async Task Given_Missing_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
+    public void Given_Missing_Model_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
     {
+        // Arrange
         var settings = BuildAppSettings(model: model);
         var connector = new OpenAIConnector(settings);
 
-        var ex = await Assert.ThrowsAsync(expected, connector.GetChatClientAsync);
+        // Act
+        Func<Task> func = async () => await connector.GetChatClientAsync();
 
-        ex.Message.ShouldContain(message);
+        // Assert
+        if (expected == typeof(ArgumentNullException))
+        {
+            func.ShouldThrow<ArgumentNullException>()
+                .Message.ShouldContain(message);
+        }
+        else if (expected == typeof(ArgumentException))
+        {
+            func.ShouldThrow<ArgumentException>()
+                .Message.ShouldContain(message);
+        }
     }
+
+    [Trait("Category", "UnitTest")]
+    [Fact]
+    public void Given_Valid_Format_Settings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Pass()
+    {
+        // Note: This test verifies format validation passes with properly formatted values
+        
+        // Arrange
+        var settings = BuildAppSettings(apiKey: "sk-test-key-with-proper-format", model: "gpt-3.5-turbo");
+        var connector = new OpenAIConnector(settings);
+
+        // Act
+        var isValid = connector.EnsureLanguageModelSettingsValid();
+        
+        // Assert
+        isValid.ShouldBeTrue();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Fact]
+    public void Given_Valid_Format_Settings_When_GetChatClientAsync_Invoked_Then_It_Should_Pass()
+    {
+        // Note: This test verifies client creation passes with properly formatted values
+        
+        // Arrange
+        var settings = BuildAppSettings(apiKey: "sk-test-key-with-proper-format", model: "gpt-3.5-turbo");
+        var connector = new OpenAIConnector(settings);
+
+        // Act
+        Func<Task> func = async () => await connector.GetChatClientAsync();
+        
+        // Assert
+        func.ShouldNotThrow();
+    }
+
     
     [Trait("Category", "UnitTest")]
     [Fact]
-    public void Given_OpenAIConnector_When_GetChatClientAsync_Called_Through_Base_Class_Then_It_Should_Work()
+    public async Task Given_OpenAIConnector_When_GetChatClientAsync_Called_Through_Base_Class_Then_It_Should_Work()
     {
         // Arrange
         var settings = BuildAppSettings();
@@ -371,9 +267,8 @@ public class OpenAIConnectorTests
         LanguageModelConnector baseConnector = connector;
 
         // Act
-        Func<Task<IChatClient>> func = async () => await baseConnector.GetChatClientAsync();
-        var result = func.ShouldNotThrow();
-
+        var result = await baseConnector.GetChatClientAsync();
+        
         // Assert
         result.ShouldNotBeNull();
         result.ShouldBeAssignableTo<IChatClient>();
@@ -381,15 +276,14 @@ public class OpenAIConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Fact]
-    public void Given_Valid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Return_ChatClient()
+    public async Task Given_Valid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Return_ChatClient()
     {
         // Arrange
         var settings = BuildAppSettings();
 
         // Act
-        Func<Task<IChatClient>> func = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
-        var result = func.ShouldNotThrow();
-
+        var result = await LanguageModelConnector.CreateChatClientAsync(settings);
+        
         // Assert
         result.ShouldNotBeNull();
         result.ShouldBeAssignableTo<IChatClient>();
@@ -416,37 +310,16 @@ public class OpenAIConnectorTests
         // Assert
         func.ShouldThrow<NullReferenceException>();
     }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData("   ")]
-    public void Given_Invalid_ApiKey_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string? apiKey)
-    {
-        // Arrange
-        var settings = BuildAppSettings(apiKey: apiKey);
-
-        // Act
-        Func<Task> func = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
-
-        // Assert
-        if (apiKey is null)
-        {
-            func.ShouldThrow<NullReferenceException>();
-        }
-        else
-        {
-            func.ShouldThrow<InvalidOperationException>();
-        }
-    }
     
     [Trait("Category", "UnitTest")]
     [Fact]
     public void Given_Null_AppSettings_When_Constructor_Invoked_Then_It_Should_Throw()
     {
+        // Arrange
+        AppSettings? nullSettings = null;
+
         // Act
-        Action action = () => new OpenAIConnector(null!);
+        Action action = () => new OpenAIConnector(nullSettings!);
 
         // Assert
         action.ShouldThrow<NullReferenceException>();
@@ -490,8 +363,12 @@ public class OpenAIConnectorTests
         var settings = BuildAppSettings();
         var connector = new OpenAIConnector(settings);
 
+        // Act
+        var isAssignable = connector is LanguageModelConnector;
+        var isSubclass = typeof(OpenAIConnector).IsSubclassOf(typeof(LanguageModelConnector));
+
         // Assert
-        connector.ShouldBeAssignableTo<LanguageModelConnector>();
-        typeof(OpenAIConnector).IsSubclassOf(typeof(LanguageModelConnector)).ShouldBeTrue();
+        isAssignable.ShouldBeTrue();
+        isSubclass.ShouldBeTrue();
     }
 }
