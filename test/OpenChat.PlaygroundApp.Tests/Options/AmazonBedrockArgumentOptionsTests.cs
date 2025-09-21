@@ -253,7 +253,7 @@ public class AmazonBedrockArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAmazonBedrock(configAccessKeyId, configSecretAccessKey, configRegion, configModel);
-        var args = new[] { "--region", cliRegion, "--model", cliModel };
+        var args = new[] { "--access-key-id", cliAccessKeyId, "--secret-access-key", cliSecretAccessKey, "--region", cliRegion, "--model", cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -273,7 +273,7 @@ public class AmazonBedrockArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAmazonBedrock(AwsAccessKeyId, AwsSecretAccessKey, Region, Model);
-        var args = new[] { "access-key-id", cliAccessKeyId, "secret-access-key", cliSecretAccessKey, "region", cliRegion, "model", cliModel };
+        var args = new[] { "--access-key-id", cliAccessKeyId, "--secret-access-key", cliSecretAccessKey, "--region", cliRegion, "--model", cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
