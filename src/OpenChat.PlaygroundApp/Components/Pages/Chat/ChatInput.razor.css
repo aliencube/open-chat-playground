@@ -19,10 +19,6 @@ textarea {
     flex-grow: 1;
 }
 
-    textarea:placeholder-shown + .tools {
-        --send-button-color: #aaa;
-    }
-
 .tools {
     display: flex;
     margin-top: 1rem;
@@ -35,7 +31,7 @@ textarea {
 }
 
 .send-button {
-    color: var(--send-button-color, black);
+    color: black;
     margin-left: auto;
 }
 
