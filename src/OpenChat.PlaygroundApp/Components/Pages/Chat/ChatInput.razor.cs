@@ -29,7 +29,7 @@ public partial class ChatInput : ComponentBase
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (!firstRender)
             return;
         try
         {
