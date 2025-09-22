@@ -409,6 +409,7 @@ public class LGArgumentOptionsTests
         settings.LG.Model.ShouldBe(envModel);      // Env wins over config (medium priority)
     }
 
+
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("https://config.lg-exaone/api", "config-model", null, "env-model", "https://cli.lg-exaone/api", null)]
