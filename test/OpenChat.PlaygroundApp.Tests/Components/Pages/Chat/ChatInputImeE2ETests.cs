@@ -13,11 +13,10 @@ public class ChatInputImeE2ETests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
-    [Trait("Category", "LLMRequired")]
     [Theory]
-    [InlineData("안녕하세요", "안")]
-    [InlineData("테스트", "테")]
-    public async Task Given_Korean_IME_Composition_When_Enter_Key_Pressed_Then_It_Should_Not_Submit_Until_Composition_End(string testMessage, string compositionData)
+    [InlineData("안녕하세요")]
+    [InlineData("테스트")]
+    public async Task Given_Korean_IME_Composition_When_Enter_During_Composition_Then_It_Should_Not_Submit(string testMessage)
     {
         // Arrange
         var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
@@ -32,8 +31,23 @@ public class ChatInputImeE2ETests : PageTest
         // Assert: no user message added
         var userCountAfterComposeEnter = await Page.Locator(".user-message").CountAsync();
         userCountAfterComposeEnter.ShouldBe(userCountBefore);
+    }
+
+    [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "LLMRequired")]
+    [Theory]
+    [InlineData("안녕하세요", "안")]
+    [InlineData("테스트", "테")]
+    public async Task Given_Korean_IME_Composition_Ended_When_Enter_Pressed_Then_It_Should_Submit_Once(string testMessage, string compositionData)
+    {
+        // Arrange
+        var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
+        await textArea.FocusAsync();
+        await textArea.FillAsync(testMessage);
+        var userCountBefore = await Page.Locator(".user-message").CountAsync();
 
         // Act: Composition ends, then Enter should submit once
+        await Page.DispatchEventAsync("textarea", "compositionstart", new { });
         await Page.DispatchEventAsync("textarea", "compositionend", new { data = compositionData });
         var assistantCountBefore = await Page.Locator(".assistant-message-header").CountAsync();
         await Page.DispatchEventAsync("textarea", "keydown", new { bubbles = true, cancelable = true, key = "Enter" });
