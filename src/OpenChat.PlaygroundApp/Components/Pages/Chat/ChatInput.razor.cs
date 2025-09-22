@@ -30,16 +30,15 @@ public partial class ChatInput : ComponentBase
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
+            return;
+        try
         {
-            try
-            {
-                var module = await JS.InvokeAsync<IJSObjectReference>("import", "./Components/Pages/Chat/ChatInput.razor.js");
-                await module.InvokeVoidAsync("init", textArea);
-                await module.DisposeAsync();
-            }
-            catch (JSDisconnectedException)
-            {
-            }
+            var module = await JS.InvokeAsync<IJSObjectReference>("import", "./Components/Pages/Chat/ChatInput.razor.js");
+            await module.InvokeVoidAsync("init", textArea);
+            await module.DisposeAsync();
+        }
+        catch (JSDisconnectedException)
+        {
         }
     }
 }
