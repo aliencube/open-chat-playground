@@ -39,10 +39,6 @@ textarea {
     margin-left: auto;
 }
 
-    .send-button:hover {
-        color: black;
-    }
-
     .send-button:disabled {
         color: #aaa;
     }
