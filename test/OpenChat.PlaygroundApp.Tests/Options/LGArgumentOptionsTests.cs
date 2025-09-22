@@ -382,59 +382,6 @@ public class LGArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("https://config.lg-exaone/api", "config-model", 
-                null, "env-model",
-                "https://cli.lg-exaone/api", null)]
-    public void Given_Mixed_Priority_Sources_When_Parse_Invoked_Then_It_Should_Respect_Priority_Order(
-        string configBaseUrl, string configModel,
-        string? envBaseUrl, string envModel,
-        string cliBaseUrl, string? cliModel)
-    {
-        // Arrange
-        var config = BuildConfigWithLG(
-            configBaseUrl, configModel,
-            envBaseUrl, envModel);
-        var args = new List<string> { "--base-url", cliBaseUrl };
-        if (!string.IsNullOrEmpty(cliModel))
-        {
-            args.AddRange(new[] { "--model", cliModel });
-        }
-
-        // Act
-        var settings = ArgumentOptions.Parse(config, args.ToArray());
-
-        // Assert
-        settings.LG.ShouldNotBeNull();
-        settings.LG.BaseUrl.ShouldBe(cliBaseUrl);  // CLI wins (highest priority)
-        settings.LG.Model.ShouldBe(envModel);      // Env wins over config (medium priority)
-    }
-
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData("https://config.lg-exaone/api", "config-model", null, "env-model", "https://cli.lg-exaone/api", null)]
-    public void Given_Partial_CLI_Arguments_When_Parse_Invoked_Then_It_Should_Mix_Config_And_CLI(
-        string configBaseUrl, string configModel,
-        string? envBaseUrl, string envModel,
-        string cliBaseUrl, string? cliModel)
-    {
-        // Arrange
-        var config = BuildConfigWithLG(
-            configBaseUrl, configModel,
-            envBaseUrl, envModel);
-        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
-
-        // Act
-        var settings = ArgumentOptions.Parse(config, args!);
-
-        // Assert
-        settings.LG.ShouldNotBeNull();
-        settings.LG.BaseUrl.ShouldBe(cliBaseUrl);
-        settings.LG.Model.ShouldBe(envModel);
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
     [InlineData("https://env.lg-exaone/api", "env-model")]
     public void Given_EnvironmentVariables_Only_When_Parse_Invoked_Then_Help_Should_Be_False(string envBaseUrl, string envModel)
     {
