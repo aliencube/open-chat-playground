@@ -9,6 +9,16 @@ namespace OpenChat.PlaygroundApp.Options;
 public class AmazonBedrockArgumentOptions : ArgumentOptions
 {
     /// <summary>
+    /// Gets or sets the AWSCredentials Access Key ID for the Amazon Bedrock service.
+    /// </summary>
+    public string? AccessKeyId { get; set; }
+
+    /// <summary>
+    ///  Gets or sets the AWSCredentials Secret Access Key for the Amazon Bedrock service.
+    /// </summary>
+    public string? SecretAccessKey { get; set; }
+
+    /// <summary>
     ///  Gets or sets the AWS region for the Amazon Bedrock service.
     /// </summary>
     public string? Region { get; set; }
@@ -16,7 +26,7 @@ public class AmazonBedrockArgumentOptions : ArgumentOptions
     /// <summary>
     ///  Gets or sets the model for the Amazon Bedrock service.
     /// </summary>
-    public string? Model { get; set; }
+    public string? ModelId { get; set; }
 
     /// <inheritdoc/>
     protected override void ParseOptions(IConfiguration config, string[] args)
@@ -26,13 +36,29 @@ public class AmazonBedrockArgumentOptions : ArgumentOptions
 
         var amazonBedrock = settings.AmazonBedrock;
 
+        this.AccessKeyId ??= amazonBedrock?.AccessKeyId;
+        this.SecretAccessKey ??= amazonBedrock?.SecretAccessKey;
         this.Region ??= amazonBedrock?.Region;
-        this.Model ??= amazonBedrock?.Model;
+        this.ModelId ??= amazonBedrock?.ModelId;
 
         for (var i = 0; i < args.Length; i++)
         {
             switch (args[i])
             {
+                case "--access-key-id":
+                    if (i + 1 < args.Length)
+                    {
+                        this.AccessKeyId = args[++i];
+                    }
+                    break;
+
+                case "--secret-access-key":
+                    if (i + 1 < args.Length)
+                    {
+                        this.SecretAccessKey = args[++i];
+                    }
+                    break;
+
                 case "--region":
                     if (i + 1 < args.Length)
                     {
@@ -40,10 +66,10 @@ public class AmazonBedrockArgumentOptions : ArgumentOptions
                     }
                     break;
 
-                case "--model":
+                case "--model-id":
                     if (i + 1 < args.Length)
                     {
-                        this.Model = args[++i];
+                        this.ModelId = args[++i];
                     }
                     break;
 
