@@ -52,7 +52,35 @@ public class ChatStreamingUITest : PageTest
     [Theory]
     [InlineData("하늘은 왜 푸른 색인가요?")]
     [InlineData("Why is the sky blue?")]
-    public async Task Given_UserMessage_When_SendButton_Clicked_Then_LoadingSpinner_Should_Appear_And_Disappear_When_Text_Arrives(string userMessage)
+    public async Task Given_UserMessage_When_SendButton_Clicked_Then_LoadingSpinner_Should_Be_Visible_Before_Text_Arrives(string userMessage)
+    {
+        // Arrange
+        const int timeoutMs = 5000;
+
+        const string spinnerSelector = ".lds-ellipsis";
+
+        var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
+        var sendButton = Page.GetByRole(AriaRole.Button, new() { Name = "User Message Send Button" });
+        var spinner = Page.Locator(spinnerSelector);
+
+        // Act
+        await textArea.FillAsync(userMessage);
+        await sendButton.ClickAsync();
+
+        // Assert
+        await Expect(spinner).ToBeVisibleAsync(new() { Timeout = timeoutMs });
+        
+        var spinnerWasVisible = await spinner.IsVisibleAsync();
+        
+        spinnerWasVisible.ShouldBeTrue();
+    }
+
+    [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "LLMRequired")]
+    [Theory]
+    [InlineData("하늘은 왜 푸른 색인가요?")]
+    [InlineData("Why is the sky blue?")]
+    public async Task Given_UserMessage_When_Response_Text_Arrives_Then_LoadingSpinner_Should_Disappear(string userMessage)
     {
         // Arrange
         const int timeoutMs = 5000;
@@ -70,10 +98,11 @@ public class ChatStreamingUITest : PageTest
         await sendButton.ClickAsync();
 
         // Assert
-        await Expect(spinner).ToBeVisibleAsync(new() { Timeout = timeoutMs });
+        await Expect(message).Not.ToHaveTextAsync(string.Empty, new() { Timeout = timeoutMs }); 
 
-        await Expect(message).Not.ToHaveTextAsync(string.Empty, new() { Timeout = timeoutMs });
-        await Expect(spinner).Not.ToBeVisibleAsync(new() { Timeout = timeoutMs });
+        var spinnerWasVisible = await spinner.IsVisibleAsync();
+
+        spinnerWasVisible.ShouldBeFalse();
     }
 
     public override async Task DisposeAsync()
