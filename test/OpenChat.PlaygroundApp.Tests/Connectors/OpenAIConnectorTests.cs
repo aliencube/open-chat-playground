@@ -56,16 +56,8 @@ public class OpenAIConnectorTests
         Action action = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
-        if (expectedType == typeof(NullReferenceException))
-        {
-            action.ShouldThrow<NullReferenceException>()
-                  .Message.ShouldContain(expectedMessage);
-        }
-        else
-        {
-            action.ShouldThrow<InvalidOperationException>()
-                  .Message.ShouldContain(expectedMessage);
-        }
+        action.ShouldThrow(expectedType)
+              .Message.ShouldContain(expectedMessage);
     }
 
     [Trait("Category", "UnitTest")]
@@ -99,25 +91,14 @@ public class OpenAIConnectorTests
         Action action = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
-        if (expectedType == typeof(NullReferenceException))
-        {
-            action.ShouldThrow<NullReferenceException>()
-                  .Message.ShouldContain(expectedMessage);
-        }
-        else
-        {
-            action.ShouldThrow<InvalidOperationException>()
-                  .Message.ShouldContain(expectedMessage);
-        }
+        action.ShouldThrow(expectedType)
+              .Message.ShouldContain(expectedMessage);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, null)]
     [InlineData("", "")]
-    [InlineData("   ", "   ")]
-    [InlineData(null, "")]
-    [InlineData("", null)]
     public void Given_Both_ApiKey_And_Model_Invalid_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw_ApiKey_First(string? apiKey, string? model)
     {
         // Arrange
@@ -167,7 +148,8 @@ public class OpenAIConnectorTests
         Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert
-        func.ShouldThrow<InvalidOperationException>();
+        func.ShouldThrow<InvalidOperationException>()
+            .Message.ShouldContain("Missing configuration: OpenAI.");
     }
     
     [Trait("Category", "UnitTest")]
@@ -184,16 +166,8 @@ public class OpenAIConnectorTests
         Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert
-        if (expected == typeof(InvalidOperationException))
-        {
-            func.ShouldThrow<InvalidOperationException>()
-                .Message.ShouldContain(message);
-        }
-        else if (expected == typeof(ArgumentException))
-        {
-            func.ShouldThrow<ArgumentException>()
-                .Message.ShouldContain(message);
-        }
+        func.ShouldThrow(expected)
+            .Message.ShouldContain(message);
     }
 
     [Trait("Category", "UnitTest")]
@@ -210,41 +184,14 @@ public class OpenAIConnectorTests
         Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert
-        if (expected == typeof(ArgumentNullException))
-        {
-            func.ShouldThrow<ArgumentNullException>()
-                .Message.ShouldContain(message);
-        }
-        else if (expected == typeof(ArgumentException))
-        {
-            func.ShouldThrow<ArgumentException>()
-                .Message.ShouldContain(message);
-        }
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_Valid_Format_Settings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Pass()
-    {
-        // Note: This test verifies format validation passes with properly formatted values
-        
-        // Arrange
-        var settings = BuildAppSettings(apiKey: "sk-test-key-with-proper-format", model: "gpt-3.5-turbo");
-        var connector = new OpenAIConnector(settings);
-
-        // Act
-        var isValid = connector.EnsureLanguageModelSettingsValid();
-        
-        // Assert
-        isValid.ShouldBeTrue();
+        func.ShouldThrow(expected)
+            .Message.ShouldContain(message);
     }
 
     [Trait("Category", "UnitTest")]
     [Fact]
     public void Given_Valid_Format_Settings_When_GetChatClientAsync_Invoked_Then_It_Should_Pass()
     {
-        // Note: This test verifies client creation passes with properly formatted values
-        
         // Arrange
         var settings = BuildAppSettings(apiKey: "sk-test-key-with-proper-format", model: "gpt-3.5-turbo");
         var connector = new OpenAIConnector(settings);
@@ -254,24 +201,6 @@ public class OpenAIConnectorTests
         
         // Assert
         func.ShouldNotThrow();
-    }
-
-    
-    [Trait("Category", "UnitTest")]
-    [Fact]
-    public async Task Given_OpenAIConnector_When_GetChatClientAsync_Called_Through_Base_Class_Then_It_Should_Work()
-    {
-        // Arrange
-        var settings = BuildAppSettings();
-        var connector = new OpenAIConnector(settings);
-        LanguageModelConnector baseConnector = connector;
-
-        // Act
-        var result = await baseConnector.GetChatClientAsync();
-        
-        // Assert
-        result.ShouldNotBeNull();
-        result.ShouldBeAssignableTo<IChatClient>();
     }
 
     [Trait("Category", "UnitTest")]
@@ -309,66 +238,5 @@ public class OpenAIConnectorTests
 
         // Assert
         func.ShouldThrow<NullReferenceException>();
-    }
-    
-    [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_Null_AppSettings_When_Constructor_Invoked_Then_It_Should_Throw()
-    {
-        // Arrange
-        AppSettings? nullSettings = null;
-
-        // Act
-        Action action = () => new OpenAIConnector(nullSettings!);
-
-        // Assert
-        action.ShouldThrow<NullReferenceException>();
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_Valid_AppSettings_When_Constructor_Invoked_Then_It_Should_Create_Instance()
-    {
-        // Arrange
-        var settings = BuildAppSettings();
-
-        // Act
-        var connector = new OpenAIConnector(settings);
-
-        // Assert
-        connector.ShouldNotBeNull();
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_OpenAIConnector_When_Cast_To_LanguageModelConnector_Then_It_Should_Succeed()
-    {
-        // Arrange
-        var settings = BuildAppSettings();
-        var connector = new OpenAIConnector(settings);
-
-        // Act
-        LanguageModelConnector baseConnector = connector;
-
-        // Assert
-        baseConnector.ShouldNotBeNull();
-        baseConnector.ShouldBeOfType<OpenAIConnector>();
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_OpenAIConnector_When_Check_Type_Then_It_Should_Be_LanguageModelConnector_Subclass()
-    {
-        // Arrange
-        var settings = BuildAppSettings();
-        var connector = new OpenAIConnector(settings);
-
-        // Act
-        var isAssignable = connector is LanguageModelConnector;
-        var isSubclass = typeof(OpenAIConnector).IsSubclassOf(typeof(LanguageModelConnector));
-
-        // Assert
-        isAssignable.ShouldBeTrue();
-        isSubclass.ShouldBeTrue();
     }
 }

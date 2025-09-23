@@ -104,26 +104,28 @@ This page describes how to run OpenChat Playground (OCP) with OpenAI GPT integra
 
     ```bash
     # bash/zsh - From locally built container
-    docker run -i --rm -p 8080:8080 openchat-playground:latest \
-        --connector-type OpenAI --api-key $API_KEY
+    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type OpenAI \
+        --api-key $API_KEY
     ```
 
     ```powershell
     # PowerShell - From locally built container
-    docker run -i --rm -p 8080:8080 openchat-playground:latest `
-        --connector-type OpenAI --api-key $API_KEY
+    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type OpenAI `
+        --api-key $API_KEY
     ```
 
     ```bash
     # bash/zsh - From GitHub Container Registry
     docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest \
-        --connector-type OpenAI --api-key $API_KEY
+        --connector-type OpenAI \
+        --api-key $API_KEY
     ```
 
     ```powershell
     # PowerShell - From GitHub Container Registry
     docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest `
-        --connector-type OpenAI --api-key $API_KEY
+        --connector-type OpenAI `
+        --api-key $API_KEY
     ```
 
     Optionally, if you want to run with a different model, say [GPT-4o](https://platform.openai.com/docs/models/gpt-4o), other than the default one, you can specify it via command line:
@@ -131,13 +133,15 @@ This page describes how to run OpenChat Playground (OCP) with OpenAI GPT integra
     ```bash
     # bash/zsh - From locally built container with custom model
     docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type OpenAI \
-        --api-key $API_KEY --model gpt-4o
+        --api-key $API_KEY \
+        --model gpt-4o
     ```
 
     ```powershell
     # PowerShell - From locally built container with custom model
     docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type OpenAI `
-        --api-key $API_KEY --model gpt-4o
+        --api-key $API_KEY `
+        --model gpt-4o
     ```
 
 1. Open your web browser, navigate to `http://localhost:8080`, and enter prompts.
