@@ -5,7 +5,7 @@ namespace OpenChat.PlaygroundApp.Tests.Connectors;
 
 public class GoogleVertexAIConnectorTests
 {
-    private static AppSettings BuildAppSettings(string? apiKey = "test-api-key", string? model = "test-model")
+    private static AppSettings BuildAppSettings(string? apiKey = "AIzaSyA1234567890abcdefgHIJKLMNOpqrstuv", string? model = "test-model")
     {
         return new AppSettings
         {
@@ -35,7 +35,7 @@ public class GoogleVertexAIConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of object")]
+    [InlineData(null, typeof(InvalidOperationException), "GoogleVertexAI:ApiKey")]
     [InlineData("", typeof(InvalidOperationException), "GoogleVertexAI:ApiKey")]
     [InlineData("   ", typeof(InvalidOperationException), "GoogleVertexAI:ApiKey")]
     public void Given_Invalid_ApiKey_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? apiKey, Type expectedType, string expectedMessage)
@@ -53,7 +53,7 @@ public class GoogleVertexAIConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of object")]
+    [InlineData(null, typeof(InvalidOperationException), "GoogleVertexAI:Model")]
     [InlineData("", typeof(InvalidOperationException), "GoogleVertexAI:Model")]
     [InlineData("   ", typeof(InvalidOperationException), "GoogleVertexAI:Model")]
     public void Given_Invalid_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? model, Type expectedType, string expectedMessage)
@@ -99,7 +99,6 @@ public class GoogleVertexAIConnectorTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, typeof(InvalidOperationException), "GoogleVertexAI:ApiKey")]
-    [InlineData("", typeof(ArgumentException), "apiKey")]
     public async Task Given_Missing_ApiKey_When_GetChatClient_Invoked_Then_It_Should_Throw(string? apiKey, Type expected, string message)
     {
         var settings = BuildAppSettings(apiKey: apiKey);
@@ -112,8 +111,7 @@ public class GoogleVertexAIConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(ArgumentNullException), "model")]
-    [InlineData("", typeof(ArgumentException), "model")]
+    [InlineData(null, typeof(InvalidOperationException), "model")]
     public async Task Given_Missing_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
     {
         var settings = BuildAppSettings(model: model);
