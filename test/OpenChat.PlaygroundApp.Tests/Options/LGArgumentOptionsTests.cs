@@ -13,7 +13,9 @@ public class LGArgumentOptionsTests
 
     private static IConfiguration BuildConfigWithLG(
         string? configBaseUrl = BaseUrl,
-        string? configModel = Model
+        string? configModel = Model,
+        string? envBaseUrl = null,
+        string? envModel = null
     )
     {
         // Base configuration values (lowest priority)
@@ -30,9 +32,28 @@ public class LGArgumentOptionsTests
         {
             configDict["LG:Model"] = configModel;
         }
+        if (string.IsNullOrWhiteSpace(envBaseUrl) == true &&
+            string.IsNullOrWhiteSpace(envModel) == true)
+        {
+            return new ConfigurationBuilder()
+                       .AddInMemoryCollection(configDict!)
+                       .Build();
+        }
+
+        // Environment variables (medium priority)
+        var envDict = new Dictionary<string, string?>();
+        if (string.IsNullOrWhiteSpace(envBaseUrl) == false)
+        {
+            envDict["LG:BaseUrl"] = envBaseUrl;
+        }
+        if (string.IsNullOrWhiteSpace(envModel) == false)
+        {
+            envDict["LG:Model"] = envModel;
+        }
 
         return new ConfigurationBuilder()
-                   .AddInMemoryCollection(configDict!)
+                   .AddInMemoryCollection(configDict!)   // Base configuration (lowest priority)
+                   .AddInMemoryCollection(envDict!)      // Environment variables (medium priority)
                    .Build();
     }
 
@@ -269,6 +290,106 @@ public class LGArgumentOptionsTests
         // Arrange
         var config = BuildConfigWithLG();
         var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.Help.ShouldBeFalse();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://env.lg-exaone/api", "env-model")]
+    public void Given_EnvironmentVariables_And_No_Config_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(string envBaseUrl, string envModel)
+    {
+        // Arrange
+        var config = BuildConfigWithLG(
+            configBaseUrl: null, configModel: null,
+            envBaseUrl: envBaseUrl, envModel: envModel);
+        var args = Array.Empty<string>();
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.LG.ShouldNotBeNull();
+        settings.LG.BaseUrl.ShouldBe(envBaseUrl);
+        settings.LG.Model.ShouldBe(envModel);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://config.lg-exaone/api", "config-model", "https://env.lg-exaone/api", "env-model")]
+    public void Given_ConfigValues_And_EnvironmentVariables_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(
+        string configBaseUrl, string configModel,
+        string envBaseUrl, string envModel)
+    {
+        // Arrange
+        var config = BuildConfigWithLG(configBaseUrl, configModel, envBaseUrl, envModel);
+        var args = Array.Empty<string>();
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.LG.ShouldNotBeNull();
+        settings.LG.BaseUrl.ShouldBe(envBaseUrl);
+        settings.LG.Model.ShouldBe(envModel);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://config.lg-exaone/api", "config-model", "https://env.lg-exaone/api", "env-model", "https://cli.lg-exaone/api", "cli-model")]
+    public void Given_ConfigValues_And_EnvironmentVariables_And_CLI_When_Parse_Invoked_Then_It_Should_Use_CLI(
+        string configBaseUrl, string configModel,
+        string envBaseUrl, string envModel,
+        string cliBaseUrl, string cliModel)
+    {
+        // Arrange
+        var config = BuildConfigWithLG(configBaseUrl, configModel, envBaseUrl, envModel);
+        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.LG.ShouldNotBeNull();
+        settings.LG.BaseUrl.ShouldBe(cliBaseUrl);
+        settings.LG.Model.ShouldBe(cliModel);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://config.lg-exaone/api", "config-model", "https://env.lg-exaone/api", null)]
+    public void Given_Partial_EnvironmentVariables_When_Parse_Invoked_Then_It_Should_Mix_Config_And_Environment(
+        string configBaseUrl, string configModel, string? envBaseUrl, string? envModel)
+    {
+        // Arrange
+        var config = BuildConfigWithLG(
+            configBaseUrl, configModel,
+            envBaseUrl, envModel);
+        var args = Array.Empty<string>();
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.LG.ShouldNotBeNull();
+        settings.LG.BaseUrl.ShouldBe(envBaseUrl);
+        settings.LG.Model.ShouldBe(configModel);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("https://env.lg-exaone/api", "env-model")]
+    public void Given_EnvironmentVariables_Only_When_Parse_Invoked_Then_Help_Should_Be_False(string envBaseUrl, string envModel)
+    {
+        // Arrange
+        var config = BuildConfigWithLG(
+            configBaseUrl: null, configModel: null,
+            envBaseUrl: envBaseUrl, envModel: envModel);
+        var args = Array.Empty<string>();
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
