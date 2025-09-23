@@ -149,7 +149,7 @@ public class OpenAIConnectorTests
 
         // Assert
         func.ShouldThrow<InvalidOperationException>()
-            .Message.ShouldContain("Missing configuration: OpenAI.");
+            .Message.ShouldContain("Missing configuration: OpenAI:ApiKey.");
     }
     
     [Trait("Category", "UnitTest")]
