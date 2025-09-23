@@ -2,6 +2,8 @@ using System.ClientModel;
 
 using Microsoft.Extensions.AI;
 
+using Mscc.GenerativeAI.Microsoft;
+
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Configurations;
 
@@ -39,12 +41,11 @@ public class GoogleVertexAIConnector(AppSettings settings) : LanguageModelConnec
     {
         var settings = this.Settings as GoogleVertexAISettings;
 
-        // TODO: Replace with actual Google Vertex AI client implementation
-        // var credential = new ApiKeyCredential(settings?.ApiKey ?? throw new InvalidOperationException("Missing configuration: GoogleVertexAI:ApiKey."));
-        // var client = new GoogleVertexAIClient(credential);
-        // var chatClient = client.GetChatClient(settings.Model).AsIChatClient();
-        // return await Task.FromResult(chatClient).ConfigureAwait(false);
+        var apiKey = settings?.ApiKey ?? throw new InvalidOperationException("Missing configuration: GoogleVertexAI:ApiKey.");
+        var model = settings?.Model ?? throw new InvalidOperationException("Missing configuration: GoogleVertexAI:Model.");
 
-        throw new NotImplementedException("Google Vertex AI client integration is not implemented yet.");
+        var chatClient = new GeminiChatClient(apiKey, model);
+
+        return await Task.FromResult(chatClient).ConfigureAwait(false);
     }
 }
