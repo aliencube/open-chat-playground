@@ -56,7 +56,7 @@ public class ChatInputUITest : PageTest
 
     [Trait("Category", "IntegrationTest")]
     [Theory]
-    [InlineData("input usermessage")]
+    [InlineData("Input usermessage")]
     public async Task Given_UserMessage_When_Tab_Pressed_Then_Focus_Should_Move_To_SendButton(string userMessage)
     {
         // Arrange
