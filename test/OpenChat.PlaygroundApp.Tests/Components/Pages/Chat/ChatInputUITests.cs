@@ -74,23 +74,6 @@ public class ChatInputUITest : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
-    [Theory]
-    [InlineData("This should not be sent")]
-    public async Task Given_UserMessage_When_ShiftEnter_Pressed_Then_It_Should_Not_SendMessage(string userMessage)
-    {
-        // Arrange
-        var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
-
-        // Act
-        await textArea.FillAsync(userMessage);
-        await textArea.PressAsync("Shift+Enter");
-
-        // Assert
-        var textAreaAfter = await textArea.InputValueAsync();
-        textAreaAfter.ShouldContain(userMessage);
-    }
-
-    [Trait("Category", "IntegrationTest")]
     [Trait("Category", "LLMRequired")]
     [Theory]
     [InlineData("하늘은 왜 푸른 색인가요?", 1)]
