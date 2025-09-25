@@ -6,12 +6,12 @@ using OpenChat.PlaygroundApp.Options;
 
 namespace OpenChat.PlaygroundApp.Tests.Options;
 
-public class OllamaArgumentOptionsTests
+public class LGArgumentOptionsTests
 {
-    private const string BaseUrl = "http://test-ollama";
-    private const string Model = "test-model";
+    private const string BaseUrl = "https://test.lg-exaone/api";
+    private const string Model = "lg-exaone-model";
 
-    private static IConfiguration BuildConfigWithOllama(
+    private static IConfiguration BuildConfigWithLG(
         string? configBaseUrl = BaseUrl,
         string? configModel = Model,
         string? envBaseUrl = null,
@@ -21,16 +21,16 @@ public class OllamaArgumentOptionsTests
         // Base configuration values (lowest priority)
         var configDict = new Dictionary<string, string?>
         {
-            ["ConnectorType"] = ConnectorType.Ollama.ToString(),
+            ["ConnectorType"] = ConnectorType.LG.ToString(),
         };
 
         if (string.IsNullOrWhiteSpace(configBaseUrl) == false)
         {
-            configDict["Ollama:BaseUrl"] = configBaseUrl;
+            configDict["LG:BaseUrl"] = configBaseUrl;
         }
         if (string.IsNullOrWhiteSpace(configModel) == false)
         {
-            configDict["Ollama:Model"] = configModel;
+            configDict["LG:Model"] = configModel;
         }
         if (string.IsNullOrWhiteSpace(envBaseUrl) == true &&
             string.IsNullOrWhiteSpace(envModel) == true)
@@ -44,11 +44,11 @@ public class OllamaArgumentOptionsTests
         var envDict = new Dictionary<string, string?>();
         if (string.IsNullOrWhiteSpace(envBaseUrl) == false)
         {
-            envDict["Ollama:BaseUrl"] = envBaseUrl;
+            envDict["LG:BaseUrl"] = envBaseUrl;
         }
         if (string.IsNullOrWhiteSpace(envModel) == false)
         {
-            envDict["Ollama:Model"] = envModel;
+            envDict["LG:Model"] = envModel;
         }
 
         return new ConfigurationBuilder()
@@ -59,8 +59,8 @@ public class OllamaArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(typeof(ArgumentOptions), typeof(OllamaArgumentOptions), true)]
-    [InlineData(typeof(OllamaArgumentOptions), typeof(ArgumentOptions), false)]
+    [InlineData(typeof(ArgumentOptions), typeof(LGArgumentOptions), true)]
+    [InlineData(typeof(LGArgumentOptions), typeof(ArgumentOptions), false)]
     public void Given_BaseType_Then_It_Should_Be_AssignableFrom_DerivedType(Type baseType, Type derivedType, bool expected)
     {
         // Act
@@ -75,34 +75,34 @@ public class OllamaArgumentOptionsTests
     public void Given_Nothing_When_Parse_Invoked_Then_It_Should_Set_Config()
     {
         // Arrange
-        var config = BuildConfigWithOllama();
+        var config = BuildConfigWithLG();
         var args = Array.Empty<string>();
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
 
         // Assert
-        settings.Ollama.ShouldNotBeNull();
-        settings.Ollama.BaseUrl.ShouldBe(BaseUrl);
-        settings.Ollama.Model.ShouldBe(Model);
+        settings.LG.ShouldNotBeNull();
+        settings.LG.BaseUrl.ShouldBe(BaseUrl);
+        settings.LG.Model.ShouldBe(Model);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://cli-ollama")]
+    [InlineData("https://cli.lg-exaone/api")]
     public void Given_CLI_BaseUrl_When_Parse_Invoked_Then_It_Should_Use_CLI_BaseUrl(string cliBaseUrl)
     {
         // Arrange
-        var config = BuildConfigWithOllama();
+        var config = BuildConfigWithLG();
         var args = new[] { "--base-url", cliBaseUrl };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
 
         // Assert
-        settings.Ollama.ShouldNotBeNull();
-        settings.Ollama.BaseUrl.ShouldBe(cliBaseUrl);
-        settings.Ollama.Model.ShouldBe(Model);
+        settings.LG.ShouldNotBeNull();
+        settings.LG.BaseUrl.ShouldBe(cliBaseUrl);
+        settings.LG.Model.ShouldBe(Model);
     }
 
     [Trait("Category", "UnitTest")]
@@ -111,34 +111,34 @@ public class OllamaArgumentOptionsTests
     public void Given_CLI_Model_When_Parse_Invoked_Then_It_Should_Use_CLI_Model(string cliModel)
     {
         // Arrange
-        var config = BuildConfigWithOllama();
+        var config = BuildConfigWithLG();
         var args = new[] { "--model", cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
 
         // Assert
-        settings.Ollama.ShouldNotBeNull();
-        settings.Ollama.BaseUrl.ShouldBe(BaseUrl);
-        settings.Ollama.Model.ShouldBe(cliModel);
+        settings.LG.ShouldNotBeNull();
+        settings.LG.BaseUrl.ShouldBe(BaseUrl);
+        settings.LG.Model.ShouldBe(cliModel);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://cli-ollama", "cli-model")]
+    [InlineData("https://cli.lg-exaone/api", "cli-model")]
     public void Given_All_CLI_Arguments_When_Parse_Invoked_Then_It_Should_Use_CLI(string cliBaseUrl, string cliModel)
     {
         // Arrange
-        var config = BuildConfigWithOllama();
+        var config = BuildConfigWithLG();
         var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
 
         // Assert
-        settings.Ollama.ShouldNotBeNull();
-        settings.Ollama.BaseUrl.ShouldBe(cliBaseUrl);
-        settings.Ollama.Model.ShouldBe(cliModel);
+        settings.LG.ShouldNotBeNull();
+        settings.LG.BaseUrl.ShouldBe(cliBaseUrl);
+        settings.LG.Model.ShouldBe(cliModel);
     }
 
     [Trait("Category", "UnitTest")]
@@ -148,16 +148,16 @@ public class OllamaArgumentOptionsTests
     public void Given_CLI_ArgumentWithoutValue_When_Parse_Invoked_Then_It_Should_Use_Config(string argument)
     {
         // Arrange
-        var config = BuildConfigWithOllama();
+        var config = BuildConfigWithLG();
         var args = new[] { argument };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
 
         // Assert
-        settings.Ollama.ShouldNotBeNull();
-        settings.Ollama.BaseUrl.ShouldBe(BaseUrl);
-        settings.Ollama.Model.ShouldBe(Model);
+        settings.LG.ShouldNotBeNull();
+        settings.LG.BaseUrl.ShouldBe(BaseUrl);
+        settings.LG.Model.ShouldBe(Model);
     }
 
     [Trait("Category", "UnitTest")]
@@ -166,80 +166,80 @@ public class OllamaArgumentOptionsTests
     public void Given_Unrelated_CLI_Arguments_When_Parse_Invoked_Then_It_Should_Use_Config(params string[] args)
     {
         // Arrange
-        var config = BuildConfigWithOllama();
+        var config = BuildConfigWithLG();
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
 
         // Assert
-        settings.Ollama.ShouldNotBeNull();
-        settings.Ollama.BaseUrl.ShouldBe(BaseUrl);
-        settings.Ollama.Model.ShouldBe(Model);
+        settings.LG.ShouldNotBeNull();
+        settings.LG.BaseUrl.ShouldBe(BaseUrl);
+        settings.LG.Model.ShouldBe(Model);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("--strange-model-name")]
-    public void Given_Ollama_With_ModelName_StartingWith_Dashes_When_Parse_Invoked_Then_It_Should_Treat_As_Value(string model)
+    public void Given_LG_With_ModelName_StartingWith_Dashes_When_Parse_Invoked_Then_It_Should_Treat_As_Value(string model)
     {
         // Arrange
-        var config = BuildConfigWithOllama();
+        var config = BuildConfigWithLG();
         var args = new[] { "--model", model };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
 
         // Assert
-        settings.Ollama.ShouldNotBeNull();
-        settings.Ollama.Model.ShouldBe(model);
+        settings.LG.ShouldNotBeNull();
+        settings.LG.Model.ShouldBe(model);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://config-ollama", "config-model")]
+    [InlineData("https://config.lg-exaone/api", "config-model")]
     public void Given_ConfigValues_And_No_CLI_When_Parse_Invoked_Then_It_Should_Use_Config(string configBaseUrl, string configModel)
     {
         // Arrange
-        var config = BuildConfigWithOllama(configBaseUrl, configModel);
+        var config = BuildConfigWithLG(configBaseUrl, configModel);
         var args = Array.Empty<string>();
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
 
         // Assert
-        settings.Ollama.ShouldNotBeNull();
-        settings.Ollama.BaseUrl.ShouldBe(configBaseUrl);
-        settings.Ollama.Model.ShouldBe(configModel);
+        settings.LG.ShouldNotBeNull();
+        settings.LG.BaseUrl.ShouldBe(configBaseUrl);
+        settings.LG.Model.ShouldBe(configModel);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://config-ollama", "config-model",
-                "http://cli-ollama", "cli-model")]
+    [InlineData("https://config.lg-exaone/api", "config-model",
+                "https://cli.lg-exaone/api", "cli-model")]
     public void Given_ConfigValues_And_CLI_When_Parse_Invoked_Then_It_Should_Use_CLI(
         string configBaseUrl, string configModel,
         string cliBaseUrl, string cliModel)
     {
         // Arrange
-        var config = BuildConfigWithOllama(configBaseUrl, configModel);
+        var config = BuildConfigWithLG(configBaseUrl, configModel);
         var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
 
         // Assert
-        settings.Ollama.ShouldNotBeNull();
-        settings.Ollama.BaseUrl.ShouldBe(cliBaseUrl);
-        settings.Ollama.Model.ShouldBe(cliModel);
+        settings.LG.ShouldNotBeNull();
+        settings.LG.BaseUrl.ShouldBe(cliBaseUrl);
+        settings.LG.Model.ShouldBe(cliModel);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://cli-ollama", "cli-model")]
-    public void Given_Ollama_With_KnownArguments_When_Parse_Invoked_Then_Help_Should_Be_False(string cliBaseUrl, string cliModel)
+    [InlineData("https://cli.lg-exaone/api", "cli-model")]
+    public void Given_LG_With_KnownArguments_When_Parse_Invoked_Then_Help_Should_Be_False(string cliBaseUrl, string cliModel)
     {
         // Arrange
-        var config = BuildConfigWithOllama();
+        var config = BuildConfigWithLG(BaseUrl, Model);
         var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
 
         // Act
@@ -253,10 +253,10 @@ public class OllamaArgumentOptionsTests
     [Theory]
     [InlineData("--base-url")]
     [InlineData("--model")]
-    public void Given_Ollama_With_KnownArgument_WithoutValue_When_Parse_Invoked_Then_Help_Should_Be_False(string argument)
+    public void Given_LG_With_KnownArgument_WithoutValue_When_Parse_Invoked_Then_Help_Should_Be_False(string argument)
     {
         // Arrange
-        var config = BuildConfigWithOllama();
+        var config = BuildConfigWithLG();
         var args = new[] { argument };
 
         // Act
@@ -268,11 +268,11 @@ public class OllamaArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://cli-ollama", "--unknown-flag")]
-    public void Given_Ollama_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_Should_Be_True(string cliBaseUrl, string argument)
+    [InlineData("https://cli.lg-exaone/api", "--unknown-flag")]
+    public void Given_LG_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_Should_Be_True(string cliBaseUrl, string argument)
     {
         // Arrange
-        var config = BuildConfigWithOllama();
+        var config = BuildConfigWithLG();
         var args = new[] { "--base-url", cliBaseUrl, argument };
 
         // Act
@@ -284,11 +284,11 @@ public class OllamaArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://cli-ollama", "cli-model")]
+    [InlineData("https://cli.lg-exaone/api", "cli-model")]
     public void Given_CLI_Only_When_Parse_Invoked_Then_Help_Should_Be_False(string cliBaseUrl, string cliModel)
     {
         // Arrange
-        var config = BuildConfigWithOllama();
+        var config = BuildConfigWithLG();
         var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
 
         // Act
@@ -300,11 +300,11 @@ public class OllamaArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://env-ollama", "env-model")]
+    [InlineData("https://env.lg-exaone/api", "env-model")]
     public void Given_EnvironmentVariables_And_No_Config_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(string envBaseUrl, string envModel)
     {
         // Arrange
-        var config = BuildConfigWithOllama(
+        var config = BuildConfigWithLG(
             configBaseUrl: null, configModel: null,
             envBaseUrl: envBaseUrl, envModel: envModel);
         var args = Array.Empty<string>();
@@ -313,81 +313,80 @@ public class OllamaArgumentOptionsTests
         var settings = ArgumentOptions.Parse(config, args);
 
         // Assert
-        settings.Ollama.ShouldNotBeNull();
-        settings.Ollama.BaseUrl.ShouldBe(envBaseUrl);
-        settings.Ollama.Model.ShouldBe(envModel);
+        settings.LG.ShouldNotBeNull();
+        settings.LG.BaseUrl.ShouldBe(envBaseUrl);
+        settings.LG.Model.ShouldBe(envModel);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://config-ollama", "config-model", "http://env-ollama", "env-model")]
+    [InlineData("https://config.lg-exaone/api", "config-model", "https://env.lg-exaone/api", "env-model")]
     public void Given_ConfigValues_And_EnvironmentVariables_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(
         string configBaseUrl, string configModel,
         string envBaseUrl, string envModel)
     {
         // Arrange
-        var config = BuildConfigWithOllama(configBaseUrl, configModel, envBaseUrl, envModel);
+        var config = BuildConfigWithLG(configBaseUrl, configModel, envBaseUrl, envModel);
         var args = Array.Empty<string>();
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
 
         // Assert
-        settings.Ollama.ShouldNotBeNull();
-        settings.Ollama.BaseUrl.ShouldBe(envBaseUrl);
-        settings.Ollama.Model.ShouldBe(envModel);
+        settings.LG.ShouldNotBeNull();
+        settings.LG.BaseUrl.ShouldBe(envBaseUrl);
+        settings.LG.Model.ShouldBe(envModel);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://config-ollama", "config-model", "http://env-ollama", "env-model", "http://cli-ollama", "cli-model")]
+    [InlineData("https://config.lg-exaone/api", "config-model", "https://env.lg-exaone/api", "env-model", "https://cli.lg-exaone/api", "cli-model")]
     public void Given_ConfigValues_And_EnvironmentVariables_And_CLI_When_Parse_Invoked_Then_It_Should_Use_CLI(
         string configBaseUrl, string configModel,
         string envBaseUrl, string envModel,
         string cliBaseUrl, string cliModel)
     {
         // Arrange
-        var config = BuildConfigWithOllama(configBaseUrl, configModel, envBaseUrl, envModel);
+        var config = BuildConfigWithLG(configBaseUrl, configModel, envBaseUrl, envModel);
         var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
 
         // Assert
-        settings.Ollama.ShouldNotBeNull();
-        settings.Ollama.BaseUrl.ShouldBe(cliBaseUrl);
-        settings.Ollama.Model.ShouldBe(cliModel);
+        settings.LG.ShouldNotBeNull();
+        settings.LG.BaseUrl.ShouldBe(cliBaseUrl);
+        settings.LG.Model.ShouldBe(cliModel);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://env-ollama", null)]
-    [InlineData(null, "env-model")]
+    [InlineData("https://config.lg-exaone/api", "config-model", "https://env.lg-exaone/api", null)]
     public void Given_Partial_EnvironmentVariables_When_Parse_Invoked_Then_It_Should_Mix_Config_And_Environment(
-        string? envBaseUrl, string? envModel)
+        string configBaseUrl, string configModel, string? envBaseUrl, string? envModel)
     {
         // Arrange
-        var config = BuildConfigWithOllama(
-            configBaseUrl: BaseUrl, configModel: Model,
-            envBaseUrl: envBaseUrl, envModel: envModel);
+        var config = BuildConfigWithLG(
+            configBaseUrl, configModel,
+            envBaseUrl, envModel);
         var args = Array.Empty<string>();
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
 
         // Assert
-        settings.Ollama.ShouldNotBeNull();
-        settings.Ollama.BaseUrl.ShouldBe(envBaseUrl ?? BaseUrl);
-        settings.Ollama.Model.ShouldBe(envModel ?? Model);
+        settings.LG.ShouldNotBeNull();
+        settings.LG.BaseUrl.ShouldBe(envBaseUrl);
+        settings.LG.Model.ShouldBe(configModel);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://env-ollama", "env-model")]
+    [InlineData("https://env.lg-exaone/api", "env-model")]
     public void Given_EnvironmentVariables_Only_When_Parse_Invoked_Then_Help_Should_Be_False(string envBaseUrl, string envModel)
     {
         // Arrange
-        var config = BuildConfigWithOllama(
+        var config = BuildConfigWithLG(
             configBaseUrl: null, configModel: null,
             envBaseUrl: envBaseUrl, envModel: envModel);
         var args = Array.Empty<string>();
