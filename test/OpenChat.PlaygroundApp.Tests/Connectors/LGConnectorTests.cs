@@ -118,7 +118,7 @@ public class LGConnectorTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, typeof(InvalidOperationException), "LG:BaseUrl")]
-    [InlineData("", typeof(UriFormatException), "empty")]
+    [InlineData("", typeof(InvalidOperationException), "LG:BaseUrl")]
     public async Task Given_Missing_BaseUrl_When_GetChatClient_Invoked_Then_It_Should_Throw(string? baseUrl, Type expected, string message)
     {
         // Arrange
@@ -134,8 +134,8 @@ public class LGConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(ArgumentNullException), "model")]
-    [InlineData("", typeof(ArgumentException), "model")]
+    [InlineData(null, typeof(InvalidOperationException), "LG:Model")]
+    [InlineData("", typeof(InvalidOperationException), "LG:Model")]
     public async Task Given_Missing_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
     {
         // Arrange

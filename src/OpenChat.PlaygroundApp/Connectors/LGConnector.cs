@@ -37,8 +37,18 @@ public class LGConnector(AppSettings settings) : LanguageModelConnector(settings
     public override async Task<IChatClient> GetChatClientAsync()
     {
         var settings = this.Settings as LGSettings;
-        var baseUrl = settings!.BaseUrl!;
-        var model = settings!.Model!;
+
+        var baseUrl = settings?.BaseUrl ?? throw new InvalidOperationException("Missing configuration: LG:BaseUrl.");
+        if (string.IsNullOrWhiteSpace(baseUrl))
+        {
+            throw new InvalidOperationException("Missing configuration: LG:BaseUrl.");
+        }
+
+        var model = settings?.Model ?? throw new InvalidOperationException("Missing configuration: LG:Model.");
+        if (string.IsNullOrWhiteSpace(model))
+        {
+            throw new InvalidOperationException("Missing configuration: LG:Model.");
+        }
 
         var config = new OllamaApiClient.Configuration
         {
