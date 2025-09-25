@@ -78,6 +78,7 @@ public partial class ChatInput : ComponentBase
         {
             return;
         }
+
         try
         {
             var module = await JS.InvokeAsync<IJSObjectReference>("import", "./Components/Pages/Chat/ChatInput.razor.js");
