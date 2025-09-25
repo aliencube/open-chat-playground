@@ -55,19 +55,22 @@ public class ChatInputUITest : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
-    [Fact]
-    public async Task Given_Textarea_When_Tab_Pressed_Then_Focus_Should_Move_To_SendButton()
+    [Theory]
+    [InlineData("input usermessage")]
+    public async Task Given_UserMessage_When_Tab_Pressed_Then_Focus_Should_Move_To_SendButton(string userMessage)
     {
         // Arrange
         var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
+        var sendButton = Page.GetByRole(AriaRole.Button, new() { Name = "User Message Send Button" });
 
         // Act
         await textArea.FocusAsync();
+        await textArea.FillAsync(userMessage);
         await textArea.PressAsync("Tab");
 
         // Assert
-        var focusedElement = await Page.EvaluateAsync<string>("() => document.activeElement.getAttribute('aria-label')");
-        focusedElement.ShouldBe("User Message Send Button");
+        var isFocused = await sendButton.EvaluateAsync<bool>("el => document.activeElement === el");
+        isFocused.ShouldBeTrue();
     }
 
     [Trait("Category", "IntegrationTest")]
