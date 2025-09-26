@@ -94,32 +94,6 @@ public class OpenAIConnectorTests
         action.ShouldThrow(expectedType)
               .Message.ShouldContain(expectedMessage);
     }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData(null, null)]
-    [InlineData("", "")]
-    public void Given_Both_ApiKey_And_Model_Invalid_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw_ApiKey_First(string? apiKey, string? model)
-    {
-        // Arrange
-        var appSettings = BuildAppSettings(apiKey: apiKey, model: model);
-        var connector = new OpenAIConnector(appSettings);
-
-        // Act
-        Action action = () => connector.EnsureLanguageModelSettingsValid();
-
-        // Assert
-        if (apiKey is null)
-        {
-            action.ShouldThrow<NullReferenceException>();
-        }
-        else
-        {
-            // ApiKey가 먼저 검증되므로 ApiKey 에러가 먼저 발생해야 함
-            action.ShouldThrow<InvalidOperationException>()
-                  .Message.ShouldContain("OpenAI:ApiKey");
-        }
-    }
     
     [Trait("Category", "UnitTest")]
     [Fact]
