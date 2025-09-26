@@ -78,8 +78,6 @@ This page describes how to run OpenChat Playground (OCP) with Hugging Face integ
 
 ## Run in local container
 
-This guide uses Docker as the default container runtime.
-
 1. Make sure the Ollama server is up and running.
 
     ```bash
@@ -155,6 +153,22 @@ This guide uses Docker as the default container runtime.
     ```powershell
     # PowerShell - From locally built container with custom model
     docker run -i --rm -p 8080:8080 openchat-playground:latest `
+        --connector-type HuggingFace `
+        --base-url http://host.docker.internal:11434 `
+        --model hf.co/microsoft/phi-4-gguf
+    ```
+
+    ```bash
+    # bash/zsh - From GitHub Container Registry with custom model
+    docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest \
+        --connector-type HuggingFace \
+        --base-url http://host.docker.internal:11434 \
+        --model hf.co/microsoft/phi-4-gguf
+    ```
+
+    ```powershell
+    # PowerShell - From GitHub Container Registry with custom model
+    docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest `
         --connector-type HuggingFace `
         --base-url http://host.docker.internal:11434 `
         --model hf.co/microsoft/phi-4-gguf
