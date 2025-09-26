@@ -1,11 +1,11 @@
 ﻿.input-box {
-    display: flex; 
-    flex-direction: column; 
+    display: flex;
+    flex-direction: column;
     background: white;
     border: 1px solid rgb(229, 231, 235);
     border-radius: 8px;
     padding: 0.5rem 0.75rem;
-    margin-top: 0.75rem; 
+    margin-top: 0.75rem;
 }
 
     .input-box:focus-within {
@@ -19,13 +19,9 @@ textarea {
     flex-grow: 1;
 }
 
-    textarea:placeholder-shown + .tools {
-        --send-button-color: #aaa;
-    }
-
 .tools {
-    display: flex; 
-    margin-top: 1rem; 
+    display: flex;
+    margin-top: 1rem;
     align-items: center;
 }
 
@@ -35,12 +31,12 @@ textarea {
 }
 
 .send-button {
-    color: var(--send-button-color);
+    color: black;
     margin-left: auto;
 }
 
-    .send-button:hover {
-        color: black;
+    .send-button:disabled {
+        color: #aaa;
     }
 
 .attach {

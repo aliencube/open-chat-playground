@@ -25,6 +25,7 @@ param googleVertexAIApiKey string = ''
 // Docker Model Runner
 // Foundry Local
 // Hugging Face
+param huggingFaceModel string = ''
 // Ollama
 // Anthropic
 // LG
@@ -69,6 +70,7 @@ module resources 'resources.bicep' = {
     githubModelsToken: githubModelsToken
     googleVertexAIModel: googleVertexAIModel
     googleVertexAIApiKey: googleVertexAIApiKey
+    huggingFaceModel: huggingFaceModel
     openchatPlaygroundappExists: openchatPlaygroundappExists
   }
 }

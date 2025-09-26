@@ -23,6 +23,9 @@
       "googleVertexAIApiKey": {
         "value": "${GOOGLE_VERTEX_AI_API_KEY}"
       },
+      "huggingFaceModel": {
+        "value": "${HUGGING_FACE_MODEL}"
+      },
       "openchatPlaygroundappExists": {
         "value": "${SERVICE_OPENCHAT_PLAYGROUNDAPP_RESOURCE_EXISTS=false}"
       },
