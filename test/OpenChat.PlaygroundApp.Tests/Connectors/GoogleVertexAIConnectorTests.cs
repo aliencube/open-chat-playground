@@ -5,7 +5,9 @@ namespace OpenChat.PlaygroundApp.Tests.Connectors;
 
 public class GoogleVertexAIConnectorTests
 {
-    private static AppSettings BuildAppSettings(string? apiKey = "AIzaSyA1234567890abcdefgHIJKLMNOpqrstuv", string? model = "test-model")
+    private const string ApiKey = "AIzaSyA1234567890abcdefgHIJKLMNOpqrstuv";
+    private const string Model = "test-model";
+    private static AppSettings BuildAppSettings(string? apiKey = ApiKey, string? model = Model)
     {
         return new AppSettings
         {
