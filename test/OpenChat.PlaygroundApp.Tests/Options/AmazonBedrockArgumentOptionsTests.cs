@@ -7,44 +7,75 @@ namespace OpenChat.PlaygroundApp.Tests.Options;
 
 public class AmazonBedrockArgumentOptionsTests
 {
-    private const string AwsAccessKeyId = "test-access-key-id";
-    private const string AwsSecretAccessKey = "test-secret-access-key";
+    private const string AccessKeyId = "test-access-key-id";
+    private const string SecretAccessKey = "test-secret-access-key";
     private const string Region = "test-region";
     private const string ModelId = "test-model-id";
 
     private static IConfiguration BuildConfigWithAmazonBedrock(
-        string? AwsAccessKeyId = AwsAccessKeyId,
-        string? AwsSecretAccessKey = AwsSecretAccessKey,
+        string? configAccessKeyId = AccessKeyId,
+        string? configSecretAccessKey = SecretAccessKey,
         string? configRegion = Region,
-        string? configModel = ModelId)
+        string? configModelId = ModelId,
+        string? envAccessKeyId = null,
+        string? envSecretAccessKey = null,
+        string? envRegion = null,
+        string? envModelId = null)
     {
         var configDict = new Dictionary<string, string?>
         {
             ["ConnectorType"] = ConnectorType.AmazonBedrock.ToString()
         };
 
-        if (string.IsNullOrWhiteSpace(AwsAccessKeyId) == false)
+        if (string.IsNullOrWhiteSpace(configAccessKeyId) == false)
         {
-            configDict["AmazonBedrock:AccessKeyId"] = AwsAccessKeyId;
+            configDict["AmazonBedrock:AccessKeyId"] = configAccessKeyId;
         }
-        if (string.IsNullOrWhiteSpace(AwsSecretAccessKey) == false)
+        if (string.IsNullOrWhiteSpace(configSecretAccessKey) == false)
         {
-            configDict["AmazonBedrock:SecretAccessKey"] = AwsSecretAccessKey;
+            configDict["AmazonBedrock:SecretAccessKey"] = configSecretAccessKey;
         }
         if (string.IsNullOrWhiteSpace(configRegion) == false)
         {
             configDict["AmazonBedrock:Region"] = configRegion;
         }
-        if (string.IsNullOrWhiteSpace(configModel) == false)
+        if (string.IsNullOrWhiteSpace(configModelId) == false)
         {
-            configDict["AmazonBedrock:ModelId"] = configModel;
+            configDict["AmazonBedrock:ModelId"] = configModelId;
         }
 
-        // TODO: "envDict" can be added here
+        if (string.IsNullOrWhiteSpace(envAccessKeyId) == true &&
+            string.IsNullOrWhiteSpace(envSecretAccessKey) == true &&
+            string.IsNullOrWhiteSpace(envRegion) == true &&
+            string.IsNullOrWhiteSpace(envModelId) == true)
+        {
+            return new ConfigurationBuilder()
+                       .AddInMemoryCollection(configDict!)
+                       .Build();
+        }
+
+        var envDict = new Dictionary<string, string?>();
+        if (string.IsNullOrWhiteSpace(envAccessKeyId) == false)
+        {
+            envDict["AmazonBedrock:AccessKeyId"] = envAccessKeyId;
+        }
+        if (string.IsNullOrWhiteSpace(envSecretAccessKey) == false)
+        {
+            envDict["AmazonBedrock:SecretAccessKey"] = envSecretAccessKey;
+        }
+        if (string.IsNullOrWhiteSpace(envRegion) == false)
+        {
+            envDict["AmazonBedrock:Region"] = envRegion;
+        }
+        if (string.IsNullOrWhiteSpace(envModelId) == false)
+        {
+            envDict["AmazonBedrock:ModelId"] = envModelId;
+        }
 
         return new ConfigurationBuilder()
-            .AddInMemoryCollection(configDict!) // Base configuration (lowest priority)
-            .Build();
+                   .AddInMemoryCollection(configDict!) // Base configuration (lowest priority)
+                   .AddInMemoryCollection(envDict!)    // Environment variables (medium priority)
+                   .Build();
     }
 
     [Trait("Category", "UnitTest")]
@@ -60,8 +91,8 @@ public class AmazonBedrockArgumentOptionsTests
 
         // Assert
         settings.AmazonBedrock.ShouldNotBeNull();
-        settings.AmazonBedrock.AccessKeyId.ShouldBe(AwsAccessKeyId);
-        settings.AmazonBedrock.SecretAccessKey.ShouldBe(AwsSecretAccessKey);
+        settings.AmazonBedrock.AccessKeyId.ShouldBe(AccessKeyId);
+        settings.AmazonBedrock.SecretAccessKey.ShouldBe(SecretAccessKey);
         settings.AmazonBedrock.Region.ShouldBe(Region);
         settings.AmazonBedrock.ModelId.ShouldBe(ModelId);
     }
@@ -81,7 +112,7 @@ public class AmazonBedrockArgumentOptionsTests
         // Assert
         settings.AmazonBedrock.ShouldNotBeNull();
         settings.AmazonBedrock.AccessKeyId.ShouldBe(cliAccessKeyId);
-        settings.AmazonBedrock.SecretAccessKey.ShouldBe(AwsSecretAccessKey);
+        settings.AmazonBedrock.SecretAccessKey.ShouldBe(SecretAccessKey);
         settings.AmazonBedrock.Region.ShouldBe(Region);
         settings.AmazonBedrock.ModelId.ShouldBe(ModelId);
     }
@@ -100,7 +131,7 @@ public class AmazonBedrockArgumentOptionsTests
 
         // Assert
         settings.AmazonBedrock.ShouldNotBeNull();
-        settings.AmazonBedrock.AccessKeyId.ShouldBe(AwsAccessKeyId);
+        settings.AmazonBedrock.AccessKeyId.ShouldBe(AccessKeyId);
         settings.AmazonBedrock.SecretAccessKey.ShouldBe(cliSecretAccessKey);
         settings.AmazonBedrock.Region.ShouldBe(Region);
         settings.AmazonBedrock.ModelId.ShouldBe(ModelId);
@@ -120,8 +151,8 @@ public class AmazonBedrockArgumentOptionsTests
 
         // Assert
         settings.AmazonBedrock.ShouldNotBeNull();
-        settings.AmazonBedrock.AccessKeyId.ShouldBe(AwsAccessKeyId);
-        settings.AmazonBedrock.SecretAccessKey.ShouldBe(AwsSecretAccessKey);
+        settings.AmazonBedrock.AccessKeyId.ShouldBe(AccessKeyId);
+        settings.AmazonBedrock.SecretAccessKey.ShouldBe(SecretAccessKey);
         settings.AmazonBedrock.Region.ShouldBe(cliRegion);
         settings.AmazonBedrock.ModelId.ShouldBe(ModelId);
     }
@@ -140,8 +171,8 @@ public class AmazonBedrockArgumentOptionsTests
 
         // Assert
         settings.AmazonBedrock.ShouldNotBeNull();
-        settings.AmazonBedrock.AccessKeyId.ShouldBe(AwsAccessKeyId);
-        settings.AmazonBedrock.SecretAccessKey.ShouldBe(AwsSecretAccessKey);
+        settings.AmazonBedrock.AccessKeyId.ShouldBe(AccessKeyId);
+        settings.AmazonBedrock.SecretAccessKey.ShouldBe(SecretAccessKey);
         settings.AmazonBedrock.Region.ShouldBe(Region);
         settings.AmazonBedrock.ModelId.ShouldBe(cliModelId);
     }
@@ -183,8 +214,8 @@ public class AmazonBedrockArgumentOptionsTests
 
         // Assert
         settings.AmazonBedrock.ShouldNotBeNull();
-        settings.AmazonBedrock.AccessKeyId.ShouldBe(AwsAccessKeyId);
-        settings.AmazonBedrock.SecretAccessKey.ShouldBe(AwsSecretAccessKey);
+        settings.AmazonBedrock.AccessKeyId.ShouldBe(AccessKeyId);
+        settings.AmazonBedrock.SecretAccessKey.ShouldBe(SecretAccessKey);
         settings.AmazonBedrock.Region.ShouldBe(Region);
         settings.AmazonBedrock.ModelId.ShouldBe(ModelId);
     }
@@ -202,8 +233,8 @@ public class AmazonBedrockArgumentOptionsTests
 
         // Assert
         settings.AmazonBedrock.ShouldNotBeNull();
-        settings.AmazonBedrock.AccessKeyId.ShouldBe(AwsAccessKeyId);
-        settings.AmazonBedrock.SecretAccessKey.ShouldBe(AwsSecretAccessKey);
+        settings.AmazonBedrock.AccessKeyId.ShouldBe(AccessKeyId);
+        settings.AmazonBedrock.SecretAccessKey.ShouldBe(SecretAccessKey);
         settings.AmazonBedrock.Region.ShouldBe(Region);
         settings.AmazonBedrock.ModelId.ShouldBe(ModelId);
     }
@@ -274,7 +305,7 @@ public class AmazonBedrockArgumentOptionsTests
     public void Given_AmazonBedrock_With_KnownArguments_When_Parse_Invoked_Then_Help_ShouldBe_False(string cliAccessKeyId, string cliSecretAccessKey, string cliRegion, string cliModelId)
     {
         // Arrange
-        var config = BuildConfigWithAmazonBedrock(AwsAccessKeyId, AwsSecretAccessKey, Region, ModelId);
+        var config = BuildConfigWithAmazonBedrock(AccessKeyId, SecretAccessKey, Region, ModelId);
         var args = new[] { "--access-key-id", cliAccessKeyId, "--secret-access-key", cliSecretAccessKey, "--region", cliRegion, "--model-id", cliModelId };
 
         // Act
@@ -317,5 +348,168 @@ public class AmazonBedrockArgumentOptionsTests
 
         // Assert
         settings.Help.ShouldBeTrue();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("env-access-key-id", "env-secret-access-key", "env-region", "env-model-id")]
+    public void Given_EnvironmentVariables_And_No_Config_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(
+        string envAccessKeyId, string envSecretAccessKey, string envRegion, string envModelId)
+    {
+        // Arrange
+        var config = BuildConfigWithAmazonBedrock(
+            configAccessKeyId: null, configSecretAccessKey: null, configRegion: null, configModelId: null,
+            envAccessKeyId: envAccessKeyId, envSecretAccessKey: envSecretAccessKey, envRegion: envRegion, envModelId: envModelId);
+        var args = Array.Empty<string>();
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.AmazonBedrock.ShouldNotBeNull();
+        settings.AmazonBedrock.AccessKeyId.ShouldBe(envAccessKeyId);
+        settings.AmazonBedrock.SecretAccessKey.ShouldBe(envSecretAccessKey);
+        settings.AmazonBedrock.Region.ShouldBe(envRegion);
+        settings.AmazonBedrock.ModelId.ShouldBe(envModelId);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("config-access-key-id", "config-secret-access-key", "config-region", "config-model-id",
+                "env-access-key-id", "env-secret-access-key", "env-region", "env-model-id")]
+    public void Given_ConfigValues_And_EnvironmentVariables_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(
+        string configAccessKeyId, string configSecretAccessKey, string configRegion, string configModelId,
+        string envAccessKeyId, string envSecretAccessKey, string envRegion, string envModelId)
+    {
+        // Arrange
+        var config = BuildConfigWithAmazonBedrock(
+            configAccessKeyId, configSecretAccessKey, configRegion, configModelId,
+            envAccessKeyId, envSecretAccessKey, envRegion, envModelId);
+        var args = Array.Empty<string>();
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.AmazonBedrock.ShouldNotBeNull();
+        settings.AmazonBedrock.AccessKeyId.ShouldBe(envAccessKeyId);
+        settings.AmazonBedrock.SecretAccessKey.ShouldBe(envSecretAccessKey);
+        settings.AmazonBedrock.Region.ShouldBe(envRegion);
+        settings.AmazonBedrock.ModelId.ShouldBe(envModelId);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("config-access-key-id", "config-secret-access-key", "config-region", "config-model-id",
+                "env-access-key-id", "env-secret-access-key", "env-region", "env-model-id",
+                "cli-access-key-id", "cli-secret-access-key", "cli-region", "cli-model-id")]
+    public void Given_ConfigValues_And_EnvironmentVariables_And_CLI_When_Parse_Invoked_Then_It_Should_Use_CLI(
+        string configAccessKeyId, string configSecretAccessKey, string configRegion, string configModelId,
+        string envAccessKeyId, string envSecretAccessKey, string envRegion, string envModelId,
+        string cliAccessKeyId, string cliSecretAccessKey, string cliRegion, string cliModelId)
+    {
+        // Arrange
+        var config = BuildConfigWithAmazonBedrock(
+            configAccessKeyId, configSecretAccessKey, configRegion, configModelId,
+            envAccessKeyId, envSecretAccessKey, envRegion, envModelId);
+        var args = new[] { "--access-key-id", cliAccessKeyId, "--secret-access-key", cliSecretAccessKey, "--region", cliRegion, "--model-id", cliModelId };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.AmazonBedrock.ShouldNotBeNull();
+        settings.AmazonBedrock.AccessKeyId.ShouldBe(cliAccessKeyId);
+        settings.AmazonBedrock.SecretAccessKey.ShouldBe(cliSecretAccessKey);
+        settings.AmazonBedrock.Region.ShouldBe(cliRegion);
+        settings.AmazonBedrock.ModelId.ShouldBe(cliModelId);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("config-access-key-id", "config-secret-access-key", "config-region", "config-model-id",
+                "env-access-key-id", null, "env-region", null)]
+    public void Given_Partial_EnvironmentVariables_When_Parse_Invoked_Then_It_Should_Mix_Config_And_Environment(
+        string configAccessKeyId, string configSecretAccessKey, string configRegion, string configModelId,
+        string envAccessKeyId, string? envSecretAccessKey, string envRegion, string? envModelId)
+    {
+        // Arrange
+        var config = BuildConfigWithAmazonBedrock(
+            configAccessKeyId, configSecretAccessKey, configRegion, configModelId,
+            envAccessKeyId, envSecretAccessKey, envRegion, envModelId);
+        var args = Array.Empty<string>();
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.AmazonBedrock.ShouldNotBeNull();
+        settings.AmazonBedrock.AccessKeyId.ShouldBe(envAccessKeyId);               // From environment
+        settings.AmazonBedrock.SecretAccessKey.ShouldBe(configSecretAccessKey);    // From config (no env override)
+        settings.AmazonBedrock.Region.ShouldBe(envRegion);                         // From environment
+        settings.AmazonBedrock.ModelId.ShouldBe(configModelId);                    // From config (no env override)
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("config-access-key-id", "config-secret-access-key", "config-region", "config-model-id",
+                "env-access-key-id", null, "env-region", null,
+                "cli-access-key-id", "cli-secret-access-key", null, null)]
+    public void Given_Mixed_Priority_Sources_When_Parse_Invoked_Then_It_Should_Respect_Priority_Order(
+        string configAccessKeyId, string configSecretAccessKey, string configRegion, string configModelId,
+        string envAccessKeyId, string? envSecretAccessKey, string envRegion, string? envModelId,
+        string cliAccessKeyId, string cliSecretAccessKey, string? cliRegion, string? cliModelId)
+    {
+        // Arrange
+        var config = BuildConfigWithAmazonBedrock(
+            configAccessKeyId, configSecretAccessKey, configRegion, configModelId,
+            envAccessKeyId, envSecretAccessKey, envRegion, envModelId);
+        var args = new[] { "--access-key-id", cliAccessKeyId, "--secret-access-key", cliSecretAccessKey, "--region", cliRegion, "--model-id", cliModelId };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args!);
+
+        // Assert
+        settings.AmazonBedrock.ShouldNotBeNull();
+        settings.AmazonBedrock.AccessKeyId.ShouldBe(cliAccessKeyId);            // CLI wins (highest priority)
+        settings.AmazonBedrock.SecretAccessKey.ShouldBe(cliSecretAccessKey);    // CLI wins over config
+        settings.AmazonBedrock.Region.ShouldBe(envRegion);                      // Env wins over config (medium priority)
+        settings.AmazonBedrock.ModelId.ShouldBe(configModelId);                 // Config only (lowest priority)
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("env-access-key-id", "env-secret-access-key", "env-region", "env-model-id")]
+    public void Given_EnvironmentVariables_Only_When_Parse_Invoked_Then_Help_Should_Be_False(
+        string envAccessKeyId, string envSecretAccessKey, string envRegion, string envModelId)
+    {
+        // Arrange
+        var config = BuildConfigWithAmazonBedrock(
+            configAccessKeyId: null, configSecretAccessKey: null, configRegion: null, configModelId: null,
+            envAccessKeyId: envAccessKeyId, envSecretAccessKey: envSecretAccessKey, envRegion: envRegion, envModelId: envModelId);
+        var args = Array.Empty<string>();
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.Help.ShouldBeFalse();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("cli-access-key-id", "cli-secret-access-key", "cli-region", "cli-model-id")]
+    public void Given_CLI_Only_When_Parse_Invoked_Then_Help_Should_Be_False(
+        string cliAccessKeyId, string cliSecretAccessKey, string cliRegion, string cliModelId)
+    {
+        // Arrange
+        var config = BuildConfigWithAmazonBedrock();
+        var args = new[] { "--access-key-id", cliAccessKeyId, "--secret-access-key", cliSecretAccessKey, "--region", cliRegion, "--model-id", cliModelId };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.Help.ShouldBeFalse();
     }
 }
