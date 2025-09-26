@@ -464,18 +464,10 @@ public class AmazonBedrockArgumentOptionsTests
         var config = BuildConfigWithAmazonBedrock(
             configAccessKeyId, configSecretAccessKey, configRegion, configModelId,
             envAccessKeyId, envSecretAccessKey, envRegion, envModelId);
-        var args = new[] { "--access-key-id", cliAccessKeyId, "--secret-access-key", cliSecretAccessKey };
-        if (cliRegion != null)
-        {
-            args = args.Append("--region").Append(cliRegion).ToArray();
-        }
-        if (cliModelId != null)
-        {
-            args = args.Append("--model-id").Append(cliModelId).ToArray();
-        }
+        var args = new[] { "--access-key-id", cliAccessKeyId, "--secret-access-key", cliSecretAccessKey, "--region", cliRegion, "--model-id", cliModelId };
 
         // Act
-        var settings = ArgumentOptions.Parse(config, args);
+        var settings = ArgumentOptions.Parse(config, args!);
 
         // Assert
         settings.AmazonBedrock.ShouldNotBeNull();
