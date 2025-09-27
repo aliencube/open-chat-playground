@@ -23,6 +23,9 @@ param huggingFaceModel string = ''
 // LG
 // Naver
 // OpenAI
+param openAIModel string = ''
+@secure()
+param openAIApiKey string = ''
 // Upstage
 
 param openchatPlaygroundappExists bool
@@ -129,6 +132,17 @@ var envHuggingFace = connectorType == 'HuggingFace' && huggingFaceModel != '' ? 
 // LG
 // Naver
 // OpenAI
+var envOpenAI = connectorType == 'OpenAI' ? concat(openAIModel != '' ? [
+  {
+    name: 'OpenAI__Model'
+    value: openAIModel
+  }
+] : [], openAIApiKey != '' ? [
+  {
+    name: 'OpenAI__ApiKey'
+    secretRef: 'openai-api-key'
+  }
+] : []) : []
 // Upstage
 
 module openchatPlaygroundapp 'br/public:avm/res/app/container-app:0.18.1' = {
@@ -140,12 +154,17 @@ module openchatPlaygroundapp 'br/public:avm/res/app/container-app:0.18.1' = {
       minReplicas: 1
       maxReplicas: 10
     }
-    secrets: [
+    secrets: concat([
       {
         name: 'github-models-token'
         value: githubModelsToken
       }
-    ]
+    ], openAIApiKey != '' ? [
+      {
+        name: 'openai-api-key'
+        value: openAIApiKey
+      }
+    ] : [])
     containers: [
       {
         image: openchatPlaygroundappFetchLatestImage.outputs.?containers[?0].?image ?? 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
@@ -169,7 +188,8 @@ module openchatPlaygroundapp 'br/public:avm/res/app/container-app:0.18.1' = {
           }],
           envConnectorType,
           envGitHubModels,
-          envHuggingFace)
+          envHuggingFace,
+          envOpenAI)
       }
     ]
     managedIdentities:{

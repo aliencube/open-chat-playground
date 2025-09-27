@@ -15,7 +15,7 @@ Open Chat Playground (OCP) is a web UI that is able to connect virtually any LLM
 - [ ] [Anthropic](https://docs.anthropic.com)
 - [ ] [Naver](https://api.ncloud-docs.com/docs/ai-naver-clovastudio-summary)
 - [ ] [LG](https://github.com/LG-AI-EXAONE)
-- [ ] [OpenAI](https://openai.com/api)
+- [x] [OpenAI](https://openai.com/api)
 - [ ] [Upstage](https://console.upstage.ai/docs/getting-started)
 
 ## Prerequisites
