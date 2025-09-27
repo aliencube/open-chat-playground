@@ -22,6 +22,7 @@ param githubModelsToken string = ''
 // Docker Model Runner
 // Foundry Local
 // Hugging Face
+param huggingFaceModel string = ''
 // Ollama
 // Anthropic
 // LG
@@ -67,6 +68,7 @@ module resources 'resources.bicep' = {
     connectorType: connectorType
     githubModelsModel: githubModelsModel
     githubModelsToken: githubModelsToken
+    huggingFaceModel: huggingFaceModel
     openAIModel: openAIModel
     openAIApiKey: openAIApiKey
     openchatPlaygroundappExists: openchatPlaygroundappExists

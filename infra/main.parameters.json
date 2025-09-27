@@ -1,36 +1,39 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-      "environmentName": {
-        "value": "${AZURE_ENV_NAME}"
-      },
-      "location": {
-        "value": "${AZURE_LOCATION}"
-      },
-      "connectorType": {
-        "value": "${CONNECTOR_TYPE}"
-      },
-      "githubModelsModel": {
-        "value": "${GH_MODELS_MODEL}"
-      },
-      "githubModelsToken": {
-        "value": "${GH_MODELS_TOKEN}"
-      },
-      "openAIModel": {
-        "value": "${OPENAI_MODEL}"
-      },
-      "openAIApiKey": {
-        "value": "${OPENAI_API_KEY}"
-      },
-      "openchatPlaygroundappExists": {
-        "value": "${SERVICE_OPENCHAT_PLAYGROUNDAPP_RESOURCE_EXISTS=false}"
-      },
-      "principalId": {
-        "value": "${AZURE_PRINCIPAL_ID}"
-      },
-      "principalType": {
-        "value": "${AZURE_PRINCIPAL_TYPE}"
-      }
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environmentName": {
+      "value": "${AZURE_ENV_NAME}"
+    },
+    "location": {
+      "value": "${AZURE_LOCATION}"
+    },
+    "connectorType": {
+      "value": "${CONNECTOR_TYPE}"
+    },
+    "githubModelsModel": {
+      "value": "${GH_MODELS_MODEL}"
+    },
+    "githubModelsToken": {
+      "value": "${GH_MODELS_TOKEN}"
+    },
+    "huggingFaceModel": {
+      "value": "${HUGGING_FACE_MODEL}"
+    },
+    "openAIModel": {
+      "value": "${OPENAI_MODEL}"
+    },
+    "openAIApiKey": {
+      "value": "${OPENAI_API_KEY}"
+    },
+    "openchatPlaygroundappExists": {
+      "value": "${SERVICE_OPENCHAT_PLAYGROUNDAPP_RESOURCE_EXISTS=false}"
+    },
+    "principalId": {
+      "value": "${AZURE_PRINCIPAL_ID}"
+    },
+    "principalType": {
+      "value": "${AZURE_PRINCIPAL_TYPE}"
     }
+  }
 }
