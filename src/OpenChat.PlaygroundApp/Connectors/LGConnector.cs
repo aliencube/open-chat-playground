@@ -1,4 +1,5 @@
 using Microsoft.Extensions.AI;
+
 using OllamaSharp;
 
 using OpenChat.PlaygroundApp.Abstractions;
@@ -30,6 +31,17 @@ public class LGConnector(AppSettings settings) : LanguageModelConnector(settings
             throw new InvalidOperationException("Missing configuration: LG:Model.");
         }
 
+        // Validate LG model format: should be HuggingFace format, LG model, or GGUF format
+        var model = settings.Model.Trim();
+        var isHuggingFaceFormat = model.StartsWith("hf.co/") || model.Contains("/");
+        var isLGModel = model.ToLowerInvariant().Contains("exaone") || model.ToLowerInvariant().Contains("lg");
+        var isGGUFFormat = model.ToLowerInvariant().EndsWith(".gguf") || model.ToLowerInvariant().Contains("gguf");
+
+        if (!isHuggingFaceFormat && !isLGModel && !isGGUFFormat)
+        {
+            throw new InvalidOperationException("Invalid LG model format. Model should be HuggingFace format (hf.co/...), LG model (containing 'exaone' or 'lg'), or GGUF format (containing 'gguf').");
+        }
+
         return true;
     }
 
@@ -37,18 +49,8 @@ public class LGConnector(AppSettings settings) : LanguageModelConnector(settings
     public override async Task<IChatClient> GetChatClientAsync()
     {
         var settings = this.Settings as LGSettings;
-
-        var baseUrl = settings?.BaseUrl ?? throw new InvalidOperationException("Missing configuration: LG:BaseUrl.");
-        if (string.IsNullOrWhiteSpace(baseUrl))
-        {
-            throw new InvalidOperationException("Missing configuration: LG:BaseUrl.");
-        }
-
-        var model = settings?.Model ?? throw new InvalidOperationException("Missing configuration: LG:Model.");
-        if (string.IsNullOrWhiteSpace(model))
-        {
-            throw new InvalidOperationException("Missing configuration: LG:Model.");
-        }
+        var baseUrl = settings!.BaseUrl!;
+        var model = settings!.Model!;
 
         var config = new OllamaApiClient.Configuration
         {
