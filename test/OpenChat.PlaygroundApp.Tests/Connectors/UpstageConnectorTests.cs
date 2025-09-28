@@ -1,3 +1,4 @@
+using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Configurations;
 using OpenChat.PlaygroundApp.Connectors;
 
@@ -23,6 +24,19 @@ public class UpstageConnectorTests
                 Model = model
             }
         };
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData(typeof(LanguageModelConnector), typeof(UpstageConnector), true)]
+    [InlineData(typeof(UpstageConnector), typeof(LanguageModelConnector), false)]
+    public void Given_BaseType_Then_It_Should_Be_AssignableFrom_DerivedType(Type baseType, Type derivedType, bool expected)
+    {
+        // Act
+        var result = baseType.IsAssignableFrom(derivedType);
+
+        // Assert
+        result.ShouldBe(expected);
     }
 
     [Trait("Category", "UnitTest")]
