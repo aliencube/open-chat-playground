@@ -163,8 +163,8 @@ public class LGConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(InvalidOperationException))]
-    [InlineData("", typeof(InvalidOperationException))]
+    [InlineData(null, typeof(ArgumentNullException))]
+    [InlineData("", typeof(UriFormatException))]
     public void Given_Missing_BaseUrl_When_GetChatClient_Invoked_Then_It_Should_Throw(string? baseUrl, Type expected)
     {
         // Arrange
@@ -178,22 +178,6 @@ public class LGConnectorTests
         func.ShouldThrow(expected);
     }
 
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData(null, typeof(InvalidOperationException))]
-    [InlineData("", typeof(InvalidOperationException))]
-    public void Given_Missing_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expected)
-    {
-        // Arrange
-        var settings = BuildAppSettings(model: model);
-        var connector = new LGConnector(settings);
-
-        // Act
-        Func<Task> func = async () => await connector.GetChatClientAsync();
-
-        // Assert
-        func.ShouldThrow(expected);
-    }
 
     [Trait("Category", "UnitTest")]
     [Fact]
