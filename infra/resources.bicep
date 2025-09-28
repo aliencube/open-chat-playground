@@ -174,11 +174,10 @@ module openchatPlaygroundapp 'br/public:avm/res/app/container-app:0.18.1' = {
       minReplicas: 1
       maxReplicas: 10
     }
-    secrets: concat([
-      {
+    secrets: concat(azureAIFoundryApiKey != '' ? [{
         name: 'azure-ai-foundry-api-key'
         value: azureAIFoundryApiKey
-      }
+      }] : [], [
       {
         name: 'github-models-token'
         value: githubModelsToken
