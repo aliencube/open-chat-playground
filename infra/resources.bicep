@@ -109,7 +109,7 @@ var envConnectorType = connectorType != '' ? [
 ] : []
 // Amazon Bedrock
 // Azure AI Foundry
-var envAzureAIFoundry = (connectorType == '' || connectorType == 'AzureAIFoundry') ? concat(azureAIFoundryEndpoint != '' ? [
+var envAzureAIFoundry = (connectorType == 'AzureAIFoundry') ? concat(azureAIFoundryEndpoint != '' ? [
   {
     name: 'AzureAIFoundry__Endpoint'
     value: azureAIFoundryEndpoint
