@@ -3,9 +3,15 @@ using OpenChat.PlaygroundApp.Connectors;
 
 namespace OpenChat.PlaygroundApp.Tests.Connectors;
 
+
+
 public class UpstageConnectorTests
 {
-    private static AppSettings BuildAppSettings(string? baseUrl = "https://api.upstage.ai/v1/solar", string? apiKey = "test-api-key", string? model = "solar-1-mini-chat")
+    private const string BaseUrl = "https://api.upstage.ai/v1/solar";
+    private const string ApiKey = "test-api-key";
+    private const string Model = "solar-1-mini-chat";
+
+    private static AppSettings BuildAppSettings(string? baseUrl = BaseUrl, string? apiKey = ApiKey, string? model = Model)
     {
         return new AppSettings
         {
