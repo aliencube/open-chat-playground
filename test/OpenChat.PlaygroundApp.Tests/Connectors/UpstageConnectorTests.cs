@@ -33,11 +33,10 @@ public class UpstageConnectorTests
         var appSettings = new AppSettings { ConnectorType = ConnectorType.Upstage, Upstage = null };
         var connector = new UpstageConnector(appSettings);
 
-        // Act
-        var ex = Assert.Throws<InvalidOperationException>(() => connector.EnsureLanguageModelSettingsValid());
-
-        // Assert
-        ex.Message.ShouldContain("Upstage");
+        // Act & Assert
+        Action action = () => connector.EnsureLanguageModelSettingsValid();
+        action.ShouldThrow<InvalidOperationException>()
+              .Message.ShouldContain("Upstage");
     }
 
     [Trait("Category", "UnitTest")]
@@ -51,11 +50,10 @@ public class UpstageConnectorTests
         var appSettings = BuildAppSettings(baseUrl: baseUrl);
         var connector = new UpstageConnector(appSettings);
 
-        // Act
-        var ex = Assert.Throws(expectedType, () => connector.EnsureLanguageModelSettingsValid());
-
-        // Assert
-        ex.Message.ShouldContain(expectedMessage);
+        // Act & Assert
+        Action action = () => connector.EnsureLanguageModelSettingsValid();
+        action.ShouldThrow(expectedType)
+              .Message.ShouldContain(expectedMessage);
     }
 
     [Trait("Category", "UnitTest")]
@@ -69,11 +67,10 @@ public class UpstageConnectorTests
         var appSettings = BuildAppSettings(apiKey: apiKey);
         var connector = new UpstageConnector(appSettings);
 
-        // Act
-        var ex = Assert.Throws(expectedType, () => connector.EnsureLanguageModelSettingsValid());
-
-        // Assert
-        ex.Message.ShouldContain(expectedMessage);
+        // Act & Assert
+        Action action = () => connector.EnsureLanguageModelSettingsValid();
+        action.ShouldThrow(expectedType)
+              .Message.ShouldContain(expectedMessage);
     }
 
     [Trait("Category", "UnitTest")]
@@ -87,11 +84,10 @@ public class UpstageConnectorTests
         var appSettings = BuildAppSettings(model: model);
         var connector = new UpstageConnector(appSettings);
 
-        // Act
-        var ex = Assert.Throws(expectedType, () => connector.EnsureLanguageModelSettingsValid());
-
-        // Assert
-        ex.Message.ShouldContain(expectedMessage);
+        // Act & Assert
+        Action action = () => connector.EnsureLanguageModelSettingsValid();
+        action.ShouldThrow(expectedType)
+              .Message.ShouldContain(expectedMessage);
     }
 
     [Trait("Category", "UnitTest")]
@@ -128,50 +124,47 @@ public class UpstageConnectorTests
     [Theory]
     [InlineData(null, typeof(InvalidOperationException), "Upstage:ApiKey")]
     [InlineData("", typeof(ArgumentException), "key")]
-    public async Task Given_Missing_ApiKey_When_GetChatClient_Invoked_Then_It_Should_Throw(string? apiKey, Type expected, string message)
+    public void Given_Missing_ApiKey_When_GetChatClient_Invoked_Then_It_Should_Throw(string? apiKey, Type expected, string message)
     {
         // Arrange
         var settings = BuildAppSettings(apiKey: apiKey);
         var connector = new UpstageConnector(settings);
 
-        // Act
-        var ex = await Assert.ThrowsAsync(expected, connector.GetChatClientAsync);
-
-        // Assert
-        ex.Message.ShouldContain(message);
+        // Act & Assert
+        Func<Task> func = async () => await connector.GetChatClientAsync();
+        func.ShouldThrow(expected)
+            .Message.ShouldContain(message);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, typeof(InvalidOperationException), "Upstage:BaseUrl")]
     [InlineData("", typeof(UriFormatException), "empty")]
-    public async Task Given_Missing_BaseUrl_When_GetChatClient_Invoked_Then_It_Should_Throw(string? baseUrl, Type expected, string message)
+    public void Given_Missing_BaseUrl_When_GetChatClient_Invoked_Then_It_Should_Throw(string? baseUrl, Type expected, string message)
     {
         // Arrange
         var settings = BuildAppSettings(baseUrl: baseUrl);
         var connector = new UpstageConnector(settings);
 
-        // Act
-        var ex = await Assert.ThrowsAsync(expected, connector.GetChatClientAsync);
-
-        // Assert
-        ex.Message.ShouldContain(message);
+        // Act & Assert
+        Func<Task> func = async () => await connector.GetChatClientAsync();
+        func.ShouldThrow(expected)
+            .Message.ShouldContain(message);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, typeof(ArgumentNullException), "model")]
     [InlineData("", typeof(ArgumentException), "model")]
-    public async Task Given_Missing_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
+    public void Given_Missing_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
     {
         // Arrange
         var settings = BuildAppSettings(model: model);
         var connector = new UpstageConnector(settings);
 
-        // Act
-        var ex = await Assert.ThrowsAsync(expected, connector.GetChatClientAsync);
-
-        // Assert
-        ex.Message.ShouldContain(message);
+        // Act & Assert
+        Func<Task> func = async () => await connector.GetChatClientAsync();
+        func.ShouldThrow(expected)
+            .Message.ShouldContain(message);
     }
 }
