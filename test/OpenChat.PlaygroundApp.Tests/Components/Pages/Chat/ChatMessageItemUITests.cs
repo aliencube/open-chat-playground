@@ -79,10 +79,12 @@ public class ChatMessageItemUITests : PageTest
             new { selector = ".assistant-message-text", expected = initialTextCount + 1 }
         );
         await Page.WaitForFunctionAsync(
-            @"selector => {
+            @"selector => 
+            {
                 const elements = document.querySelectorAll(selector);
                 const latest = elements[elements.length - 1];
-                if (!latest) {
+                if (latest == null) 
+                {
                     return false;
                 }
 
