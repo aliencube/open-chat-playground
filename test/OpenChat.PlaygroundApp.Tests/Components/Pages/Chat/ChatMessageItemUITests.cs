@@ -39,7 +39,7 @@ public class ChatMessageItemUITests : PageTest
     [Trait("Category", "IntegrationTest")]
     [Theory]
     [InlineData("Input usermessage")]
-    public async Task Given_UserMessage_When_Sent_Then_Latest_UserBubble_Should_Match_Input(string userMessage)
+    public async Task Given_UserMessage_When_Sent_Then_Rendered_Text_Should_Match_UserMessage(string userMessage)
     {
         // Arrange
         var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
@@ -58,34 +58,6 @@ public class ChatMessageItemUITests : PageTest
         var latestUserMessage = userMessages.Nth(initialCount);
         var renderedText = await latestUserMessage.InnerTextAsync();
         renderedText.ShouldBe(userMessage);
-    }
-
-
-    [Trait("Category", "IntegrationTest")]
-    [Trait("Category", "LLMRequired")]
-    [Theory]
-    [InlineData("Input usermessage")]
-    public async Task Given_AssistantResponse_When_MessageArrives_Then_Assistant_Icon_Should_Be_Visible(string userMessage)
-    {
-        // Arrange
-        var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
-        var assistantHeaders = Page.Locator(".assistant-message-header");
-        var assistantIcons = Page.Locator(".assistant-message-icon svg");
-        var initialHeaderCount = await assistantHeaders.CountAsync();
-
-        // Act
-        await textArea.FillAsync(userMessage);
-        await textArea.PressAsync("Enter");
-        await Page.WaitForFunctionAsync(
-            "args => document.querySelectorAll(args.selector).length >= args.expected",
-            new { selector = ".assistant-message-header", expected = initialHeaderCount + 1 }
-        );
-    
-        // Assert
-        var finalIconCount = await assistantIcons.CountAsync();
-        var iconIndex = finalIconCount - 1;
-        var iconVisible = await assistantIcons.Nth(iconIndex).IsVisibleAsync();
-        iconVisible.ShouldBeTrue();
     }
 
     [Trait("Category", "IntegrationTest")]
@@ -123,6 +95,33 @@ public class ChatMessageItemUITests : PageTest
         var latestAssistantText = assistantTexts.Nth(initialTextCount);
         var finalContent = await latestAssistantText.InnerTextAsync();
         finalContent.ShouldNotBeNullOrWhiteSpace();
+    }
+
+    [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "LLMRequired")]
+    [Theory]
+    [InlineData("Input usermessage")]
+    public async Task Given_AssistantResponse_When_Message_Arrives_Then_Assistant_Icon_Should_Be_Visible(string userMessage)
+    {
+        // Arrange
+        var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
+        var assistantHeaders = Page.Locator(".assistant-message-header");
+        var assistantIcons = Page.Locator(".assistant-message-icon svg");
+        var initialHeaderCount = await assistantHeaders.CountAsync();
+
+        // Act
+        await textArea.FillAsync(userMessage);
+        await textArea.PressAsync("Enter");
+        await Page.WaitForFunctionAsync(
+            "args => document.querySelectorAll(args.selector).length >= args.expected",
+            new { selector = ".assistant-message-header", expected = initialHeaderCount + 1 }
+        );
+    
+        // Assert
+        var finalIconCount = await assistantIcons.CountAsync();
+        var iconIndex = finalIconCount - 1;
+        var iconVisible = await assistantIcons.Nth(iconIndex).IsVisibleAsync();
+        iconVisible.ShouldBeTrue();
     }
 
     [Trait("Category", "IntegrationTest")]
