@@ -154,7 +154,7 @@ public class UpstageConnectorTests
         Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert
-        func.ShouldThrow<NullReferenceException>();
+        func.ShouldThrow<InvalidOperationException>();
     }
 
     [Trait("Category", "UnitTest")]
