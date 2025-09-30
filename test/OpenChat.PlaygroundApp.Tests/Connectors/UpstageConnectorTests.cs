@@ -135,6 +135,46 @@ public class UpstageConnectorTests
     }
 
     [Trait("Category", "UnitTest")]
+    [Fact]
+    public void Given_Settings_Is_Null_When_GetChatClientAsync_Invoked_Then_It_Should_Throw()
+    {
+        // Arrange
+        var appSettings = new AppSettings { ConnectorType = ConnectorType.Upstage, Upstage = null };
+        var connector = new UpstageConnector(appSettings);
+
+        // Act & Assert
+        Func<Task> func = async () => await connector.GetChatClientAsync();
+        func.ShouldThrow<NullReferenceException>();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Fact]
+    public async Task Given_Valid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Return_ChatClient()
+    {
+        // Arrange
+        var settings = BuildAppSettings();
+
+        // Act
+        var client = await LanguageModelConnector.CreateChatClientAsync(settings);
+
+        // Assert
+        client.ShouldNotBeNull();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Fact]
+    public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw()
+    {
+        // Arrange
+        var settings = BuildAppSettings(apiKey: null);
+
+        // Act & Assert
+        Func<Task> func = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
+        func.ShouldThrow<InvalidOperationException>()
+            .Message.ShouldContain("Upstage:ApiKey");
+    }
+
+    [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, typeof(InvalidOperationException), "Upstage:ApiKey")]
     [InlineData("", typeof(ArgumentException), "key")]
