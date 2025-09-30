@@ -31,13 +31,7 @@ public class LGConnector(AppSettings settings) : LanguageModelConnector(settings
             throw new InvalidOperationException("Missing configuration: LG:Model.");
         }
 
-        // Validate LG model format: should be HuggingFace format, LG model, or GGUF format
-        var model = settings.Model.Trim();
-        var isHuggingFaceFormat = model.StartsWith("hf.co/") || model.Contains("/");
-        var isLGModel = model.ToLowerInvariant().Contains("exaone") || model.ToLowerInvariant().Contains("lg");
-        var isGGUFFormat = model.ToLowerInvariant().EndsWith(".gguf") || model.ToLowerInvariant().Contains("gguf");
-
-        if (!isHuggingFaceFormat && !isLGModel && !isGGUFFormat)
+        if (IsValidModel(settings.Model) == false)
         {
             throw new InvalidOperationException("Invalid LG model format. Model should be HuggingFace format (hf.co/...), LG model (containing 'exaone' or 'lg'), or GGUF format (containing 'gguf').");
         }
@@ -61,5 +55,22 @@ public class LGConnector(AppSettings settings) : LanguageModelConnector(settings
         var chatClient = new OllamaApiClient(config);
 
         return await Task.FromResult(chatClient).ConfigureAwait(false);
+    }
+
+    private static bool IsValidModel(string model)
+    {
+        var trimmedModel = model.Trim();
+        var lowerModel = trimmedModel.ToLowerInvariant();
+
+        // HuggingFace format (hf.co/... or contains '/')
+        var isHuggingFaceFormat = trimmedModel.StartsWith("hf.co/") || trimmedModel.Contains("/");
+
+        // LG model (contains 'exaone' or 'lg')
+        var isLGModel = lowerModel.Contains("exaone") || lowerModel.Contains("lg");
+
+        // GGUF format (ends with '.gguf' or contains 'gguf')
+        var isGGUFFormat = lowerModel.EndsWith(".gguf") || lowerModel.Contains("gguf");
+
+        return isHuggingFaceFormat || isLGModel || isGGUFFormat;
     }
 }

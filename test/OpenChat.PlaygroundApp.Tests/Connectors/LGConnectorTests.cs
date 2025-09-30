@@ -111,29 +111,8 @@ public class LGConnectorTests
     }
 
     [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData("hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B-GGUF")]
-    [InlineData("LGAI-EXAONE/EXAONE-4.0-1.2B")]
-    [InlineData("lg-exaone-model")]
-    [InlineData("exaone-3.0")]
-    [InlineData("model.gguf")]
-    [InlineData("exaone-gguf-model")]
-    public void Given_Valid_Model_Format_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Return_True(string model)
-    {
-        // Arrange
-        var appSettings = BuildAppSettings(model: model);
-        var connector = new LGConnector(appSettings);
-
-        // Act
-        var result = connector.EnsureLanguageModelSettingsValid();
-
-        // Assert
-        result.ShouldBeTrue();
-    }
-
-    [Trait("Category", "UnitTest")]
     [Fact]
-    public void Given_Valid_Settings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Return_True()
+    public void Given_Valid_Model_Format_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Return_True()
     {
         // Arrange
         var appSettings = BuildAppSettings();
@@ -178,6 +157,22 @@ public class LGConnectorTests
         func.ShouldThrow(expected);
     }
 
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData(null, typeof(ArgumentNullException))]
+    [InlineData("", typeof(ArgumentException))]
+    public void Given_Missing_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expected)
+    {
+        // Arrange
+        var settings = BuildAppSettings(model: model);
+        var connector = new LGConnector(settings);
+
+        // Act
+        Func<Task> func = async () => await connector.GetChatClientAsync();
+
+        // Assert
+        func.ShouldThrow(expected);
+    }
 
     [Trait("Category", "UnitTest")]
     [Fact]
@@ -195,8 +190,13 @@ public class LGConnectorTests
     }
 
     [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw()
+    [Theory]
+    [InlineData(null, "hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B-GGUF", typeof(NullReferenceException))]
+    [InlineData("", "hf.co/LGAI-EXAONE/EXAONE-1.2B", typeof(InvalidOperationException))]
+    [InlineData("https://test.lg-exaone/api", null, typeof(NullReferenceException))]
+    [InlineData("https://test.lg-exaone/api", "", typeof(InvalidOperationException))]
+    [InlineData("https://test.lg-exaone/api", "invalid-model-format", typeof(InvalidOperationException))]
+    public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string? baseUrl, string? model, Type expectedType)
     {
         // Arrange
         var settings = new AppSettings
@@ -204,8 +204,8 @@ public class LGConnectorTests
             ConnectorType = ConnectorType.LG,
             LG = new LGSettings
             {
-                BaseUrl = null,
-                Model = "lg-exaone-model"
+                BaseUrl = baseUrl,
+                Model = model
             }
         };
 
@@ -213,6 +213,6 @@ public class LGConnectorTests
         Func<Task> func = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
 
         // Assert
-        func.ShouldThrow<NullReferenceException>();
+        func.ShouldThrow(expectedType);
     }
 }
