@@ -4,7 +4,6 @@ param location string = resourceGroup().location
 @description('Tags that will be applied to all resources')
 param tags object = {}
 
-
 param connectorType string = ''
 
 // Amazon Bedrock
@@ -50,6 +49,7 @@ module monitoring 'br/public:avm/ptn/azd/monitoring:0.2.1' = {
     tags: tags
   }
 }
+
 // Container registry
 module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.3' = {
   name: 'registry'
@@ -89,6 +89,7 @@ module openchatPlaygroundappIdentity 'br/public:avm/res/managed-identity/user-as
     location: location
   }
 }
+
 module openchatPlaygroundappFetchLatestImage './modules/fetch-container-image.bicep' = {
   name: 'openchatPlaygroundapp-fetch-image'
   params: {
@@ -103,6 +104,7 @@ var envConnectorType = connectorType != '' ? [
     value: connectorType
   }
 ] : []
+
 // Amazon Bedrock
 // Azure AI Foundry
 // GitHub Models
@@ -111,22 +113,22 @@ var envGitHubModels = (connectorType == '' || connectorType == 'GitHubModels') ?
     name: 'GitHubModels__Model'
     value: githubModelsModel
   }
-] : [], [
+] : [], githubModelsToken != '' ? [
   {
     name: 'GitHubModels__Token'
     secretRef: 'github-models-token'
   }
-]) : []
+] : []) : []
 // Google Vertex AI
 // Docker Model Runner
 // Foundry Local
 // Hugging Face
-var envHuggingFace = connectorType == 'HuggingFace' && huggingFaceModel != '' ? [
+var envHuggingFace = connectorType == 'HuggingFace' ? concat(huggingFaceModel != '' ? [
   {
     name: 'HuggingFace__Model'
     value: huggingFaceModel
   }
-] : []
+] : []) : []
 // Ollama
 // Anthropic
 // LG
@@ -154,12 +156,12 @@ module openchatPlaygroundapp 'br/public:avm/res/app/container-app:0.18.1' = {
       minReplicas: 1
       maxReplicas: 10
     }
-    secrets: concat([
+    secrets: concat(githubModelsToken != '' ? [
       {
         name: 'github-models-token'
         value: githubModelsToken
       }
-    ], openAIApiKey != '' ? [
+    ] : [], openAIApiKey != '' ? [
       {
         name: 'openai-api-key'
         value: openAIApiKey
