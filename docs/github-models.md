@@ -40,10 +40,34 @@ This page describes to run OpenChat Playground (OCP) with GitHub Models integrat
 
     > For more details about GitHub PAT, refer to the doc, [Managing your personal access tokens](https://docs.github.com/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
 
-1. Run the app.
+1. Run the app. The default model OCP uses is [GPT-4o mini](https://github.com/marketplace/models/azure-openai/gpt-4o-mini).
 
     ```bash
-    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- --connector-type GitHubModels
+    # bash/zsh
+    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- \
+        --connector-type GitHubModels
+    ```
+
+    ```powershell
+    # PowerShell
+    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- `
+        --connector-type GitHubModels
+    ```
+
+   Alternatively, if you want to run with a different model, say [Grok 3 mini](https://github.com/marketplace/models/azureml-xai/grok-3-mini), other than the default one, you can specify it as an argument:
+
+    ```bash
+    # bash/zsh
+    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- \
+        --connector-type GitHubModels \
+        --model xai/grok-3-mini
+    ```
+
+    ```powershell
+    # PowerShell
+    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- `
+        --connector-type GitHubModels `
+        --model xai/grok-3-mini
     ```
 
 1. Open your web browser, navigate to `http://localhost:5280`, and enter prompts.
@@ -79,13 +103,65 @@ This page describes to run OpenChat Playground (OCP) with GitHub Models integrat
 1. Run the app.
 
     ```bash
-    # From locally built container
-    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type GitHubModels --token $TOKEN
+    # bash/zsh - From locally built container
+    docker run -i --rm -p 8080:8080 openchat-playground:latest \
+        --connector-type GitHubModels \
+        --token $TOKEN
+    ```
+
+    ```powershell
+    # PowerShell - From locally built container
+    docker run -i --rm -p 8080:8080 openchat-playground:latest `
+        --connector-type GitHubModels `
+        --token $TOKEN
     ```
 
     ```bash
-    # From GitHub Container Registry
-    docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest --connector-type GitHubModels --token $TOKEN
+    # bash/zsh - From GitHub Container Registry
+    docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest \
+        --connector-type GitHubModels \
+        --token $TOKEN
+    ```
+
+    ```powershell
+    # PowerShell - From GitHub Container Registry
+    docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest `
+        --connector-type GitHubModels `
+        --token $TOKEN
+    ```
+
+   Alternatively, if you want to run with a different model, say [Grok 3 mini](https://github.com/marketplace/models/azureml-xai/grok-3-mini), other than the default one, you can specify it as an argument:
+
+    ```bash
+    # bash/zsh - From locally built container
+    docker run -i --rm -p 8080:8080 openchat-playground:latest \
+        --connector-type GitHubModels \
+        --token $TOKEN \
+        --model xai/grok-3-mini
+    ```
+
+    ```powershell
+    # PowerShell - From locally built container
+    docker run -i --rm -p 8080:8080 openchat-playground:latest `
+        --connector-type GitHubModels `
+        --token $TOKEN `
+        --model xai/grok-3-mini
+    ```
+
+    ```bash
+    # bash/zsh - From GitHub Container Registry
+    docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest \
+        --connector-type GitHubModels \
+        --token $TOKEN \
+        --model xai/grok-3-mini
+    ```
+
+    ```powershell
+    # PowerShell - From GitHub Container Registry
+    docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest `
+        --connector-type GitHubModels `
+        --token $TOKEN `
+        --model xai/grok-3-mini
     ```
 
 1. Open your web browser, navigate to `http://localhost:8080`, and enter prompts.
@@ -140,7 +216,7 @@ This page describes to run OpenChat Playground (OCP) with GitHub Models integrat
     azd env set GH_MODELS_TOKEN $TOKEN
     ```
 
-   Optionally, if you want to run with a different model, say [Grok 3 mini](https://github.com/marketplace/models/azureml-xai/grok-3-mini), other than the default one, add it to azd environment variables.
+   Alternatively, if you want to run with a different model, say [Grok 3 mini](https://github.com/marketplace/models/azureml-xai/grok-3-mini), other than the default one, add it to azd environment variables.
 
     ```bash
     azd env set GH_MODELS_MODEL "xai/grok-3-mini"
