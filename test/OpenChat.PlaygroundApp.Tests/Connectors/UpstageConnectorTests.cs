@@ -47,8 +47,10 @@ public class UpstageConnectorTests
         var appSettings = new AppSettings { ConnectorType = ConnectorType.Upstage, Upstage = null };
         var connector = new UpstageConnector(appSettings);
 
-        // Act & Assert
+        // Act
         Action action = () => connector.EnsureLanguageModelSettingsValid();
+
+        // Assert
         action.ShouldThrow<InvalidOperationException>()
               .Message.ShouldContain("Upstage");
     }
@@ -64,8 +66,10 @@ public class UpstageConnectorTests
         var appSettings = BuildAppSettings(baseUrl: baseUrl);
         var connector = new UpstageConnector(appSettings);
 
-        // Act & Assert
+        // Act
         Action action = () => connector.EnsureLanguageModelSettingsValid();
+
+        // Assert
         action.ShouldThrow(expectedType)
               .Message.ShouldContain(expectedMessage);
     }
@@ -81,8 +85,10 @@ public class UpstageConnectorTests
         var appSettings = BuildAppSettings(apiKey: apiKey);
         var connector = new UpstageConnector(appSettings);
 
-        // Act & Assert
+        // Act
         Action action = () => connector.EnsureLanguageModelSettingsValid();
+
+        // Assert
         action.ShouldThrow(expectedType)
               .Message.ShouldContain(expectedMessage);
     }
@@ -98,8 +104,10 @@ public class UpstageConnectorTests
         var appSettings = BuildAppSettings(model: model);
         var connector = new UpstageConnector(appSettings);
 
-        // Act & Assert
+        // Act
         Action action = () => connector.EnsureLanguageModelSettingsValid();
+
+        // Assert
         action.ShouldThrow(expectedType)
               .Message.ShouldContain(expectedMessage);
     }
@@ -142,8 +150,10 @@ public class UpstageConnectorTests
         var appSettings = new AppSettings { ConnectorType = ConnectorType.Upstage, Upstage = null };
         var connector = new UpstageConnector(appSettings);
 
-        // Act & Assert
+        // Act
         Func<Task> func = async () => await connector.GetChatClientAsync();
+
+        // Assert
         func.ShouldThrow<NullReferenceException>();
     }
 
@@ -168,8 +178,10 @@ public class UpstageConnectorTests
         // Arrange
         var settings = BuildAppSettings(apiKey: null);
 
-        // Act & Assert
+        // Act
         Func<Task> func = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
+
+        // Assert
         func.ShouldThrow<InvalidOperationException>()
             .Message.ShouldContain("Upstage:ApiKey");
     }
@@ -184,8 +196,10 @@ public class UpstageConnectorTests
         var settings = BuildAppSettings(apiKey: apiKey);
         var connector = new UpstageConnector(settings);
 
-        // Act & Assert
+        // Act
         Func<Task> func = async () => await connector.GetChatClientAsync();
+
+        // Assert
         func.ShouldThrow(expected)
             .Message.ShouldContain(message);
     }
@@ -200,8 +214,10 @@ public class UpstageConnectorTests
         var settings = BuildAppSettings(baseUrl: baseUrl);
         var connector = new UpstageConnector(settings);
 
-        // Act & Assert
+        // Act
         Func<Task> func = async () => await connector.GetChatClientAsync();
+
+        // Assert
         func.ShouldThrow(expected)
             .Message.ShouldContain(message);
     }
@@ -216,8 +232,10 @@ public class UpstageConnectorTests
         var settings = BuildAppSettings(model: model);
         var connector = new UpstageConnector(settings);
 
-        // Act & Assert
+        // Act
         Func<Task> func = async () => await connector.GetChatClientAsync();
+
+        // Assert
         func.ShouldThrow(expected)
             .Message.ShouldContain(message);
     }
