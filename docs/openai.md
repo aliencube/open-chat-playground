@@ -40,7 +40,7 @@ This page describes how to run OpenChat Playground (OCP) with OpenAI GPT integra
 
     > For more details about OpenAI API Keys, refer to the doc, [API Keys](https://platform.openai.com/api-keys).
 
-1. Run the app.
+1. Run the app. The default model OCP uses is [GPT-4.1-mini](https://platform.openai.com/docs/models/gpt-4.1-mini).
 
     ```bash
     # bash/zsh
@@ -54,7 +54,7 @@ This page describes how to run OpenChat Playground (OCP) with OpenAI GPT integra
         --connector-type OpenAI
     ```
 
-    Optionally, if you want to run with a different model, say [GPT-4o](https://platform.openai.com/docs/models/gpt-4o), other than the default one, you can specify it via command line:
+   Alternatively, if you want to run with a different model, say [GPT-4o](https://platform.openai.com/docs/models/gpt-4o), other than the default one, you can specify it as an argument:
 
     ```bash
     # bash/zsh
@@ -100,45 +100,45 @@ This page describes how to run OpenChat Playground (OCP) with OpenAI GPT integra
                 Select-String -NotMatch '^//(BEGIN|END)' | ConvertFrom-Json).'OpenAI:ApiKey'
     ```
 
-1. Run the app.
+1. Run the app. The default model OCP uses is [GPT-4.1-mini](https://platform.openai.com/docs/models/gpt-4.1-mini).
 
     ```bash
-    # bash/zsh - From locally built container
+    # bash/zsh - from locally built container
     docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type OpenAI \
         --api-key $API_KEY
     ```
 
     ```powershell
-    # PowerShell - From locally built container
+    # PowerShell - from locally built container
     docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type OpenAI `
         --api-key $API_KEY
     ```
 
     ```bash
-    # bash/zsh - From GitHub Container Registry
+    # bash/zsh - from GitHub Container Registry
     docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest \
         --connector-type OpenAI \
         --api-key $API_KEY
     ```
 
     ```powershell
-    # PowerShell - From GitHub Container Registry
+    # PowerShell - from GitHub Container Registry
     docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest `
         --connector-type OpenAI `
         --api-key $API_KEY
     ```
 
-    Optionally, if you want to run with a different model, say [GPT-4o](https://platform.openai.com/docs/models/gpt-4o), other than the default one, you can specify it via command line:
+   Alternatively, if you want to run with a different model, say [GPT-4o](https://platform.openai.com/docs/models/gpt-4o), other than the default one, you can specify it as an argument:
 
     ```bash
-    # bash/zsh - From locally built container with custom model
+    # bash/zsh - from locally built container with custom model
     docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type OpenAI \
         --api-key $API_KEY \
         --model gpt-4o
     ```
 
     ```powershell
-    # PowerShell - From locally built container with custom model
+    # PowerShell - from locally built container with custom model
     docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type OpenAI `
         --api-key $API_KEY `
         --model gpt-4o
@@ -194,7 +194,7 @@ This page describes how to run OpenChat Playground (OCP) with OpenAI GPT integra
     azd env set OPENAI_API_KEY $API_KEY
     ```
 
-    Optionally, if you want to run with a different model, say [gpt-4o](https://platform.openai.com/docs/models/gpt-4o), other than the default one, add it to azd environment variables.
+   The default model OCP uses is [GPT-4.1-mini](https://platform.openai.com/docs/models/gpt-4.1-mini). If you want to run with a different model, say [gpt-4o](https://platform.openai.com/docs/models/gpt-4o), other than the default one, add it to azd environment variables.
 
     ```bash
     azd env set OPENAI_MODEL gpt-4o
