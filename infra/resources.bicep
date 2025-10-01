@@ -109,7 +109,7 @@ var envConnectorType = connectorType != '' ? [
 ] : []
 // Amazon Bedrock
 // Azure AI Foundry
-var envAzureAIFoundry = (connectorType == 'AzureAIFoundry') ? concat(azureAIFoundryEndpoint != '' ? [
+var envAzureAIFoundry = connectorType == 'AzureAIFoundry' ? concat(azureAIFoundryEndpoint != '' ? [
   {
     name: 'AzureAIFoundry__Endpoint'
     value: azureAIFoundryEndpoint
@@ -119,12 +119,12 @@ var envAzureAIFoundry = (connectorType == 'AzureAIFoundry') ? concat(azureAIFoun
     name: 'AzureAIFoundry__DeploymentName'
     value: azureAIFoundryDeploymentName
   }
-] : [], [
+] : [], azureAIFoundryApiKey != '' ? [
   {
     name: 'AzureAIFoundry__ApiKey'
     secretRef: 'azure-ai-foundry-api-key'
   }
-]) : []
+]: []) : []
 // GitHub Models
 var envGitHubModels = (connectorType == '' || connectorType == 'GitHubModels') ? concat(githubModelsModel != '' ? [
   {
