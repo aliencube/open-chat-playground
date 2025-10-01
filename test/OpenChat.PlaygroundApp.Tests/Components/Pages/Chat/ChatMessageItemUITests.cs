@@ -73,7 +73,7 @@ public class ChatMessageItemUITests : PageTest
         var newAssistantText = assistantTexts.Nth(initialTextCount);
         await newAssistantText.WaitForAsync(new() { State = WaitForSelectorState.Attached });
         // Assert
-        var finalContent = (await newAssistantText.InnerTextAsync())?.Trim();
+        var finalContent = await newAssistantText.InnerTextAsync();
         finalContent.ShouldNotBeNullOrWhiteSpace();
     }
 
