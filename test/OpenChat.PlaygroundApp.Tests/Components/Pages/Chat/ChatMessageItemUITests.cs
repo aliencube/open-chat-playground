@@ -1,4 +1,3 @@
-using System;
 using Microsoft.Playwright;
 using Microsoft.Playwright.Xunit;
 
@@ -72,6 +71,7 @@ public class ChatMessageItemUITests : PageTest
         await textArea.PressAsync("Enter");
         var newAssistantText = assistantTexts.Nth(initialTextCount);
         await newAssistantText.WaitForAsync(new() { State = WaitForSelectorState.Attached });
+    
         // Assert
         var finalContent = await newAssistantText.InnerTextAsync();
         finalContent.ShouldNotBeNullOrWhiteSpace();
