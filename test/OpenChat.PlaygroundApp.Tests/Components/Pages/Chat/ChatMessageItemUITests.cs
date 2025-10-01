@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Microsoft.Playwright;
 using Microsoft.Playwright.Xunit;
 
@@ -26,10 +27,8 @@ public class ChatMessageItemUITests : PageTest
         // Act
         await textArea.FillAsync(userMessage);
         await textArea.PressAsync("Enter");
-        await Page.WaitForFunctionAsync(
-            "args => document.querySelectorAll(args.selector).length >= args.expected",
-            new { selector = ".user-message", expected = initialCount + 1 }
-        );
+        var newUserMessage = userMessages.Nth(initialCount);
+        await newUserMessage.WaitForAsync(new() { State = WaitForSelectorState.Attached });
 
         // Assert
         var finalCount = await userMessages.CountAsync();
@@ -49,10 +48,8 @@ public class ChatMessageItemUITests : PageTest
         // Act
         await textArea.FillAsync(userMessage);
         await textArea.PressAsync("Enter");
-        await Page.WaitForFunctionAsync(
-            "args => document.querySelectorAll(args.selector).length >= args.expected",
-            new { selector = ".user-message", expected = initialCount + 1 }
-        );
+        var newUserMessage = userMessages.Nth(initialCount);
+        await newUserMessage.WaitForAsync(new() { State = WaitForSelectorState.Attached });
 
         // Assert
         var latestUserMessage = userMessages.Nth(initialCount);
@@ -74,28 +71,10 @@ public class ChatMessageItemUITests : PageTest
         // Act
         await textArea.FillAsync(userMessage);
         await textArea.PressAsync("Enter");
-        await Page.WaitForFunctionAsync(
-            "args => document.querySelectorAll(args.selector).length >= args.expected",
-            new { selector = ".assistant-message-text", expected = initialTextCount + 1 }
-        );
-        await Page.WaitForFunctionAsync(
-            @"selector => 
-            {
-                const elements = document.querySelectorAll(selector);
-                const latest = elements[elements.length - 1];
-                if (latest == null) 
-                {
-                    return false;
-                }
-
-                return latest.innerText?.trim().length > 0;
-            }",
-            ".assistant-message-text"
-        );
-
+        var newAssistantText = assistantTexts.Nth(initialTextCount);
+        await newAssistantText.WaitForAsync(new() { State = WaitForSelectorState.Attached });
         // Assert
-        var latestAssistantText = assistantTexts.Nth(initialTextCount);
-        var finalContent = await latestAssistantText.InnerTextAsync();
+        var finalContent = (await newAssistantText.InnerTextAsync())?.Trim();
         finalContent.ShouldNotBeNullOrWhiteSpace();
     }
 
@@ -114,10 +93,8 @@ public class ChatMessageItemUITests : PageTest
         // Act
         await textArea.FillAsync(userMessage);
         await textArea.PressAsync("Enter");
-        await Page.WaitForFunctionAsync(
-            "args => document.querySelectorAll(args.selector).length >= args.expected",
-            new { selector = ".assistant-message-header", expected = initialHeaderCount + 1 }
-        );
+        var newAssistantHeader = assistantHeaders.Nth(initialHeaderCount);
+        await newAssistantHeader.WaitForAsync(new() { State = WaitForSelectorState.Attached });
     
         // Assert
         var finalIconCount = await assistantIcons.CountAsync();
