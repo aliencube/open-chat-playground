@@ -13,6 +13,14 @@ if (settings.Help == true)
     return;
 }
 
+var section = config.GetSection(settings.ConnectorType.ToString());
+settings.Model = settings.ConnectorType switch
+{
+    OpenChat.PlaygroundApp.Connectors.ConnectorType.AzureAIFoundry => section.GetValue<string>("DeploymentName"),
+    OpenChat.PlaygroundApp.Connectors.ConnectorType.FoundryLocal => section.GetValue<string>("Alias"),
+    _ => section.GetValue<string>("Model")
+};
+
 builder.Services.AddSingleton(settings);
 
 builder.Services.AddRazorComponents()
