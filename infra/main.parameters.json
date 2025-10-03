@@ -20,6 +20,12 @@
     "huggingFaceModel": {
       "value": "${HUGGING_FACE_MODEL}"
     },
+    "ollamaModel": {
+        "value": "${OLLAMA_MODEL}"
+    },
+    "ollamaBaseUrl": {
+        "value": "${OLLAMA_BASE_URL}"
+    },
     "openAIModel": {
       "value": "${OPENAI_MODEL}"
     },

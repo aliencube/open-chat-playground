@@ -18,6 +18,8 @@ param githubModelsToken string = ''
 // Hugging Face
 param huggingFaceModel string = ''
 // Ollama
+param ollamaModel string = ''
+param ollamaBaseUrl string = ''
 // Anthropic
 // LG
 // Naver
@@ -130,6 +132,20 @@ var envHuggingFace = connectorType == 'HuggingFace' ? concat(huggingFaceModel !=
   }
 ] : []) : []
 // Ollama
+var envOllama = connectorType == 'Ollama' ? concat(
+  ollamaModel != '' ? [
+    {
+      name: 'Ollama__Model'
+      value: ollamaModel
+    }
+  ] : [],
+  ollamaBaseUrl != '' ? [
+    {
+      name: 'Ollama__BaseUrl'
+      value: ollamaBaseUrl
+    }
+  ] : []
+) : []
 // Anthropic
 // LG
 // Naver
@@ -191,6 +207,7 @@ module openchatPlaygroundapp 'br/public:avm/res/app/container-app:0.18.1' = {
           envConnectorType,
           envGitHubModels,
           envHuggingFace,
+          envOllama,
           envOpenAI)
       }
     ]
