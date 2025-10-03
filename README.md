@@ -2,6 +2,8 @@
 
 Open Chat Playground (OCP) is a web UI that is able to connect virtually any LLM from any platform.
 
+![OpenChat Playground - hero image](./images/ocp-hero.png)
+
 ## Supported platforms
 
 - [ ] [Amazon Bedrock](https://docs.aws.amazon.com/bedrock)
