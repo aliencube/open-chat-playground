@@ -226,17 +226,26 @@ public class UpstageConnectorTests
     }
 
     [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw()
+    [Theory]
+    [InlineData("apiKey", null, typeof(InvalidOperationException), "Upstage:ApiKey")]
+    [InlineData("baseUrl", null, typeof(InvalidOperationException), "Upstage:BaseUrl")]
+    [InlineData("model", null, typeof(InvalidOperationException), "Upstage:Model")]
+    public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string parameterName, string? nullValue, Type expectedType, string expectedMessage)
     {
         // Arrange
-        var settings = BuildAppSettings(apiKey: null);
+        var settings = parameterName switch
+        {
+            "apiKey" => BuildAppSettings(apiKey: nullValue),
+            "baseUrl" => BuildAppSettings(baseUrl: nullValue),
+            "model" => BuildAppSettings(model: nullValue),
+            _ => throw new ArgumentException($"Unknown parameter: {parameterName}")
+        };
 
         // Act
         Func<Task> func = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
 
         // Assert
-        func.ShouldThrow<InvalidOperationException>()
-            .Message.ShouldContain("Upstage:ApiKey");
+        func.ShouldThrow(expectedType)
+            .Message.ShouldContain(expectedMessage);
     }
 }
