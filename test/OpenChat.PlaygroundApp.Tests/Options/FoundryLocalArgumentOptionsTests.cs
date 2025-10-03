@@ -179,8 +179,7 @@ public class FoundryLocalArgumentOptionsTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("env-foundry-local-alias")]
-    public void Given_EnvironmentVariables_And_No_Config_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(
-        string envAlias)
+    public void Given_EnvironmentVariables_And_No_Config_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(string envAlias)
     {
         // Arrange
         var config = BuildConfigWithFoundryLocal(
@@ -199,8 +198,7 @@ public class FoundryLocalArgumentOptionsTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("config-foundry-local-alias", "env-foundry-local-alias")]
-    public void Given_ConfigValues_And_EnvironmentVariables_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(
-        string configAlias, string envAlias)
+    public void Given_ConfigValues_And_EnvironmentVariables_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(string configAlias, string envAlias)
     {
         // Arrange
         var config = BuildConfigWithFoundryLocal(configAlias, envAlias);
@@ -285,8 +283,7 @@ public class FoundryLocalArgumentOptionsTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("env-foundry-local-alias")]
-    public void Given_EnvironmentVariables_Only_When_Parse_Invoked_Then_Help_Should_Be_False(
-        string envAlias)
+    public void Given_EnvironmentVariables_Only_When_Parse_Invoked_Then_Help_Should_Be_False(string envAlias)
     {
         // Arrange
         var config = BuildConfigWithFoundryLocal(
