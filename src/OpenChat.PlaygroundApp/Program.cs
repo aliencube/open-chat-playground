@@ -13,6 +13,8 @@ if (settings.Help == true)
     return;
 }
 
+builder.Services.AddSingleton(settings);
+
 builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
