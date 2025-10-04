@@ -52,7 +52,7 @@ public class UpstageConnectorTests
 
         // Assert
         action.ShouldThrow<InvalidOperationException>()
-              .Message.ShouldContain("Upstage");
+              .Message.ShouldContain("Missing configuration: Upstage.");
     }
 
     [Trait("Category", "UnitTest")]
@@ -154,7 +154,8 @@ public class UpstageConnectorTests
         Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert
-        func.ShouldThrow<InvalidOperationException>();
+        func.ShouldThrow<InvalidOperationException>()
+            .Message.ShouldContain("Missing configuration: Upstage:ApiKey.");
     }
 
     [Trait("Category", "UnitTest")]
