@@ -50,7 +50,7 @@ This page describes to run OpenChat Playground (OCP) with Azure AI Foundry integ
         set AzureAIFoundry:DeploymentName "gpt-4o-mini"
     ```
 
-    > For more details about Azure AI Foundry, refer to the doc, [Azure AI Foundry Documentation](https://docs.microsoft.com/azure/ai-services/).
+    > To get an Azure AI Foundry instance, its API endpoint and key, refer to the doc, [Get started with Azure AI Foundry](https://learn.microsoft.com/en-us/azure/ai-foundry/quickstarts/get-started-code?tabs=csharp#set-up-your-environment).
 
 1. Run the app.
 
