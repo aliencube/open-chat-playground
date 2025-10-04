@@ -8,6 +8,10 @@ param connectorType string = ''
 
 // Amazon Bedrock
 // Azure AI Foundry
+param azureAIFoundryEndpoint string = ''
+@secure()
+param azureAIFoundryApiKey string = ''
+param azureAIFoundryDeploymentName string = ''
 // GitHub Models
 param githubModelsModel string = ''
 @secure()
@@ -107,6 +111,22 @@ var envConnectorType = connectorType != '' ? [
 
 // Amazon Bedrock
 // Azure AI Foundry
+var envAzureAIFoundry = connectorType == 'AzureAIFoundry' ? concat(azureAIFoundryEndpoint != '' ? [
+  {
+    name: 'AzureAIFoundry__Endpoint'
+    value: azureAIFoundryEndpoint
+  }
+] : [], azureAIFoundryDeploymentName != '' ? [
+  {
+    name: 'AzureAIFoundry__DeploymentName'
+    value: azureAIFoundryDeploymentName
+  }
+] : [], azureAIFoundryApiKey != '' ? [
+  {
+    name: 'AzureAIFoundry__ApiKey'
+    secretRef: 'azure-ai-foundry-api-key'
+  }
+]: []) : []
 // GitHub Models
 var envGitHubModels = (connectorType == '' || connectorType == 'GitHubModels') ? concat(githubModelsModel != '' ? [
   {
@@ -156,7 +176,12 @@ module openchatPlaygroundapp 'br/public:avm/res/app/container-app:0.18.1' = {
       minReplicas: 1
       maxReplicas: 10
     }
-    secrets: concat(githubModelsToken != '' ? [
+    secrets: concat(azureAIFoundryApiKey != '' ? [
+      {
+        name: 'azure-ai-foundry-api-key'
+        value: azureAIFoundryApiKey
+      }
+    ] : [], githubModelsToken != '' ? [
       {
         name: 'github-models-token'
         value: githubModelsToken
@@ -189,6 +214,7 @@ module openchatPlaygroundapp 'br/public:avm/res/app/container-app:0.18.1' = {
             value: '8080'
           }],
           envConnectorType,
+          envAzureAIFoundry,
           envGitHubModels,
           envHuggingFace,
           envOpenAI)
