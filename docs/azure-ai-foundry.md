@@ -1,4 +1,4 @@
-# OpenChat Playground with Azure AI Foundry
+# OpenChat Playground with [Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/what-is-azure-ai-foundry)
 
 This page describes to run OpenChat Playground (OCP) with Azure AI Foundry integration.
 
