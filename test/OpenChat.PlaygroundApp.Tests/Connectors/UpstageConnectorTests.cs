@@ -229,8 +229,17 @@ public class UpstageConnectorTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("apiKey", null, typeof(InvalidOperationException), "Upstage:ApiKey")]
+    [InlineData("apiKey", "", typeof(InvalidOperationException), "Upstage:ApiKey")]
+    [InlineData("apiKey", "   ", typeof(InvalidOperationException), "Upstage:ApiKey")]
+    [InlineData("apiKey", "\t\n\r", typeof(InvalidOperationException), "Upstage:ApiKey")]
     [InlineData("baseUrl", null, typeof(InvalidOperationException), "Upstage:BaseUrl")]
+    [InlineData("baseUrl", "", typeof(InvalidOperationException), "Upstage:BaseUrl")]
+    [InlineData("baseUrl", "   ", typeof(InvalidOperationException), "Upstage:BaseUrl")]
+    [InlineData("baseUrl", "\t\n\r", typeof(InvalidOperationException), "Upstage:BaseUrl")]
     [InlineData("model", null, typeof(InvalidOperationException), "Upstage:Model")]
+    [InlineData("model", "", typeof(InvalidOperationException), "Upstage:Model")]
+    [InlineData("model", "   ", typeof(InvalidOperationException), "Upstage:Model")]
+    [InlineData("model", "\t\n\r", typeof(InvalidOperationException), "Upstage:Model")]
     public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string parameterName, string? nullValue, Type expectedType, string expectedMessage)
     {
         // Arrange
