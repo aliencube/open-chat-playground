@@ -1,6 +1,6 @@
 # OpenChat Playground with Hugging Face
 
-This page describes how to run OpenChat Playground (OCP) with Hugging Face integration.
+This page describes how to run OpenChat Playground (OCP) with [Hugging Face models](https://huggingface.co/models) integration.
 
 ## Get the repository root
 

@@ -1,6 +1,6 @@
 # OpenChat Playground with GitHub Models
 
-This page describes to run OpenChat Playground (OCP) with GitHub Models integration.
+This page describes to run OpenChat Playground (OCP) with [GitHub Models](https://github.com/marketplace?type=models) integration.
 
 ## Get the repository root
 
