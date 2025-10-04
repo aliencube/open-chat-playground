@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.Extensions.AI;
 using Microsoft.OpenApi.Models;
@@ -82,17 +84,39 @@ app.MapRazorComponents<App>()
 await app.RunAsync();
 
 // 👇👇👇 OpenAPI - TO BE REFACTORED
+/// <summary>
+/// This represents the chat request entity.
+/// </summary>
 public class ChatRequest
 {
-    public string? Role { get; set; }
-    public string? Message { get; set; }
+    /// <summary>
+    /// Gets or sets the role of the message sender.
+    /// </summary>
+    [Required]
+    public string Role { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the message content.
+    /// </summary>
+    [Required]
+    public string Message { get; set; } = string.Empty;
 }
 
+/// <summary>
+/// This represents the chat response entity.
+/// </summary>
 public class ChatResponse
 {
-    public string? Message { get; set; }
+    /// <summary>
+    /// Gets or sets the message content.
+    /// </summary>
+    [Required]
+    public string Message { get; set; } = string.Empty;
 }
 
+/// <summary>
+/// This represents the transformer entity for OpenAPI document.
+/// </summary>
 public class OpenApiDocumentTransformer(IHttpContextAccessor accessor) : IOpenApiDocumentTransformer
 {
     /// <inheritdoc />
