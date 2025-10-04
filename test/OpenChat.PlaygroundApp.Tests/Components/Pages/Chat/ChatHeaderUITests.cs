@@ -26,6 +26,19 @@ public class ChatHeaderUITests : PageTest
 
     [Trait("Category", "IntegrationTest")]
     [Fact]
+    public async Task Given_Root_Page_When_Loaded_Then_Header_Should_Display_ConnectorType_And_Model()
+    {
+        // Act
+        var connector = await Page.Locator("span.app-connector").InnerTextAsync();
+        var model = await Page.Locator("span.app-model").InnerTextAsync();
+
+        // Assert
+        connector.ShouldNotBeNullOrEmpty();
+        model.ShouldNotBeNullOrEmpty();
+    }
+
+    [Trait("Category", "IntegrationTest")]
+    [Fact]
     public async Task Given_Root_Page_When_Loaded_Then_NewChat_Button_Should_Be_Visible()
     {
         // Arrange
