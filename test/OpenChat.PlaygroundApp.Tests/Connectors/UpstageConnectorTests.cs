@@ -240,14 +240,14 @@ public class UpstageConnectorTests
     [InlineData("model", "", typeof(InvalidOperationException), "Upstage:Model")]
     [InlineData("model", "   ", typeof(InvalidOperationException), "Upstage:Model")]
     [InlineData("model", "\t\n\r", typeof(InvalidOperationException), "Upstage:Model")]
-    public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string parameterName, string? nullValue, Type expectedType, string expectedMessage)
+    public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string parameterName, string? invalidValue, Type expectedType, string expectedMessage)
     {
         // Arrange
         var settings = parameterName switch
         {
-            "apiKey" => BuildAppSettings(apiKey: nullValue),
-            "baseUrl" => BuildAppSettings(baseUrl: nullValue),
-            "model" => BuildAppSettings(model: nullValue),
+            "apiKey" => BuildAppSettings(apiKey: invalidValue),
+            "baseUrl" => BuildAppSettings(baseUrl: invalidValue),
+            "model" => BuildAppSettings(model: invalidValue),
             _ => throw new ArgumentException($"Unknown parameter: {parameterName}")
         };
 
