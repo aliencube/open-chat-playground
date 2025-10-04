@@ -24,30 +24,18 @@ This page describes to run OpenChat Playground (OCP) with Azure AI Foundry integ
     cd $REPOSITORY_ROOT
     ```
 
-1. Add Azure AI Foundry configuration for Azure AI Foundry connection. Make sure you should replace `{{AZURE_ENDPOINT}}` and `{{AZURE_API_KEY}}` with your Azure AI Foundry endpoint and API key.
+1. Add Azure AI Foundry API Key for Azure AI Foundry connection. Make sure you should replace `{{AZURE_AI_FOUNDRY_API_KEY}}` with your Azure AI Foundry API key.
 
     ```bash
     # bash/zsh
     dotnet user-secrets --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp \
-        set AzureAIFoundry:Endpoint "{{AZURE_ENDPOINT}}"
-
-    dotnet user-secrets --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp \
-        set AzureAIFoundry:ApiKey "{{AZURE_API_KEY}}"
-
-    dotnet user-secrets --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp \
-        set AzureAIFoundry:DeploymentName "gpt-4o-mini"
+        set AzureAIFoundry:ApiKey "{{AZURE_AI_FOUNDRY_API_KEY}}"
     ```
 
     ```powershell
     # PowerShell
     dotnet user-secrets --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp `
-        set AzureAIFoundry:Endpoint "{{AZURE_ENDPOINT}}"
-
-    dotnet user-secrets --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp `
-        set AzureAIFoundry:ApiKey "{{AZURE_API_KEY}}"
-
-    dotnet user-secrets --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp `
-        set AzureAIFoundry:DeploymentName "gpt-4o-mini"
+        set AzureAIFoundry:ApiKey "{{AZURE_AI_FOUNDRY_API_KEY}}"
     ```
 
     > To get an Azure AI Foundry instance, its API endpoint and key, refer to the doc, [Get started with Azure AI Foundry](https://learn.microsoft.com/en-us/azure/ai-foundry/quickstarts/get-started-code?tabs=csharp#set-up-your-environment).
