@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Logging;
 

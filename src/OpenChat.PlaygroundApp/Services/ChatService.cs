@@ -34,23 +34,24 @@ public class ChatService(IChatClient chatClient, ILogger<ChatService> logger) : 
         ChatOptions? options = null,
         CancellationToken cancellationToken = default)
     {
-        if (messages.Count() < 2)
+        var chats = messages.ToList();
+        if (chats.Count < 2)
         {
             throw new ArgumentException("At least two messages are required", nameof(messages));
         }
 
-        if (messages.First().Role != ChatRole.System)
+        if (chats.First().Role != ChatRole.System)
         {
             throw new ArgumentException("The first message must be a system message", nameof(messages));
         }
 
-        if (messages.Skip(1).Take(1).First().Role != ChatRole.User)
+        if (chats.ElementAt(1).Role != ChatRole.User)
         {
             throw new ArgumentException("The second message must be a user message", nameof(messages));
         }
 
-        this._logger.LogInformation("Requesting chat response with {MessageCount} messages", messages.Count());
+        this._logger.LogInformation("Requesting chat response with {MessageCount} messages", chats.Count);
 
-        return this._chatClient.GetStreamingResponseAsync(messages, options, cancellationToken);
+        return this._chatClient.GetStreamingResponseAsync(chats, options, cancellationToken);
     }
 }
