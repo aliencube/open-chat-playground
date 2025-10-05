@@ -11,6 +11,8 @@ public class OllamaArgumentOptionsTests
 {
     private const string BaseUrl = "http://test-ollama";
     private const string Model = "test-model";
+    private const string BaseUrlConfigKey = "Ollama:BaseUrl";
+    private const string ModelConfigKey = "Ollama:Model";
 
     private static IConfiguration BuildConfigWithOllama(
         string? configBaseUrl = BaseUrl,
@@ -27,11 +29,11 @@ public class OllamaArgumentOptionsTests
 
         if (string.IsNullOrWhiteSpace(configBaseUrl) == false)
         {
-            configDict["Ollama:BaseUrl"] = configBaseUrl;
+            configDict[BaseUrlConfigKey] = configBaseUrl;
         }
         if (string.IsNullOrWhiteSpace(configModel) == false)
         {
-            configDict["Ollama:Model"] = configModel;
+            configDict[ModelConfigKey] = configModel;
         }
         if (string.IsNullOrWhiteSpace(envBaseUrl) == true &&
             string.IsNullOrWhiteSpace(envModel) == true)
@@ -45,11 +47,11 @@ public class OllamaArgumentOptionsTests
         var envDict = new Dictionary<string, string?>();
         if (string.IsNullOrWhiteSpace(envBaseUrl) == false)
         {
-            envDict["Ollama:BaseUrl"] = envBaseUrl;
+            envDict[BaseUrlConfigKey] = envBaseUrl;
         }
         if (string.IsNullOrWhiteSpace(envModel) == false)
         {
-            envDict["Ollama:Model"] = envModel;
+            envDict[ModelConfigKey] = envModel;
         }
 
         return new ConfigurationBuilder()

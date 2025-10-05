@@ -10,6 +10,8 @@ public class HuggingFaceArgumentOptionsTests
 {
     private const string BaseUrl = "https://test.huggingface.co/api";
     private const string Model = "hf-model-name";
+    private const string BaseUrlConfigKey = "HuggingFace:BaseUrl";
+    private const string ModelConfigKey = "HuggingFace:Model";
 
     private static IConfiguration BuildConfigWithHuggingFace(
         string? configBaseUrl = BaseUrl,
@@ -26,11 +28,11 @@ public class HuggingFaceArgumentOptionsTests
 
         if (string.IsNullOrWhiteSpace(configBaseUrl) == false)
         {
-            configDict["HuggingFace:BaseUrl"] = configBaseUrl;
+            configDict[BaseUrlConfigKey] = configBaseUrl;
         }
         if (string.IsNullOrWhiteSpace(configModel) == false)
         {
-            configDict["HuggingFace:Model"] = configModel;
+            configDict[ModelConfigKey] = configModel;
         }
 
         if (string.IsNullOrWhiteSpace(envBaseUrl) == true && string.IsNullOrWhiteSpace(envModel) == true)
@@ -44,11 +46,11 @@ public class HuggingFaceArgumentOptionsTests
         var envDict = new Dictionary<string, string?>();
         if (string.IsNullOrWhiteSpace(envBaseUrl) == false)
         {
-            envDict["HuggingFace:BaseUrl"] = envBaseUrl;
+            envDict[BaseUrlConfigKey] = envBaseUrl;
         }
         if (string.IsNullOrWhiteSpace(envModel) == false)
         {
-            envDict["HuggingFace:Model"] = envModel;
+            envDict[ModelConfigKey] = envModel;
         }
 
         return new ConfigurationBuilder()

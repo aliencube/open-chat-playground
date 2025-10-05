@@ -10,6 +10,8 @@ public class OpenAIArgumentOptionsTests
 {
     private const string ApiKey = "openai-key";
     private const string Model = "gpt-4.1-mini";
+    private const string ApiKeyConfigKey = "OpenAI:ApiKey";
+    private const string ModelConfigKey = "OpenAI:Model";
 
     private static IConfiguration BuildConfigWithOpenAI(
         string? configApiKey = ApiKey,
@@ -25,11 +27,11 @@ public class OpenAIArgumentOptionsTests
 
         if (string.IsNullOrWhiteSpace(configApiKey) == false)
         {
-            configDict["OpenAI:ApiKey"] = configApiKey;
+            configDict[ApiKeyConfigKey] = configApiKey;
         }
         if (string.IsNullOrWhiteSpace(configModel) == false)
         {
-            configDict["OpenAI:Model"] = configModel;
+            configDict[ModelConfigKey] = configModel;
         }
         if (string.IsNullOrWhiteSpace(envApiKey) == true &&
             string.IsNullOrWhiteSpace(envModel) == true)
@@ -43,11 +45,11 @@ public class OpenAIArgumentOptionsTests
         var envDict = new Dictionary<string, string?>();
         if (string.IsNullOrWhiteSpace(envApiKey) == false)
         {
-            envDict["OpenAI:ApiKey"] = envApiKey;
+            envDict[ApiKeyConfigKey] = envApiKey;
         }
         if (string.IsNullOrWhiteSpace(envModel) == false)
         {
-            envDict["OpenAI:Model"] = envModel;
+            envDict[ModelConfigKey] = envModel;
         }
 
         return new ConfigurationBuilder()

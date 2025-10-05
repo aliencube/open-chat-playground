@@ -12,6 +12,10 @@ public class AmazonBedrockArgumentOptionsTests
     private const string SecretAccessKey = "test-secret-access-key";
     private const string Region = "test-region";
     private const string ModelId = "test-model-id";
+    private const string AccessKeyIdConfigKey = "AmazonBedrock:AccessKeyId";
+    private const string SecretAccessKeyConfigKey = "AmazonBedrock:SecretAccessKey";
+    private const string RegionConfigKey = "AmazonBedrock:Region";
+    private const string ModelIdConfigKey = "AmazonBedrock:ModelId";
 
     private static IConfiguration BuildConfigWithAmazonBedrock(
         string? configAccessKeyId = AccessKeyId,
@@ -30,19 +34,19 @@ public class AmazonBedrockArgumentOptionsTests
 
         if (string.IsNullOrWhiteSpace(configAccessKeyId) == false)
         {
-            configDict["AmazonBedrock:AccessKeyId"] = configAccessKeyId;
+            configDict[AccessKeyIdConfigKey] = configAccessKeyId;
         }
         if (string.IsNullOrWhiteSpace(configSecretAccessKey) == false)
         {
-            configDict["AmazonBedrock:SecretAccessKey"] = configSecretAccessKey;
+            configDict[SecretAccessKeyConfigKey] = configSecretAccessKey;
         }
         if (string.IsNullOrWhiteSpace(configRegion) == false)
         {
-            configDict["AmazonBedrock:Region"] = configRegion;
+            configDict[RegionConfigKey] = configRegion;
         }
         if (string.IsNullOrWhiteSpace(configModelId) == false)
         {
-            configDict["AmazonBedrock:ModelId"] = configModelId;
+            configDict[ModelIdConfigKey] = configModelId;
         }
 
         if (string.IsNullOrWhiteSpace(envAccessKeyId) == true &&
@@ -58,19 +62,19 @@ public class AmazonBedrockArgumentOptionsTests
         var envDict = new Dictionary<string, string?>();
         if (string.IsNullOrWhiteSpace(envAccessKeyId) == false)
         {
-            envDict["AmazonBedrock:AccessKeyId"] = envAccessKeyId;
+            envDict[AccessKeyIdConfigKey] = envAccessKeyId;
         }
         if (string.IsNullOrWhiteSpace(envSecretAccessKey) == false)
         {
-            envDict["AmazonBedrock:SecretAccessKey"] = envSecretAccessKey;
+            envDict[SecretAccessKeyConfigKey] = envSecretAccessKey;
         }
         if (string.IsNullOrWhiteSpace(envRegion) == false)
         {
-            envDict["AmazonBedrock:Region"] = envRegion;
+            envDict[RegionConfigKey] = envRegion;
         }
         if (string.IsNullOrWhiteSpace(envModelId) == false)
         {
-            envDict["AmazonBedrock:ModelId"] = envModelId;
+            envDict[ModelIdConfigKey] = envModelId;
         }
 
         return new ConfigurationBuilder()

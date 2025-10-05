@@ -11,6 +11,8 @@ public class LGArgumentOptionsTests
 {
     private const string BaseUrl = "https://test.lg-exaone/api";
     private const string Model = "lg-exaone-model";
+    private const string BaseUrlConfigKey = "LG:BaseUrl";
+    private const string ModelConfigKey = "LG:Model";
 
     private static IConfiguration BuildConfigWithLG(
         string? configBaseUrl = BaseUrl,
@@ -27,11 +29,11 @@ public class LGArgumentOptionsTests
 
         if (string.IsNullOrWhiteSpace(configBaseUrl) == false)
         {
-            configDict["LG:BaseUrl"] = configBaseUrl;
+            configDict[BaseUrlConfigKey] = configBaseUrl;
         }
         if (string.IsNullOrWhiteSpace(configModel) == false)
         {
-            configDict["LG:Model"] = configModel;
+            configDict[ModelConfigKey] = configModel;
         }
         if (string.IsNullOrWhiteSpace(envBaseUrl) == true &&
             string.IsNullOrWhiteSpace(envModel) == true)
@@ -45,11 +47,11 @@ public class LGArgumentOptionsTests
         var envDict = new Dictionary<string, string?>();
         if (string.IsNullOrWhiteSpace(envBaseUrl) == false)
         {
-            envDict["LG:BaseUrl"] = envBaseUrl;
+            envDict[BaseUrlConfigKey] = envBaseUrl;
         }
         if (string.IsNullOrWhiteSpace(envModel) == false)
         {
-            envDict["LG:Model"] = envModel;
+            envDict[ModelConfigKey] = envModel;
         }
 
         return new ConfigurationBuilder()

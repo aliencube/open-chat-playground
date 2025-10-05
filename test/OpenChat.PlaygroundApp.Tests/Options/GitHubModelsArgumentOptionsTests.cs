@@ -11,6 +11,9 @@ public class GitHubModelsArgumentOptionsTests
     private const string Endpoint = "https://test.github-models/inference";
     private const string Token = "github-pat";
     private const string Model = "github-model-name";
+    private const string EndpointConfigKey = "GitHubModels:Endpoint";
+    private const string TokenConfigKey = "GitHubModels:Token";
+    private const string ModelConfigKey = "GitHubModels:Model";
 
     private static IConfiguration BuildConfigWithGitHubModels(
         string? configEndpoint = Endpoint,
@@ -28,15 +31,15 @@ public class GitHubModelsArgumentOptionsTests
 
         if (string.IsNullOrWhiteSpace(configEndpoint) == false)
         {
-            configDict["GitHubModels:Endpoint"] = configEndpoint;
+            configDict[EndpointConfigKey] = configEndpoint;
         }
         if (string.IsNullOrWhiteSpace(configToken) == false)
         {
-            configDict["GitHubModels:Token"] = configToken;
+            configDict[TokenConfigKey] = configToken;
         }
         if (string.IsNullOrWhiteSpace(configModel) == false)
         {
-            configDict["GitHubModels:Model"] = configModel;
+            configDict[ModelConfigKey] = configModel;
         }
 
         if (string.IsNullOrWhiteSpace(envEndpoint) == true &&
@@ -52,15 +55,15 @@ public class GitHubModelsArgumentOptionsTests
         var envDict = new Dictionary<string, string?>();
         if (string.IsNullOrWhiteSpace(envEndpoint) == false)
         {
-            envDict["GitHubModels:Endpoint"] = envEndpoint;
+            envDict[EndpointConfigKey] = envEndpoint;
         }
         if (string.IsNullOrWhiteSpace(envToken) == false)
         {
-            envDict["GitHubModels:Token"] = envToken;
+            envDict[TokenConfigKey] = envToken;
         }
         if (string.IsNullOrWhiteSpace(envModel) == false)
         {
-            envDict["GitHubModels:Model"] = envModel;
+            envDict[ModelConfigKey] = envModel;
         }
 
         return new ConfigurationBuilder()

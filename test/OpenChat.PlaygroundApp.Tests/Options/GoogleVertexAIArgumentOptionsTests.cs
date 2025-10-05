@@ -10,6 +10,8 @@ public class GoogleVertexAIArgumentOptionsTests
 {
     private const string ApiKey = "vertex-ai-api-key";
     private const string Model = "vertex-ai-model-name";
+    private const string ApiKeyConfigKey = "GoogleVertexAI:ApiKey";
+    private const string ModelConfigKey = "GoogleVertexAI:Model";
 
     private static IConfiguration BuildConfigWithGoogleVertexAI(
         string? configApiKey = ApiKey,
@@ -24,11 +26,11 @@ public class GoogleVertexAIArgumentOptionsTests
 
         if (string.IsNullOrWhiteSpace(configApiKey) == false)
         {
-            configDict["GoogleVertexAI:ApiKey"] = configApiKey;
+            configDict[ApiKeyConfigKey] = configApiKey;
         }
         if (string.IsNullOrWhiteSpace(configModel) == false)
         {
-            configDict["GoogleVertexAI:Model"] = configModel;
+            configDict[ModelConfigKey] = configModel;
         }
         if (string.IsNullOrWhiteSpace(envApiKey) == true &&
             string.IsNullOrWhiteSpace(envModel) == true)
@@ -41,11 +43,11 @@ public class GoogleVertexAIArgumentOptionsTests
         var envDict = new Dictionary<string, string?>();
         if (string.IsNullOrWhiteSpace(envApiKey) == false)
         {
-            envDict["GoogleVertexAI:ApiKey"] = envApiKey;
+            envDict[ApiKeyConfigKey] = envApiKey;
         }
         if (string.IsNullOrWhiteSpace(envModel) == false)
         {
-            envDict["GoogleVertexAI:Model"] = envModel;
+            envDict[ModelConfigKey] = envModel;
         }
 
         return new ConfigurationBuilder()

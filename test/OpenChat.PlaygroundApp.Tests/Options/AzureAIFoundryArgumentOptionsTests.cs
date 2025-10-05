@@ -12,6 +12,9 @@ public class AzureAIFoundryArgumentOptionsTests
     private const string Endpoint = "https://test.azure-ai-foundry/inference";
     private const string ApiKey = "azure-api-key";
     private const string DeploymentName = "azure-deployment-name";
+    private const string EndpointConfigKey = "AzureAIFoundry:Endpoint";
+    private const string ApiKeyConfigKey = "AzureAIFoundry:ApiKey";
+    private const string DeploymentNameConfigKey = "AzureAIFoundry:DeploymentName";
 
     private static IConfiguration BuildConfigWithAzureAIFoundry(
         string? configEndpoint = Endpoint,
@@ -28,15 +31,15 @@ public class AzureAIFoundryArgumentOptionsTests
 
         if (string.IsNullOrWhiteSpace(configEndpoint) == false)
         {
-            configDict["AzureAIFoundry:Endpoint"] = configEndpoint;
+            configDict[EndpointConfigKey] = configEndpoint;
         }
         if (string.IsNullOrWhiteSpace(configApiKey) == false)
         {
-            configDict["AzureAIFoundry:ApiKey"] = configApiKey;
+            configDict[ApiKeyConfigKey] = configApiKey;
         }
         if (string.IsNullOrWhiteSpace(configDeploymentName) == false)
         {
-            configDict["AzureAIFoundry:DeploymentName"] = configDeploymentName;
+            configDict[DeploymentNameConfigKey] = configDeploymentName;
         }
 
         if (string.IsNullOrWhiteSpace(envEndpoint) == true &&
@@ -52,15 +55,15 @@ public class AzureAIFoundryArgumentOptionsTests
         var envDict = new Dictionary<string, string?>();
         if (string.IsNullOrWhiteSpace(envEndpoint) == false)
         {
-            envDict["AzureAIFoundry:Endpoint"] = envEndpoint;
+            envDict[EndpointConfigKey] = envEndpoint;
         }
         if (string.IsNullOrWhiteSpace(envApiKey) == false)
         {
-            envDict["AzureAIFoundry:ApiKey"] = envApiKey;
+            envDict[ApiKeyConfigKey] = envApiKey;
         }
         if (string.IsNullOrWhiteSpace(envDeploymentName) == false)
         {
-            envDict["AzureAIFoundry:DeploymentName"] = envDeploymentName;
+            envDict[DeploymentNameConfigKey] = envDeploymentName;
         }
 
         return new ConfigurationBuilder()

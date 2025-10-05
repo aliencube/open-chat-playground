@@ -11,6 +11,9 @@ public class UpstageArgumentOptionsTests
     private const string BaseUrl = "https://test.upstage";
     private const string ApiKey = "test-api-key";
     private const string Model = "test-model";
+    private const string BaseUrlConfigKey = "Upstage:BaseUrl";
+    private const string ApiKeyConfigKey = "Upstage:ApiKey";
+    private const string ModelConfigKey = "Upstage:Model";
 
     private static IConfiguration BuildConfigWithUpstage(
         string? configBaseUrl = BaseUrl,
@@ -28,15 +31,15 @@ public class UpstageArgumentOptionsTests
 
         if (string.IsNullOrWhiteSpace(configBaseUrl) == false)
         {
-            configDict["Upstage:BaseUrl"] = configBaseUrl;
+            configDict[BaseUrlConfigKey] = configBaseUrl;
         }
         if (string.IsNullOrWhiteSpace(configApiKey) == false)
         {
-            configDict["Upstage:ApiKey"] = configApiKey;
+            configDict[ApiKeyConfigKey] = configApiKey;
         }
         if (string.IsNullOrWhiteSpace(configModel) == false)
         {
-            configDict["Upstage:Model"] = configModel;
+            configDict[ModelConfigKey] = configModel;
         }
         if (string.IsNullOrWhiteSpace(envBaseUrl) == true &&
            string.IsNullOrWhiteSpace(envApiKey) == true &&
@@ -50,15 +53,15 @@ public class UpstageArgumentOptionsTests
         var envDict = new Dictionary<string, string?>();
         if (string.IsNullOrWhiteSpace(envBaseUrl) == false)
         {
-            envDict["Upstage:BaseUrl"] = envBaseUrl;
+            envDict[BaseUrlConfigKey] = envBaseUrl;
         }
         if (string.IsNullOrWhiteSpace(envApiKey) == false)
         {
-            envDict["Upstage:ApiKey"] = envApiKey;
+            envDict[ApiKeyConfigKey] = envApiKey;
         }
         if (string.IsNullOrWhiteSpace(envModel) == false)
         {
-            envDict["Upstage:Model"] = envModel;
+            envDict[ModelConfigKey] = envModel;
         }
 
         return new ConfigurationBuilder()

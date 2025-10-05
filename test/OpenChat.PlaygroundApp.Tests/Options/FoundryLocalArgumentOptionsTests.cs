@@ -10,6 +10,7 @@ namespace OpenChat.PlaygroundApp.Tests.Options;
 public class FoundryLocalArgumentOptionsTests
 {
     private const string Alias = "test-foundry-local-alias";
+    private const string AliasConfigKey = "FoundryLocal:Alias";
 
     private static IConfiguration BuildConfigWithFoundryLocal(
         string? configAlias = Alias,
@@ -23,7 +24,7 @@ public class FoundryLocalArgumentOptionsTests
 
         if (string.IsNullOrWhiteSpace(configAlias) == false)
         {
-            configDict["FoundryLocal:Alias"] = configAlias;
+            configDict[AliasConfigKey] = configAlias;
         }
 
         if (string.IsNullOrWhiteSpace(envAlias) == true)
@@ -37,7 +38,7 @@ public class FoundryLocalArgumentOptionsTests
         var envDict = new Dictionary<string, string?>();
         if (string.IsNullOrWhiteSpace(envAlias) == false)
         {
-            envDict["FoundryLocal:Alias"] = envAlias;
+            envDict[AliasConfigKey] = envAlias;
         }
 
         return new ConfigurationBuilder()
