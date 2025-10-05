@@ -46,28 +46,28 @@ public class AmazonBedrockArgumentOptions : ArgumentOptions
         {
             switch (args[i])
             {
-                case var _ when args[i] == ArgumentOptionConstants.AmazonBedrock.AccessKeyId:
+                case ArgumentOptionConstants.AmazonBedrock.AccessKeyId:
                     if (i + 1 < args.Length)
                     {
                         this.AccessKeyId = args[++i];
                     }
                     break;
 
-                case var _ when args[i] == ArgumentOptionConstants.AmazonBedrock.SecretAccessKey:
+                case ArgumentOptionConstants.AmazonBedrock.SecretAccessKey:
                     if (i + 1 < args.Length)
                     {
                         this.SecretAccessKey = args[++i];
                     }
                     break;
 
-                case var _ when args[i] == ArgumentOptionConstants.AmazonBedrock.Region:
+                case ArgumentOptionConstants.AmazonBedrock.Region:
                     if (i + 1 < args.Length)
                     {
                         this.Region = args[++i];
                     }
                     break;
 
-                case var _ when args[i] == ArgumentOptionConstants.AmazonBedrock.ModelId:
+                case ArgumentOptionConstants.AmazonBedrock.ModelId:
                     if (i + 1 < args.Length)
                     {
                         this.ModelId = args[++i];

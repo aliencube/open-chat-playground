@@ -28,7 +28,7 @@ public class FoundryLocalArgumentOptions : ArgumentOptions
         {
             switch (args[i])
             {
-                case var _ when args[i] == ArgumentOptionConstants.FoundryLocal.Alias:
+                case ArgumentOptionConstants.FoundryLocal.Alias:
                     if (i + 1 < args.Length)
                     {
                         this.Alias = args[++i];

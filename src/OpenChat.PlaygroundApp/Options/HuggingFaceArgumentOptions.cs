@@ -34,14 +34,14 @@ public class HuggingFaceArgumentOptions : ArgumentOptions
         {
             switch (args[i])
             {
-                case var _ when args[i] == ArgumentOptionConstants.HuggingFace.BaseUrl:
+                case ArgumentOptionConstants.HuggingFace.BaseUrl:
                     if (i + 1 < args.Length)
                     {
                         this.BaseUrl = args[++i];
                     }
                     break;
 
-                case var _ when args[i] == ArgumentOptionConstants.HuggingFace.Model:
+                case ArgumentOptionConstants.HuggingFace.Model:
                     if (i + 1 < args.Length)
                     {
                         this.Model = args[++i];

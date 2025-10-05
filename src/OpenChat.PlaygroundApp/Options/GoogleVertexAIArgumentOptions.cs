@@ -35,14 +35,14 @@ public class GoogleVertexAIArgumentOptions : ArgumentOptions
         {
             switch (args[i])
             {
-                case var _ when args[i] == ArgumentOptionConstants.GoogleVertexAI.ApiKey:
+                case ArgumentOptionConstants.GoogleVertexAI.ApiKey:
                     if (i + 1 < args.Length)
                     {
                         this.ApiKey = args[++i];
                     }
                     break;
 
-                case var _ when args[i] == ArgumentOptionConstants.GoogleVertexAI.Model:
+                case ArgumentOptionConstants.GoogleVertexAI.Model:
                     if (i + 1 < args.Length)
                     {
                         this.Model = args[++i];

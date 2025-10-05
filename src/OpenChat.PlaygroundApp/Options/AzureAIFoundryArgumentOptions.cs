@@ -40,21 +40,21 @@ public class AzureAIFoundryArgumentOptions : ArgumentOptions
         {
             switch (args[i])
             {
-                case var _ when args[i] == ArgumentOptionConstants.AzureAIFoundry.Endpoint:
+                case ArgumentOptionConstants.AzureAIFoundry.Endpoint:
                     if (i + 1 < args.Length)
                     {
                         this.Endpoint = args[++i];
                     }
                     break;
 
-                case var _ when args[i] == ArgumentOptionConstants.AzureAIFoundry.ApiKey:
+                case ArgumentOptionConstants.AzureAIFoundry.ApiKey:
                     if (i + 1 < args.Length)
                     {
                         this.ApiKey = args[++i];
                     }
                     break;
 
-                case var _ when args[i] == ArgumentOptionConstants.AzureAIFoundry.DeploymentName:
+                case ArgumentOptionConstants.AzureAIFoundry.DeploymentName:
                     if (i + 1 < args.Length)
                     {
                         this.DeploymentName = args[++i];

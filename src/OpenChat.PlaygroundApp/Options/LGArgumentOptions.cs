@@ -33,14 +33,14 @@ public class LGArgumentOptions : ArgumentOptions
         {
             switch (args[i])
             {
-                case var _ when args[i] == ArgumentOptionConstants.LG.BaseUrl:
+                case ArgumentOptionConstants.LG.BaseUrl:
                     if (i + 1 < args.Length)
                     {
                         this.BaseUrl = args[++i];
                     }
                     break;
 
-                case var _ when args[i] == ArgumentOptionConstants.LG.Model:
+                case ArgumentOptionConstants.LG.Model:
                     if (i + 1 < args.Length)
                     {
                         this.Model = args[++i];

@@ -40,21 +40,21 @@ public class UpstageArgumentOptions : ArgumentOptions
         {
             switch (args[i])
             {
-                case var _ when args[i] == ArgumentOptionConstants.Upstage.BaseUrl:
+                case ArgumentOptionConstants.Upstage.BaseUrl:
                     if (i + 1 < args.Length)
                     {
                         this.BaseUrl = args[++i];
                     }
                     break;
 
-                case var _ when args[i] == ArgumentOptionConstants.Upstage.ApiKey:
+                case ArgumentOptionConstants.Upstage.ApiKey:
                     if (i + 1 < args.Length)
                     {
                         this.ApiKey = args[++i];
                     }
                     break;
 
-                case var _ when args[i] == ArgumentOptionConstants.Upstage.Model:
+                case ArgumentOptionConstants.Upstage.Model:
                     if (i + 1 < args.Length)
                     {
                         this.Model = args[++i];
