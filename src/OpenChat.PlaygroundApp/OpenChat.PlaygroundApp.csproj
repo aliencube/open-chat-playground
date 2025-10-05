@@ -18,6 +18,7 @@
     <PackageReference Include="AWSSDK.Extensions.Bedrock.MEAI" Version="4.*-*" />
     <PackageReference Include="Azure.AI.OpenAI" Version="2.*-*" />
     <PackageReference Include="Microsoft.AI.Foundry.Local" Version="0.*" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.*" />
     <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="9.*-*" />
     <PackageReference Include="Microsoft.Extensions.AI" Version="9.*-*" />
     <PackageReference Include="Mscc.GenerativeAI.Microsoft" Version="2.*" />

@@ -2,6 +2,8 @@
 
 Open Chat Playground (OCP) is a web UI that is able to connect virtually any LLM from any platform.
 
+![OpenChat Playground - hero image](./images/ocp-hero.png)
+
 ## Supported platforms
 
 - [ ] [Amazon Bedrock](https://docs.aws.amazon.com/bedrock)
@@ -59,14 +61,55 @@ Open Chat Playground (OCP) is a web UI that is able to connect virtually any LLM
 ### Run on local machine
 
 - [Use GitHub Models](./docs/github-models.md#run-on-local-machine)
+- [Use Hugging Face](./docs/hugging-face.md#run-on-local-machine)
+- [Use OpenAI](./docs/openai.md#run-on-local-machine)
 
 ### Run in local container
 
 - [Use GitHub Models](./docs/github-models.md#run-in-local-container)
+- [Use Hugging Face](./docs/hugging-face.md#run-in-local-container)
+- [Use OpenAI](./docs/openai.md#run-in-local-container)
 
 ### Run on Azure
 
 - [Use GitHub Models](./docs/github-models.md#run-on-azure)
+- [Use Hugging Face](./docs/hugging-face.md#run-on-azure)
+- [Use OpenAI](./docs/openai.md#run-on-azure)
+
+### Run as API
+
+1. Run the app - either locally or remotely.
+1. Navigate to `{{APP_URL}}/openapi.json`.
+1. Send a `POST` request to `{{APP_URL}}/api/chat/responses` with a request payload like:
+
+    ```json
+    [
+      {
+        "role": "system",
+        "message": "You're a friendly assistant"
+      },
+      {
+        "role": "user",
+        "message": "Why is the sky blue?"
+      }
+    ]
+    ```
+
+1. Confirm the response payload like:
+
+    ```jsonc
+    [
+      {
+        "message": "Because "
+      },
+      {
+        "message": "It's "
+      },
+      {
+        "message": "... "
+      }
+    ]
+    ```
 
 ### Run tests
 

@@ -1,6 +1,6 @@
-# OpenChat Playground with OpenAI GPT
+# OpenChat Playground with OpenAI
 
-This page describes how to run OpenChat Playground (OCP) with OpenAI GPT integration.
+This page describes how to run OpenChat Playground (OCP) with [OpenAI models](https://platform.openai.com/docs/models) integration.
 
 ## Get the repository root
 
