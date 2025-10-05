@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Connectors;
+using OpenChat.PlaygroundApp.Constants;
 
 namespace OpenChat.PlaygroundApp.Tests.Options;
 
@@ -91,7 +92,7 @@ public class UpstageArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithUpstage();
-        var args = new[] { "--base-url", cliBaseUrl };
+        var args = new[] { CommandLineArguments.Upstage.BaseUrl, cliBaseUrl };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -110,7 +111,7 @@ public class UpstageArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithUpstage();
-        var args = new[] { "--api-key", cliApiKey };
+        var args = new[] { CommandLineArguments.Upstage.ApiKey, cliApiKey };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -129,7 +130,7 @@ public class UpstageArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithUpstage();
-        var args = new[] { "--model", cliModel };
+        var args = new[] { CommandLineArguments.Upstage.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -148,7 +149,7 @@ public class UpstageArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithUpstage();
-        var args = new[] { "--base-url", cliBaseUrl, "--api-key", cliApiKey, "--model", cliModel };
+        var args = new[] { CommandLineArguments.Upstage.BaseUrl, cliBaseUrl, CommandLineArguments.Upstage.ApiKey, cliApiKey, CommandLineArguments.Upstage.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -162,9 +163,9 @@ public class UpstageArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("--base-url")]
-    [InlineData("--api-key")]
-    [InlineData("--model")]
+    [InlineData(CommandLineArguments.Upstage.BaseUrl)]
+    [InlineData(CommandLineArguments.Upstage.ApiKey)]
+    [InlineData(CommandLineArguments.Upstage.Model)]
     public void Given_CLI_ArgumentWithoutValue_When_Parse_Invoked_Then_It_Should_Use_Config(string argument)
     {
         // Arrange
@@ -206,7 +207,7 @@ public class UpstageArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithUpstage();
-        var args = new[] { "--model", model };
+        var args = new[] { CommandLineArguments.Upstage.Model, model };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -245,7 +246,7 @@ public class UpstageArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithUpstage(configBaseUrl, configApiKey, configModel);
-        var args = new[] { "--base-url", cliBaseUrl, "--api-key", cliApiKey, "--model", cliModel };
+        var args = new[] { CommandLineArguments.Upstage.BaseUrl, cliBaseUrl, CommandLineArguments.Upstage.ApiKey, cliApiKey, CommandLineArguments.Upstage.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -264,7 +265,7 @@ public class UpstageArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithUpstage(BaseUrl, ApiKey, Model);
-        var args = new[] { "--base-url", cliBaseUrl, "--api-key", cliApiKey, "--model", cliModel };
+        var args = new[] { CommandLineArguments.Upstage.BaseUrl, cliBaseUrl, CommandLineArguments.Upstage.ApiKey, cliApiKey, CommandLineArguments.Upstage.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -275,9 +276,9 @@ public class UpstageArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("--base-url")]
-    [InlineData("--api-key")]
-    [InlineData("--model")]
+    [InlineData(CommandLineArguments.Upstage.BaseUrl)]
+    [InlineData(CommandLineArguments.Upstage.ApiKey)]
+    [InlineData(CommandLineArguments.Upstage.Model)]
     public void Given_Upstage_With_KnownArgument_WithoutValue_When_Parse_Invoked_Then_Help_ShouldBe_False(string argument)
     {
         // Arrange
@@ -298,7 +299,7 @@ public class UpstageArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithUpstage();
-        var args = new[] { "--base-url", cliBaseUrl, argument };
+        var args = new[] { CommandLineArguments.Upstage.BaseUrl, cliBaseUrl, argument };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -314,7 +315,7 @@ public class UpstageArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithUpstage();
-        var args = new[] { "--base-url", cliBaseUrl, "--api-key", cliApiKey, "--model", cliModel };
+        var args = new[] { CommandLineArguments.Upstage.BaseUrl, cliBaseUrl, CommandLineArguments.Upstage.ApiKey, cliApiKey, CommandLineArguments.Upstage.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -352,7 +353,7 @@ public class UpstageArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithUpstage(envBaseUrl: envBaseUrl, envApiKey: envApiKey, envModel: envModel);
-        var args = new[] { "--base-url", cliBaseUrl, "--api-key", cliApiKey, "--model", cliModel };
+        var args = new[] { CommandLineArguments.Upstage.BaseUrl, cliBaseUrl, CommandLineArguments.Upstage.ApiKey, cliApiKey, CommandLineArguments.Upstage.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -398,7 +399,7 @@ public class UpstageArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithUpstage(configBaseUrl, configApiKey, configModel, envBaseUrl, envApiKey, envModel);
-        var args = new[] { "--base-url", cliBaseUrl, "--api-key", cliApiKey, "--model", cliModel };
+        var args = new[] { CommandLineArguments.Upstage.BaseUrl, cliBaseUrl, CommandLineArguments.Upstage.ApiKey, cliApiKey, CommandLineArguments.Upstage.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);

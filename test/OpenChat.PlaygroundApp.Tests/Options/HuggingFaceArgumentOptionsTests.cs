@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Connectors;
+using OpenChat.PlaygroundApp.Constants;
 
 namespace OpenChat.PlaygroundApp.Tests.Options;
 
@@ -80,7 +81,7 @@ public class HuggingFaceArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithHuggingFace();
-        var args = new[] { "--base-url", cliBaseUrl };
+        var args = new[] { CommandLineArguments.HuggingFace.BaseUrl, cliBaseUrl };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -98,7 +99,7 @@ public class HuggingFaceArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithHuggingFace();
-        var args = new[] { "--model", cliModel };
+        var args = new[] { CommandLineArguments.HuggingFace.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -116,7 +117,7 @@ public class HuggingFaceArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithHuggingFace();
-        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
+        var args = new[] { CommandLineArguments.HuggingFace.BaseUrl, cliBaseUrl, CommandLineArguments.HuggingFace.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -129,8 +130,8 @@ public class HuggingFaceArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("--base-url")]
-    [InlineData("--model")]
+    [InlineData(CommandLineArguments.HuggingFace.BaseUrl)]
+    [InlineData(CommandLineArguments.HuggingFace.Model)]
     public void Given_CLI_ArgumentWithoutValue_When_Parse_Invoked_Then_It_Should_Use_Config(string argument)
     {
         // Arrange
@@ -171,7 +172,7 @@ public class HuggingFaceArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithHuggingFace();
-        var args = new[] { "--model", model };
+        var args = new[] { CommandLineArguments.HuggingFace.Model, model };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -209,7 +210,7 @@ public class HuggingFaceArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithHuggingFace(configBaseUrl, configModel);
-        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
+        var args = new[] { CommandLineArguments.HuggingFace.BaseUrl, cliBaseUrl, CommandLineArguments.HuggingFace.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -279,7 +280,7 @@ public class HuggingFaceArgumentOptionsTests
         var config = BuildConfigWithHuggingFace(
             configBaseUrl, configModel,
             envBaseUrl, envModel);
-        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
+        var args = new[] { CommandLineArguments.HuggingFace.BaseUrl, cliBaseUrl, CommandLineArguments.HuggingFace.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -328,7 +329,7 @@ public class HuggingFaceArgumentOptionsTests
         var config = BuildConfigWithHuggingFace(
             configBaseUrl, configModel,
             envBaseUrl, envModel);
-        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
+        var args = new[] { CommandLineArguments.HuggingFace.BaseUrl, cliBaseUrl, CommandLineArguments.HuggingFace.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args!);
@@ -346,7 +347,7 @@ public class HuggingFaceArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithHuggingFace();
-        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
+        var args = new[] { CommandLineArguments.HuggingFace.BaseUrl, cliBaseUrl, CommandLineArguments.HuggingFace.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -357,8 +358,8 @@ public class HuggingFaceArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("--base-url")]
-    [InlineData("--model")]
+    [InlineData(CommandLineArguments.HuggingFace.BaseUrl)]
+    [InlineData(CommandLineArguments.HuggingFace.Model)]
     public void Given_HuggingFace_With_KnownArgument_WithoutValue_When_Parse_Invoked_Then_Help_Should_Be_False(string argument)
     {
         // Arrange
@@ -379,7 +380,7 @@ public class HuggingFaceArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithHuggingFace();
-        var args = new[] { "--base-url", cliBaseUrl, argument };
+        var args = new[] { CommandLineArguments.HuggingFace.BaseUrl, cliBaseUrl, argument };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -416,7 +417,7 @@ public class HuggingFaceArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithHuggingFace();
-        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
+        var args = new[] { CommandLineArguments.HuggingFace.BaseUrl, cliBaseUrl, CommandLineArguments.HuggingFace.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);

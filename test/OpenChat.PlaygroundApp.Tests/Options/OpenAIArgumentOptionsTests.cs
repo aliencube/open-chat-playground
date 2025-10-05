@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Connectors;
+using OpenChat.PlaygroundApp.Constants;
 
 namespace OpenChat.PlaygroundApp.Tests.Options;
 
@@ -79,7 +80,7 @@ public class OpenAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithOpenAI();
-        var args = new[] { "--api-key", cliApiKey };
+        var args = new[] { CommandLineArguments.OpenAI.ApiKey, cliApiKey };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -97,7 +98,7 @@ public class OpenAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithOpenAI();
-        var args = new[] { "--model", cliModel };
+        var args = new[] { CommandLineArguments.OpenAI.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -115,7 +116,7 @@ public class OpenAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithOpenAI();
-        var args = new[] { "--api-key", cliApiKey, "--model", cliModel };
+        var args = new[] { CommandLineArguments.OpenAI.ApiKey, cliApiKey, CommandLineArguments.OpenAI.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -128,8 +129,8 @@ public class OpenAIArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("--api-key")]
-    [InlineData("--model")]
+    [InlineData(CommandLineArguments.OpenAI.ApiKey)]
+    [InlineData(CommandLineArguments.OpenAI.Model)]
     public void Given_CLI_ArgumentWithoutValue_When_Parse_Invoked_Then_It_Should_Use_Config(string argument)
     {
         // Arrange
@@ -169,7 +170,7 @@ public class OpenAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithOpenAI();
-        var args = new[] { "--model", cliModel };
+        var args = new[] { CommandLineArguments.OpenAI.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args!);
@@ -187,7 +188,7 @@ public class OpenAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithOpenAI();
-        var args = new[] { "--api-key", cliApiKey };
+        var args = new[] { CommandLineArguments.OpenAI.ApiKey, cliApiKey };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args!);
@@ -225,7 +226,7 @@ public class OpenAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithOpenAI(configApiKey, configModel);
-        var args = new[] { "--api-key", cliApiKey, "--model", cliModel };
+        var args = new[] { CommandLineArguments.OpenAI.ApiKey, cliApiKey, CommandLineArguments.OpenAI.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args!);
@@ -286,7 +287,7 @@ public class OpenAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithOpenAI(configApiKey, configModel, envApiKey, envModel);
-        var args = new[] { "--api-key", cliApiKey, "--model", cliModel };
+        var args = new[] { CommandLineArguments.OpenAI.ApiKey, cliApiKey, CommandLineArguments.OpenAI.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -327,7 +328,7 @@ public class OpenAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithOpenAI(configApiKey, configModel, envApiKey, envModel);
-        var args = new[] { "--api-key", cliApiKey, "--model", cliModel };
+        var args = new[] { CommandLineArguments.OpenAI.ApiKey, cliApiKey, CommandLineArguments.OpenAI.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args!);
@@ -345,7 +346,7 @@ public class OpenAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithOpenAI(ApiKey, Model);
-        var args = new[] { "--api-key", cliApiKey, "--model", cliModel };
+        var args = new[] { CommandLineArguments.OpenAI.ApiKey, cliApiKey, CommandLineArguments.OpenAI.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -356,8 +357,8 @@ public class OpenAIArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("--api-key")]
-    [InlineData("--model")]
+    [InlineData(CommandLineArguments.OpenAI.ApiKey)]
+    [InlineData(CommandLineArguments.OpenAI.Model)]
     public void Given_OpenAI_With_KnownArgument_WithoutValue_When_Parse_Invoked_Then_Help_Should_Be_False(string argument)
     {
         // Arrange
@@ -378,7 +379,7 @@ public class OpenAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithOpenAI();
-        var args = new[] { "--api-key", cliApiKey, unknown };
+        var args = new[] { CommandLineArguments.OpenAI.ApiKey, cliApiKey, unknown };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -394,7 +395,7 @@ public class OpenAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithOpenAI();
-        var args = new[] { "--api-key", cliApiKey, "--model", cliModel };
+        var args = new[] { CommandLineArguments.OpenAI.ApiKey, cliApiKey, CommandLineArguments.OpenAI.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);

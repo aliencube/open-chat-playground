@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Connectors;
+using OpenChat.PlaygroundApp.Constants;
 using OpenChat.PlaygroundApp.Options;
 
 namespace OpenChat.PlaygroundApp.Tests.Abstractions;
@@ -57,32 +58,32 @@ public class ArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("ConnectorType", "AmazonBedrock", "--connector-type", "Upstage", ConnectorType.Upstage)]
-    [InlineData("ConnectorType", "AzureAIFoundry", "--connector-type", "OpenAI", ConnectorType.OpenAI)]
-    [InlineData("ConnectorType", "GitHubModels", "--connector-type", "Naver", ConnectorType.Naver)]
-    [InlineData("ConnectorType", "GoogleVertexAI", "--connector-type", "LG", ConnectorType.LG)]
-    [InlineData("ConnectorType", "DockerModelRunner", "--connector-type", "Anthropic", ConnectorType.Anthropic)]
-    [InlineData("ConnectorType", "FoundryLocal", "--connector-type", "Ollama", ConnectorType.Ollama)]
-    [InlineData("ConnectorType", "HuggingFace", "--connector-type", "Ollama", ConnectorType.Ollama)]
-    [InlineData("ConnectorType", "Ollama", "--connector-type", "FoundryLocal", ConnectorType.FoundryLocal)]
-    [InlineData("ConnectorType", "Anthropic", "--connector-type", "DockerModelRunner", ConnectorType.DockerModelRunner)]
-    [InlineData("ConnectorType", "LG", "--connector-type", "GoogleVertexAI", ConnectorType.GoogleVertexAI)]
-    [InlineData("ConnectorType", "Naver", "--connector-type", "GitHubModels", ConnectorType.GitHubModels)]
-    [InlineData("ConnectorType", "OpenAI", "--connector-type", "AzureAIFoundry", ConnectorType.AzureAIFoundry)]
-    [InlineData("ConnectorType", "Upstage", "--connector-type", "AmazonBedrock", ConnectorType.AmazonBedrock)]
-    [InlineData("ConnectorType", "AmazonBedrock", "-c", "Upstage", ConnectorType.Upstage)]
-    [InlineData("ConnectorType", "AzureAIFoundry", "-c", "OpenAI", ConnectorType.OpenAI)]
-    [InlineData("ConnectorType", "GitHubModels", "-c", "Naver", ConnectorType.Naver)]
-    [InlineData("ConnectorType", "GoogleVertexAI", "-c", "LG", ConnectorType.LG)]
-    [InlineData("ConnectorType", "DockerModelRunner", "-c", "Anthropic", ConnectorType.Anthropic)]
-    [InlineData("ConnectorType", "FoundryLocal", "-c", "Ollama", ConnectorType.Ollama)]
-    [InlineData("ConnectorType", "HuggingFace", "-c", "Ollama", ConnectorType.Ollama)]
-    [InlineData("ConnectorType", "Ollama", "-c", "FoundryLocal", ConnectorType.FoundryLocal)]
-    [InlineData("ConnectorType", "Anthropic", "-c", "DockerModelRunner", ConnectorType.DockerModelRunner)]
-    [InlineData("ConnectorType", "LG", "-c", "GoogleVertexAI", ConnectorType.GoogleVertexAI)]
-    [InlineData("ConnectorType", "Naver", "-c", "GitHubModels", ConnectorType.GitHubModels)]
-    [InlineData("ConnectorType", "OpenAI", "-c", "AzureAIFoundry", ConnectorType.AzureAIFoundry)]
-    [InlineData("ConnectorType", "Upstage", "-c", "AmazonBedrock", ConnectorType.AmazonBedrock)]
+    [InlineData("ConnectorType", "AmazonBedrock", CommandLineArguments.ConnectorType, "Upstage", ConnectorType.Upstage)]
+    [InlineData("ConnectorType", "AzureAIFoundry", CommandLineArguments.ConnectorType, "OpenAI", ConnectorType.OpenAI)]
+    [InlineData("ConnectorType", "GitHubModels", CommandLineArguments.ConnectorType, "Naver", ConnectorType.Naver)]
+    [InlineData("ConnectorType", "GoogleVertexAI", CommandLineArguments.ConnectorType, "LG", ConnectorType.LG)]
+    [InlineData("ConnectorType", "DockerModelRunner", CommandLineArguments.ConnectorType, "Anthropic", ConnectorType.Anthropic)]
+    [InlineData("ConnectorType", "FoundryLocal", CommandLineArguments.ConnectorType, "Ollama", ConnectorType.Ollama)]
+    [InlineData("ConnectorType", "HuggingFace", CommandLineArguments.ConnectorType, "Ollama", ConnectorType.Ollama)]
+    [InlineData("ConnectorType", "Ollama", CommandLineArguments.ConnectorType, "FoundryLocal", ConnectorType.FoundryLocal)]
+    [InlineData("ConnectorType", "Anthropic", CommandLineArguments.ConnectorType, "DockerModelRunner", ConnectorType.DockerModelRunner)]
+    [InlineData("ConnectorType", "LG", CommandLineArguments.ConnectorType, "GoogleVertexAI", ConnectorType.GoogleVertexAI)]
+    [InlineData("ConnectorType", "Naver", CommandLineArguments.ConnectorType, "GitHubModels", ConnectorType.GitHubModels)]
+    [InlineData("ConnectorType", "OpenAI", CommandLineArguments.ConnectorType, "AzureAIFoundry", ConnectorType.AzureAIFoundry)]
+    [InlineData("ConnectorType", "Upstage", CommandLineArguments.ConnectorType, "AmazonBedrock", ConnectorType.AmazonBedrock)]
+    [InlineData("ConnectorType", "AmazonBedrock", CommandLineArguments.ConnectorTypeShort, "Upstage", ConnectorType.Upstage)]
+    [InlineData("ConnectorType", "AzureAIFoundry", CommandLineArguments.ConnectorTypeShort, "OpenAI", ConnectorType.OpenAI)]
+    [InlineData("ConnectorType", "GitHubModels", CommandLineArguments.ConnectorTypeShort, "Naver", ConnectorType.Naver)]
+    [InlineData("ConnectorType", "GoogleVertexAI", CommandLineArguments.ConnectorTypeShort, "LG", ConnectorType.LG)]
+    [InlineData("ConnectorType", "DockerModelRunner", CommandLineArguments.ConnectorTypeShort, "Anthropic", ConnectorType.Anthropic)]
+    [InlineData("ConnectorType", "FoundryLocal", CommandLineArguments.ConnectorTypeShort, "Ollama", ConnectorType.Ollama)]
+    [InlineData("ConnectorType", "HuggingFace", CommandLineArguments.ConnectorTypeShort, "Ollama", ConnectorType.Ollama)]
+    [InlineData("ConnectorType", "Ollama", CommandLineArguments.ConnectorTypeShort, "FoundryLocal", ConnectorType.FoundryLocal)]
+    [InlineData("ConnectorType", "Anthropic", CommandLineArguments.ConnectorTypeShort, "DockerModelRunner", ConnectorType.DockerModelRunner)]
+    [InlineData("ConnectorType", "LG", CommandLineArguments.ConnectorTypeShort, "GoogleVertexAI", ConnectorType.GoogleVertexAI)]
+    [InlineData("ConnectorType", "Naver", CommandLineArguments.ConnectorTypeShort, "GitHubModels", ConnectorType.GitHubModels)]
+    [InlineData("ConnectorType", "OpenAI", CommandLineArguments.ConnectorTypeShort, "AzureAIFoundry", ConnectorType.AzureAIFoundry)]
+    [InlineData("ConnectorType", "Upstage", CommandLineArguments.ConnectorTypeShort, "AmazonBedrock", ConnectorType.AmazonBedrock)]
     public void Given_ConnectorType_And_Argument_When_VerifyConnectorType_Invoked_Then_It_Should_Return_Result(string key, string value, string argument1, string argument2, ConnectorType expected)
     {
         var config = BuildConfig((key, value));
@@ -95,32 +96,32 @@ public class ArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("ConnectorType", "AmazonBedrock", "--connector-type", "MaaS", ConnectorType.AmazonBedrock)]
-    [InlineData("ConnectorType", "AzureAIFoundry", "--connector-type", "MaaS", ConnectorType.AzureAIFoundry)]
-    [InlineData("ConnectorType", "GitHubModels", "--connector-type", "MaaS", ConnectorType.GitHubModels)]
-    [InlineData("ConnectorType", "GoogleVertexAI", "--connector-type", "MaaS", ConnectorType.GoogleVertexAI)]
-    [InlineData("ConnectorType", "DockerModelRunner", "--connector-type", "Local", ConnectorType.DockerModelRunner)]
-    [InlineData("ConnectorType", "FoundryLocal", "--connector-type", "Local", ConnectorType.FoundryLocal)]
-    [InlineData("ConnectorType", "HuggingFace", "--connector-type", "Local", ConnectorType.HuggingFace)]
-    [InlineData("ConnectorType", "Ollama", "--connector-type", "Local", ConnectorType.Ollama)]
-    [InlineData("ConnectorType", "Anthropic", "--connector-type", "Vendor", ConnectorType.Anthropic)]
-    [InlineData("ConnectorType", "LG", "--connector-type", "Vendor", ConnectorType.LG)]
-    [InlineData("ConnectorType", "Naver", "--connector-type", "Vendor", ConnectorType.Naver)]
-    [InlineData("ConnectorType", "OpenAI", "--connector-type", "Vendor", ConnectorType.OpenAI)]
-    [InlineData("ConnectorType", "Upstage", "--connector-type", "Vendor", ConnectorType.Upstage)]
-    [InlineData("ConnectorType", "AmazonBedrock", "-c", "MaaS", ConnectorType.AmazonBedrock)]
-    [InlineData("ConnectorType", "AzureAIFoundry", "-c", "MaaS", ConnectorType.AzureAIFoundry)]
-    [InlineData("ConnectorType", "GitHubModels", "-c", "MaaS", ConnectorType.GitHubModels)]
-    [InlineData("ConnectorType", "GoogleVertexAI", "-c", "MaaS", ConnectorType.GoogleVertexAI)]
-    [InlineData("ConnectorType", "DockerModelRunner", "-c", "Local", ConnectorType.DockerModelRunner)]
-    [InlineData("ConnectorType", "FoundryLocal", "-c", "Local", ConnectorType.FoundryLocal)]
-    [InlineData("ConnectorType", "HuggingFace", "-c", "Local", ConnectorType.HuggingFace)]
-    [InlineData("ConnectorType", "Ollama", "-c", "Local", ConnectorType.Ollama)]
-    [InlineData("ConnectorType", "Anthropic", "-c", "Vendor", ConnectorType.Anthropic)]
-    [InlineData("ConnectorType", "LG", "-c", "Vendor", ConnectorType.LG)]
-    [InlineData("ConnectorType", "Naver", "-c", "Vendor", ConnectorType.Naver)]
-    [InlineData("ConnectorType", "OpenAI", "-c", "Vendor", ConnectorType.OpenAI)]
-    [InlineData("ConnectorType", "Upstage", "-c", "Vendor", ConnectorType.Upstage)]
+    [InlineData("ConnectorType", "AmazonBedrock", CommandLineArguments.ConnectorType, "MaaS", ConnectorType.AmazonBedrock)]
+    [InlineData("ConnectorType", "AzureAIFoundry", CommandLineArguments.ConnectorType, "MaaS", ConnectorType.AzureAIFoundry)]
+    [InlineData("ConnectorType", "GitHubModels", CommandLineArguments.ConnectorType, "MaaS", ConnectorType.GitHubModels)]
+    [InlineData("ConnectorType", "GoogleVertexAI", CommandLineArguments.ConnectorType, "MaaS", ConnectorType.GoogleVertexAI)]
+    [InlineData("ConnectorType", "DockerModelRunner", CommandLineArguments.ConnectorType, "Local", ConnectorType.DockerModelRunner)]
+    [InlineData("ConnectorType", "FoundryLocal", CommandLineArguments.ConnectorType, "Local", ConnectorType.FoundryLocal)]
+    [InlineData("ConnectorType", "HuggingFace", CommandLineArguments.ConnectorType, "Local", ConnectorType.HuggingFace)]
+    [InlineData("ConnectorType", "Ollama", CommandLineArguments.ConnectorType, "Local", ConnectorType.Ollama)]
+    [InlineData("ConnectorType", "Anthropic", CommandLineArguments.ConnectorType, "Vendor", ConnectorType.Anthropic)]
+    [InlineData("ConnectorType", "LG", CommandLineArguments.ConnectorType, "Vendor", ConnectorType.LG)]
+    [InlineData("ConnectorType", "Naver", CommandLineArguments.ConnectorType, "Vendor", ConnectorType.Naver)]
+    [InlineData("ConnectorType", "OpenAI", CommandLineArguments.ConnectorType, "Vendor", ConnectorType.OpenAI)]
+    [InlineData("ConnectorType", "Upstage", CommandLineArguments.ConnectorType, "Vendor", ConnectorType.Upstage)]
+    [InlineData("ConnectorType", "AmazonBedrock", CommandLineArguments.ConnectorTypeShort, "MaaS", ConnectorType.AmazonBedrock)]
+    [InlineData("ConnectorType", "AzureAIFoundry", CommandLineArguments.ConnectorTypeShort, "MaaS", ConnectorType.AzureAIFoundry)]
+    [InlineData("ConnectorType", "GitHubModels", CommandLineArguments.ConnectorTypeShort, "MaaS", ConnectorType.GitHubModels)]
+    [InlineData("ConnectorType", "GoogleVertexAI", CommandLineArguments.ConnectorTypeShort, "MaaS", ConnectorType.GoogleVertexAI)]
+    [InlineData("ConnectorType", "DockerModelRunner", CommandLineArguments.ConnectorTypeShort, "Local", ConnectorType.DockerModelRunner)]
+    [InlineData("ConnectorType", "FoundryLocal", CommandLineArguments.ConnectorTypeShort, "Local", ConnectorType.FoundryLocal)]
+    [InlineData("ConnectorType", "HuggingFace", CommandLineArguments.ConnectorTypeShort, "Local", ConnectorType.HuggingFace)]
+    [InlineData("ConnectorType", "Ollama", CommandLineArguments.ConnectorTypeShort, "Local", ConnectorType.Ollama)]
+    [InlineData("ConnectorType", "Anthropic", CommandLineArguments.ConnectorTypeShort, "Vendor", ConnectorType.Anthropic)]
+    [InlineData("ConnectorType", "LG", CommandLineArguments.ConnectorTypeShort, "Vendor", ConnectorType.LG)]
+    [InlineData("ConnectorType", "Naver", CommandLineArguments.ConnectorTypeShort, "Vendor", ConnectorType.Naver)]
+    [InlineData("ConnectorType", "OpenAI", CommandLineArguments.ConnectorTypeShort, "Vendor", ConnectorType.OpenAI)]
+    [InlineData("ConnectorType", "Upstage", CommandLineArguments.ConnectorTypeShort, "Vendor", ConnectorType.Upstage)]
     public void Given_ConnectorType_And_InvalidArgument_When_VerifyConnectorType_Invoked_Then_It_Should_Return_Result(string key, string value, string argument1, string argument2, ConnectorType expected)
     {
         var config = BuildConfig((key, value));
@@ -228,7 +229,7 @@ public class ArgumentOptionsTests
     public void Given_ConnectorType_And_Argument_When_Parse_Invoked_Then_It_Should_Return_Result(string key, string value, string argument, ConnectorType expected)
     {
         var config = BuildConfig((key, value));
-        var args = new[] { "--connector-type", argument };
+        var args = new[] { CommandLineArguments.ConnectorType, argument };
 
         var settings = ArgumentOptions.Parse(config, args);
 
@@ -266,8 +267,8 @@ public class ArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("--help", true)]
-    [InlineData("-h", true)]
+    [InlineData(CommandLineArguments.Help, true)]
+    [InlineData(CommandLineArguments.HelpShort, true)]
     [InlineData("--unknown", true)]
     public void Given_Help_When_Parse_Invoked_Then_It_Should_Return_Help(string argument, bool expected)
     {
@@ -298,7 +299,7 @@ public class ArgumentOptionsTests
     {
         // Act
         var isSubclass = type.IsSubclassOf(typeof(ArgumentOptions));
-        
+
         // Assert
         isSubclass.ShouldBeTrue();
     }
