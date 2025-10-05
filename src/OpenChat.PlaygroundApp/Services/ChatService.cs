@@ -23,6 +23,8 @@ public interface IChatService
 /// <summary>
 /// This represents the service entity for chat operations.
 /// </summary>
+/// <param name="chatClient">The <see cref="IChatClient"/>.</param>
+/// <param name="logger">The <see cref="ILogger{ChatService}"/>.</param>
 public class ChatService(IChatClient chatClient, ILogger<ChatService> logger) : IChatService
 {
     private readonly IChatClient _chatClient = chatClient ?? throw new ArgumentNullException(nameof(chatClient));
