@@ -20,6 +20,7 @@ public class ChatServiceTests
         // Assert
         action.ShouldThrow<ArgumentNullException>();
     }
+
     [Trait("Category", "UnitTest")]
     [Fact]
     public void Given_Null_Logger_When_ChatService_Instantiated_Then_It_Should_Throw()
@@ -32,6 +33,21 @@ public class ChatServiceTests
 
         // Assert
         action.ShouldThrow<ArgumentNullException>();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Fact]
+    public void Given_Both_Dependencies_When_ChatService_Instantiated_Then_It_Should_Create()
+    {
+        // Arrange
+        var client = Substitute.For<IChatClient>();
+        var logger = Substitute.For<ILogger<ChatService>>();
+
+        // Act
+        var result = new ChatService(client, logger);
+
+        // Assert
+        result.ShouldNotBeNull();
     }
 
     [Trait("Category", "UnitTest")]
