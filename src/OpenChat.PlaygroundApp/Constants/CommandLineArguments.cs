@@ -98,19 +98,19 @@ public static class CommandLineArguments
     }
 
     /// <summary>
-    /// Naver command-line arguments.
-    /// </summary>
-    public static class Naver
-    {
-    }
-
-    /// <summary>
     /// LG command-line arguments.
     /// </summary>
     public static class LG
     {
         public const string BaseUrl = "--base-url";
         public const string Model = "--model";
+    }
+
+    /// <summary>
+    /// Naver command-line arguments.
+    /// </summary>
+    public static class Naver
+    {
     }
 
     /// <summary>
