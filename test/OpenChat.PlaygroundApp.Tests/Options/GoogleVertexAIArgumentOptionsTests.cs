@@ -19,7 +19,7 @@ public class GoogleVertexAIArgumentOptionsTests
     {
         var configDict = new Dictionary<string, string?>
         {
-            ["ConnectorType"] = ConnectorType.GoogleVertexAI.ToString()
+            [AppSettingConstants.ConnectorType] = ConnectorType.GoogleVertexAI.ToString()
         };
 
         if (string.IsNullOrWhiteSpace(configApiKey) == false)

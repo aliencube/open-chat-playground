@@ -22,7 +22,7 @@ public class LGArgumentOptionsTests
         // Base configuration values (lowest priority)
         var configDict = new Dictionary<string, string?>
         {
-            ["ConnectorType"] = ConnectorType.LG.ToString(),
+            [AppSettingConstants.ConnectorType] = ConnectorType.LG.ToString(),
         };
 
         if (string.IsNullOrWhiteSpace(configBaseUrl) == false)

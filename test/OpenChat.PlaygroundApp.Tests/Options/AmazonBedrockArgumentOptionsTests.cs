@@ -25,7 +25,7 @@ public class AmazonBedrockArgumentOptionsTests
     {
         var configDict = new Dictionary<string, string?>
         {
-            ["ConnectorType"] = ConnectorType.AmazonBedrock.ToString()
+            [AppSettingConstants.ConnectorType] = ConnectorType.AmazonBedrock.ToString()
         };
 
         if (string.IsNullOrWhiteSpace(configAccessKeyId) == false)

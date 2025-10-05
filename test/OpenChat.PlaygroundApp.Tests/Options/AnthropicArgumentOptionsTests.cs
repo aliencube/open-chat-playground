@@ -21,7 +21,7 @@ public class AnthropicArgumentOptionsTests
         // Base configuration values (lowest priority)
         var configDict = new Dictionary<string, string?>
         {
-            ["ConnectorType"] = ConnectorType.Anthropic.ToString()
+            [AppSettingConstants.ConnectorType] = ConnectorType.Anthropic.ToString()
         };
 
         if (string.IsNullOrWhiteSpace(configApiKey) == false)

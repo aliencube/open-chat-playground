@@ -21,7 +21,7 @@ public class HuggingFaceArgumentOptionsTests
         // Base configuration values (lowest priority)
         var configDict = new Dictionary<string, string?>
         {
-            ["ConnectorType"] = ConnectorType.HuggingFace.ToString(),
+            [AppSettingConstants.ConnectorType] = ConnectorType.HuggingFace.ToString(),
         };
 
         if (string.IsNullOrWhiteSpace(configBaseUrl) == false)

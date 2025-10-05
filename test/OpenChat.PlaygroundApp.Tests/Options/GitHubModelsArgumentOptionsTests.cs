@@ -23,7 +23,7 @@ public class GitHubModelsArgumentOptionsTests
         // Base configuration values (lowest priority)
         var configDict = new Dictionary<string, string?>
         {
-            ["ConnectorType"] = ConnectorType.GitHubModels.ToString()
+            [AppSettingConstants.ConnectorType] = ConnectorType.GitHubModels.ToString()
         };
 
         if (string.IsNullOrWhiteSpace(configEndpoint) == false)

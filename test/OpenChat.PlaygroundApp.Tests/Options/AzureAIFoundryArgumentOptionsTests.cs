@@ -23,7 +23,7 @@ public class AzureAIFoundryArgumentOptionsTests
     {
         var configDict = new Dictionary<string, string?>
         {
-            ["ConnectorType"] = ConnectorType.AzureAIFoundry.ToString()
+            [AppSettingConstants.ConnectorType] = ConnectorType.AzureAIFoundry.ToString()
         };
 
         if (string.IsNullOrWhiteSpace(configEndpoint) == false)

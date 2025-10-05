@@ -18,7 +18,7 @@ public class FoundryLocalArgumentOptionsTests
         // Base configuration values (lowest priority)
         var configDict = new Dictionary<string, string?>
         {
-            ["ConnectorType"] = ConnectorType.FoundryLocal.ToString(),
+            [AppSettingConstants.ConnectorType] = ConnectorType.FoundryLocal.ToString(),
         };
 
         if (string.IsNullOrWhiteSpace(configAlias) == false)

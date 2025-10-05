@@ -22,7 +22,7 @@ public class OllamaArgumentOptionsTests
         // Base configuration values (lowest priority)
         var configDict = new Dictionary<string, string?>
         {
-            ["ConnectorType"] = ConnectorType.Ollama.ToString(),
+            [AppSettingConstants.ConnectorType] = ConnectorType.Ollama.ToString(),
         };
 
         if (string.IsNullOrWhiteSpace(configBaseUrl) == false)

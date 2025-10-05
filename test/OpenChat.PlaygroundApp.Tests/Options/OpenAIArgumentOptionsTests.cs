@@ -20,7 +20,7 @@ public class OpenAIArgumentOptionsTests
         // Base configuration values (lowest priority)
         var configDict = new Dictionary<string, string?>
         {
-            ["ConnectorType"] = ConnectorType.OpenAI.ToString()
+            [AppSettingConstants.ConnectorType] = ConnectorType.OpenAI.ToString()
         };
 
         if (string.IsNullOrWhiteSpace(configApiKey) == false)

@@ -23,7 +23,7 @@ public class UpstageArgumentOptionsTests
         // Base configuration values
         var configDict = new Dictionary<string, string?>
         {
-            ["ConnectorType"] = ConnectorType.Upstage.ToString()
+            [AppSettingConstants.ConnectorType] = ConnectorType.Upstage.ToString()
         };
 
         if (string.IsNullOrWhiteSpace(configBaseUrl) == false)
