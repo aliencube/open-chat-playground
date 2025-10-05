@@ -55,7 +55,7 @@ public class ChatResponseEndpointTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("/chat/responses")]
-    public async Task Given_Endpoint_When_MapEndpoint_Invoked_Then_It_Should_Contain(string pattern)
+    public void Given_Endpoint_When_MapEndpoint_Invoked_Then_It_Should_Contain(string pattern)
     {
         // Arrange
         var args = Array.Empty<string>();
