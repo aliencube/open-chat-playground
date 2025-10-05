@@ -12,10 +12,9 @@ public static class EndpointExtensions
     /// <summary>
     /// Adds the chat client to the service collection.
     /// </summary>
-    /// <param name="services"><see cref="IServiceCollection"/> instance.</param>
-    /// <param name="chatClient"><see cref="IChatClient"/> instance.</param>
-    /// <returns>Returns <see cref="IServiceCollection"/> instance.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="services"/> is <c>null</c>.</exception>
+    /// <param name="services">The <see cref="IServiceCollection"/> instance.</param>
+    /// <param name="assembly">The <see cref="Assembly"/> instance.</param>
+    /// <returns>Returns the modified <see cref="IServiceCollection"/> instance.</returns>
     public static IServiceCollection AddEndpoints(this IServiceCollection services, Assembly assembly)
     {
         var descriptors = assembly.DefinedTypes
