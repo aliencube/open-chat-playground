@@ -34,13 +34,13 @@ public class OllamaArgumentOptions : ArgumentOptions
         {
             switch (args[i])
             {
-                case var _ when args[i] == CommandLineArguments.Ollama.BaseUrl:
+                case var _ when args[i] == ArgumentOptionConstants.Ollama.BaseUrl:
                     if (i + 1 < args.Length)
                     {
                         this.BaseUrl = args[++i];
                     }
                     break;
-                case var _ when args[i] == CommandLineArguments.Ollama.Model:
+                case var _ when args[i] == ArgumentOptionConstants.Ollama.Model:
                     if (i + 1 < args.Length)
                     {
                         this.Model = args[++i];

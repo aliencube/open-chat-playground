@@ -92,7 +92,7 @@ public class UpstageArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithUpstage();
-        var args = new[] { CommandLineArguments.Upstage.BaseUrl, cliBaseUrl };
+        var args = new[] { ArgumentOptionConstants.Upstage.BaseUrl, cliBaseUrl };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -111,7 +111,7 @@ public class UpstageArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithUpstage();
-        var args = new[] { CommandLineArguments.Upstage.ApiKey, cliApiKey };
+        var args = new[] { ArgumentOptionConstants.Upstage.ApiKey, cliApiKey };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -130,7 +130,7 @@ public class UpstageArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithUpstage();
-        var args = new[] { CommandLineArguments.Upstage.Model, cliModel };
+        var args = new[] { ArgumentOptionConstants.Upstage.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -149,7 +149,7 @@ public class UpstageArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithUpstage();
-        var args = new[] { CommandLineArguments.Upstage.BaseUrl, cliBaseUrl, CommandLineArguments.Upstage.ApiKey, cliApiKey, CommandLineArguments.Upstage.Model, cliModel };
+        var args = new[] { ArgumentOptionConstants.Upstage.BaseUrl, cliBaseUrl, ArgumentOptionConstants.Upstage.ApiKey, cliApiKey, ArgumentOptionConstants.Upstage.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -163,9 +163,9 @@ public class UpstageArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(CommandLineArguments.Upstage.BaseUrl)]
-    [InlineData(CommandLineArguments.Upstage.ApiKey)]
-    [InlineData(CommandLineArguments.Upstage.Model)]
+    [InlineData(ArgumentOptionConstants.Upstage.BaseUrl)]
+    [InlineData(ArgumentOptionConstants.Upstage.ApiKey)]
+    [InlineData(ArgumentOptionConstants.Upstage.Model)]
     public void Given_CLI_ArgumentWithoutValue_When_Parse_Invoked_Then_It_Should_Use_Config(string argument)
     {
         // Arrange
@@ -207,7 +207,7 @@ public class UpstageArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithUpstage();
-        var args = new[] { CommandLineArguments.Upstage.Model, model };
+        var args = new[] { ArgumentOptionConstants.Upstage.Model, model };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -246,7 +246,7 @@ public class UpstageArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithUpstage(configBaseUrl, configApiKey, configModel);
-        var args = new[] { CommandLineArguments.Upstage.BaseUrl, cliBaseUrl, CommandLineArguments.Upstage.ApiKey, cliApiKey, CommandLineArguments.Upstage.Model, cliModel };
+        var args = new[] { ArgumentOptionConstants.Upstage.BaseUrl, cliBaseUrl, ArgumentOptionConstants.Upstage.ApiKey, cliApiKey, ArgumentOptionConstants.Upstage.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -265,7 +265,7 @@ public class UpstageArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithUpstage(BaseUrl, ApiKey, Model);
-        var args = new[] { CommandLineArguments.Upstage.BaseUrl, cliBaseUrl, CommandLineArguments.Upstage.ApiKey, cliApiKey, CommandLineArguments.Upstage.Model, cliModel };
+        var args = new[] { ArgumentOptionConstants.Upstage.BaseUrl, cliBaseUrl, ArgumentOptionConstants.Upstage.ApiKey, cliApiKey, ArgumentOptionConstants.Upstage.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -276,9 +276,9 @@ public class UpstageArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(CommandLineArguments.Upstage.BaseUrl)]
-    [InlineData(CommandLineArguments.Upstage.ApiKey)]
-    [InlineData(CommandLineArguments.Upstage.Model)]
+    [InlineData(ArgumentOptionConstants.Upstage.BaseUrl)]
+    [InlineData(ArgumentOptionConstants.Upstage.ApiKey)]
+    [InlineData(ArgumentOptionConstants.Upstage.Model)]
     public void Given_Upstage_With_KnownArgument_WithoutValue_When_Parse_Invoked_Then_Help_ShouldBe_False(string argument)
     {
         // Arrange
@@ -299,7 +299,7 @@ public class UpstageArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithUpstage();
-        var args = new[] { CommandLineArguments.Upstage.BaseUrl, cliBaseUrl, argument };
+        var args = new[] { ArgumentOptionConstants.Upstage.BaseUrl, cliBaseUrl, argument };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -315,7 +315,7 @@ public class UpstageArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithUpstage();
-        var args = new[] { CommandLineArguments.Upstage.BaseUrl, cliBaseUrl, CommandLineArguments.Upstage.ApiKey, cliApiKey, CommandLineArguments.Upstage.Model, cliModel };
+        var args = new[] { ArgumentOptionConstants.Upstage.BaseUrl, cliBaseUrl, ArgumentOptionConstants.Upstage.ApiKey, cliApiKey, ArgumentOptionConstants.Upstage.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -353,7 +353,7 @@ public class UpstageArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithUpstage(envBaseUrl: envBaseUrl, envApiKey: envApiKey, envModel: envModel);
-        var args = new[] { CommandLineArguments.Upstage.BaseUrl, cliBaseUrl, CommandLineArguments.Upstage.ApiKey, cliApiKey, CommandLineArguments.Upstage.Model, cliModel };
+        var args = new[] { ArgumentOptionConstants.Upstage.BaseUrl, cliBaseUrl, ArgumentOptionConstants.Upstage.ApiKey, cliApiKey, ArgumentOptionConstants.Upstage.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -399,7 +399,7 @@ public class UpstageArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithUpstage(configBaseUrl, configApiKey, configModel, envBaseUrl, envApiKey, envModel);
-        var args = new[] { CommandLineArguments.Upstage.BaseUrl, cliBaseUrl, CommandLineArguments.Upstage.ApiKey, cliApiKey, CommandLineArguments.Upstage.Model, cliModel };
+        var args = new[] { ArgumentOptionConstants.Upstage.BaseUrl, cliBaseUrl, ArgumentOptionConstants.Upstage.ApiKey, cliApiKey, ArgumentOptionConstants.Upstage.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);

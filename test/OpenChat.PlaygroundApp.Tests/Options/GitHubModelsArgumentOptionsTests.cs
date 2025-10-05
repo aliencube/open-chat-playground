@@ -94,7 +94,7 @@ public class GitHubModelsArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithGitHubModels();
-        var args = new[] { CommandLineArguments.GitHubModels.Endpoint, cliEndpoint };
+        var args = new[] { ArgumentOptionConstants.GitHubModels.Endpoint, cliEndpoint };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -113,7 +113,7 @@ public class GitHubModelsArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithGitHubModels();
-        var args = new[] { CommandLineArguments.GitHubModels.Token, cliToken };
+        var args = new[] { ArgumentOptionConstants.GitHubModels.Token, cliToken };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -132,7 +132,7 @@ public class GitHubModelsArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithGitHubModels();
-        var args = new[] { CommandLineArguments.GitHubModels.Model, cliModel };
+        var args = new[] { ArgumentOptionConstants.GitHubModels.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -151,7 +151,7 @@ public class GitHubModelsArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithGitHubModels();
-        var args = new[] { CommandLineArguments.GitHubModels.Endpoint, cliEndpoint, CommandLineArguments.GitHubModels.Token, cliToken, CommandLineArguments.GitHubModels.Model, cliModel };
+        var args = new[] { ArgumentOptionConstants.GitHubModels.Endpoint, cliEndpoint, ArgumentOptionConstants.GitHubModels.Token, cliToken, ArgumentOptionConstants.GitHubModels.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -165,9 +165,9 @@ public class GitHubModelsArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(CommandLineArguments.GitHubModels.Endpoint)]
-    [InlineData(CommandLineArguments.GitHubModels.Token)]
-    [InlineData(CommandLineArguments.GitHubModels.Model)]
+    [InlineData(ArgumentOptionConstants.GitHubModels.Endpoint)]
+    [InlineData(ArgumentOptionConstants.GitHubModels.Token)]
+    [InlineData(ArgumentOptionConstants.GitHubModels.Model)]
     public void Given_CLI_ArgumentWithoutValue_When_Parse_Invoked_Then_It_Should_Use_Config(string argument)
     {
         // Arrange
@@ -209,7 +209,7 @@ public class GitHubModelsArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithGitHubModels();
-        var args = new[] { CommandLineArguments.GitHubModels.Model, model };
+        var args = new[] { ArgumentOptionConstants.GitHubModels.Model, model };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -248,7 +248,7 @@ public class GitHubModelsArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithGitHubModels(configEndpoint, configToken, configModel);
-        var args = new[] { CommandLineArguments.GitHubModels.Endpoint, cliEndpoint, CommandLineArguments.GitHubModels.Token, cliToken, CommandLineArguments.GitHubModels.Model, cliModel };
+        var args = new[] { ArgumentOptionConstants.GitHubModels.Endpoint, cliEndpoint, ArgumentOptionConstants.GitHubModels.Token, cliToken, ArgumentOptionConstants.GitHubModels.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -320,7 +320,7 @@ public class GitHubModelsArgumentOptionsTests
         var config = BuildConfigWithGitHubModels(
             configEndpoint, configToken, configModel,
             envEndpoint, envToken, envModel);
-        var args = new[] { CommandLineArguments.GitHubModels.Endpoint, cliEndpoint, CommandLineArguments.GitHubModels.Token, cliToken, CommandLineArguments.GitHubModels.Model, cliModel };
+        var args = new[] { ArgumentOptionConstants.GitHubModels.Endpoint, cliEndpoint, ArgumentOptionConstants.GitHubModels.Token, cliToken, ArgumentOptionConstants.GitHubModels.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -370,7 +370,7 @@ public class GitHubModelsArgumentOptionsTests
         var config = BuildConfigWithGitHubModels(
             configEndpoint, configToken, configModel,
             envEndpoint, envToken, envModel);
-        var args = new[] { CommandLineArguments.GitHubModels.Endpoint, cliEndpoint, CommandLineArguments.GitHubModels.Token, cliToken, CommandLineArguments.GitHubModels.Model, cliModel };
+        var args = new[] { ArgumentOptionConstants.GitHubModels.Endpoint, cliEndpoint, ArgumentOptionConstants.GitHubModels.Token, cliToken, ArgumentOptionConstants.GitHubModels.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args!);
@@ -389,7 +389,7 @@ public class GitHubModelsArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithGitHubModels(Endpoint, Token, Model);
-        var args = new[] { CommandLineArguments.GitHubModels.Endpoint, cliEndpoint, CommandLineArguments.GitHubModels.Token, cliToken, CommandLineArguments.GitHubModels.Model, cliModel };
+        var args = new[] { ArgumentOptionConstants.GitHubModels.Endpoint, cliEndpoint, ArgumentOptionConstants.GitHubModels.Token, cliToken, ArgumentOptionConstants.GitHubModels.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -400,9 +400,9 @@ public class GitHubModelsArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(CommandLineArguments.GitHubModels.Endpoint)]
-    [InlineData(CommandLineArguments.GitHubModels.Token)]
-    [InlineData(CommandLineArguments.GitHubModels.Model)]
+    [InlineData(ArgumentOptionConstants.GitHubModels.Endpoint)]
+    [InlineData(ArgumentOptionConstants.GitHubModels.Token)]
+    [InlineData(ArgumentOptionConstants.GitHubModels.Model)]
     public void Given_GitHubModels_With_KnownArgument_WithoutValue_When_Parse_Invoked_Then_Help_ShouldBe_False(string argument)
     {
         // Arrange
@@ -423,7 +423,7 @@ public class GitHubModelsArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithGitHubModels();
-        var args = new[] { CommandLineArguments.GitHubModels.Endpoint, cliEndpoint, argument };
+        var args = new[] { ArgumentOptionConstants.GitHubModels.Endpoint, cliEndpoint, argument };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -458,7 +458,7 @@ public class GitHubModelsArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithGitHubModels();
-        var args = new[] { CommandLineArguments.GitHubModels.Endpoint, cliEndpoint, CommandLineArguments.GitHubModels.Token, cliToken, CommandLineArguments.GitHubModels.Model, cliModel };
+        var args = new[] { ArgumentOptionConstants.GitHubModels.Endpoint, cliEndpoint, ArgumentOptionConstants.GitHubModels.Token, cliToken, ArgumentOptionConstants.GitHubModels.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);

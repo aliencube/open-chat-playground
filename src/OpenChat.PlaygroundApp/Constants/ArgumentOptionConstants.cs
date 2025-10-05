@@ -3,7 +3,7 @@ namespace OpenChat.PlaygroundApp.Constants;
 /// <summary>
 /// Contains all command-line argument strings used throughout the application.
 /// </summary>
-public static class CommandLineArguments
+public static class ArgumentOptionConstants
 {
     /// <summary>
     /// General command-line arguments.

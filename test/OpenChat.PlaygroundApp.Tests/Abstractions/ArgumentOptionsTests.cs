@@ -229,7 +229,7 @@ public class ArgumentOptionsTests
     public void Given_ConnectorType_And_Argument_When_Parse_Invoked_Then_It_Should_Return_Result(string key, string value, string argument, ConnectorType expected)
     {
         var config = BuildConfig((key, value));
-        var args = new[] { CommandLineArguments.ConnectorType, argument };
+        var args = new[] { ArgumentOptionConstants.ConnectorType, argument };
 
         var settings = ArgumentOptions.Parse(config, args);
 

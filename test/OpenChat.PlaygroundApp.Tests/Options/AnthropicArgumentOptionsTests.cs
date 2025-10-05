@@ -93,7 +93,7 @@ public class AnthropicArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAnthropic();
-        var args = new[] { CommandLineArguments.Anthropic.ApiKey, cliApiKey };
+        var args = new[] { ArgumentOptionConstants.Anthropic.ApiKey, cliApiKey };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -111,7 +111,7 @@ public class AnthropicArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAnthropic();
-        var args = new[] { CommandLineArguments.Anthropic.Model, cliModel };
+        var args = new[] { ArgumentOptionConstants.Anthropic.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -129,7 +129,7 @@ public class AnthropicArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAnthropic();
-        var args = new[] { CommandLineArguments.Anthropic.ApiKey, cliApiKey, CommandLineArguments.Anthropic.Model, cliModel };
+        var args = new[] { ArgumentOptionConstants.Anthropic.ApiKey, cliApiKey, ArgumentOptionConstants.Anthropic.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -142,8 +142,8 @@ public class AnthropicArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(CommandLineArguments.Anthropic.ApiKey)]
-    [InlineData(CommandLineArguments.Anthropic.Model)]
+    [InlineData(ArgumentOptionConstants.Anthropic.ApiKey)]
+    [InlineData(ArgumentOptionConstants.Anthropic.Model)]
     public void Given_CLI_ArgumentWithoutValue_When_Parse_Invoked_Then_It_Should_Use_Config(string argument)
     {
         // Arrange
@@ -183,7 +183,7 @@ public class AnthropicArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAnthropic();
-        var args = new[] { CommandLineArguments.Anthropic.Model, cliModel };
+        var args = new[] { ArgumentOptionConstants.Anthropic.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -201,7 +201,7 @@ public class AnthropicArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAnthropic();
-        var args = new[] { CommandLineArguments.Anthropic.ApiKey, cliApiKey };
+        var args = new[] { ArgumentOptionConstants.Anthropic.ApiKey, cliApiKey };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -239,7 +239,7 @@ public class AnthropicArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAnthropic(configApiKey, configModel);
-        var args = new[] { CommandLineArguments.Anthropic.ApiKey, cliApiKey, CommandLineArguments.Anthropic.Model, cliModel };
+        var args = new[] { ArgumentOptionConstants.Anthropic.ApiKey, cliApiKey, ArgumentOptionConstants.Anthropic.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -300,7 +300,7 @@ public class AnthropicArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAnthropic(configApiKey, configModel, envApiKey, envModel);
-        var args = new[] { CommandLineArguments.Anthropic.ApiKey, cliApiKey, CommandLineArguments.Anthropic.Model, cliModel };
+        var args = new[] { ArgumentOptionConstants.Anthropic.ApiKey, cliApiKey, ArgumentOptionConstants.Anthropic.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -341,7 +341,7 @@ public class AnthropicArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAnthropic(configApiKey, configModel, envApiKey, envModel);
-        var args = new[] { CommandLineArguments.Anthropic.ApiKey, cliApiKey, CommandLineArguments.Anthropic.Model, cliModel };
+        var args = new[] { ArgumentOptionConstants.Anthropic.ApiKey, cliApiKey, ArgumentOptionConstants.Anthropic.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args!);
@@ -359,7 +359,7 @@ public class AnthropicArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAnthropic(ApiKey, Model);
-        var args = new[] { CommandLineArguments.Anthropic.ApiKey, cliApiKey, CommandLineArguments.Anthropic.Model, cliModel };
+        var args = new[] { ArgumentOptionConstants.Anthropic.ApiKey, cliApiKey, ArgumentOptionConstants.Anthropic.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -370,8 +370,8 @@ public class AnthropicArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(CommandLineArguments.Anthropic.ApiKey)]
-    [InlineData(CommandLineArguments.Anthropic.Model)]
+    [InlineData(ArgumentOptionConstants.Anthropic.ApiKey)]
+    [InlineData(ArgumentOptionConstants.Anthropic.Model)]
     public void Given_Anthropic_With_KnownArgument_WithoutValue_When_Parse_Invoked_Then_Help_Should_Be_False(string argument)
     {
         // Arrange
@@ -392,7 +392,7 @@ public class AnthropicArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAnthropic();
-        var args = new[] { CommandLineArguments.Anthropic.ApiKey, cliApiKey, argument };
+        var args = new[] { ArgumentOptionConstants.Anthropic.ApiKey, cliApiKey, argument };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -408,7 +408,7 @@ public class AnthropicArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAnthropic();
-        var args = new[] { CommandLineArguments.Anthropic.ApiKey, cliApiKey, CommandLineArguments.Anthropic.Model, cliModel };
+        var args = new[] { ArgumentOptionConstants.Anthropic.ApiKey, cliApiKey, ArgumentOptionConstants.Anthropic.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);

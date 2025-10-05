@@ -95,7 +95,7 @@ public class LGArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithLG();
-        var args = new[] { CommandLineArguments.LG.BaseUrl, cliBaseUrl };
+        var args = new[] { ArgumentOptionConstants.LG.BaseUrl, cliBaseUrl };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -113,7 +113,7 @@ public class LGArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithLG();
-        var args = new[] { CommandLineArguments.LG.Model, cliModel };
+        var args = new[] { ArgumentOptionConstants.LG.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -131,7 +131,7 @@ public class LGArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithLG();
-        var args = new[] { CommandLineArguments.LG.BaseUrl, cliBaseUrl, CommandLineArguments.LG.Model, cliModel };
+        var args = new[] { ArgumentOptionConstants.LG.BaseUrl, cliBaseUrl, ArgumentOptionConstants.LG.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -144,8 +144,8 @@ public class LGArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(CommandLineArguments.LG.BaseUrl)]
-    [InlineData(CommandLineArguments.LG.Model)]
+    [InlineData(ArgumentOptionConstants.LG.BaseUrl)]
+    [InlineData(ArgumentOptionConstants.LG.Model)]
     public void Given_CLI_ArgumentWithoutValue_When_Parse_Invoked_Then_It_Should_Use_Config(string argument)
     {
         // Arrange
@@ -185,7 +185,7 @@ public class LGArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithLG();
-        var args = new[] { CommandLineArguments.LG.Model, model };
+        var args = new[] { ArgumentOptionConstants.LG.Model, model };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -223,7 +223,7 @@ public class LGArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithLG(configBaseUrl, configModel);
-        var args = new[] { CommandLineArguments.LG.BaseUrl, cliBaseUrl, CommandLineArguments.LG.Model, cliModel };
+        var args = new[] { ArgumentOptionConstants.LG.BaseUrl, cliBaseUrl, ArgumentOptionConstants.LG.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -241,7 +241,7 @@ public class LGArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithLG(BaseUrl, Model);
-        var args = new[] { CommandLineArguments.LG.BaseUrl, cliBaseUrl, CommandLineArguments.LG.Model, cliModel };
+        var args = new[] { ArgumentOptionConstants.LG.BaseUrl, cliBaseUrl, ArgumentOptionConstants.LG.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -252,8 +252,8 @@ public class LGArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(CommandLineArguments.LG.BaseUrl)]
-    [InlineData(CommandLineArguments.LG.Model)]
+    [InlineData(ArgumentOptionConstants.LG.BaseUrl)]
+    [InlineData(ArgumentOptionConstants.LG.Model)]
     public void Given_LG_With_KnownArgument_WithoutValue_When_Parse_Invoked_Then_Help_Should_Be_False(string argument)
     {
         // Arrange
@@ -274,7 +274,7 @@ public class LGArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithLG();
-        var args = new[] { CommandLineArguments.LG.BaseUrl, cliBaseUrl, argument };
+        var args = new[] { ArgumentOptionConstants.LG.BaseUrl, cliBaseUrl, argument };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -290,7 +290,7 @@ public class LGArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithLG();
-        var args = new[] { CommandLineArguments.LG.BaseUrl, cliBaseUrl, CommandLineArguments.LG.Model, cliModel };
+        var args = new[] { ArgumentOptionConstants.LG.BaseUrl, cliBaseUrl, ArgumentOptionConstants.LG.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -349,7 +349,7 @@ public class LGArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithLG(configBaseUrl, configModel, envBaseUrl, envModel);
-        var args = new[] { CommandLineArguments.LG.BaseUrl, cliBaseUrl, CommandLineArguments.LG.Model, cliModel };
+        var args = new[] { ArgumentOptionConstants.LG.BaseUrl, cliBaseUrl, ArgumentOptionConstants.LG.Model, cliModel };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);

@@ -34,14 +34,14 @@ public class OpenAIArgumentOptions : ArgumentOptions
 		{
 			switch (args[i])
 			{
-				case var _ when args[i] == CommandLineArguments.OpenAI.ApiKey:
+				case var _ when args[i] == ArgumentOptionConstants.OpenAI.ApiKey:
 					if (i + 1 < args.Length)
 					{
 						this.ApiKey = args[++i];
 					}
 					break;
 
-				case var _ when args[i] == CommandLineArguments.OpenAI.Model:
+				case var _ when args[i] == ArgumentOptionConstants.OpenAI.Model:
 					if (i + 1 < args.Length)
 					{
 						this.Model = args[++i];

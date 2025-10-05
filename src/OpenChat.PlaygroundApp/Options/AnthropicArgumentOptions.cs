@@ -34,14 +34,14 @@ public class AnthropicArgumentOptions : ArgumentOptions
         {
             switch (args[i])
             {
-                case var _ when args[i] == CommandLineArguments.Anthropic.ApiKey:
+                case var _ when args[i] == ArgumentOptionConstants.Anthropic.ApiKey:
                     if (i + 1 < args.Length)
                     {
                         this.ApiKey = args[++i];
                     }
                     break;
 
-                case var _ when args[i] == CommandLineArguments.Anthropic.Model:
+                case var _ when args[i] == ArgumentOptionConstants.Anthropic.Model:
                     if (i + 1 < args.Length)
                     {
                         this.Model = args[++i];

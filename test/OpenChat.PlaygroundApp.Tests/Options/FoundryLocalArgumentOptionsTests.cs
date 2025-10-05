@@ -82,7 +82,7 @@ public class FoundryLocalArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithFoundryLocal();
-        var args = new[] { CommandLineArguments.FoundryLocal.Alias, cliAlias };
+        var args = new[] { ArgumentOptionConstants.FoundryLocal.Alias, cliAlias };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -94,7 +94,7 @@ public class FoundryLocalArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(CommandLineArguments.FoundryLocal.Alias)]
+    [InlineData(ArgumentOptionConstants.FoundryLocal.Alias)]
     public void Given_CLI_ArgumentWithoutValue_When_Parse_Invoked_Then_It_Should_Use_Config(string argument)
     {
         // Arrange
@@ -132,7 +132,7 @@ public class FoundryLocalArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithFoundryLocal();
-        var args = new[] { CommandLineArguments.FoundryLocal.Alias, alias };
+        var args = new[] { ArgumentOptionConstants.FoundryLocal.Alias, alias };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -167,7 +167,7 @@ public class FoundryLocalArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithFoundryLocal(configAlias);
-        var args = new[] { CommandLineArguments.FoundryLocal.Alias, cliAlias };
+        var args = new[] { ArgumentOptionConstants.FoundryLocal.Alias, cliAlias };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -221,7 +221,7 @@ public class FoundryLocalArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithFoundryLocal(configAlias, envAlias);
-        var args = new[] { CommandLineArguments.FoundryLocal.Alias, cliAlias };
+        var args = new[] { ArgumentOptionConstants.FoundryLocal.Alias, cliAlias };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -239,7 +239,7 @@ public class FoundryLocalArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithFoundryLocal();
-        var args = new[] { CommandLineArguments.FoundryLocal.Alias, cliAlias };
+        var args = new[] { ArgumentOptionConstants.FoundryLocal.Alias, cliAlias };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -250,7 +250,7 @@ public class FoundryLocalArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(CommandLineArguments.FoundryLocal.Alias)]
+    [InlineData(ArgumentOptionConstants.FoundryLocal.Alias)]
     public void Given_FoundryLocal_With_KnownArgument_WithoutValue_When_Parse_Invoked_Then_Help_Should_Be_False(string argument)
     {
         // Arrange
@@ -271,7 +271,7 @@ public class FoundryLocalArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithFoundryLocal();
-        var args = new[] { CommandLineArguments.FoundryLocal.Alias, cliAlias, argument };
+        var args = new[] { ArgumentOptionConstants.FoundryLocal.Alias, cliAlias, argument };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -306,7 +306,7 @@ public class FoundryLocalArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithFoundryLocal();
-        var args = new[] { CommandLineArguments.FoundryLocal.Alias, cliAlias };
+        var args = new[] { ArgumentOptionConstants.FoundryLocal.Alias, cliAlias };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);

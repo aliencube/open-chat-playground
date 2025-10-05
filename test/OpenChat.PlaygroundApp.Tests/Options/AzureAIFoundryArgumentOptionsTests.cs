@@ -107,7 +107,7 @@ public class AzureAIFoundryArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAzureAIFoundry();
-        var args = new[] { CommandLineArguments.AzureAIFoundry.Endpoint, cliEndpoint };
+        var args = new[] { ArgumentOptionConstants.AzureAIFoundry.Endpoint, cliEndpoint };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -126,7 +126,7 @@ public class AzureAIFoundryArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAzureAIFoundry();
-        var args = new[] { CommandLineArguments.AzureAIFoundry.ApiKey, cliApiKey };
+        var args = new[] { ArgumentOptionConstants.AzureAIFoundry.ApiKey, cliApiKey };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -145,7 +145,7 @@ public class AzureAIFoundryArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAzureAIFoundry();
-        var args = new[] { CommandLineArguments.AzureAIFoundry.DeploymentName, cliDeploymentName };
+        var args = new[] { ArgumentOptionConstants.AzureAIFoundry.DeploymentName, cliDeploymentName };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -164,7 +164,7 @@ public class AzureAIFoundryArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAzureAIFoundry();
-        var args = new[] { CommandLineArguments.AzureAIFoundry.Endpoint, cliEndpoint, CommandLineArguments.AzureAIFoundry.ApiKey, cliApiKey, CommandLineArguments.AzureAIFoundry.DeploymentName, cliDeploymentName };
+        var args = new[] { ArgumentOptionConstants.AzureAIFoundry.Endpoint, cliEndpoint, ArgumentOptionConstants.AzureAIFoundry.ApiKey, cliApiKey, ArgumentOptionConstants.AzureAIFoundry.DeploymentName, cliDeploymentName };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -178,9 +178,9 @@ public class AzureAIFoundryArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(CommandLineArguments.AzureAIFoundry.Endpoint)]
-    [InlineData(CommandLineArguments.AzureAIFoundry.ApiKey)]
-    [InlineData(CommandLineArguments.AzureAIFoundry.DeploymentName)]
+    [InlineData(ArgumentOptionConstants.AzureAIFoundry.Endpoint)]
+    [InlineData(ArgumentOptionConstants.AzureAIFoundry.ApiKey)]
+    [InlineData(ArgumentOptionConstants.AzureAIFoundry.DeploymentName)]
     public void Given_CLI_ArgumentWithoutValue_When_Parse_Invoked_Then_It_Should_Use_Config(string argument)
     {
         // Arrange
@@ -222,7 +222,7 @@ public class AzureAIFoundryArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAzureAIFoundry();
-        var args = new[] { CommandLineArguments.AzureAIFoundry.DeploymentName, deploymentName };
+        var args = new[] { ArgumentOptionConstants.AzureAIFoundry.DeploymentName, deploymentName };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -261,7 +261,7 @@ public class AzureAIFoundryArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAzureAIFoundry(configEndpoint, configApiKey, configDeploymentName);
-        var args = new[] { CommandLineArguments.AzureAIFoundry.Endpoint, cliEndpoint, CommandLineArguments.AzureAIFoundry.ApiKey, cliApiKey, CommandLineArguments.AzureAIFoundry.DeploymentName, cliDeploymentName };
+        var args = new[] { ArgumentOptionConstants.AzureAIFoundry.Endpoint, cliEndpoint, ArgumentOptionConstants.AzureAIFoundry.ApiKey, cliApiKey, ArgumentOptionConstants.AzureAIFoundry.DeploymentName, cliDeploymentName };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -333,7 +333,7 @@ public class AzureAIFoundryArgumentOptionsTests
         var config = BuildConfigWithAzureAIFoundry(
             configEndpoint, configApiKey, configDeploymentName,
             envEndpoint, envApiKey, envDeploymentName);
-        var args = new[] { CommandLineArguments.AzureAIFoundry.Endpoint, cliEndpoint, CommandLineArguments.AzureAIFoundry.ApiKey, cliApiKey, CommandLineArguments.AzureAIFoundry.DeploymentName, cliDeploymentName };
+        var args = new[] { ArgumentOptionConstants.AzureAIFoundry.Endpoint, cliEndpoint, ArgumentOptionConstants.AzureAIFoundry.ApiKey, cliApiKey, ArgumentOptionConstants.AzureAIFoundry.DeploymentName, cliDeploymentName };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -383,7 +383,7 @@ public class AzureAIFoundryArgumentOptionsTests
         var config = BuildConfigWithAzureAIFoundry(
             configEndpoint, configApiKey, configDeploymentName,
             envEndpoint, envApiKey, envDeploymentName);
-        var args = new[] { CommandLineArguments.AzureAIFoundry.Endpoint, cliEndpoint, CommandLineArguments.AzureAIFoundry.ApiKey, cliApiKey, CommandLineArguments.AzureAIFoundry.DeploymentName, cliDeploymentName };
+        var args = new[] { ArgumentOptionConstants.AzureAIFoundry.Endpoint, cliEndpoint, ArgumentOptionConstants.AzureAIFoundry.ApiKey, cliApiKey, ArgumentOptionConstants.AzureAIFoundry.DeploymentName, cliDeploymentName };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args!);
@@ -402,7 +402,7 @@ public class AzureAIFoundryArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAzureAIFoundry(Endpoint, ApiKey, DeploymentName);
-        var args = new[] { CommandLineArguments.AzureAIFoundry.Endpoint, cliEndpoint, CommandLineArguments.AzureAIFoundry.ApiKey, cliApiKey, CommandLineArguments.AzureAIFoundry.DeploymentName, cliDeploymentName };
+        var args = new[] { ArgumentOptionConstants.AzureAIFoundry.Endpoint, cliEndpoint, ArgumentOptionConstants.AzureAIFoundry.ApiKey, cliApiKey, ArgumentOptionConstants.AzureAIFoundry.DeploymentName, cliDeploymentName };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -413,9 +413,9 @@ public class AzureAIFoundryArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(CommandLineArguments.AzureAIFoundry.Endpoint)]
-    [InlineData(CommandLineArguments.AzureAIFoundry.ApiKey)]
-    [InlineData(CommandLineArguments.AzureAIFoundry.DeploymentName)]
+    [InlineData(ArgumentOptionConstants.AzureAIFoundry.Endpoint)]
+    [InlineData(ArgumentOptionConstants.AzureAIFoundry.ApiKey)]
+    [InlineData(ArgumentOptionConstants.AzureAIFoundry.DeploymentName)]
     public void Given_AzureAIFoundry_With_KnownArgument_WithoutValue_When_Parse_Invoked_Then_Help_ShouldBe_False(string argument)
     {
         // Arrange
@@ -436,7 +436,7 @@ public class AzureAIFoundryArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAzureAIFoundry();
-        var args = new[] { CommandLineArguments.AzureAIFoundry.Endpoint, cliEndpoint, argument };
+        var args = new[] { ArgumentOptionConstants.AzureAIFoundry.Endpoint, cliEndpoint, argument };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -471,7 +471,7 @@ public class AzureAIFoundryArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAzureAIFoundry();
-        var args = new[] { CommandLineArguments.AzureAIFoundry.Endpoint, cliEndpoint, CommandLineArguments.AzureAIFoundry.ApiKey, cliApiKey, CommandLineArguments.AzureAIFoundry.DeploymentName, cliDeploymentName };
+        var args = new[] { ArgumentOptionConstants.AzureAIFoundry.Endpoint, cliEndpoint, ArgumentOptionConstants.AzureAIFoundry.ApiKey, cliApiKey, ArgumentOptionConstants.AzureAIFoundry.DeploymentName, cliDeploymentName };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);

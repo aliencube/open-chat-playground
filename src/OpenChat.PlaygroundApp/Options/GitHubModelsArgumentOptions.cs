@@ -40,21 +40,21 @@ public class GitHubModelsArgumentOptions : ArgumentOptions
         {
             switch (args[i])
             {
-                case var _ when args[i] == CommandLineArguments.GitHubModels.Endpoint:
+                case var _ when args[i] == ArgumentOptionConstants.GitHubModels.Endpoint:
                     if (i + 1 < args.Length)
                     {
                         this.Endpoint = args[++i];
                     }
                     break;
 
-                case var _ when args[i] == CommandLineArguments.GitHubModels.Token:
+                case var _ when args[i] == ArgumentOptionConstants.GitHubModels.Token:
                     if (i + 1 < args.Length)
                     {
                         this.Token = args[++i];
                     }
                     break;
 
-                case var _ when args[i] == CommandLineArguments.GitHubModels.Model:
+                case var _ when args[i] == ArgumentOptionConstants.GitHubModels.Model:
                     if (i + 1 < args.Length)
                     {
                         this.Model = args[++i];
