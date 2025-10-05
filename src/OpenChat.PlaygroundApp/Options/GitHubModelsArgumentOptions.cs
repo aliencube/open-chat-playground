@@ -1,5 +1,6 @@
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Configurations;
+using OpenChat.PlaygroundApp.Constants;
 
 namespace OpenChat.PlaygroundApp.Options;
 
@@ -39,21 +40,21 @@ public class GitHubModelsArgumentOptions : ArgumentOptions
         {
             switch (args[i])
             {
-                case "--endpoint":
+                case var _ when args[i] == CommandLineArguments.GitHubModels.Endpoint:
                     if (i + 1 < args.Length)
                     {
                         this.Endpoint = args[++i];
                     }
                     break;
 
-                case "--token":
+                case var _ when args[i] == CommandLineArguments.GitHubModels.Token:
                     if (i + 1 < args.Length)
                     {
                         this.Token = args[++i];
                     }
                     break;
 
-                case "--model":
+                case var _ when args[i] == CommandLineArguments.GitHubModels.Model:
                     if (i + 1 < args.Length)
                     {
                         this.Model = args[++i];
