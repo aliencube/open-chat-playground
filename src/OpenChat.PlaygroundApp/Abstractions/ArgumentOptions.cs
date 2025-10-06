@@ -75,7 +75,7 @@ public abstract class ArgumentOptions
         for (var i = 0; i < args.Length; i++)
         {
             if (string.Equals(args[i], ArgumentOptionConstants.ConnectorType, StringComparison.InvariantCultureIgnoreCase) ||
-                string.Equals(args[i], ArgumentOptionConstants.ConnectorTypeShort, StringComparison.InvariantCultureIgnoreCase))
+                string.Equals(args[i], ArgumentOptionConstants.ConnectorTypeInShort, StringComparison.InvariantCultureIgnoreCase))
             {
                 if (i + 1 < args.Length && Enum.TryParse<ConnectorType>(args[i + 1], ignoreCase: true, out result))
                 {
@@ -126,7 +126,7 @@ public abstract class ArgumentOptions
             switch (args[i])
             {
                 case ArgumentOptionConstants.ConnectorType:
-                case ArgumentOptionConstants.ConnectorTypeShort:
+                case ArgumentOptionConstants.ConnectorTypeInShort:
                     if (i + 1 < args.Length)
                     {
                         if (Enum.TryParse<ConnectorType>(args[++i], ignoreCase: true, out var result))
@@ -137,7 +137,7 @@ public abstract class ArgumentOptions
                     break;
 
                 case ArgumentOptionConstants.Help:
-                case ArgumentOptionConstants.HelpShort:
+                case ArgumentOptionConstants.HelpInShort:
                     options.Help = true;
                     break;
 
@@ -258,7 +258,7 @@ public abstract class ArgumentOptions
         Console.WriteLine("Usage: [options]");
         Console.WriteLine();
         Console.WriteLine("Options:");
-        Console.WriteLine($"  {ArgumentOptionConstants.ConnectorType}|{ArgumentOptionConstants.ConnectorTypeShort}  The connector type. Supporting connectors are:");
+        Console.WriteLine($"  {ArgumentOptionConstants.ConnectorType}|{ArgumentOptionConstants.ConnectorTypeInShort}  The connector type. Supporting connectors are:");
         Console.WriteLine("                       - AmazonBedrock, AzureAIFoundry, GitHubModels, GoogleVertexAI");
         Console.WriteLine("                       - DockerModelRunner, FoundryLocal, HuggingFace, Ollama");
         Console.WriteLine("                       - Anthropic, LG, Naver, OpenAI, Upstage");
@@ -276,7 +276,7 @@ public abstract class ArgumentOptions
         DisplayHelpForNaver();
         DisplayHelpForOpenAI();
         DisplayHelpForUpstage();
-        Console.WriteLine($"  {ArgumentOptionConstants.Help}|{ArgumentOptionConstants.HelpShort}            Show this help message.");
+        Console.WriteLine($"  {ArgumentOptionConstants.Help}|{ArgumentOptionConstants.HelpInShort}            Show this help message.");
     }
 
     /// <summary>

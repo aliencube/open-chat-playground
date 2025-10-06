@@ -80,7 +80,10 @@ public class GoogleVertexAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithGoogleVertexAI();
-        var args = new[] { ArgumentOptionConstants.GoogleVertexAI.ApiKey, cliApiKey };
+        var args = new[]
+        {
+            ArgumentOptionConstants.GoogleVertexAI.ApiKey, cliApiKey
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -98,7 +101,10 @@ public class GoogleVertexAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithGoogleVertexAI();
-        var args = new[] { ArgumentOptionConstants.GoogleVertexAI.Model, cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.GoogleVertexAI.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -116,7 +122,11 @@ public class GoogleVertexAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithGoogleVertexAI();
-        var args = new[] { ArgumentOptionConstants.GoogleVertexAI.ApiKey, cliApiKey, ArgumentOptionConstants.GoogleVertexAI.Model, cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.GoogleVertexAI.ApiKey, cliApiKey,
+            ArgumentOptionConstants.GoogleVertexAI.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -170,7 +180,10 @@ public class GoogleVertexAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithGoogleVertexAI();
-        var args = new[] { ArgumentOptionConstants.GoogleVertexAI.Model, model };
+        var args = new[]
+        {
+            ArgumentOptionConstants.GoogleVertexAI.Model, model
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -188,7 +201,10 @@ public class GoogleVertexAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithGoogleVertexAI();
-        var args = new[] { ArgumentOptionConstants.GoogleVertexAI.ApiKey, cliApiKey };
+        var args = new[]
+        {
+            ArgumentOptionConstants.GoogleVertexAI.ApiKey, cliApiKey
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -226,7 +242,11 @@ public class GoogleVertexAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithGoogleVertexAI(configApiKey, configModel);
-        var args = new[] { ArgumentOptionConstants.GoogleVertexAI.ApiKey, cliApiKey, ArgumentOptionConstants.GoogleVertexAI.Model, cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.GoogleVertexAI.ApiKey, cliApiKey,
+            ArgumentOptionConstants.GoogleVertexAI.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args!);
@@ -240,7 +260,8 @@ public class GoogleVertexAIArgumentOptionsTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("env-key", "env-model")]
-    public void Given_EnvironmentVariables_And_No_Config_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(string envApiKey, string envModel)
+    public void Given_EnvironmentVariables_And_No_Config_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(
+        string envApiKey, string envModel)
     {
         // Arrange
         var config = BuildConfigWithGoogleVertexAI(
@@ -287,7 +308,11 @@ public class GoogleVertexAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithGoogleVertexAI(configApiKey, configModel, envApiKey, envModel);
-        var args = new[] { ArgumentOptionConstants.GoogleVertexAI.ApiKey, cliApiKey, ArgumentOptionConstants.GoogleVertexAI.Model, cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.GoogleVertexAI.ApiKey, cliApiKey,
+            ArgumentOptionConstants.GoogleVertexAI.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -328,7 +353,11 @@ public class GoogleVertexAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithGoogleVertexAI(configApiKey, configModel, envApiKey, envModel);
-        var args = new[] { ArgumentOptionConstants.GoogleVertexAI.ApiKey, cliApiKey, ArgumentOptionConstants.GoogleVertexAI.Model, cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.GoogleVertexAI.ApiKey, cliApiKey,
+            ArgumentOptionConstants.GoogleVertexAI.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args!);
@@ -342,11 +371,16 @@ public class GoogleVertexAIArgumentOptionsTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("cli-api-key", "cli-model")]
-    public void Given_GoogleVertexAI_With_KnownArguments_When_Parse_Invoked_Then_Help_ShouldBe_False(string cliApiKey, string cliModel)
+    public void Given_GoogleVertexAI_With_KnownArguments_When_Parse_Invoked_Then_Help_ShouldBe_False(
+        string cliApiKey, string cliModel)
     {
         // Arrange
         var config = BuildConfigWithGoogleVertexAI(ApiKey, Model);
-        var args = new[] { ArgumentOptionConstants.GoogleVertexAI.ApiKey, cliApiKey, ArgumentOptionConstants.GoogleVertexAI.Model, cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.GoogleVertexAI.ApiKey, cliApiKey,
+            ArgumentOptionConstants.GoogleVertexAI.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -375,11 +409,16 @@ public class GoogleVertexAIArgumentOptionsTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("cli-api-key", "--unknown-flag")]
-    public void Given_GoogleVertexAI_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_ShouldBe_True(string cliApiKey, string argument)
+    public void Given_GoogleVertexAI_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_ShouldBe_True(
+        string cliApiKey, string argument)
     {
         // Arrange
         var config = BuildConfigWithGoogleVertexAI();
-        var args = new[] { ArgumentOptionConstants.GoogleVertexAI.ApiKey, cliApiKey, argument };
+        var args = new[]
+        {
+            ArgumentOptionConstants.GoogleVertexAI.ApiKey, cliApiKey,
+            argument
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -414,7 +453,11 @@ public class GoogleVertexAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithGoogleVertexAI();
-        var args = new[] { ArgumentOptionConstants.GoogleVertexAI.ApiKey, cliApiKey, ArgumentOptionConstants.GoogleVertexAI.Model, cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.GoogleVertexAI.ApiKey, cliApiKey,
+            ArgumentOptionConstants.GoogleVertexAI.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);

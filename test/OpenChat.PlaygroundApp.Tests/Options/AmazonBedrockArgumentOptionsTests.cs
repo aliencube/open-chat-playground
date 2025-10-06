@@ -109,7 +109,10 @@ public class AmazonBedrockArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAmazonBedrock();
-        var args = new[] { ArgumentOptionConstants.AmazonBedrock.AccessKeyId, cliAccessKeyId };
+        var args = new[]
+        {
+            ArgumentOptionConstants.AmazonBedrock.AccessKeyId, cliAccessKeyId
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -129,7 +132,10 @@ public class AmazonBedrockArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAmazonBedrock();
-        var args = new[] { ArgumentOptionConstants.AmazonBedrock.SecretAccessKey, cliSecretAccessKey };
+        var args = new[]
+        {
+            ArgumentOptionConstants.AmazonBedrock.SecretAccessKey, cliSecretAccessKey
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -149,7 +155,10 @@ public class AmazonBedrockArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAmazonBedrock();
-        var args = new[] { ArgumentOptionConstants.AmazonBedrock.Region, cliRegion };
+        var args = new[]
+        {
+            ArgumentOptionConstants.AmazonBedrock.Region, cliRegion
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -169,7 +178,10 @@ public class AmazonBedrockArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAmazonBedrock();
-        var args = new[] { ArgumentOptionConstants.AmazonBedrock.ModelId, cliModelId };
+        var args = new[]
+        {
+            ArgumentOptionConstants.AmazonBedrock.ModelId, cliModelId
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -185,11 +197,18 @@ public class AmazonBedrockArgumentOptionsTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("cli-access-key-id", "cli-secret-access-key", "cli-region", "cli-model-id")]
-    public void Given_All_CLI_Arguments_When_Parse_Invoked_Then_It_Should_Use_CLI(string cliAccessKeyId, string cliSecretAccessKey, string cliRegion, string cliModelId)
+    public void Given_All_CLI_Arguments_When_Parse_Invoked_Then_It_Should_Use_CLI(
+        string cliAccessKeyId, string cliSecretAccessKey, string cliRegion, string cliModelId)
     {
         // Arrange
         var config = BuildConfigWithAmazonBedrock();
-        var args = new[] { ArgumentOptionConstants.AmazonBedrock.AccessKeyId, cliAccessKeyId, ArgumentOptionConstants.AmazonBedrock.SecretAccessKey, cliSecretAccessKey, ArgumentOptionConstants.AmazonBedrock.Region, cliRegion, ArgumentOptionConstants.AmazonBedrock.ModelId, cliModelId };
+        var args = new[]
+        {
+            ArgumentOptionConstants.AmazonBedrock.AccessKeyId, cliAccessKeyId,
+            ArgumentOptionConstants.AmazonBedrock.SecretAccessKey, cliSecretAccessKey,
+            ArgumentOptionConstants.AmazonBedrock.Region, cliRegion,
+            ArgumentOptionConstants.AmazonBedrock.ModelId, cliModelId
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -251,7 +270,10 @@ public class AmazonBedrockArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAmazonBedrock();
-        var args = new[] { ArgumentOptionConstants.AmazonBedrock.Region, region };
+        var args = new[]
+        {
+            ArgumentOptionConstants.AmazonBedrock.Region, region
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -264,10 +286,12 @@ public class AmazonBedrockArgumentOptionsTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("config-access-key-id", "config-secret-access-key", "config-region", "config-model-id")]
-    public void Given_ConfigValues_And_No_CLI_When_Parse_Invoked_Then_It_Should_Use_Config(string configAccessKeyId, string configSecretAccessKey, string configRegion, string configModelId)
+    public void Given_ConfigValues_And_No_CLI_When_Parse_Invoked_Then_It_Should_Use_Config(
+        string configAccessKeyId, string configSecretAccessKey, string configRegion, string configModelId)
     {
         // Arrange
-        var config = BuildConfigWithAmazonBedrock(configAccessKeyId, configSecretAccessKey, configRegion, configModelId);
+        var config = BuildConfigWithAmazonBedrock(
+            configAccessKeyId, configSecretAccessKey, configRegion, configModelId);
         var args = Array.Empty<string>();
 
         // Act
@@ -290,8 +314,15 @@ public class AmazonBedrockArgumentOptionsTests
         string cliAccessKeyId, string cliSecretAccessKey, string cliRegion, string cliModelId)
     {
         // Arrange
-        var config = BuildConfigWithAmazonBedrock(configAccessKeyId, configSecretAccessKey, configRegion, configModelId);
-        var args = new[] { ArgumentOptionConstants.AmazonBedrock.AccessKeyId, cliAccessKeyId, ArgumentOptionConstants.AmazonBedrock.SecretAccessKey, cliSecretAccessKey, ArgumentOptionConstants.AmazonBedrock.Region, cliRegion, ArgumentOptionConstants.AmazonBedrock.ModelId, cliModelId };
+        var config = BuildConfigWithAmazonBedrock(
+            configAccessKeyId, configSecretAccessKey, configRegion, configModelId);
+        var args = new[]
+        {
+            ArgumentOptionConstants.AmazonBedrock.AccessKeyId, cliAccessKeyId,
+            ArgumentOptionConstants.AmazonBedrock.SecretAccessKey, cliSecretAccessKey,
+            ArgumentOptionConstants.AmazonBedrock.Region, cliRegion,
+            ArgumentOptionConstants.AmazonBedrock.ModelId, cliModelId
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -307,11 +338,18 @@ public class AmazonBedrockArgumentOptionsTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("cli-access-key-id", "cli-secret-access-key", "cli-region", "cli-model-id")]
-    public void Given_AmazonBedrock_With_KnownArguments_When_Parse_Invoked_Then_Help_ShouldBe_False(string cliAccessKeyId, string cliSecretAccessKey, string cliRegion, string cliModelId)
+    public void Given_AmazonBedrock_With_KnownArguments_When_Parse_Invoked_Then_Help_ShouldBe_False(
+        string cliAccessKeyId, string cliSecretAccessKey, string cliRegion, string cliModelId)
     {
         // Arrange
         var config = BuildConfigWithAmazonBedrock(AccessKeyId, SecretAccessKey, Region, ModelId);
-        var args = new[] { ArgumentOptionConstants.AmazonBedrock.AccessKeyId, cliAccessKeyId, ArgumentOptionConstants.AmazonBedrock.SecretAccessKey, cliSecretAccessKey, ArgumentOptionConstants.AmazonBedrock.Region, cliRegion, ArgumentOptionConstants.AmazonBedrock.ModelId, cliModelId };
+        var args = new[]
+        {
+            ArgumentOptionConstants.AmazonBedrock.AccessKeyId, cliAccessKeyId,
+            ArgumentOptionConstants.AmazonBedrock.SecretAccessKey, cliSecretAccessKey,
+            ArgumentOptionConstants.AmazonBedrock.Region, cliRegion,
+            ArgumentOptionConstants.AmazonBedrock.ModelId, cliModelId
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -342,11 +380,16 @@ public class AmazonBedrockArgumentOptionsTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("cli-region", "--unknown-flag")]
-    public void Given_AmazonBedrock_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_ShouldBe_True(string cliRegion, string argument)
+    public void Given_AmazonBedrock_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_ShouldBe_True(
+        string cliRegion, string argument)
     {
         // Arrange
         var config = BuildConfigWithAmazonBedrock();
-        var args = new[] { ArgumentOptionConstants.AmazonBedrock.Region, cliRegion, argument };
+        var args = new[]
+        {
+            ArgumentOptionConstants.AmazonBedrock.Region, cliRegion,
+            argument
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -417,7 +460,13 @@ public class AmazonBedrockArgumentOptionsTests
         var config = BuildConfigWithAmazonBedrock(
             configAccessKeyId, configSecretAccessKey, configRegion, configModelId,
             envAccessKeyId, envSecretAccessKey, envRegion, envModelId);
-        var args = new[] { ArgumentOptionConstants.AmazonBedrock.AccessKeyId, cliAccessKeyId, ArgumentOptionConstants.AmazonBedrock.SecretAccessKey, cliSecretAccessKey, ArgumentOptionConstants.AmazonBedrock.Region, cliRegion, ArgumentOptionConstants.AmazonBedrock.ModelId, cliModelId };
+        var args = new[]
+        {
+            ArgumentOptionConstants.AmazonBedrock.AccessKeyId, cliAccessKeyId,
+            ArgumentOptionConstants.AmazonBedrock.SecretAccessKey, cliSecretAccessKey,
+            ArgumentOptionConstants.AmazonBedrock.Region, cliRegion,
+            ArgumentOptionConstants.AmazonBedrock.ModelId, cliModelId
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -469,7 +518,13 @@ public class AmazonBedrockArgumentOptionsTests
         var config = BuildConfigWithAmazonBedrock(
             configAccessKeyId, configSecretAccessKey, configRegion, configModelId,
             envAccessKeyId, envSecretAccessKey, envRegion, envModelId);
-        var args = new[] { ArgumentOptionConstants.AmazonBedrock.AccessKeyId, cliAccessKeyId, ArgumentOptionConstants.AmazonBedrock.SecretAccessKey, cliSecretAccessKey, ArgumentOptionConstants.AmazonBedrock.Region, cliRegion, ArgumentOptionConstants.AmazonBedrock.ModelId, cliModelId };
+        var args = new[]
+        {
+            ArgumentOptionConstants.AmazonBedrock.AccessKeyId, cliAccessKeyId,
+            ArgumentOptionConstants.AmazonBedrock.SecretAccessKey, cliSecretAccessKey,
+            ArgumentOptionConstants.AmazonBedrock.Region, cliRegion,
+            ArgumentOptionConstants.AmazonBedrock.ModelId, cliModelId
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args!);
@@ -509,7 +564,13 @@ public class AmazonBedrockArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAmazonBedrock();
-        var args = new[] { ArgumentOptionConstants.AmazonBedrock.AccessKeyId, cliAccessKeyId, ArgumentOptionConstants.AmazonBedrock.SecretAccessKey, cliSecretAccessKey, ArgumentOptionConstants.AmazonBedrock.Region, cliRegion, ArgumentOptionConstants.AmazonBedrock.ModelId, cliModelId };
+        var args = new[]
+        {
+            ArgumentOptionConstants.AmazonBedrock.AccessKeyId, cliAccessKeyId,
+            ArgumentOptionConstants.AmazonBedrock.SecretAccessKey, cliSecretAccessKey,
+            ArgumentOptionConstants.AmazonBedrock.Region, cliRegion,
+            ArgumentOptionConstants.AmazonBedrock.ModelId, cliModelId
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);

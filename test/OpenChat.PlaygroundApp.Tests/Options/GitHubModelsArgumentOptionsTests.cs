@@ -97,7 +97,10 @@ public class GitHubModelsArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithGitHubModels();
-        var args = new[] { ArgumentOptionConstants.GitHubModels.Endpoint, cliEndpoint };
+        var args = new[]
+        {
+            ArgumentOptionConstants.GitHubModels.Endpoint, cliEndpoint
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -116,7 +119,10 @@ public class GitHubModelsArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithGitHubModels();
-        var args = new[] { ArgumentOptionConstants.GitHubModels.Token, cliToken };
+        var args = new[]
+        {
+            ArgumentOptionConstants.GitHubModels.Token, cliToken
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -135,7 +141,10 @@ public class GitHubModelsArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithGitHubModels();
-        var args = new[] { ArgumentOptionConstants.GitHubModels.Model, cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.GitHubModels.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -150,11 +159,17 @@ public class GitHubModelsArgumentOptionsTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("https://cli.github-models/inference", "cli-token", "cli-model")]
-    public void Given_All_CLI_Arguments_When_Parse_Invoked_Then_It_Should_Use_CLI(string cliEndpoint, string cliToken, string cliModel)
+    public void Given_All_CLI_Arguments_When_Parse_Invoked_Then_It_Should_Use_CLI(
+        string cliEndpoint, string cliToken, string cliModel)
     {
         // Arrange
         var config = BuildConfigWithGitHubModels();
-        var args = new[] { ArgumentOptionConstants.GitHubModels.Endpoint, cliEndpoint, ArgumentOptionConstants.GitHubModels.Token, cliToken, ArgumentOptionConstants.GitHubModels.Model, cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.GitHubModels.Endpoint, cliEndpoint,
+            ArgumentOptionConstants.GitHubModels.Token, cliToken,
+            ArgumentOptionConstants.GitHubModels.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -212,7 +227,10 @@ public class GitHubModelsArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithGitHubModels();
-        var args = new[] { ArgumentOptionConstants.GitHubModels.Model, model };
+        var args = new[]
+        {
+            ArgumentOptionConstants.GitHubModels.Model, model
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -225,7 +243,8 @@ public class GitHubModelsArgumentOptionsTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("https://config.github-models/inference", "config-token", "config-model")]
-    public void Given_ConfigValues_And_No_CLI_When_Parse_Invoked_Then_It_Should_Use_Config(string configEndpoint, string configToken, string configModel)
+    public void Given_ConfigValues_And_No_CLI_When_Parse_Invoked_Then_It_Should_Use_Config(
+        string configEndpoint, string configToken, string configModel)
     {
         // Arrange
         var config = BuildConfigWithGitHubModels(configEndpoint, configToken, configModel);
@@ -251,7 +270,12 @@ public class GitHubModelsArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithGitHubModels(configEndpoint, configToken, configModel);
-        var args = new[] { ArgumentOptionConstants.GitHubModels.Endpoint, cliEndpoint, ArgumentOptionConstants.GitHubModels.Token, cliToken, ArgumentOptionConstants.GitHubModels.Model, cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.GitHubModels.Endpoint, cliEndpoint,
+            ArgumentOptionConstants.GitHubModels.Token, cliToken,
+            ArgumentOptionConstants.GitHubModels.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -323,7 +347,12 @@ public class GitHubModelsArgumentOptionsTests
         var config = BuildConfigWithGitHubModels(
             configEndpoint, configToken, configModel,
             envEndpoint, envToken, envModel);
-        var args = new[] { ArgumentOptionConstants.GitHubModels.Endpoint, cliEndpoint, ArgumentOptionConstants.GitHubModels.Token, cliToken, ArgumentOptionConstants.GitHubModels.Model, cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.GitHubModels.Endpoint, cliEndpoint,
+            ArgumentOptionConstants.GitHubModels.Token, cliToken,
+            ArgumentOptionConstants.GitHubModels.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -373,7 +402,12 @@ public class GitHubModelsArgumentOptionsTests
         var config = BuildConfigWithGitHubModels(
             configEndpoint, configToken, configModel,
             envEndpoint, envToken, envModel);
-        var args = new[] { ArgumentOptionConstants.GitHubModels.Endpoint, cliEndpoint, ArgumentOptionConstants.GitHubModels.Token, cliToken, ArgumentOptionConstants.GitHubModels.Model, cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.GitHubModels.Endpoint, cliEndpoint,
+            ArgumentOptionConstants.GitHubModels.Token, cliToken,
+            ArgumentOptionConstants.GitHubModels.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args!);
@@ -388,11 +422,17 @@ public class GitHubModelsArgumentOptionsTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("https://cli.github-models/inference", "cli-token", "cli-model")]
-    public void Given_GitHubModels_With_KnownArguments_When_Parse_Invoked_Then_Help_ShouldBe_False(string cliEndpoint, string cliToken, string cliModel)
+    public void Given_GitHubModels_With_KnownArguments_When_Parse_Invoked_Then_Help_ShouldBe_False(
+        string cliEndpoint, string cliToken, string cliModel)
     {
         // Arrange
         var config = BuildConfigWithGitHubModels(Endpoint, Token, Model);
-        var args = new[] { ArgumentOptionConstants.GitHubModels.Endpoint, cliEndpoint, ArgumentOptionConstants.GitHubModels.Token, cliToken, ArgumentOptionConstants.GitHubModels.Model, cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.GitHubModels.Endpoint, cliEndpoint,
+            ArgumentOptionConstants.GitHubModels.Token, cliToken,
+            ArgumentOptionConstants.GitHubModels.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -422,11 +462,16 @@ public class GitHubModelsArgumentOptionsTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("https://cli.github-models/inference", "--unknown-flag")]
-    public void Given_GitHubModels_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_ShouldBe_True(string cliEndpoint, string argument)
+    public void Given_GitHubModels_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_ShouldBe_True(
+        string cliEndpoint, string argument)
     {
         // Arrange
         var config = BuildConfigWithGitHubModels();
-        var args = new[] { ArgumentOptionConstants.GitHubModels.Endpoint, cliEndpoint, argument };
+        var args = new[]
+        {
+            ArgumentOptionConstants.GitHubModels.Endpoint, cliEndpoint,
+            argument
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -461,7 +506,12 @@ public class GitHubModelsArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithGitHubModels();
-        var args = new[] { ArgumentOptionConstants.GitHubModels.Endpoint, cliEndpoint, ArgumentOptionConstants.GitHubModels.Token, cliToken, ArgumentOptionConstants.GitHubModels.Model, cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.GitHubModels.Endpoint, cliEndpoint,
+            ArgumentOptionConstants.GitHubModels.Token, cliToken,
+            ArgumentOptionConstants.GitHubModels.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);

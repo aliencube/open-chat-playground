@@ -97,7 +97,10 @@ public class LGArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithLG();
-        var args = new[] { ArgumentOptionConstants.LG.BaseUrl, cliBaseUrl };
+        var args = new[]
+        {
+            ArgumentOptionConstants.LG.BaseUrl, cliBaseUrl
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -115,7 +118,10 @@ public class LGArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithLG();
-        var args = new[] { ArgumentOptionConstants.LG.Model, cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.LG.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -133,7 +139,11 @@ public class LGArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithLG();
-        var args = new[] { ArgumentOptionConstants.LG.BaseUrl, cliBaseUrl, ArgumentOptionConstants.LG.Model, cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.LG.BaseUrl, cliBaseUrl,
+            ArgumentOptionConstants.LG.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -187,7 +197,10 @@ public class LGArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithLG();
-        var args = new[] { ArgumentOptionConstants.LG.Model, model };
+        var args = new[]
+        {
+            ArgumentOptionConstants.LG.Model, model
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -225,7 +238,11 @@ public class LGArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithLG(configBaseUrl, configModel);
-        var args = new[] { ArgumentOptionConstants.LG.BaseUrl, cliBaseUrl, ArgumentOptionConstants.LG.Model, cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.LG.BaseUrl, cliBaseUrl,
+            ArgumentOptionConstants.LG.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -243,7 +260,11 @@ public class LGArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithLG(BaseUrl, Model);
-        var args = new[] { ArgumentOptionConstants.LG.BaseUrl, cliBaseUrl, ArgumentOptionConstants.LG.Model, cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.LG.BaseUrl, cliBaseUrl,
+            ArgumentOptionConstants.LG.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -272,11 +293,16 @@ public class LGArgumentOptionsTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("https://cli.lg-exaone/api", "--unknown-flag")]
-    public void Given_LG_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_Should_Be_True(string cliBaseUrl, string argument)
+    public void Given_LG_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_Should_Be_True(
+        string cliBaseUrl, string argument)
     {
         // Arrange
         var config = BuildConfigWithLG();
-        var args = new[] { ArgumentOptionConstants.LG.BaseUrl, cliBaseUrl, argument };
+        var args = new[]
+        {
+            ArgumentOptionConstants.LG.BaseUrl, cliBaseUrl,
+            argument
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -292,7 +318,11 @@ public class LGArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithLG();
-        var args = new[] { ArgumentOptionConstants.LG.BaseUrl, cliBaseUrl, ArgumentOptionConstants.LG.Model, cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.LG.BaseUrl, cliBaseUrl,
+            ArgumentOptionConstants.LG.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -304,7 +334,8 @@ public class LGArgumentOptionsTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("https://env.lg-exaone/api", "env-model")]
-    public void Given_EnvironmentVariables_And_No_Config_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(string envBaseUrl, string envModel)
+    public void Given_EnvironmentVariables_And_No_Config_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(
+        string envBaseUrl, string envModel)
     {
         // Arrange
         var config = BuildConfigWithLG(
@@ -351,7 +382,11 @@ public class LGArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithLG(configBaseUrl, configModel, envBaseUrl, envModel);
-        var args = new[] { ArgumentOptionConstants.LG.BaseUrl, cliBaseUrl, ArgumentOptionConstants.LG.Model, cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.LG.BaseUrl, cliBaseUrl,
+            ArgumentOptionConstants.LG.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
