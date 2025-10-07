@@ -12,13 +12,13 @@
       "value": "${CONNECTOR_TYPE}"
     },
     "azureAIFoundryEndpoint": {
-      "value": "${AZURE_AI_FOUNDARY_ENDPOINT}"
+      "value": "${AZURE_AI_FOUNDRY_ENDPOINT}"
     },
     "azureAIFoundryApiKey": {
-      "value": "${AZURE_AI_FOUNDARY_API_KEY}"
+      "value": "${AZURE_AI_FOUNDRY_API_KEY}"
     },
     "azureAIFoundryDeploymentName": {
-      "value": "${AZURE_AI_FOUNDARY_DEPLOYMENT_NAME}"
+      "value": "${AZURE_AI_FOUNDRY_DEPLOYMENT_NAME}"
     },
     "githubModelsModel": {
       "value": "${GH_MODELS_MODEL}"
