@@ -1,6 +1,6 @@
 # OpenChat Playground with [Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/what-is-azure-ai-foundry)
 
-This page describes to run OpenChat Playground (OCP) with Azure AI Foundry integration.
+This page describes how to run OpenChat Playground (OCP) with Azure AI Foundry integration.
 
 ## Get the repository root
 
@@ -24,7 +24,7 @@ This page describes to run OpenChat Playground (OCP) with Azure AI Foundry integ
     cd $REPOSITORY_ROOT
     ```
 
-1. Add Azure AI Foundry API Key for Azure AI Foundry connection. Make sure you should replace `{{AZURE_AI_FOUNDRY_API_KEY}}` with your Azure AI Foundry API key.
+2. Add Azure AI Foundry API Key for Azure AI Foundry connection. Make sure you should replace `{{AZURE_AI_FOUNDRY_API_KEY}}` with your Azure AI Foundry API key.
 
     ```bash
     # bash/zsh
@@ -40,13 +40,37 @@ This page describes to run OpenChat Playground (OCP) with Azure AI Foundry integ
 
     > To get an Azure AI Foundry instance, its API endpoint and key, refer to the doc, [Get started with Azure AI Foundry](https://learn.microsoft.com/en-us/azure/ai-foundry/quickstarts/get-started-code?tabs=csharp#set-up-your-environment).
 
-1. Run the app.
+3. Run the app. The default deployment name OCP uses is `gpt-4o-mini`.
 
     ```bash
-    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- --connector-type AzureAIFoundry
+    # bash/zsh
+    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- \
+        --connector-type AzureAIFoundry
     ```
 
-1. Open your web browser, navigate to `http://localhost:5280`, and enter prompts.
+    ```powershell
+    # PowerShell
+    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- `
+        --connector-type AzureAIFoundry
+    ```
+
+   Alternatively, if you want to run with a different deployment, say `gpt-4`, other than the default one, you can specify it as an argument. For more details on how to create deployments, refer to [Create and deploy a model](https://learn.microsoft.com/en-us/azure/ai-foundry/foundry-models/how-to/quickstart-ai-project):
+
+    ```bash
+    # bash/zsh
+    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- \
+        --connector-type AzureAIFoundry \
+        --deployment-name gpt-4
+    ```
+
+    ```powershell
+    # PowerShell
+    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- `
+        --connector-type AzureAIFoundry `
+        --deployment-name gpt-4
+    ```
+
+2. Open your web browser, navigate to `http://localhost:5280`, and enter prompts.
 
 ## Run in local container
 
@@ -56,54 +80,77 @@ This page describes to run OpenChat Playground (OCP) with Azure AI Foundry integ
     cd $REPOSITORY_ROOT
     ```
 
-1. Build a container.
+2. Build a container.
 
     ```bash
     docker build -f Dockerfile -t openchat-playground:latest .
     ```
 
-1. Get Azure AI Foundry configuration.
+3. Get Azure AI Foundry API Key.
 
     ```bash
     # bash/zsh
-    ENDPOINT=$(dotnet user-secrets --project ./src/OpenChat.PlaygroundApp list --json | \
-                 sed -n '/^\/\//d; p' | jq -r '."AzureAIFoundry:Endpoint"')
     API_KEY=$(dotnet user-secrets --project ./src/OpenChat.PlaygroundApp list --json | \
-                sed -n '/^\/\//d; p' | jq -r '."AzureAIFoundry:ApiKey"')
-    DEPLOYMENT_NAME=$(dotnet user-secrets --project ./src/OpenChat.PlaygroundApp list --json | \
-                        sed -n '/^\/\//d; p' | jq -r '."AzureAIFoundry:DeploymentName"')
+              sed -n '/^\/\//d; p' | jq -r '."AzureAIFoundry:ApiKey"')
     ```
 
     ```powershell
     # PowerShell
-    $SECRETS = (dotnet user-secrets --project ./src/OpenChat.PlaygroundApp list --json | `
-                  Select-String -NotMatch '^//(BEGIN|END)' | ConvertFrom-Json)
-    $ENDPOINT = $SECRETS.'AzureAIFoundry:Endpoint'
-    $API_KEY = $SECRETS.'AzureAIFoundry:ApiKey'
-    $DEPLOYMENT_NAME = $SECRETS.'AzureAIFoundry:DeploymentName'
+    $API_KEY = (dotnet user-secrets --project ./src/OpenChat.PlaygroundApp list --json | `
+                Select-String -NotMatch '^//(BEGIN|END)' | ConvertFrom-Json).'AzureAIFoundry:ApiKey'
     ```
 
-1. Run the app.
+4. Run the app. The default deployment name OCP uses is `gpt-4o-mini`.
 
     ```bash
-    # From locally built container
-    docker run -i --rm -p 8080:8080 openchat-playground:latest \
-        --connector-type AzureAIFoundry \
-        --endpoint "$ENDPOINT" \
-        --api-key "$API_KEY" \
-        --deployment-name "$DEPLOYMENT_NAME"
+    # bash/zsh - from locally built container
+    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type AzureAIFoundry \
+        --endpoint $AZURE_AI_FOUNDRY_ENDPOINT \
+        --api-key $API_KEY
+    ```
+
+    ```powershell
+    # PowerShell - from locally built container
+    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type AzureAIFoundry `
+        --endpoint $AZURE_AI_FOUNDRY_ENDPOINT `
+        --api-key $API_KEY
     ```
 
     ```bash
-    # From GitHub Container Registry
+    # bash/zsh - from GitHub Container Registry
     docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest \
         --connector-type AzureAIFoundry \
-        --endpoint "$ENDPOINT" \
-        --api-key "$API_KEY" \
-        --deployment-name "$DEPLOYMENT_NAME"
+        --endpoint $AZURE_AI_FOUNDRY_ENDPOINT \
+        --api-key $API_KEY
     ```
 
-1. Open your web browser, navigate to `http://localhost:8080`, and enter prompts.
+    ```powershell
+    # PowerShell - from GitHub Container Registry
+    docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest `
+        --connector-type AzureAIFoundry `
+        --endpoint AZURE_AI_FOUNDRY_ENDPOINT `
+        --api-key $API_KEY `
+    ```
+
+   Alternatively, if you want to run with a different deployment, say `gpt-4`, other than the default one, you can specify it as an argument:
+
+    ```bash
+    # bash/zsh
+    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type AzureAIFoundry \
+        --endpoint $AZURE_AI_FOUNDRY_ENDPOINT \
+        --api-key $API_KEY \
+        --deployment-name gpt-4
+    ```
+
+    ```powershell
+    # PowerShell
+    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type AzureAIFoundry `
+        --endpoint $AZURE_AI_FOUNDRY_ENDPOINT `
+        --api-key $API_KEY `
+        --deployment-name gpt-4
+    ```
+
+5. Open your web browser, navigate to `http://localhost:8080`, and enter prompts.
 
 ## Run on Azure
 
@@ -113,21 +160,19 @@ This page describes to run OpenChat Playground (OCP) with Azure AI Foundry integ
     cd $REPOSITORY_ROOT
     ```
 
-1. Login to Azure.
+2. Login to Azure.
 
     ```bash
-    # Login to Azure Dev CLI
     azd auth login
     ```
 
-1. Check login status.
+3. Check login status.
 
     ```bash
-    # Azure Dev CLI
     azd auth login --check-status
     ```
 
-1. Initialize `azd` template.
+4. Initialize `azd` template.
 
     ```bash
     azd init
@@ -135,48 +180,40 @@ This page describes to run OpenChat Playground (OCP) with Azure AI Foundry integ
 
    > **NOTE**: You will be asked to provide environment name for provisioning.
 
-1. Get Azure AI Foundry configuration.
+5. Get Azure AI Foundry API Key.
 
     ```bash
     # bash/zsh
-    ENDPOINT=$(dotnet user-secrets --project ./src/OpenChat.PlaygroundApp list --json | \
-                 sed -n '/^\/\//d; p' | jq -r '."AzureAIFoundry:Endpoint"')
     API_KEY=$(dotnet user-secrets --project ./src/OpenChat.PlaygroundApp list --json | \
-                sed -n '/^\/\//d; p' | jq -r '."AzureAIFoundry:ApiKey"')
-    DEPLOYMENT_NAME=$(dotnet user-secrets --project ./src/OpenChat.PlaygroundApp list --json | \
-                        sed -n '/^\/\//d; p' | jq -r '."AzureAIFoundry:DeploymentName"')
+                 sed -n '/^\/\//d; p' | jq -r '."AzureAIFoundry:ApiKey"')
     ```
 
-    ```powershell
+    ```bash
     # PowerShell
-    $SECRETS = (dotnet user-secrets --project ./src/OpenChat.PlaygroundApp list --json | `
-                  Select-String -NotMatch '^//(BEGIN|END)' | ConvertFrom-Json)
-    $ENDPOINT = $SECRETS.'AzureAIFoundry:Endpoint'
-    $API_KEY = $SECRETS.'AzureAIFoundry:ApiKey'
-    $DEPLOYMENT_NAME = $SECRETS.'AzureAIFoundry:DeploymentName'
+    $API_KEY = (dotnet user-secrets --project ./src/OpenChat.PlaygroundApp list --json | `
+                  Select-String -NotMatch '^//(BEGIN|END)' | ConvertFrom-Json).'AzureAIFoundry:ApiKey'
     ```
 
-1. Set Azure AI Foundry configuration to azd environment variables.
+6. Set Azure AI Foundry configuration to azd environment variables.
 
     ```bash
-    azd env set AZURE_AI_FOUNDRY_ENDPOINT "$ENDPOINT"
-    azd env set AZURE_AI_FOUNDRY_API_KEY "$API_KEY"
-    azd env set AZURE_AI_FOUNDRY_DEPLOYMENT_NAME "$DEPLOYMENT_NAME"
+    azd env set AZURE_AI_FOUNDRY_ENDPOINT $AZURE_AI_FOUNDRY_ENDPOINT
+    azd env set AZURE_AI_FOUNDRY_API_KEY $API_KEY
     ```
 
-   Optionally, if you want to run with a different model deployment, add it to azd environment variables.
+   The default deployment name OCP uses is `gpt-4o-mini`. If you want to run with a different deployment, say `gpt-4`, other than the default one, add it to azd environment variables.
 
     ```bash
-    azd env set AZURE_AI_FOUNDRY_DEPLOYMENT_NAME "gpt-4"
+    azd env set AZURE_AI_FOUNDRY_DEPLOYMENT_NAME gpt-4
     ```
 
-1. Set the connector type to `AzureAIFoundry`.
+7. Set the connector type to `AzureAIFoundry`.
 
     ```bash
-    azd env set CONNECTOR_TYPE "AzureAIFoundry"
+    azd env set CONNECTOR_TYPE AzureAIFoundry
     ```
 
-1. Run the following commands in order to provision and deploy the app.
+8. Run the following commands in order to provision and deploy the app.
 
     ```bash
     azd up
@@ -184,7 +221,7 @@ This page describes to run OpenChat Playground (OCP) with Azure AI Foundry integ
 
    > **NOTE**: You will be asked to provide Azure subscription and location for deployment.
 
-1. Clean up all the resources.
+9. Clean up all the resources.
 
     ```bash
     azd down --force --purge
