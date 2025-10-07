@@ -24,19 +24,17 @@ This page describes how to run OpenChat Playground (OCP) with Azure AI Foundry i
     cd $REPOSITORY_ROOT
     ```
 
-2. Add Azure AI Foundry API Key for Azure AI Foundry connection. Make sure you should replace `{{AZURE_AI_FOUNDRY_API_KEY}}` with your Azure AI Foundry API key.
+1. Add Azure AI Foundry API Key for Azure AI Foundry connection. Make sure you should replace `{{AZURE_AI_FOUNDRY_API_KEY}}` with your Azure AI Foundry API key.
 
     ```bash
     # bash/zsh
     dotnet user-secrets --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp \
-        set AzureAIFoundry:Endpoint "{{AZURE_AI_FOUNDRY_ENDPOINT}}" \
         set AzureAIFoundry:ApiKey "{{AZURE_AI_FOUNDRY_API_KEY}}"
     ```
 
     ```powershell
     # PowerShell
     dotnet user-secrets --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp `
-        set AzureAIFoundry:Endpoint "{{AZURE_AI_FOUNDRY_ENDPOINT}}" `
         set AzureAIFoundry:ApiKey "{{AZURE_AI_FOUNDRY_API_KEY}}"
     ```
 
@@ -47,13 +45,15 @@ This page describes how to run OpenChat Playground (OCP) with Azure AI Foundry i
     ```bash
     # bash/zsh
     dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- \
-        --connector-type AzureAIFoundry
+        --connector-type AzureAIFoundry \
+        --endpoint $AZURE_AI_FOUNDRY_ENDPOINT
     ```
 
     ```powershell
     # PowerShell
     dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- `
-        --connector-type AzureAIFoundry
+        --connector-type AzureAIFoundry `
+        --endpoint $AZURE_AI_FOUNDRY_ENDPOINT
     ```
 
    Alternatively, if you want to run with a different deployment, say `gpt-4`, other than the default one, you can specify it as an argument. For more details on how to create deployments, refer to [Create and deploy a model](https://learn.microsoft.com/en-us/azure/ai-foundry/foundry-models/how-to/quickstart-ai-project):
@@ -62,6 +62,7 @@ This page describes how to run OpenChat Playground (OCP) with Azure AI Foundry i
     # bash/zsh
     dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- \
         --connector-type AzureAIFoundry \
+        --endpoint $AZURE_AI_FOUNDRY_ENDPOINT \
         --deployment-name gpt-4
     ```
 
@@ -69,13 +70,15 @@ This page describes how to run OpenChat Playground (OCP) with Azure AI Foundry i
     # PowerShell
     dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- `
         --connector-type AzureAIFoundry `
+        --endpoint $AZURE_AI_FOUNDRY_ENDPOINT `
         --deployment-name gpt-4
     ```
 
-4. Open your web browser, navigate to `http://localhost:5280`, and enter prompts.
+1. Open your web browser, navigate to `http://localhost:5280`, and enter prompts.
 
 ## Run in local container
 
+1. Make sure that you have the Azure AI Foundry Endpoint URL.
 1. Make sure you are at the repository root.
 
     ```bash
@@ -107,14 +110,14 @@ This page describes how to run OpenChat Playground (OCP) with Azure AI Foundry i
     ```bash
     # bash/zsh - from locally built container
     docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type AzureAIFoundry \
-        --endpoint $AZURE_AI_FOUNDRY_ENDPOINT \
+        --endpoint "{{AZURE_AI_FOUNDRY_ENDPOINT}}" \
         --api-key $API_KEY
     ```
 
     ```powershell
     # PowerShell - from locally built container
     docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type AzureAIFoundry `
-        --endpoint $AZURE_AI_FOUNDRY_ENDPOINT `
+        --endpoint "{{AZURE_AI_FOUNDRY_ENDPOINT}}" `
         --api-key $API_KEY
     ```
 
@@ -122,7 +125,7 @@ This page describes how to run OpenChat Playground (OCP) with Azure AI Foundry i
     # bash/zsh - from GitHub Container Registry
     docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest \
         --connector-type AzureAIFoundry \
-        --endpoint $AZURE_AI_FOUNDRY_ENDPOINT \
+        --endpoint "{{AZURE_AI_FOUNDRY_ENDPOINT}}" \
         --api-key $API_KEY
     ```
 
@@ -130,24 +133,42 @@ This page describes how to run OpenChat Playground (OCP) with Azure AI Foundry i
     # PowerShell - from GitHub Container Registry
     docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest `
         --connector-type AzureAIFoundry `
-        --endpoint AZURE_AI_FOUNDRY_ENDPOINT `
+        --endpoint "{{AZURE_AI_FOUNDRY_ENDPOINT}}" `
         --api-key $API_KEY `
     ```
 
    Alternatively, if you want to run with a different deployment, say `gpt-4`, other than the default one, you can specify it as an argument:
 
     ```bash
-    # bash/zsh
+    # bash/zsh - from locally built container
     docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type AzureAIFoundry \
-        --endpoint $AZURE_AI_FOUNDRY_ENDPOINT \
+        --endpoint "{{AZURE_AI_FOUNDRY_ENDPOINT}}" \
         --api-key $API_KEY \
         --deployment-name gpt-4
     ```
 
     ```powershell
-    # PowerShell
+    # PowerShell - from locally built container
     docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type AzureAIFoundry `
-        --endpoint $AZURE_AI_FOUNDRY_ENDPOINT `
+        --endpoint "{{AZURE_AI_FOUNDRY_ENDPOINT}}" `
+        --api-key $API_KEY `
+        --deployment-name gpt-4
+    ```
+
+    ```bash
+    # bash/zsh - from GitHub Container Registry
+    docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest \
+        --connector-type AzureAIFoundry \
+        --endpoint "{{AZURE_AI_FOUNDRY_ENDPOINT}}" \
+        --api-key $API_KEY \
+        --deployment-name gpt-4
+    ```
+
+    ```powershell
+    # PowerShell - from GitHub Container Registry
+    docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest `
+        --connector-type AzureAIFoundry `
+        --endpoint "{{AZURE_AI_FOUNDRY_ENDPOINT}}" `
         --api-key $API_KEY `
         --deployment-name gpt-4
     ```
@@ -156,25 +177,26 @@ This page describes how to run OpenChat Playground (OCP) with Azure AI Foundry i
 
 ## Run on Azure
 
+1. Make sure that you have the Azure AI Foundry Endpoint URL.
 1. Make sure you are at the repository root.
 
     ```bash
     cd $REPOSITORY_ROOT
     ```
 
-2. Login to Azure.
+1. Login to Azure.
 
     ```bash
     azd auth login
     ```
 
-3. Check login status.
+1. Check login status.
 
     ```bash
     azd auth login --check-status
     ```
 
-4. Initialize `azd` template.
+1. Initialize `azd` template.
 
     ```bash
     azd init
@@ -182,7 +204,7 @@ This page describes how to run OpenChat Playground (OCP) with Azure AI Foundry i
 
    > **NOTE**: You will be asked to provide environment name for provisioning.
 
-5. Get Azure AI Foundry API Key.
+1. Get Azure AI Foundry API Key.
 
     ```bash
     # bash/zsh
@@ -196,7 +218,7 @@ This page describes how to run OpenChat Playground (OCP) with Azure AI Foundry i
                   Select-String -NotMatch '^//(BEGIN|END)' | ConvertFrom-Json).'AzureAIFoundry:ApiKey'
     ```
 
-6. Set Azure AI Foundry configuration to azd environment variables.
+1. Set Azure AI Foundry configuration to azd environment variables.
 
     ```bash
     azd env set AZURE_AI_FOUNDRY_ENDPOINT $AZURE_AI_FOUNDRY_ENDPOINT
@@ -209,13 +231,13 @@ This page describes how to run OpenChat Playground (OCP) with Azure AI Foundry i
     azd env set AZURE_AI_FOUNDRY_DEPLOYMENT_NAME gpt-4
     ```
 
-7. Set the connector type to `AzureAIFoundry`.
+1. Set the connector type to `AzureAIFoundry`.
 
     ```bash
     azd env set CONNECTOR_TYPE AzureAIFoundry
     ```
 
-8. Run the following commands in order to provision and deploy the app.
+1. Run the following commands in order to provision and deploy the app.
 
     ```bash
     azd up
@@ -223,7 +245,11 @@ This page describes how to run OpenChat Playground (OCP) with Azure AI Foundry i
 
    > **NOTE**: You will be asked to provide Azure subscription and location for deployment.
 
-9. Clean up all the resources.
+   Once deployed, you will be able to see the deployed OCP app URL.
+
+1. Open your web browser, navigate to the OCP app URL, and enter prompts.
+
+1. Clean up all the resources.
 
     ```bash
     azd down --force --purge
