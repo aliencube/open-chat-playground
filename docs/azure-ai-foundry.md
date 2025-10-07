@@ -29,12 +29,14 @@ This page describes how to run OpenChat Playground (OCP) with Azure AI Foundry i
     ```bash
     # bash/zsh
     dotnet user-secrets --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp \
+        set AzureAIFoundry:Endpoint "{{AZURE_AI_FOUNDRY_ENDPOINT}}" \
         set AzureAIFoundry:ApiKey "{{AZURE_AI_FOUNDRY_API_KEY}}"
     ```
 
     ```powershell
     # PowerShell
     dotnet user-secrets --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp `
+        set AzureAIFoundry:Endpoint "{{AZURE_AI_FOUNDRY_ENDPOINT}}" `
         set AzureAIFoundry:ApiKey "{{AZURE_AI_FOUNDRY_API_KEY}}"
     ```
 
@@ -70,7 +72,7 @@ This page describes how to run OpenChat Playground (OCP) with Azure AI Foundry i
         --deployment-name gpt-4
     ```
 
-2. Open your web browser, navigate to `http://localhost:5280`, and enter prompts.
+4. Open your web browser, navigate to `http://localhost:5280`, and enter prompts.
 
 ## Run in local container
 
