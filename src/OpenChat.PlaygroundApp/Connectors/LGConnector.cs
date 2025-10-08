@@ -31,9 +31,9 @@ public class LGConnector(AppSettings settings) : LanguageModelConnector(settings
             throw new InvalidOperationException("Missing configuration: LG:Model.");
         }
 
-        if (IsValidModel(settings.Model) == false)
+        if (IsValidModel(settings.Model.Trim()) == false)
         {
-            throw new InvalidOperationException("Invalid LG model format. Model should be HuggingFace format (hf.co/...), LG model (containing 'exaone' or 'lg'), or GGUF format (containing 'gguf').");
+            throw new InvalidOperationException("Invalid configuration: Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format.");
         }
 
         return true;
@@ -59,18 +59,33 @@ public class LGConnector(AppSettings settings) : LanguageModelConnector(settings
 
     private static bool IsValidModel(string model)
     {
-        var trimmedModel = model.Trim();
-        var lowerModel = trimmedModel.ToLowerInvariant();
+        var segments = model.Split(['/'], StringSplitOptions.RemoveEmptyEntries);
 
-        // HuggingFace format (hf.co/... or contains '/')
-        var isHuggingFaceFormat = trimmedModel.StartsWith("hf.co/") || trimmedModel.Contains("/");
+        if (segments.Length != 3)
+        {
+            return false;
+        }
 
-        // LG model (contains 'exaone' or 'lg')
-        var isLGModel = lowerModel.Contains("exaone") || lowerModel.Contains("lg");
+        if (segments[0].Equals("hf.co", StringComparison.InvariantCultureIgnoreCase) == false)
+        {
+            return false;
+        }
 
-        // GGUF format (ends with '.gguf' or contains 'gguf')
-        var isGGUFFormat = lowerModel.EndsWith(".gguf") || lowerModel.Contains("gguf");
+        if (segments[1].Equals("LGAI-EXAONE", StringComparison.InvariantCultureIgnoreCase) == false)
+        {
+            return false;
+        }
 
-        return isHuggingFaceFormat || isLGModel || isGGUFFormat;
+        if (segments[2].StartsWith("EXAONE-", StringComparison.InvariantCultureIgnoreCase) == false)
+        {
+            return false;
+        }
+
+        if (segments[2].EndsWith("-GGUF", StringComparison.InvariantCultureIgnoreCase) == false)
+        {
+            return false;
+        }
+
+        return true;
     }
 }

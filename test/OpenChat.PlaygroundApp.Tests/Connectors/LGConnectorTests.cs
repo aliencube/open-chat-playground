@@ -77,6 +77,12 @@ public class LGConnectorTests
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData("", typeof(InvalidOperationException), "LG:Model")]
     [InlineData("   ", typeof(InvalidOperationException), "LG:Model")]
+    [InlineData("invalid-model", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
+    [InlineData("random-name", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
+    [InlineData("hf.co/other-org/model-GGUF", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
+    [InlineData("hf.co/LGAI-EXAONE/other-model-GGUF", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
+    [InlineData("hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
+    [InlineData("hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B-FP8", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
     public void Given_Invalid_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? model, Type expectedType, string expectedMessage)
     {
         // Arrange
@@ -93,29 +99,12 @@ public class LGConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("invalid-model", typeof(InvalidOperationException), "Invalid LG model format")]
-    [InlineData("random-name", typeof(InvalidOperationException), "Invalid LG model format")]
-    [InlineData("test-model", typeof(InvalidOperationException), "Invalid LG model format")]
-    public void Given_Invalid_Model_Format_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string model, Type expectedType, string expectedMessage)
+    [InlineData("hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B-GGUF")]
+    [InlineData("hf.co/LGAI-EXAONE/EXAONE-4.0-32B-GGUF")]
+    public void Given_Valid_Model_Format_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Return_True(string model)
     {
         // Arrange
         var appSettings = BuildAppSettings(model: model);
-        var connector = new LGConnector(appSettings);
-
-        // Act
-        Action action = () => connector.EnsureLanguageModelSettingsValid();
-
-        // Assert
-        action.ShouldThrow(expectedType)
-              .Message.ShouldContain(expectedMessage);
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_Valid_Model_Format_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Return_True()
-    {
-        // Arrange
-        var appSettings = BuildAppSettings();
         var connector = new LGConnector(appSettings);
 
         // Act
@@ -175,7 +164,7 @@ public class LGConnectorTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, "hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B-GGUF", typeof(NullReferenceException))]
-    [InlineData("", "hf.co/LGAI-EXAONE/EXAONE-1.2B", typeof(InvalidOperationException))]
+    [InlineData("", "hf.co/LGAI-EXAONE/EXAONE-4.0-32B-GGUF", typeof(InvalidOperationException))]
     [InlineData("https://test.lg-exaone/api", null, typeof(NullReferenceException))]
     [InlineData("https://test.lg-exaone/api", "", typeof(InvalidOperationException))]
     [InlineData("https://test.lg-exaone/api", "invalid-model-format", typeof(InvalidOperationException))]
