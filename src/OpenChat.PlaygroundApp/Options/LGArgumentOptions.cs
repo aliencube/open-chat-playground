@@ -1,5 +1,6 @@
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Configurations;
+using OpenChat.PlaygroundApp.Constants;
 
 namespace OpenChat.PlaygroundApp.Options;
 
@@ -32,14 +33,14 @@ public class LGArgumentOptions : ArgumentOptions
         {
             switch (args[i])
             {
-                case "--base-url":
+                case ArgumentOptionConstants.LG.BaseUrl:
                     if (i + 1 < args.Length)
                     {
                         this.BaseUrl = args[++i];
                     }
                     break;
 
-                case "--model":
+                case ArgumentOptionConstants.LG.Model:
                     if (i + 1 < args.Length)
                     {
                         this.Model = args[++i];

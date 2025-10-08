@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Connectors;
+using OpenChat.PlaygroundApp.Constants;
 
 namespace OpenChat.PlaygroundApp.Tests.Options;
 
@@ -9,6 +10,8 @@ public class OpenAIArgumentOptionsTests
 {
     private const string ApiKey = "openai-key";
     private const string Model = "gpt-4.1-mini";
+    private const string ApiKeyConfigKey = "OpenAI:ApiKey";
+    private const string ModelConfigKey = "OpenAI:Model";
 
     private static IConfiguration BuildConfigWithOpenAI(
         string? configApiKey = ApiKey,
@@ -19,16 +22,16 @@ public class OpenAIArgumentOptionsTests
         // Base configuration values (lowest priority)
         var configDict = new Dictionary<string, string?>
         {
-            ["ConnectorType"] = ConnectorType.OpenAI.ToString()
+            [AppSettingConstants.ConnectorType] = ConnectorType.OpenAI.ToString()
         };
 
         if (string.IsNullOrWhiteSpace(configApiKey) == false)
         {
-            configDict["OpenAI:ApiKey"] = configApiKey;
+            configDict[ApiKeyConfigKey] = configApiKey;
         }
         if (string.IsNullOrWhiteSpace(configModel) == false)
         {
-            configDict["OpenAI:Model"] = configModel;
+            configDict[ModelConfigKey] = configModel;
         }
         if (string.IsNullOrWhiteSpace(envApiKey) == true &&
             string.IsNullOrWhiteSpace(envModel) == true)
@@ -42,11 +45,11 @@ public class OpenAIArgumentOptionsTests
         var envDict = new Dictionary<string, string?>();
         if (string.IsNullOrWhiteSpace(envApiKey) == false)
         {
-            envDict["OpenAI:ApiKey"] = envApiKey;
+            envDict[ApiKeyConfigKey] = envApiKey;
         }
         if (string.IsNullOrWhiteSpace(envModel) == false)
         {
-            envDict["OpenAI:Model"] = envModel;
+            envDict[ModelConfigKey] = envModel;
         }
 
         return new ConfigurationBuilder()
@@ -79,7 +82,10 @@ public class OpenAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithOpenAI();
-        var args = new[] { "--api-key", cliApiKey };
+        var args = new[]
+        {
+            ArgumentOptionConstants.OpenAI.ApiKey, cliApiKey
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -97,7 +103,10 @@ public class OpenAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithOpenAI();
-        var args = new[] { "--model", cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.OpenAI.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -115,7 +124,11 @@ public class OpenAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithOpenAI();
-        var args = new[] { "--api-key", cliApiKey, "--model", cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.OpenAI.ApiKey, cliApiKey,
+            ArgumentOptionConstants.OpenAI.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -128,8 +141,8 @@ public class OpenAIArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("--api-key")]
-    [InlineData("--model")]
+    [InlineData(ArgumentOptionConstants.OpenAI.ApiKey)]
+    [InlineData(ArgumentOptionConstants.OpenAI.Model)]
     public void Given_CLI_ArgumentWithoutValue_When_Parse_Invoked_Then_It_Should_Use_Config(string argument)
     {
         // Arrange
@@ -169,7 +182,10 @@ public class OpenAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithOpenAI();
-        var args = new[] { "--model", cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.OpenAI.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args!);
@@ -187,7 +203,10 @@ public class OpenAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithOpenAI();
-        var args = new[] { "--api-key", cliApiKey };
+        var args = new[]
+        {
+            ArgumentOptionConstants.OpenAI.ApiKey, cliApiKey
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args!);
@@ -225,7 +244,11 @@ public class OpenAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithOpenAI(configApiKey, configModel);
-        var args = new[] { "--api-key", cliApiKey, "--model", cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.OpenAI.ApiKey, cliApiKey,
+            ArgumentOptionConstants.OpenAI.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args!);
@@ -239,7 +262,8 @@ public class OpenAIArgumentOptionsTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("env-key", "env-model")]
-    public void Given_EnvironmentVariables_And_No_Config_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(string envApiKey, string envModel)
+    public void Given_EnvironmentVariables_And_No_Config_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(
+        string envApiKey, string envModel)
     {
         // Arrange
         var config = BuildConfigWithOpenAI(
@@ -286,7 +310,11 @@ public class OpenAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithOpenAI(configApiKey, configModel, envApiKey, envModel);
-        var args = new[] { "--api-key", cliApiKey, "--model", cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.OpenAI.ApiKey, cliApiKey,
+            ArgumentOptionConstants.OpenAI.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -327,7 +355,11 @@ public class OpenAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithOpenAI(configApiKey, configModel, envApiKey, envModel);
-        var args = new[] { "--api-key", cliApiKey, "--model", cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.OpenAI.ApiKey, cliApiKey,
+            ArgumentOptionConstants.OpenAI.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args!);
@@ -345,7 +377,11 @@ public class OpenAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithOpenAI(ApiKey, Model);
-        var args = new[] { "--api-key", cliApiKey, "--model", cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.OpenAI.ApiKey, cliApiKey,
+            ArgumentOptionConstants.OpenAI.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -356,8 +392,8 @@ public class OpenAIArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("--api-key")]
-    [InlineData("--model")]
+    [InlineData(ArgumentOptionConstants.OpenAI.ApiKey)]
+    [InlineData(ArgumentOptionConstants.OpenAI.Model)]
     public void Given_OpenAI_With_KnownArgument_WithoutValue_When_Parse_Invoked_Then_Help_Should_Be_False(string argument)
     {
         // Arrange
@@ -374,11 +410,16 @@ public class OpenAIArgumentOptionsTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("cli-key", "--unknown-flag")]
-    public void Given_OpenAI_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_Should_Be_True(string cliApiKey, string unknown)
+    public void Given_OpenAI_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_Should_Be_True(
+        string cliApiKey, string unknown)
     {
         // Arrange
         var config = BuildConfigWithOpenAI();
-        var args = new[] { "--api-key", cliApiKey, unknown };
+        var args = new[]
+        {
+            ArgumentOptionConstants.OpenAI.ApiKey, cliApiKey,
+            unknown
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -394,7 +435,11 @@ public class OpenAIArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithOpenAI();
-        var args = new[] { "--api-key", cliApiKey, "--model", cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.OpenAI.ApiKey, cliApiKey,
+            ArgumentOptionConstants.OpenAI.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);

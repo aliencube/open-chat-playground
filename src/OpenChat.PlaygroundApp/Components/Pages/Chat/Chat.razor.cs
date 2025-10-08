@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.AI;
 
+using OpenChat.PlaygroundApp.Services;
+
 namespace OpenChat.PlaygroundApp.Components.Pages.Chat;
 
 public partial class Chat : ComponentBase, IDisposable
@@ -18,7 +20,7 @@ public partial class Chat : ComponentBase, IDisposable
     private ChatInput? chatInput;
 
     [Inject]
-    public required IChatClient ChatClient { get; set; }
+    public required IChatService ChatService { get; set; }
     
     [Inject]
     public required NavigationManager Nav { get; set; }
@@ -43,7 +45,7 @@ public partial class Chat : ComponentBase, IDisposable
 
         await InvokeAsync(StateHasChanged);
 
-        await foreach (var update in ChatClient.GetStreamingResponseAsync([.. messages], chatOptions, currentResponseCancellation.Token))
+        await foreach (var update in ChatService.GetStreamingResponseAsync([.. messages], chatOptions, currentResponseCancellation.Token))
         {
             messages.AddMessages(update, filter: c => c is not TextContent);
             responseText.Text += update.Text;

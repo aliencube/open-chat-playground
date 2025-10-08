@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Connectors;
+using OpenChat.PlaygroundApp.Constants;
 using OpenChat.PlaygroundApp.Options;
 
 namespace OpenChat.PlaygroundApp.Tests.Options;
@@ -10,27 +11,50 @@ public class AnthropicArgumentOptionsTests
 {
     private const string ApiKey = "test-api-key";
     private const string Model = "test-model";
+    private const string ApiKeyConfigKey = "Anthropic:ApiKey";
+    private const string ModelConfigKey = "Anthropic:Model";
 
     private static IConfiguration BuildConfigWithAnthropic(
         string? configApiKey = ApiKey,
-        string? configModel = Model)
+        string? configModel = Model,
+        string? envApiKey = null,
+        string? envModel = null)
     {
+        // Base configuration values (lowest priority)
         var configDict = new Dictionary<string, string?>
         {
-            ["ConnectorType"] = ConnectorType.Anthropic.ToString()
+            [AppSettingConstants.ConnectorType] = ConnectorType.Anthropic.ToString()
         };
 
         if (string.IsNullOrWhiteSpace(configApiKey) == false)
         {
-            configDict["Anthropic:ApiKey"] = configApiKey;
+            configDict[ApiKeyConfigKey] = configApiKey;
         }
         if (string.IsNullOrWhiteSpace(configModel) == false)
         {
-            configDict["Anthropic:Model"] = configModel;
+            configDict[ModelConfigKey] = configModel;
+        }
+        if (string.IsNullOrWhiteSpace(envApiKey) == true && string.IsNullOrWhiteSpace(envModel) == true)
+        {
+            return new ConfigurationBuilder()
+                       .AddInMemoryCollection(configDict!)
+                       .Build();
+        }
+
+        // Environment variables (medium priority)
+        var envDict = new Dictionary<string, string?>();
+        if (string.IsNullOrWhiteSpace(envApiKey) == false)
+        {
+            envDict[ApiKeyConfigKey] = envApiKey;
+        }
+        if (string.IsNullOrWhiteSpace(envModel) == false)
+        {
+            envDict[ModelConfigKey] = envModel;
         }
 
         return new ConfigurationBuilder()
-                   .AddInMemoryCollection(configDict!)
+                   .AddInMemoryCollection(configDict!)   // Base configuration (lowest priority)
+                   .AddInMemoryCollection(envDict!)      // Environment variables (medium priority)
                    .Build();
     }
 
@@ -38,7 +62,8 @@ public class AnthropicArgumentOptionsTests
     [Theory]
     [InlineData(typeof(ArgumentOptions), typeof(AnthropicArgumentOptions), true)]
     [InlineData(typeof(AnthropicArgumentOptions), typeof(ArgumentOptions), false)]
-    public void Given_AnthropicArgumentOptions_When_Checking_Inheritance_Then_Should_Inherit_From_ArgumentOptions(Type baseType, Type derivedType, bool expected)
+    public void Given_AnthropicArgumentOptions_When_Checking_Inheritance_Then_Should_Inherit_From_ArgumentOptions(
+        Type baseType, Type derivedType, bool expected)
     {
         // Act
         var result = baseType.IsAssignableFrom(derivedType);
@@ -48,12 +73,11 @@ public class AnthropicArgumentOptionsTests
     }
 
     [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData("test-api-key", "test-model")]
-    public void Given_Nothing_When_Parse_Invoked_Then_It_Should_Set_Config(string expectedApiKey, string expectedModel)
+    [Fact]
+    public void Given_Nothing_When_Parse_Invoked_Then_It_Should_Set_Config()
     {
         // Arrange
-        var config = BuildConfigWithAnthropic(expectedApiKey, expectedModel);
+        var config = BuildConfigWithAnthropic();
         var args = Array.Empty<string>();
 
         // Act
@@ -61,8 +85,8 @@ public class AnthropicArgumentOptionsTests
 
         // Assert
         settings.Anthropic.ShouldNotBeNull();
-        settings.Anthropic.ApiKey.ShouldBe(expectedApiKey);
-        settings.Anthropic.Model.ShouldBe(expectedModel);
+        settings.Anthropic.ApiKey.ShouldBe(ApiKey);
+        settings.Anthropic.Model.ShouldBe(Model);
     }
 
     [Trait("Category", "UnitTest")]
@@ -72,7 +96,10 @@ public class AnthropicArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAnthropic();
-        var args = new[] { "--api-key", cliApiKey };
+        var args = new[]
+        {
+            ArgumentOptionConstants.Anthropic.ApiKey, cliApiKey
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -85,12 +112,15 @@ public class AnthropicArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("claude-3-5-sonnet-latest")]
+    [InlineData("cli-model")]
     public void Given_CLI_Model_When_Parse_Invoked_Then_It_Should_Use_CLI_Model(string cliModel)
     {
         // Arrange
         var config = BuildConfigWithAnthropic();
-        var args = new[] { "--model", cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.Anthropic.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -103,12 +133,16 @@ public class AnthropicArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("cli-api-key", "claude-3-5-sonnet-latest")]
+    [InlineData("cli-api-key", "cli-model")]
     public void Given_All_CLI_Arguments_When_Parse_Invoked_Then_It_Should_Use_CLI(string cliApiKey, string cliModel)
     {
         // Arrange
         var config = BuildConfigWithAnthropic();
-        var args = new[] { "--api-key", cliApiKey, "--model", cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.Anthropic.ApiKey, cliApiKey,
+            ArgumentOptionConstants.Anthropic.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -121,8 +155,8 @@ public class AnthropicArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("--api-key")]
-    [InlineData("--model")]
+    [InlineData(ArgumentOptionConstants.Anthropic.ApiKey)]
+    [InlineData(ArgumentOptionConstants.Anthropic.Model)]
     public void Given_CLI_ArgumentWithoutValue_When_Parse_Invoked_Then_It_Should_Use_Config(string argument)
     {
         // Arrange
@@ -158,18 +192,43 @@ public class AnthropicArgumentOptionsTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("--strange-model-name")]
-    public void Given_Anthropic_With_ModelName_StartingWith_Dashes_When_Parse_Invoked_Then_It_Should_Treat_As_Value(string model)
+    public void Given_Anthropic_With_ModelName_StartingWith_Dashes_When_Parse_Invoked_Then_It_Should_Treat_As_Value(string cliModel)
     {
         // Arrange
         var config = BuildConfigWithAnthropic();
-        var args = new[] { "--model", model };
+        var args = new[]
+        {
+            ArgumentOptionConstants.Anthropic.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
 
         // Assert
         settings.Anthropic.ShouldNotBeNull();
-        settings.Anthropic.Model.ShouldBe(model);
+        settings.Anthropic.ApiKey.ShouldBe(ApiKey);
+        settings.Anthropic.Model.ShouldBe(cliModel);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("--strange-api-key")]
+    public void Given_Anthropic_With_ApiKey_StartingWith_Dashes_When_Parse_Invoked_Then_It_Should_Treat_As_Value(string cliApiKey)
+    {
+        // Arrange
+        var config = BuildConfigWithAnthropic();
+        var args = new[]
+        {
+            ArgumentOptionConstants.Anthropic.ApiKey, cliApiKey
+        };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.Anthropic.ShouldNotBeNull();
+        settings.Anthropic.ApiKey.ShouldBe(cliApiKey);
+        settings.Anthropic.Model.ShouldBe(Model);
     }
 
     [Trait("Category", "UnitTest")]
@@ -199,7 +258,11 @@ public class AnthropicArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAnthropic(configApiKey, configModel);
-        var args = new[] { "--api-key", cliApiKey, "--model", cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.Anthropic.ApiKey, cliApiKey,
+            ArgumentOptionConstants.Anthropic.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -212,12 +275,126 @@ public class AnthropicArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
+    [InlineData("env-api-key", "env-model")]
+    public void Given_EnvironmentVariables_And_No_Config_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(string envApiKey, string envModel)
+    {
+        // Arrange
+        var config = BuildConfigWithAnthropic(
+            configApiKey: null, configModel: null,
+            envApiKey: envApiKey, envModel: envModel);
+        var args = Array.Empty<string>();
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.Anthropic.ShouldNotBeNull();
+        settings.Anthropic.ApiKey.ShouldBe(envApiKey);
+        settings.Anthropic.Model.ShouldBe(envModel);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("config-api-key", "config-model", "env-api-key", "env-model")]
+    public void Given_ConfigValues_And_EnvironmentVariables_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(
+        string configApiKey, string configModel,
+        string envApiKey, string envModel)
+    {
+        // Arrange
+        var config = BuildConfigWithAnthropic(configApiKey, configModel, envApiKey, envModel);
+        var args = Array.Empty<string>();
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.Anthropic.ShouldNotBeNull();
+        settings.Anthropic.ApiKey.ShouldBe(envApiKey);
+        settings.Anthropic.Model.ShouldBe(envModel);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("config-api-key", "config-model", "env-api-key", "env-model", "cli-api-key", "cli-model")]
+    public void Given_ConfigValues_And_EnvironmentVariables_And_CLI_When_Parse_Invoked_Then_It_Should_Use_CLI(
+        string configApiKey, string configModel,
+        string envApiKey, string envModel,
+        string cliApiKey, string cliModel)
+    {
+        // Arrange
+        var config = BuildConfigWithAnthropic(configApiKey, configModel, envApiKey, envModel);
+        var args = new[]
+        {
+            ArgumentOptionConstants.Anthropic.ApiKey, cliApiKey,
+            ArgumentOptionConstants.Anthropic.Model, cliModel
+        };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.Anthropic.ShouldNotBeNull();
+        settings.Anthropic.ApiKey.ShouldBe(cliApiKey);
+        settings.Anthropic.Model.ShouldBe(cliModel);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("config-api-key", "config-model", null, "env-model")]
+    public void Given_Partial_EnvironmentVariables_When_Parse_Invoked_Then_It_Should_Mix_Config_And_Environment(
+        string configApiKey, string configModel,
+        string? envApiKey, string envModel)
+    {
+        // Arrange
+        var config = BuildConfigWithAnthropic(configApiKey, configModel, envApiKey, envModel);
+        var args = Array.Empty<string>();
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.Anthropic.ShouldNotBeNull();
+        settings.Anthropic.ApiKey.ShouldBe(configApiKey);
+        settings.Anthropic.Model.ShouldBe(envModel);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("config-api-key", "config-model", "env-api-key", null, null, "cli-model")]
+    public void Given_Mixed_Priority_Sources_When_Parse_Invoked_Then_It_Should_Respect_Priority_Order(
+        string configApiKey, string configModel,
+        string envApiKey, string? envModel,
+        string? cliApiKey, string cliModel)
+    {
+        // Arrange
+        var config = BuildConfigWithAnthropic(configApiKey, configModel, envApiKey, envModel);
+        var args = new[]
+        {
+            ArgumentOptionConstants.Anthropic.ApiKey, cliApiKey,
+            ArgumentOptionConstants.Anthropic.Model, cliModel
+        };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args!);
+
+        // Assert
+        settings.Anthropic.ShouldNotBeNull();
+        settings.Anthropic.ApiKey.ShouldBe(envApiKey);
+        settings.Anthropic.Model.ShouldBe(cliModel);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
     [InlineData("cli-api-key", "cli-model")]
-    public void Given_Anthropic_With_KnownArguments_When_Parse_Invoked_Then_Help_ShouldBe_False(string cliApiKey, string cliModel)
+    public void Given_Anthropic_With_KnownArguments_When_Parse_Invoked_Then_Help_Should_Be_False(string cliApiKey, string cliModel)
     {
         // Arrange
         var config = BuildConfigWithAnthropic(ApiKey, Model);
-        var args = new[] { "--api-key", cliApiKey, "--model", cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.Anthropic.ApiKey, cliApiKey,
+            ArgumentOptionConstants.Anthropic.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -228,9 +405,9 @@ public class AnthropicArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("--api-key")]
-    [InlineData("--model")]
-    public void Given_Anthropic_With_KnownArgument_WithoutValue_When_Parse_Invoked_Then_Help_ShouldBe_False(string argument)
+    [InlineData(ArgumentOptionConstants.Anthropic.ApiKey)]
+    [InlineData(ArgumentOptionConstants.Anthropic.Model)]
+    public void Given_Anthropic_With_KnownArgument_WithoutValue_When_Parse_Invoked_Then_Help_Should_Be_False(string argument)
     {
         // Arrange
         var config = BuildConfigWithAnthropic();
@@ -246,11 +423,16 @@ public class AnthropicArgumentOptionsTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("cli-api-key", "--unknown-flag")]
-    public void Given_Anthropic_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_ShouldBe_True(string cliApiKey, string argument)
+    public void Given_Anthropic_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_Should_Be_True(
+        string cliApiKey, string argument)
     {
         // Arrange
         var config = BuildConfigWithAnthropic();
-        var args = new[] { "--api-key", cliApiKey, argument };
+        var args = new[]
+        {
+            ArgumentOptionConstants.Anthropic.ApiKey, cliApiKey,
+            argument
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -266,7 +448,29 @@ public class AnthropicArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithAnthropic();
-        var args = new[] { "--api-key", cliApiKey, "--model", cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.Anthropic.ApiKey, cliApiKey,
+            ArgumentOptionConstants.Anthropic.Model, cliModel
+        };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.Help.ShouldBeFalse();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("env-api-key", "env-model")]
+    public void Given_EnvironmentVariables_Only_When_Parse_Invoked_Then_Help_Should_Be_False(string envApiKey, string envModel)
+    {
+        // Arrange
+        var config = BuildConfigWithAnthropic(
+            configApiKey: null, configModel: null,
+            envApiKey: envApiKey, envModel: envModel);
+        var args = Array.Empty<string>();
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -282,7 +486,7 @@ public class AnthropicArgumentOptionsTests
     {
         // Act
         var options = new AnthropicArgumentOptions();
-        
+
         // Assert
         options.ShouldNotBeNull();
         options.ApiKey.ShouldBe(expectedApiKey);

@@ -31,6 +31,9 @@ param huggingFaceModel string = ''
 // LG
 // Naver
 // OpenAI
+param openAIModel string = ''
+@secure()
+param openAIApiKey string = ''
 // Upstage
 
 param openchatPlaygroundappExists bool
@@ -71,6 +74,8 @@ module resources 'resources.bicep' = {
     googleVertexAIModel: googleVertexAIModel
     googleVertexAIApiKey: googleVertexAIApiKey
     huggingFaceModel: huggingFaceModel
+    openAIModel: openAIModel
+    openAIApiKey: openAIApiKey
     openchatPlaygroundappExists: openchatPlaygroundappExists
   }
 }

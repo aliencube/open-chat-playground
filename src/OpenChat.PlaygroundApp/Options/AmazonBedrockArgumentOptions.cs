@@ -1,5 +1,6 @@
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Configurations;
+using OpenChat.PlaygroundApp.Constants;
 
 namespace OpenChat.PlaygroundApp.Options;
 
@@ -45,28 +46,28 @@ public class AmazonBedrockArgumentOptions : ArgumentOptions
         {
             switch (args[i])
             {
-                case "--access-key-id":
+                case ArgumentOptionConstants.AmazonBedrock.AccessKeyId:
                     if (i + 1 < args.Length)
                     {
                         this.AccessKeyId = args[++i];
                     }
                     break;
 
-                case "--secret-access-key":
+                case ArgumentOptionConstants.AmazonBedrock.SecretAccessKey:
                     if (i + 1 < args.Length)
                     {
                         this.SecretAccessKey = args[++i];
                     }
                     break;
 
-                case "--region":
+                case ArgumentOptionConstants.AmazonBedrock.Region:
                     if (i + 1 < args.Length)
                     {
                         this.Region = args[++i];
                     }
                     break;
 
-                case "--model-id":
+                case ArgumentOptionConstants.AmazonBedrock.ModelId:
                     if (i + 1 < args.Length)
                     {
                         this.ModelId = args[++i];
