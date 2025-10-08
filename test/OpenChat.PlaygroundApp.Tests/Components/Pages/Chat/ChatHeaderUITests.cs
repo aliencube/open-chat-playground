@@ -14,7 +14,7 @@ public class ChatHeaderUITests : PageTest
 
     [Trait("Category", "IntegrationTest")]
     [Theory]
-    [InlineData("OpenChat.PlaygroundApp")]
+    [InlineData("OpenChat Playground")]
     public async Task Given_Root_Page_When_Loaded_Then_Header_Should_Be_Visible(string expected)
     {
         // Act
