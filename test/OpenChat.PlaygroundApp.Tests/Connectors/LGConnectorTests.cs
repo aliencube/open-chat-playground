@@ -39,11 +39,41 @@ public class LGConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Fact]
-    public void Given_Settings_Is_Null_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
+    public void Given_Null_Settings_When_Instantiated_Then_It_Should_Throw()
+    {
+        // Act
+        Action action = () => new LGConnector(null!);
+
+        // Assert
+        action.ShouldThrow<ArgumentNullException>()
+              .Message.ShouldContain("settings");
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Fact]
+    public void Given_Settings_When_Instantiated_Then_It_Should_Return()
     {
         // Arrange
-        var appSettings = new AppSettings { ConnectorType = ConnectorType.LG, LG = null };
-        var connector = new LGConnector(appSettings);
+        var settings = BuildAppSettings();
+
+        // Act
+        var result = new LGConnector(settings);
+
+        // Assert
+        result.ShouldNotBeNull();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Fact]
+    public void Given_Null_Settings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
+    {
+        // Arrange
+        var settings = new AppSettings
+        {
+            ConnectorType = ConnectorType.LG,
+            LG = null
+        };
+        var connector = new LGConnector(settings);
 
         // Act
         Action action = () => connector.EnsureLanguageModelSettingsValid();
@@ -61,8 +91,8 @@ public class LGConnectorTests
     public void Given_Invalid_BaseUrl_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? baseUrl, Type expectedType, string expectedMessage)
     {
         // Arrange
-        var appSettings = BuildAppSettings(baseUrl: baseUrl);
-        var connector = new LGConnector(appSettings);
+        var settings = BuildAppSettings(baseUrl: baseUrl);
+        var connector = new LGConnector(settings);
 
         // Act
         Action action = () => connector.EnsureLanguageModelSettingsValid();
@@ -77,7 +107,7 @@ public class LGConnectorTests
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData("", typeof(InvalidOperationException), "LG:Model")]
     [InlineData("   ", typeof(InvalidOperationException), "LG:Model")]
-    [InlineData("invalid-model", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
+    [InlineData("invalid-model-format", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
     [InlineData("random-name", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
     [InlineData("hf.co/other-org/model-GGUF", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
     [InlineData("hf.co/LGAI-EXAONE/other-model-GGUF", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
@@ -86,8 +116,8 @@ public class LGConnectorTests
     public void Given_Invalid_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? model, Type expectedType, string expectedMessage)
     {
         // Arrange
-        var appSettings = BuildAppSettings(model: model);
-        var connector = new LGConnector(appSettings);
+        var settings = BuildAppSettings(model: model);
+        var connector = new LGConnector(settings);
 
         // Act
         Action action = () => connector.EnsureLanguageModelSettingsValid();
@@ -104,14 +134,58 @@ public class LGConnectorTests
     public void Given_Valid_Model_Format_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Return_True(string model)
     {
         // Arrange
-        var appSettings = BuildAppSettings(model: model);
-        var connector = new LGConnector(appSettings);
+        var settings = BuildAppSettings(model: model);
+        var connector = new LGConnector(settings);
 
         // Act
         var result = connector.EnsureLanguageModelSettingsValid();
 
         // Assert
         result.ShouldBeTrue();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData(null, typeof(ArgumentNullException), "null")]
+    [InlineData("", typeof(UriFormatException), "empty")]
+    public void Given_Invalid_BaseUrl_When_GetChatClient_Invoked_Then_It_Should_Throw(string? baseUrl, Type expectedType, string message)
+    {
+        // Arrange
+        var settings = BuildAppSettings(baseUrl: baseUrl);
+        var connector = new LGConnector(settings);
+
+        // Act
+        Func<Task> func = async () => await connector.GetChatClientAsync();
+
+        // Assert
+        func.ShouldThrow(expectedType)
+            .Message.ShouldContain(message);
+    }
+
+    [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "LLMRequired")]
+    [Theory]
+    [InlineData(null, typeof(ArgumentNullException), "null")]
+    [InlineData("", typeof(UriFormatException), "empty")]
+    [InlineData("   ", typeof(InvalidOperationException), "LG:Model")]
+    [InlineData("invalid-model-format", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
+    [InlineData("random-name", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
+    [InlineData("hf.co/other-org/model-GGUF", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
+    [InlineData("hf.co/LGAI-EXAONE/other-model-GGUF", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
+    [InlineData("hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
+    [InlineData("hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B-FP8", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
+    public void Given_Invalid_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expectedType, string message)
+    {
+        // Arrange
+        var settings = BuildAppSettings(model: model);
+        var connector = new LGConnector(settings);
+
+        // Act
+        Func<Task> func = async () => await connector.GetChatClientAsync();
+
+        // Assert
+        func.ShouldThrow(expectedType)
+            .Message.ShouldContain(message);
     }
 
     [Trait("Category", "IntegrationTest")]
@@ -132,19 +206,28 @@ public class LGConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(ArgumentNullException), "null")]
-    [InlineData("", typeof(UriFormatException), "empty")]
-    public async Task Given_Missing_BaseUrl_When_GetChatClient_Invoked_Then_It_Should_Throw(string? baseUrl, Type expected, string message)
+    [InlineData(null, "hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B-GGUF", typeof(NullReferenceException))]
+    [InlineData("", "hf.co/LGAI-EXAONE/EXAONE-4.0-32B-GGUF", typeof(InvalidOperationException))]
+    [InlineData("   ", "hf.co/LGAI-EXAONE/EXAONE-4.0-32B-GGUF", typeof(InvalidOperationException))]
+    [InlineData("https://test.lg-exaone/api", null, typeof(NullReferenceException))]
+    [InlineData("https://test.lg-exaone/api", "", typeof(InvalidOperationException))]
+    [InlineData("https://test.lg-exaone/api", "   ", typeof(InvalidOperationException))]
+    [InlineData("https://test.lg-exaone/api", "invalid-model-format", typeof(InvalidOperationException))]
+    [InlineData("https://test.lg-exaone/api", "random-name", typeof(InvalidOperationException))]
+    [InlineData("https://test.lg-exaone/api", "hf.co/other-org/model-GGUF", typeof(InvalidOperationException))]
+    [InlineData("https://test.lg-exaone/api", "hf.co/LGAI-EXAONE/other-model-GGUF", typeof(InvalidOperationException))]
+    [InlineData("https://test.lg-exaone/api", "hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B", typeof(InvalidOperationException))]
+    [InlineData("https://test.lg-exaone/api", "hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B-FP8", typeof(InvalidOperationException))]
+    public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string? baseUrl, string? model, Type expectedType)
     {
         // Arrange
-        var settings = BuildAppSettings(baseUrl: baseUrl);
-        var connector = new LGConnector(settings);
+        var settings = BuildAppSettings(baseUrl: baseUrl, model: model);
 
         // Act
-        var ex = await Assert.ThrowsAsync(expected, connector.GetChatClientAsync);
+        Func<Task> func = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
 
         // Assert
-        ex.Message.ShouldContain(message);
+        func.ShouldThrow(expectedType);
     }
 
     [Trait("Category", "IntegrationTest")]
@@ -161,32 +244,5 @@ public class LGConnectorTests
         // Assert
         result.ShouldNotBeNull();
         result.ShouldBeAssignableTo<IChatClient>();
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData(null, "hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B-GGUF", typeof(NullReferenceException))]
-    [InlineData("", "hf.co/LGAI-EXAONE/EXAONE-4.0-32B-GGUF", typeof(InvalidOperationException))]
-    [InlineData("https://test.lg-exaone/api", null, typeof(NullReferenceException))]
-    [InlineData("https://test.lg-exaone/api", "", typeof(InvalidOperationException))]
-    [InlineData("https://test.lg-exaone/api", "invalid-model-format", typeof(InvalidOperationException))]
-    public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string? baseUrl, string? model, Type expectedType)
-    {
-        // Arrange
-        var settings = new AppSettings
-        {
-            ConnectorType = ConnectorType.LG,
-            LG = new LGSettings
-            {
-                BaseUrl = baseUrl,
-                Model = model
-            }
-        };
-
-        // Act
-        Func<Task> func = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
-
-        // Assert
-        func.ShouldThrow(expectedType);
     }
 }
