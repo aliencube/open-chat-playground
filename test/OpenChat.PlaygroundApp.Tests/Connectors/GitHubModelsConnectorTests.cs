@@ -1,3 +1,5 @@
+using Humanizer;
+
 using OpenChat.PlaygroundApp.Configurations;
 using OpenChat.PlaygroundApp.Connectors;
 
@@ -5,7 +7,11 @@ namespace OpenChat.PlaygroundApp.Tests.Connectors;
 
 public class GitHubModelsConnectorTests
 {
-    private static AppSettings BuildAppSettings(string? endpoint = "https://models.github.ai/inference", string? token = "test-token", string? model = "openai/gpt-4o-mini")
+    private const string Endpoint = "https://models.github.ai/inference";
+    private const string Token = "test-token";
+    private const string Model = "openai/gpt-4o-mini";
+
+    private static AppSettings BuildAppSettings(string? endpoint = Endpoint, string? token = Token, string? model = Model)
     {
         return new AppSettings
         {
@@ -28,10 +34,11 @@ public class GitHubModelsConnectorTests
         var connector = new GitHubModelsConnector(settings);
 
         // Act
-        var ex = Assert.Throws<InvalidOperationException>(() => connector.EnsureLanguageModelSettingsValid());
+        Action action = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
-        ex.Message.ShouldContain("GitHubModels");
+        action.ShouldThrow<InvalidOperationException>()
+              .Message.ShouldContain("GitHubModels");
     }
 
     [Trait("Category", "UnitTest")]
@@ -46,10 +53,11 @@ public class GitHubModelsConnectorTests
         var connector = new GitHubModelsConnector(settings);
 
         // Act
-        var ex = Assert.Throws(expectedType, () => connector.EnsureLanguageModelSettingsValid());
+        Action action = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
-        ex.Message.ShouldContain(expectedMessage);
+        action.ShouldThrow(expectedType)
+              .Message.ShouldContain(expectedMessage);
     }
 
     [Trait("Category", "UnitTest")]
@@ -64,10 +72,11 @@ public class GitHubModelsConnectorTests
         var connector = new GitHubModelsConnector(settings);
 
         // Act
-        var ex = Assert.Throws(expectedType, () => connector.EnsureLanguageModelSettingsValid());
+        Action action = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
-        ex.Message.ShouldContain(expectedMessage);
+        action.ShouldThrow(expectedType)
+              .Message.ShouldContain(expectedMessage);
     }
 
     [Trait("Category", "UnitTest")]
@@ -82,10 +91,11 @@ public class GitHubModelsConnectorTests
         var connector = new GitHubModelsConnector(settings);
 
         // Act
-        var ex = Assert.Throws(expectedType, () => connector.EnsureLanguageModelSettingsValid());
+        Action action = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
-        ex.Message.ShouldContain(expectedMessage);
+        action.ShouldThrow(expectedType)
+              .Message.ShouldContain(expectedMessage);
     }
 
     [Trait("Category", "UnitTest")]
@@ -129,9 +139,10 @@ public class GitHubModelsConnectorTests
         var connector = new GitHubModelsConnector(settings);
 
         // Act
-        var ex = await Assert.ThrowsAsync(expected, connector.GetChatClientAsync);
+        Func<Task> func = connector.GetChatClientAsync;
 
         // Assert
+        var ex = await func.ShouldThrowAsync(expected);
         ex.Message.ShouldContain(message);
     }
 
@@ -146,9 +157,10 @@ public class GitHubModelsConnectorTests
         var connector = new GitHubModelsConnector(settings);
 
         // Act
-        var ex = await Assert.ThrowsAsync(expected, connector.GetChatClientAsync);
+        Func<Task> func = connector.GetChatClientAsync;
 
         // Assert
+        var ex = await func.ShouldThrowAsync(expected);
         ex.Message.ShouldContain(message);
     }
 
@@ -163,9 +175,10 @@ public class GitHubModelsConnectorTests
         var connector = new GitHubModelsConnector(settings);
 
         // Act
-        var ex = await Assert.ThrowsAsync(expected, connector.GetChatClientAsync);
+        Func<Task> func = connector.GetChatClientAsync;
 
         // Assert
+        var ex = await func.ShouldThrowAsync(expected);
         ex.Message.ShouldContain(message);
     }
 }
