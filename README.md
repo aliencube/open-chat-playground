@@ -7,7 +7,7 @@ Open Chat Playground (OCP) is a web UI that is able to connect virtually any LLM
 ## Supported platforms
 
 - [ ] [Amazon Bedrock](https://docs.aws.amazon.com/bedrock)
-- [ ] [Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/what-is-azure-ai-foundry)
+- [x] [Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/what-is-azure-ai-foundry)
 - [x] [GitHub Models](https://docs.github.com/github-models/about-github-models)
 - [ ] [Google Vertex AI](https://cloud.google.com/vertex-ai/docs)
 - [ ] [Docker Model Runner](https://docs.docker.com/ai/model-runner)
@@ -60,18 +60,21 @@ Open Chat Playground (OCP) is a web UI that is able to connect virtually any LLM
 
 ### Run on local machine
 
+- [Use Azure AI Foundry](./docs/azure-ai-foundry.md#run-on-local-machine)
 - [Use GitHub Models](./docs/github-models.md#run-on-local-machine)
 - [Use Hugging Face](./docs/hugging-face.md#run-on-local-machine)
 - [Use OpenAI](./docs/openai.md#run-on-local-machine)
 
 ### Run in local container
 
+- [Use Azure AI Foundry](./docs/azure-ai-foundry.md#run-in-local-container)
 - [Use GitHub Models](./docs/github-models.md#run-in-local-container)
 - [Use Hugging Face](./docs/hugging-face.md#run-in-local-container)
 - [Use OpenAI](./docs/openai.md#run-in-local-container)
 
 ### Run on Azure
 
+- [Use Azure AI Foundry](./docs/azure-ai-foundry.md#run-on-azure)
 - [Use GitHub Models](./docs/github-models.md#run-on-azure)
 - [Use Hugging Face](./docs/hugging-face.md#run-on-azure)
 - [Use OpenAI](./docs/openai.md#run-on-azure)
