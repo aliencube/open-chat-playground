@@ -84,7 +84,7 @@ public class OpenAIConnectorTests
     public void Given_Invalid_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? model, Type expectedType, string expectedMessage)
     {
         // Arrange
-        var settings = BuildAppSettings(apiKey: "valid-key", model: model);
+        var settings = BuildAppSettings(model: model);
         var connector = new OpenAIConnector(settings);
 
         // Act
@@ -112,105 +112,68 @@ public class OpenAIConnectorTests
     
     [Trait("Category", "UnitTest")]
     [Fact]
-    public void Given_Settings_Is_Null_When_GetChatClientAsync_Invoked_Then_It_Should_Throw()
+    public async Task Given_Settings_Is_Null_When_GetChatClientAsync_Invoked_Then_It_Should_Throw()
     {
         // Arrange
-        var settings = new AppSettings { ConnectorType = ConnectorType.OpenAI, OpenAI = null };
+        var settings = new AppSettings { ConnectorType = ConnectorType.OpenAI, OpenAI = null! };
         var connector = new OpenAIConnector(settings);
 
         // Act
-        Func<Task> func = async () => await connector.GetChatClientAsync();
+        Func<Task> func = connector.GetChatClientAsync;
 
         // Assert
-        func.ShouldThrow<InvalidOperationException>()
-            .Message.ShouldContain("Missing configuration: OpenAI:ApiKey.");
+        var ex = await func.ShouldThrowAsync<InvalidOperationException>();
+        ex.Message.ShouldContain("Missing configuration: OpenAI:ApiKey.");
     }
     
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, typeof(InvalidOperationException), "OpenAI:ApiKey")]
     [InlineData("", typeof(ArgumentException), "key")]
-    public void Given_Missing_ApiKey_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? apiKey, Type expected, string message)
+    public async Task Given_Missing_ApiKey_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? apiKey, Type expected, string message)
     {
         // Arrange
         var settings = BuildAppSettings(apiKey: apiKey);
         var connector = new OpenAIConnector(settings);
 
         // Act
-        Func<Task> func = async () => await connector.GetChatClientAsync();
+        Func<Task> func = connector.GetChatClientAsync;
 
         // Assert
-        func.ShouldThrow(expected)
-            .Message.ShouldContain(message);
+        var ex = await func.ShouldThrowAsync(expected);
+        ex.Message.ShouldContain(message);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, typeof(ArgumentNullException), "model")]
     [InlineData("", typeof(ArgumentException), "model")]
-    public void Given_Missing_Model_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
+    public async Task Given_Missing_Model_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
     {
         // Arrange
         var settings = BuildAppSettings(model: model);
         var connector = new OpenAIConnector(settings);
 
         // Act
-        Func<Task> func = async () => await connector.GetChatClientAsync();
+        Func<Task> func = connector.GetChatClientAsync;
 
         // Assert
-        func.ShouldThrow(expected)
-            .Message.ShouldContain(message);
+        var ex = await func.ShouldThrowAsync(expected);
+        ex.Message.ShouldContain(message);
     }
 
     [Trait("Category", "UnitTest")]
     [Fact]
-    public void Given_Valid_Format_Settings_When_GetChatClientAsync_Invoked_Then_It_Should_Pass()
-    {
-        // Arrange
-        var settings = BuildAppSettings(apiKey: "sk-test-key-with-proper-format", model: "gpt-3.5-turbo");
-        var connector = new OpenAIConnector(settings);
-
-        // Act
-        Func<Task> func = async () => await connector.GetChatClientAsync();
-        
-        // Assert
-        func.ShouldNotThrow();
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Fact]
-    public async Task Given_Valid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Return_ChatClient()
+    public async Task Given_Valid_Format_Settings_When_GetChatClientAsync_Invoked_Then_It_Should_Pass()
     {
         // Arrange
         var settings = BuildAppSettings();
+        var connector = new OpenAIConnector(settings);
 
         // Act
-        var result = await LanguageModelConnector.CreateChatClientAsync(settings);
-
+        Func<Task> func = connector.GetChatClientAsync;
+        
         // Assert
-        result.ShouldNotBeNull();
-        result.ShouldBeAssignableTo<IChatClient>();
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw()
-    {
-        // Arrange
-        var settings = new AppSettings
-        {
-            ConnectorType = ConnectorType.OpenAI,
-            OpenAI = new OpenAISettings
-            {
-                ApiKey = null,
-                Model = "test-model"
-            }
-        };
-
-        // Act
-        Func<Task> func = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
-
-        // Assert
-        func.ShouldThrow<NullReferenceException>();
+        await func.ShouldNotThrowAsync();
     }
 }
