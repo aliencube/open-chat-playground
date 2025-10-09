@@ -20,6 +20,9 @@
     "huggingFaceModel": {
       "value": "${HUGGING_FACE_MODEL=hf.co/Qwen/Qwen3-0.6B-GGUF}"
     },
+    "lgModel": {
+      "value": "${LG_MODEL=hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B-GGUF}"
+    },
     "openAIModel": {
       "value": "${OPENAI_MODEL=gpt-4.1-mini}"
     },

@@ -215,7 +215,7 @@ This page describes how to run OpenChat Playground (OCP) with [LG models on Hugg
    The default model OCP uses is [`LGAI-EXAONE/EXAONE-4.0-1.2B-GGUF`](https://huggingface.co/LGAI-EXAONE/EXAONE-4.0-1.2B-GGUF). If you want to run with a different model, say [`LGAI-EXAONE/EXAONE-4.0-32B-GGUF`](https://huggingface.co/LGAI-EXAONE/EXAONE-4.0-32B-GGUF), other than the default one, add it to azd environment variables.
 
     ```bash
-    azd env set HUGGING_FACE_MODEL "LGAI-EXAONE/EXAONE-4.0-32B-GGUF"
+    azd env set LG_MODEL "LGAI-EXAONE/EXAONE-4.0-32B-GGUF"
     ```
 
    Make sure to follow the exact format like `LGAI-EXAONE/EXAONE-{{MODEL}}-GGUF` and the model MUST include `GGUF`.
