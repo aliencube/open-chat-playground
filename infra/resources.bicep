@@ -52,7 +52,16 @@ var abbrs = loadJsonContent('./abbreviations.json')
 var resourceToken = uniqueString(subscription().id, resourceGroup().id, location)
 
 var useOllama = connectorType == 'HuggingFace' || connectorType == 'Ollama' || connectorType == 'LG'
-var ollamaServerModel = replace(replace(replace(replace(replace(toLower(connectorType == 'LG' ? lgModel : (connectorType == 'Ollama' ? ollamaModel : huggingFaceModel)), '-', ''), '_', ''), ':', ''), '.', ''), '/', '')
+var ollamaServerModel = replace(
+                          replace(
+                            replace(
+                              replace(
+                                replace(toLower(connectorType == 'LG' ? lgModel : (connectorType == 'Ollama' ? ollamaModel : huggingFaceModel)),
+                                '-', ''),
+                              '_', ''),
+                            ':', ''),
+                          '.', ''),
+                        '/', '')
 
 // Monitor application with Azure Monitor
 module monitoring 'br/public:avm/ptn/azd/monitoring:0.2.1' = {
