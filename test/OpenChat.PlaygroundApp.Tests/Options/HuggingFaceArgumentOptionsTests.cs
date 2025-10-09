@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Connectors;
+using OpenChat.PlaygroundApp.Constants;
 
 namespace OpenChat.PlaygroundApp.Tests.Options;
 
@@ -9,6 +10,8 @@ public class HuggingFaceArgumentOptionsTests
 {
     private const string BaseUrl = "https://test.huggingface.co/api";
     private const string Model = "hf-model-name";
+    private const string BaseUrlConfigKey = "HuggingFace:BaseUrl";
+    private const string ModelConfigKey = "HuggingFace:Model";
 
     private static IConfiguration BuildConfigWithHuggingFace(
         string? configBaseUrl = BaseUrl,
@@ -20,16 +23,16 @@ public class HuggingFaceArgumentOptionsTests
         // Base configuration values (lowest priority)
         var configDict = new Dictionary<string, string?>
         {
-            ["ConnectorType"] = ConnectorType.HuggingFace.ToString(),
+            [AppSettingConstants.ConnectorType] = ConnectorType.HuggingFace.ToString(),
         };
 
         if (string.IsNullOrWhiteSpace(configBaseUrl) == false)
         {
-            configDict["HuggingFace:BaseUrl"] = configBaseUrl;
+            configDict[BaseUrlConfigKey] = configBaseUrl;
         }
         if (string.IsNullOrWhiteSpace(configModel) == false)
         {
-            configDict["HuggingFace:Model"] = configModel;
+            configDict[ModelConfigKey] = configModel;
         }
 
         if (string.IsNullOrWhiteSpace(envBaseUrl) == true && string.IsNullOrWhiteSpace(envModel) == true)
@@ -43,11 +46,11 @@ public class HuggingFaceArgumentOptionsTests
         var envDict = new Dictionary<string, string?>();
         if (string.IsNullOrWhiteSpace(envBaseUrl) == false)
         {
-            envDict["HuggingFace:BaseUrl"] = envBaseUrl;
+            envDict[BaseUrlConfigKey] = envBaseUrl;
         }
         if (string.IsNullOrWhiteSpace(envModel) == false)
         {
-            envDict["HuggingFace:Model"] = envModel;
+            envDict[ModelConfigKey] = envModel;
         }
 
         return new ConfigurationBuilder()
@@ -80,7 +83,10 @@ public class HuggingFaceArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithHuggingFace();
-        var args = new[] { "--base-url", cliBaseUrl };
+        var args = new[]
+        {
+            ArgumentOptionConstants.HuggingFace.BaseUrl, cliBaseUrl
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -98,7 +104,10 @@ public class HuggingFaceArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithHuggingFace();
-        var args = new[] { "--model", cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.HuggingFace.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -116,7 +125,11 @@ public class HuggingFaceArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithHuggingFace();
-        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.HuggingFace.BaseUrl, cliBaseUrl,
+            ArgumentOptionConstants.HuggingFace.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -129,8 +142,8 @@ public class HuggingFaceArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("--base-url")]
-    [InlineData("--model")]
+    [InlineData(ArgumentOptionConstants.HuggingFace.BaseUrl)]
+    [InlineData(ArgumentOptionConstants.HuggingFace.Model)]
     public void Given_CLI_ArgumentWithoutValue_When_Parse_Invoked_Then_It_Should_Use_Config(string argument)
     {
         // Arrange
@@ -171,7 +184,10 @@ public class HuggingFaceArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithHuggingFace();
-        var args = new[] { "--model", model };
+        var args = new[]
+        {
+            ArgumentOptionConstants.HuggingFace.Model, model
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -209,7 +225,11 @@ public class HuggingFaceArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithHuggingFace(configBaseUrl, configModel);
-        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.HuggingFace.BaseUrl, cliBaseUrl,
+            ArgumentOptionConstants.HuggingFace.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -279,7 +299,11 @@ public class HuggingFaceArgumentOptionsTests
         var config = BuildConfigWithHuggingFace(
             configBaseUrl, configModel,
             envBaseUrl, envModel);
-        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.HuggingFace.BaseUrl, cliBaseUrl,
+            ArgumentOptionConstants.HuggingFace.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -328,7 +352,11 @@ public class HuggingFaceArgumentOptionsTests
         var config = BuildConfigWithHuggingFace(
             configBaseUrl, configModel,
             envBaseUrl, envModel);
-        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.HuggingFace.BaseUrl, cliBaseUrl,
+            ArgumentOptionConstants.HuggingFace.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args!);
@@ -342,11 +370,16 @@ public class HuggingFaceArgumentOptionsTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("https://cli.huggingface.co/api", "cli-model")]
-    public void Given_HuggingFace_With_KnownArguments_When_Parse_Invoked_Then_Help_Should_Be_False(string cliBaseUrl, string cliModel)
+    public void Given_HuggingFace_With_KnownArguments_When_Parse_Invoked_Then_Help_Should_Be_False(
+        string cliBaseUrl, string cliModel)
     {
         // Arrange
         var config = BuildConfigWithHuggingFace();
-        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.HuggingFace.BaseUrl, cliBaseUrl,
+            ArgumentOptionConstants.HuggingFace.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -357,8 +390,8 @@ public class HuggingFaceArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("--base-url")]
-    [InlineData("--model")]
+    [InlineData(ArgumentOptionConstants.HuggingFace.BaseUrl)]
+    [InlineData(ArgumentOptionConstants.HuggingFace.Model)]
     public void Given_HuggingFace_With_KnownArgument_WithoutValue_When_Parse_Invoked_Then_Help_Should_Be_False(string argument)
     {
         // Arrange
@@ -375,11 +408,16 @@ public class HuggingFaceArgumentOptionsTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("https://cli.huggingface.co/api", "--unknown-flag")]
-    public void Given_HuggingFace_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_Should_Be_True(string cliBaseUrl, string argument)
+    public void Given_HuggingFace_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_Should_Be_True(
+        string cliBaseUrl, string argument)
     {
         // Arrange
         var config = BuildConfigWithHuggingFace();
-        var args = new[] { "--base-url", cliBaseUrl, argument };
+        var args = new[]
+        {
+            ArgumentOptionConstants.HuggingFace.BaseUrl, cliBaseUrl,
+            argument
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -416,7 +454,11 @@ public class HuggingFaceArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithHuggingFace();
-        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.HuggingFace.BaseUrl, cliBaseUrl,
+            ArgumentOptionConstants.HuggingFace.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);

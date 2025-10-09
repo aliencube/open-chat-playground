@@ -1,5 +1,6 @@
 using OpenChat.PlaygroundApp.Configurations;
 using OpenChat.PlaygroundApp.Connectors;
+using OpenChat.PlaygroundApp.Constants;
 using OpenChat.PlaygroundApp.Options;
 
 namespace OpenChat.PlaygroundApp.Abstractions;
@@ -12,44 +13,44 @@ public abstract class ArgumentOptions
     private static readonly (ConnectorType ConnectorType, string Argument, bool IsSwitch)[] arguments =
     [
         // Amazon Bedrock
-        (ConnectorType.AmazonBedrock, "--access-key-id", false),
-        (ConnectorType.AmazonBedrock, "--secret-access-key", false),
-        (ConnectorType.AmazonBedrock, "--region", false),
-        (ConnectorType.AmazonBedrock, "--model-id", false),
+        (ConnectorType.AmazonBedrock, ArgumentOptionConstants.AmazonBedrock.AccessKeyId, false),
+        (ConnectorType.AmazonBedrock, ArgumentOptionConstants.AmazonBedrock.SecretAccessKey, false),
+        (ConnectorType.AmazonBedrock, ArgumentOptionConstants.AmazonBedrock.Region, false),
+        (ConnectorType.AmazonBedrock, ArgumentOptionConstants.AmazonBedrock.ModelId, false),
         // Azure AI Foundry
-        (ConnectorType.AzureAIFoundry, "--endpoint", false),
-        (ConnectorType.AzureAIFoundry, "--api-key", false),
-        (ConnectorType.AzureAIFoundry, "--deployment-name", false),
+        (ConnectorType.AzureAIFoundry, ArgumentOptionConstants.AzureAIFoundry.Endpoint, false),
+        (ConnectorType.AzureAIFoundry, ArgumentOptionConstants.AzureAIFoundry.ApiKey, false),
+        (ConnectorType.AzureAIFoundry, ArgumentOptionConstants.AzureAIFoundry.DeploymentName, false),
         // GitHub Models
-        (ConnectorType.GitHubModels, "--endpoint", false),
-        (ConnectorType.GitHubModels, "--token", false),
-        (ConnectorType.GitHubModels, "--model", false),
+        (ConnectorType.GitHubModels, ArgumentOptionConstants.GitHubModels.Endpoint, false),
+        (ConnectorType.GitHubModels, ArgumentOptionConstants.GitHubModels.Token, false),
+        (ConnectorType.GitHubModels, ArgumentOptionConstants.GitHubModels.Model, false),
         // Google Vertex AI
-        (ConnectorType.GoogleVertexAI, "--api-key", false),
-        (ConnectorType.GoogleVertexAI, "--model", false),
+        (ConnectorType.GoogleVertexAI, ArgumentOptionConstants.GoogleVertexAI.ApiKey, false),
+        (ConnectorType.GoogleVertexAI, ArgumentOptionConstants.GoogleVertexAI.Model, false),
         // Docker Model Runner
         // Foundry Local
-        (ConnectorType.FoundryLocal, "--alias", false),
+        (ConnectorType.FoundryLocal, ArgumentOptionConstants.FoundryLocal.Alias, false),
         // Hugging Face
-        (ConnectorType.HuggingFace, "--base-url", false),
-        (ConnectorType.HuggingFace, "--model", false),
+        (ConnectorType.HuggingFace, ArgumentOptionConstants.HuggingFace.BaseUrl, false),
+        (ConnectorType.HuggingFace, ArgumentOptionConstants.HuggingFace.Model, false),
         // Ollama
-        (ConnectorType.Ollama, "--base-url", false),
-        (ConnectorType.Ollama, "--model", false),
+        (ConnectorType.Ollama, ArgumentOptionConstants.Ollama.BaseUrl, false),
+        (ConnectorType.Ollama, ArgumentOptionConstants.Ollama.Model, false),
         // Anthropic
-        (ConnectorType.Anthropic, "--api-key", false),
-        (ConnectorType.Anthropic, "--model", false),
+        (ConnectorType.Anthropic, ArgumentOptionConstants.Anthropic.ApiKey, false),
+        (ConnectorType.Anthropic, ArgumentOptionConstants.Anthropic.Model, false),
         // LG
-        (ConnectorType.LG, "--base-url", false),
-        (ConnectorType.LG, "--model", false),
+        (ConnectorType.LG, ArgumentOptionConstants.LG.BaseUrl, false),
+        (ConnectorType.LG, ArgumentOptionConstants.LG.Model, false),
         // Naver
         // OpenAI
-        (ConnectorType.OpenAI, "--api-key", false),
-        (ConnectorType.OpenAI, "--model", false),
+        (ConnectorType.OpenAI, ArgumentOptionConstants.OpenAI.ApiKey, false),
+        (ConnectorType.OpenAI, ArgumentOptionConstants.OpenAI.Model, false),
         // Upstage
-        (ConnectorType.Upstage, "--base-url", false),
-        (ConnectorType.Upstage, "--api-key", false),
-        (ConnectorType.Upstage, "--model", false)
+        (ConnectorType.Upstage, ArgumentOptionConstants.Upstage.BaseUrl, false),
+        (ConnectorType.Upstage, ArgumentOptionConstants.Upstage.ApiKey, false),
+        (ConnectorType.Upstage, ArgumentOptionConstants.Upstage.Model, false)
     ];
 
     /// <summary>
@@ -70,11 +71,11 @@ public abstract class ArgumentOptions
     /// <returns>The verified <see cref="ConnectorType"/> value.</returns>
     public static ConnectorType VerifyConnectorType(IConfiguration config, string[] args)
     {
-        var connectorType = Enum.TryParse<ConnectorType>(config["ConnectorType"], ignoreCase: true, out var result) ? result : ConnectorType.Unknown;
+        var connectorType = Enum.TryParse<ConnectorType>(config[AppSettingConstants.ConnectorType], ignoreCase: true, out var result) ? result : ConnectorType.Unknown;
         for (var i = 0; i < args.Length; i++)
         {
-            if (string.Equals(args[i], "--connector-type", StringComparison.InvariantCultureIgnoreCase) ||
-                string.Equals(args[i], "-c", StringComparison.InvariantCultureIgnoreCase))
+            if (string.Equals(args[i], ArgumentOptionConstants.ConnectorType, StringComparison.InvariantCultureIgnoreCase) ||
+                string.Equals(args[i], ArgumentOptionConstants.ConnectorTypeInShort, StringComparison.InvariantCultureIgnoreCase))
             {
                 if (i + 1 < args.Length && Enum.TryParse<ConnectorType>(args[i + 1], ignoreCase: true, out result))
                 {
@@ -124,8 +125,8 @@ public abstract class ArgumentOptions
         {
             switch (args[i])
             {
-                case "--connector-type":
-                case "-c":
+                case ArgumentOptionConstants.ConnectorType:
+                case ArgumentOptionConstants.ConnectorTypeInShort:
                     if (i + 1 < args.Length)
                     {
                         if (Enum.TryParse<ConnectorType>(args[++i], ignoreCase: true, out var result))
@@ -135,8 +136,8 @@ public abstract class ArgumentOptions
                     }
                     break;
 
-                case "--help":
-                case "-h":
+                case ArgumentOptionConstants.Help:
+                case ArgumentOptionConstants.HelpInShort:
                     options.Help = true;
                     break;
 
@@ -178,7 +179,7 @@ public abstract class ArgumentOptions
                 settings.GitHubModels.Token = github.Token ?? settings.GitHubModels.Token;
                 settings.GitHubModels.Model = github.Model ?? settings.GitHubModels.Model;
                 break;
-            
+
             case GoogleVertexAIArgumentOptions googleVertexAI:
                 settings.GoogleVertexAI ??= new GoogleVertexAISettings();
                 settings.GoogleVertexAI.ApiKey = googleVertexAI.ApiKey ?? settings.GoogleVertexAI.ApiKey;
@@ -198,7 +199,7 @@ public abstract class ArgumentOptions
                 settings.HuggingFace.BaseUrl = huggingFace.BaseUrl ?? settings.HuggingFace.BaseUrl;
                 settings.HuggingFace.Model = huggingFace.Model ?? settings.HuggingFace.Model;
                 break;
-            
+
             case OllamaArgumentOptions ollama:
                 settings.Ollama ??= new OllamaSettings();
                 settings.Ollama.BaseUrl = ollama.BaseUrl ?? settings.Ollama.BaseUrl;
@@ -257,7 +258,7 @@ public abstract class ArgumentOptions
         Console.WriteLine("Usage: [options]");
         Console.WriteLine();
         Console.WriteLine("Options:");
-        Console.WriteLine("  --connector-type|-c  The connector type. Supporting connectors are:");
+        Console.WriteLine($"  {ArgumentOptionConstants.ConnectorType}|{ArgumentOptionConstants.ConnectorTypeInShort}  The connector type. Supporting connectors are:");
         Console.WriteLine("                       - AmazonBedrock, AzureAIFoundry, GitHubModels, GoogleVertexAI");
         Console.WriteLine("                       - DockerModelRunner, FoundryLocal, HuggingFace, Ollama");
         Console.WriteLine("                       - Anthropic, LG, Naver, OpenAI, Upstage");
@@ -275,7 +276,7 @@ public abstract class ArgumentOptions
         DisplayHelpForNaver();
         DisplayHelpForOpenAI();
         DisplayHelpForUpstage();
-        Console.WriteLine("  --help|-h            Show this help message.");
+        Console.WriteLine($"  {ArgumentOptionConstants.Help}|{ArgumentOptionConstants.HelpInShort}            Show this help message.");
     }
 
     /// <summary>
@@ -305,10 +306,10 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** Amazon Bedrock: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  --access-key-id     The AWSCredentials Access Key ID.");
-        Console.WriteLine("  --secret-access-key The AWSCredentials Secret Access Key.");
-        Console.WriteLine("  --region            The AWS region.");
-        Console.WriteLine("  --model-id          The model ID. Default to 'anthropic.claude-sonnet-4-20250514-v1:0'");
+        Console.WriteLine($"  {ArgumentOptionConstants.AmazonBedrock.AccessKeyId}     The AWSCredentials Access Key ID.");
+        Console.WriteLine($"  {ArgumentOptionConstants.AmazonBedrock.SecretAccessKey} The AWSCredentials Secret Access Key.");
+        Console.WriteLine($"  {ArgumentOptionConstants.AmazonBedrock.Region}            The AWS region.");
+        Console.WriteLine($"  {ArgumentOptionConstants.AmazonBedrock.ModelId}          The model ID. Default to 'anthropic.claude-sonnet-4-20250514-v1:0'");
         Console.WriteLine();
     }
 
@@ -319,9 +320,9 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** Azure AI Foundry: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  --endpoint           The Azure AI Foundry endpoint.");
-        Console.WriteLine("  --api-key            The Azure AI Foundry API key.");
-        Console.WriteLine("  --deployment-name    The deployment name. Default to 'gpt-4o-mini'");
+        Console.WriteLine($"  {ArgumentOptionConstants.AzureAIFoundry.Endpoint}           The Azure AI Foundry endpoint.");
+        Console.WriteLine($"  {ArgumentOptionConstants.AzureAIFoundry.ApiKey}            The Azure AI Foundry API key.");
+        Console.WriteLine($"  {ArgumentOptionConstants.AzureAIFoundry.DeploymentName}    The deployment name. Default to 'gpt-4o-mini'");
         Console.WriteLine();
     }
 
@@ -332,9 +333,9 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** GitHub Models: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  --endpoint           The endpoint URL. Default to 'https://models.github.ai/inference'");
-        Console.WriteLine("  --token              The GitHub PAT.");
-        Console.WriteLine("  --model              The model name. Default to 'openai/gpt-4o-mini'");
+        Console.WriteLine($"  {ArgumentOptionConstants.GitHubModels.Endpoint}           The endpoint URL. Default to 'https://models.github.ai/inference'");
+        Console.WriteLine($"  {ArgumentOptionConstants.GitHubModels.Token}              The GitHub PAT.");
+        Console.WriteLine($"  {ArgumentOptionConstants.GitHubModels.Model}              The model name. Default to 'openai/gpt-4o-mini'");
         Console.WriteLine();
     }
 
@@ -378,8 +379,8 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** Hugging Face: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  --base-url           The endpoint URL. Default to 'http://localhost:11434'");
-        Console.WriteLine("  --model              The model name. Default to 'hf.co/google/gemma-3-1b-pt-qat-q4_0-gguf'");
+        Console.WriteLine($"  {ArgumentOptionConstants.HuggingFace.BaseUrl}           The endpoint URL. Default to 'http://localhost:11434'");
+        Console.WriteLine($"  {ArgumentOptionConstants.HuggingFace.Model}              The model name. Default to 'hf.co/google/gemma-3-1b-pt-qat-q4_0-gguf'");
         Console.WriteLine();
     }
 
@@ -390,8 +391,8 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** Ollama: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  --base-url           The baseURL. Default to 'http://localhost:11434'");
-        Console.WriteLine("  --model              The model name. Default to 'llama3.2'");
+        Console.WriteLine($"  {ArgumentOptionConstants.Ollama.BaseUrl}           The baseURL. Default to 'http://localhost:11434'");
+        Console.WriteLine($"  {ArgumentOptionConstants.Ollama.Model}              The model name. Default to 'llama3.2'");
         Console.WriteLine();
     }
 
@@ -402,8 +403,8 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** Anthropic: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  --api-key            The Anthropic API key.");
-        Console.WriteLine("  --model              The Anthropic model name. Default to 'claude-sonnet-4-0'");
+        Console.WriteLine($"  {ArgumentOptionConstants.Anthropic.ApiKey}            The Anthropic API key.");
+        Console.WriteLine($"  {ArgumentOptionConstants.Anthropic.Model}              The Anthropic model name. Default to 'claude-sonnet-4-0'");
         Console.WriteLine();
     }
 
@@ -436,8 +437,8 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** OpenAI: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  --api-key            The OpenAI API key. (Env: OPENAI_API_KEY)");
-        Console.WriteLine("  --model              The OpenAI model name. Default to 'gpt-4.1-mini'");
+        Console.WriteLine($"  {ArgumentOptionConstants.OpenAI.ApiKey}            The OpenAI API key. (Env: OPENAI_API_KEY)");
+        Console.WriteLine($"  {ArgumentOptionConstants.OpenAI.Model}              The OpenAI model name. Default to 'gpt-4.1-mini'");
         Console.WriteLine();
     }
 
@@ -448,9 +449,9 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** Upstage: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  --base-url           The base URL for Upstage API. Default to 'https://api.upstage.ai/v1/solar'");
-        Console.WriteLine("  --api-key            The Upstage API key.");
-        Console.WriteLine("  --model              The model name. Default to 'solar-mini'");
+        Console.WriteLine($"  {ArgumentOptionConstants.Upstage.BaseUrl}           The base URL for Upstage API. Default to 'https://api.upstage.ai/v1/solar'");
+        Console.WriteLine($"  {ArgumentOptionConstants.Upstage.ApiKey}            The Upstage API key.");
+        Console.WriteLine($"  {ArgumentOptionConstants.Upstage.Model}              The model name. Default to 'solar-mini'");
         Console.WriteLine();
     }
 }

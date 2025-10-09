@@ -61,19 +61,22 @@ public class LanguageModelConnectorTests
     // [InlineData(typeof(GoogleVertexAIConnector))]
     // [InlineData(typeof(DockerModelRunnerConnector))]
     // [InlineData(typeof(FoundryLocalConnector))]
-    // [InlineData(typeof(HuggingFaceConnector))]
+    [InlineData(typeof(HuggingFaceConnector))]
     // [InlineData(typeof(OllamaConnector))]
     // [InlineData(typeof(AnthropicConnector))]
     // [InlineData(typeof(LGConnector))]
     // [InlineData(typeof(NaverConnector))]
     [InlineData(typeof(OpenAIConnector))]
     // [InlineData(typeof(UpstageConnector))]
-    public void Given_Concrete_Connectors_When_Checking_Inheritance_Then_Should_Inherit_From_LanguageModelConnector(Type type)
+    public void Given_Concrete_Connectors_When_Checking_Inheritance_Then_Should_Inherit_From_LanguageModelConnector(Type derivedType)
     {
+        // Arrange
+        var baseType = typeof(LanguageModelConnector);
+
         // Act
-        var isSubclass = type.IsSubclassOf(typeof(LanguageModelConnector));
+        var result = baseType.IsAssignableFrom(derivedType);
 
         // Assert
-        isSubclass.ShouldBeTrue();
+        result.ShouldBeTrue();
     }
 }
