@@ -18,7 +18,7 @@
       "value": "${AZURE_AI_FOUNDRY_API_KEY}"
     },
     "azureAIFoundryDeploymentName": {
-      "value": "${AZURE_AI_FOUNDRY_DEPLOYMENT_NAME}"
+      "value": "${AZURE_AI_FOUNDRY_DEPLOYMENT_NAME=gpt-4o-mini}"
     },
     "githubModelsModel": {
       "value": "${GH_MODELS_MODEL=openai/gpt-4o-mini}"

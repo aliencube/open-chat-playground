@@ -1,7 +1,8 @@
 using Microsoft.Extensions.AI;
+
+using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Configurations;
 using OpenChat.PlaygroundApp.Connectors;
-using OpenChat.PlaygroundApp.Abstractions;
 
 namespace OpenChat.PlaygroundApp.Tests.Connectors;
 
@@ -40,15 +41,41 @@ public class AzureAIFoundryConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Fact]
-    public void Given_Settings_Is_Null_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
+    public void Given_Null_Settings_When_Instantiated_Then_It_Should_Throw()
+    {
+        // Act
+        Action action = () => new AzureAIFoundryConnector(null!);
+
+        // Assert
+        action.ShouldThrow<ArgumentNullException>()
+              .Message.ShouldContain("settings");
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Fact]
+    public void Given_Settings_When_Instantiated_Then_It_Should_Return()
     {
         // Arrange
-        var appSettings = new AppSettings
+        var settings = BuildAppSettings();
+
+        // Act
+        var result = new AzureAIFoundryConnector(settings);
+
+        // Assert
+        result.ShouldNotBeNull();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Fact]
+    public void Given_Null_Settings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
+    {
+        // Arrange
+        var settings = new AppSettings
         {
             ConnectorType = ConnectorType.AzureAIFoundry,
             AzureAIFoundry = null
         };
-        var connector = new AzureAIFoundryConnector(appSettings);
+        var connector = new AzureAIFoundryConnector(settings);
 
         // Act
         Action action = () => connector.EnsureLanguageModelSettingsValid();
@@ -66,8 +93,8 @@ public class AzureAIFoundryConnectorTests
     public void Given_Invalid_Endpoint_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? endpoint, Type expectedType, string expectedMessage)
     {
         // Arrange
-        var appSettings = BuildAppSettings(endpoint: endpoint);
-        var connector = new AzureAIFoundryConnector(appSettings);
+        var settings = BuildAppSettings(endpoint: endpoint);
+        var connector = new AzureAIFoundryConnector(settings);
 
         // Act
         Action action = () => connector.EnsureLanguageModelSettingsValid();
@@ -85,8 +112,8 @@ public class AzureAIFoundryConnectorTests
     public void Given_Invalid_ApiKey_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? apiKey, Type expectedType, string expectedMessage)
     {
         // Arrange
-        var appSettings = BuildAppSettings(apiKey: apiKey);
-        var connector = new AzureAIFoundryConnector(appSettings);
+        var settings = BuildAppSettings(apiKey: apiKey);
+        var connector = new AzureAIFoundryConnector(settings);
 
         // Act
         Action action = () => connector.EnsureLanguageModelSettingsValid();
@@ -104,8 +131,8 @@ public class AzureAIFoundryConnectorTests
     public void Given_Invalid_DeploymentName_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? deploymentName, Type expectedType, string expectedMessage)
     {
         // Arrange
-        var appSettings = BuildAppSettings(deploymentName: deploymentName);
-        var connector = new AzureAIFoundryConnector(appSettings);
+        var settings = BuildAppSettings(deploymentName: deploymentName);
+        var connector = new AzureAIFoundryConnector(settings);
 
         // Act
         Action action = () => connector.EnsureLanguageModelSettingsValid();
@@ -120,8 +147,8 @@ public class AzureAIFoundryConnectorTests
     public void Given_Valid_Settings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Return_True()
     {
         // Arrange
-        var appSettings = BuildAppSettings();
-        var connector = new AzureAIFoundryConnector(appSettings);
+        var settings = BuildAppSettings();
+        var connector = new AzureAIFoundryConnector(settings);
 
         // Act
         var result = connector.EnsureLanguageModelSettingsValid();
@@ -132,30 +159,15 @@ public class AzureAIFoundryConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Fact]
-    public async Task Given_Valid_Settings_When_GetChatClient_Invoked_Then_It_Should_Return_ChatClient()
+    public void Given_Null_Settings_When_GetChatClientAsync_Invoked_Then_It_Should_Throw()
     {
         // Arrange
-        var settings = BuildAppSettings();
-        var connector = new AzureAIFoundryConnector(settings);
-
-        // Act
-        var result = await connector.GetChatClientAsync();
-
-        // Assert
-        result.ShouldNotBeNull();
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_Settings_Is_Null_When_GetChatClientAsync_Invoked_Then_It_Should_Throw()
-    {
-        // Arrange
-        var appSettings = new AppSettings
+        var settings = new AppSettings
         {
             ConnectorType = ConnectorType.AzureAIFoundry,
             AzureAIFoundry = null
         };
-        var connector = new AzureAIFoundryConnector(appSettings);
+        var connector = new AzureAIFoundryConnector(settings);
 
         // Act
         Func<Task> func = async () => await connector.GetChatClientAsync();
@@ -167,9 +179,30 @@ public class AzureAIFoundryConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
+    [InlineData(null, typeof(ArgumentNullException), "Value cannot be null.")]
+    [InlineData("", typeof(UriFormatException), "Invalid URI: The URI is empty.")]
+    [InlineData("invalid-uri-format", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
+    [InlineData("not-a-url", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
+    [InlineData("   ", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
+    public void Given_Invalid_Endpoint_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? endpoint, Type expectedType, string message)
+    {
+        // Arrange
+        var settings = BuildAppSettings(endpoint: endpoint);
+        var connector = new AzureAIFoundryConnector(settings);
+
+        // Act
+        Func<Task> func = async () => await connector.GetChatClientAsync();
+
+        // Assert
+        func.ShouldThrow(expectedType)
+            .Message.ShouldContain(message);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
     [InlineData(null, "key")]
     [InlineData("", "key")]
-    public void Given_Missing_ApiKey_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? apiKey, string message)
+    public void Given_Invalid_ApiKey_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? apiKey, string message)
     {
         // Arrange
         var settings = BuildAppSettings(apiKey: apiKey);
@@ -185,36 +218,35 @@ public class AzureAIFoundryConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("invalid-uri-format", "Invalid URI: The format of the URI could not be determined.")]
-    [InlineData("not-a-url", "Invalid URI: The format of the URI could not be determined.")]
-    [InlineData("   ", "Invalid URI: The format of the URI could not be determined.")]
-    public void Given_Invalid_Endpoint_Format_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string invalidEndpoint, string message)
+    [InlineData(null, "model")]
+    [InlineData("", "model")]
+    public void Given_Invalid_DeploymentName_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? deploymentName, string message)
     {
         // Arrange
-        var settings = BuildAppSettings(endpoint: invalidEndpoint);
+        var settings = BuildAppSettings(deploymentName: deploymentName);
         var connector = new AzureAIFoundryConnector(settings);
 
         // Act
         Func<Task> func = async () => await connector.GetChatClientAsync();
 
-        // Assert
-        func.ShouldThrow<UriFormatException>()
+        // Assert  
+        func.ShouldThrow<ArgumentException>()
             .Message.ShouldContain(message);
     }
 
     [Trait("Category", "UnitTest")]
     [Fact]
-    public async Task Given_Valid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Return_IChatClient()
+    public async Task Given_Valid_Settings_When_GetChatClient_Invoked_Then_It_Should_Return_ChatClient()
     {
         // Arrange
         var settings = BuildAppSettings();
+        var connector = new AzureAIFoundryConnector(settings);
 
         // Act
-        var result = await LanguageModelConnector.CreateChatClientAsync(settings);
+        var result = await connector.GetChatClientAsync();
 
         // Assert
         result.ShouldNotBeNull();
-        result.ShouldBeAssignableTo<IChatClient>();
     }
 
     [Trait("Category", "UnitTest")]
@@ -248,5 +280,20 @@ public class AzureAIFoundryConnectorTests
         // Assert  
         func.ShouldThrow<InvalidOperationException>()
             .Message.ShouldContain(expectedMessage);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Fact]
+    public async Task Given_Valid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Return_IChatClient()
+    {
+        // Arrange
+        var settings = BuildAppSettings();
+
+        // Act
+        var result = await LanguageModelConnector.CreateChatClientAsync(settings);
+
+        // Assert
+        result.ShouldNotBeNull();
+        result.ShouldBeAssignableTo<IChatClient>();
     }
 }

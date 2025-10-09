@@ -40,7 +40,7 @@ This page describes how to run OpenChat Playground (OCP) with Azure AI Foundry i
 
     > To get an Azure AI Foundry instance, its API endpoint and key, refer to the doc, [Get started with Azure AI Foundry](https://learn.microsoft.com/en-us/azure/ai-foundry/quickstarts/get-started-code?tabs=csharp#set-up-your-environment).
 
-2. Run the app by passing the endpoint parameter `{{AZURE_AI_FOUNDRY_ENDPOINT}}` that was acquired from Azure AI Foundry portal. The default deployment name OCP uses is [`gpt-4o-mini`](https://ai.azure.com/catalog/models/gpt-4o-mini).
+1. Run the app by passing the endpoint parameter `{{AZURE_AI_FOUNDRY_ENDPOINT}}` that was acquired from Azure AI Foundry portal. The default deployment name OCP uses is [`gpt-4o-mini`](https://ai.azure.com/catalog/models/gpt-4o-mini).
 
     ```bash
     # bash/zsh
@@ -74,7 +74,7 @@ This page describes how to run OpenChat Playground (OCP) with Azure AI Foundry i
         --deployment-name gpt-4
     ```
 
-3. Open your web browser, navigate to `http://localhost:5280`, and enter prompts.
+1. Open your web browser, navigate to `http://localhost:5280`, and enter prompts.
 
 ## Run in local container
 
@@ -221,7 +221,7 @@ This page describes how to run OpenChat Playground (OCP) with Azure AI Foundry i
 1. Set Azure AI Foundry configuration to azd environment variables.
 
     ```bash
-    azd env set AZURE_AI_FOUNDRY_ENDPOINT {{$AZURE_AI_FOUNDRY_ENDPOINT}}
+    azd env set AZURE_AI_FOUNDRY_ENDPOINT "{{AZURE_AI_FOUNDRY_ENDPOINT}}"
     azd env set AZURE_AI_FOUNDRY_API_KEY $API_KEY
     ```
 

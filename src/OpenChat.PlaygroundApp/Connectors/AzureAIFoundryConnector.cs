@@ -1,7 +1,5 @@
 using Microsoft.Extensions.AI;
 
-using OpenAI.Chat;
-
 using OpenChat.PlaygroundApp.Configurations;
 using OpenChat.PlaygroundApp.Abstractions;
 
@@ -15,11 +13,12 @@ namespace OpenChat.PlaygroundApp.Connectors;
 /// </summary>
 public class AzureAIFoundryConnector(AppSettings settings) : LanguageModelConnector(settings.AzureAIFoundry)
 {
+    private readonly AppSettings _appSettings = settings ?? throw new ArgumentNullException(nameof(settings));
+
     /// <inheritdoc/>
     public override bool EnsureLanguageModelSettingsValid()
     {
-        var settings = this.Settings as AzureAIFoundrySettings;
-        if (settings is null)
+        if (this.Settings is not AzureAIFoundrySettings settings)
         {
             throw new InvalidOperationException("Missing configuration: AzureAIFoundry.");
         }
@@ -56,6 +55,8 @@ public class AzureAIFoundryConnector(AppSettings settings) : LanguageModelConnec
         
         var chatClient = azureClient.GetChatClient(deploymentName) 
                                     .AsIChatClient();
+
+        Console.WriteLine($"The {this._appSettings.ConnectorType} connector created with model: {settings.DeploymentName}");
 
         return await Task.FromResult(chatClient).ConfigureAwait(false);
     }
