@@ -12,13 +12,15 @@ namespace OpenChat.PlaygroundApp.Connectors;
 /// <summary>
 /// This represents the connector entity for OpenAI.
 /// </summary>
+/// <param name="settings"><see cref="AppSettings"/> instance.</param>
 public class OpenAIConnector(AppSettings settings) : LanguageModelConnector(settings.OpenAI)
 {
+    private readonly AppSettings _appSettings = settings ?? throw new ArgumentNullException(nameof(settings));
+
     /// <inheritdoc/>
     public override bool EnsureLanguageModelSettingsValid()
     {
-        var settings = this.Settings as OpenAISettings;
-        if (settings is null)
+        if (this.Settings is not OpenAISettings settings)
         {
             throw new InvalidOperationException("Missing configuration: OpenAI.");
         }
@@ -46,6 +48,8 @@ public class OpenAIConnector(AppSettings settings) : LanguageModelConnector(sett
         var client = new OpenAIClient(credential);
         var chatClient = client.GetChatClient(settings.Model)
                                .AsIChatClient();
+
+        Console.WriteLine($"The {this._appSettings.ConnectorType} connector created with model: {settings.Model}");
 
         return await Task.FromResult(chatClient).ConfigureAwait(false);
     }
