@@ -1,4 +1,3 @@
-using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Configurations;
 using OpenChat.PlaygroundApp.Connectors;
 
@@ -43,6 +42,7 @@ public class HuggingFaceConnectorTests
 	[InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
 	[InlineData("", typeof(InvalidOperationException), "HuggingFace:BaseUrl")]
 	[InlineData("   ", typeof(InvalidOperationException), "HuggingFace:BaseUrl")]
+	[InlineData("\t\n\r", typeof(InvalidOperationException), "HuggingFace:BaseUrl")]
 	public void Given_Invalid_BaseUrl_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? baseUrl, Type expectedType, string expectedMessage)
 	{
 		// Arrange
@@ -62,6 +62,7 @@ public class HuggingFaceConnectorTests
 	[InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
 	[InlineData("", typeof(InvalidOperationException), "HuggingFace:Model")]
 	[InlineData("   ", typeof(InvalidOperationException), "HuggingFace:Model")]
+	[InlineData("\t\n\r", typeof(InvalidOperationException), "HuggingFace:Model")]
 	[InlineData("hf.co/org/model", typeof(InvalidOperationException), "HuggingFace:Model format")]
 	[InlineData("org/model-gguf", typeof(InvalidOperationException), "HuggingFace:Model format")]
 	[InlineData("hf.co//model-gguf", typeof(InvalidOperationException), "HuggingFace:Model format")]

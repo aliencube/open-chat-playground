@@ -1,5 +1,3 @@
-using Humanizer;
-
 using OpenChat.PlaygroundApp.Configurations;
 using OpenChat.PlaygroundApp.Connectors;
 
@@ -46,6 +44,7 @@ public class GitHubModelsConnectorTests
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData("", typeof(InvalidOperationException), "GitHubModels:Endpoint")]
     [InlineData("   ", typeof(InvalidOperationException), "GitHubModels:Endpoint")]
+    [InlineData("\t\n\r", typeof(InvalidOperationException), "GitHubModels:Endpoint")]
     public void Given_Invalid_Endpoint_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? endpoint, Type expectedType, string expectedMessage)
     {
         // Arrange
@@ -65,6 +64,7 @@ public class GitHubModelsConnectorTests
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData("", typeof(InvalidOperationException), "GitHubModels:Token")]
     [InlineData("   ", typeof(InvalidOperationException), "GitHubModels:Token")]
+    [InlineData("\t\n\r", typeof(InvalidOperationException), "GitHubModels:Token")]
     public void Given_Invalid_Token_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? token, Type expectedType, string expectedMessage)
     {
         // Arrange
@@ -84,6 +84,7 @@ public class GitHubModelsConnectorTests
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData("", typeof(InvalidOperationException), "GitHubModels:Model")]
     [InlineData("   ", typeof(InvalidOperationException), "GitHubModels:Model")]
+    [InlineData("\t\n\r", typeof(InvalidOperationException), "GitHubModels:Model")]
     public void Given_Invalid_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? model, Type expectedType, string expectedMessage)
     {
         // Arrange
