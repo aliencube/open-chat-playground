@@ -39,6 +39,34 @@ public class LanguageModelConnectorTests
     }
 
     [Trait("Category", "UnitTest")]
+    [Fact]
+    public async Task Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw()
+    {
+        // Arrange
+        var settings = BuildAppSettings(endpoint: null);
+
+        // Act
+        Func<Task> func = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
+
+        // Assert
+        await func.ShouldThrowAsync<NullReferenceException>();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Fact]
+    public async Task Given_Null_Settings_When_CreateChatClient_Invoked_Then_It_Should_Throw()
+    {
+        // Arrange
+        AppSettings settings = null!;
+
+        // Act
+        Func<Task> func = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
+
+        // Assert
+        await func.ShouldThrowAsync<NullReferenceException>();
+    }
+
+    [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(ConnectorType.Unknown)]
     public async Task Given_Unsupported_ConnectorType_When_CreateChatClient_Invoked_Then_It_Should_Throw(ConnectorType connectorType)
