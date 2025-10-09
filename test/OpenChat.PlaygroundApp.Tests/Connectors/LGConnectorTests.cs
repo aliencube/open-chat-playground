@@ -114,7 +114,8 @@ public class LGConnectorTests
         result.ShouldBeTrue();
     }
 
-    [Trait("Category", "UnitTest")]
+    [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "LLMRequired")]
     [Fact]
     public async Task Given_Valid_Settings_When_GetChatClient_Invoked_Then_It_Should_Return_ChatClient()
     {
@@ -131,22 +132,23 @@ public class LGConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(ArgumentNullException))]
-    [InlineData("", typeof(UriFormatException))]
-    public void Given_Missing_BaseUrl_When_GetChatClient_Invoked_Then_It_Should_Throw(string? baseUrl, Type expected)
+    [InlineData(null, typeof(ArgumentNullException), "null")]
+    [InlineData("", typeof(UriFormatException), "empty")]
+    public async Task Given_Missing_BaseUrl_When_GetChatClient_Invoked_Then_It_Should_Throw(string? baseUrl, Type expected, string message)
     {
         // Arrange
         var settings = BuildAppSettings(baseUrl: baseUrl);
         var connector = new LGConnector(settings);
 
         // Act
-        Func<Task> func = async () => await connector.GetChatClientAsync();
+        var ex = await Assert.ThrowsAsync(expected, connector.GetChatClientAsync);
 
         // Assert
-        func.ShouldThrow(expected);
+        ex.Message.ShouldContain(message);
     }
 
-    [Trait("Category", "UnitTest")]
+    [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "LLMRequired")]
     [Fact]
     public async Task Given_Valid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Return_ChatClient()
     {

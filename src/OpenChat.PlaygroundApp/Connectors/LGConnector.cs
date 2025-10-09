@@ -12,11 +12,12 @@ namespace OpenChat.PlaygroundApp.Connectors;
 /// </summary>
 public class LGConnector(AppSettings settings) : LanguageModelConnector(settings.LG)
 {
+    private readonly AppSettings _appSettings = settings ?? throw new ArgumentNullException(nameof(settings));
+
     /// <inheritdoc/>
     public override bool EnsureLanguageModelSettingsValid()
     {
-        var settings = this.Settings as LGSettings;
-        if (settings is null)
+        if (this.Settings is not LGSettings settings)
         {
             throw new InvalidOperationException("Missing configuration: LG.");
         }
@@ -53,6 +54,14 @@ public class LGConnector(AppSettings settings) : LanguageModelConnector(settings
         };
 
         var chatClient = new OllamaApiClient(config);
+
+        var pulls = chatClient.PullModelAsync(model);
+        await foreach (var pull in pulls)
+        {
+            Console.WriteLine($"Pull status: {pull!.Status}");
+        }
+
+        Console.WriteLine($"The {this._appSettings.ConnectorType} connector created with model: {settings.Model}");
 
         return await Task.FromResult(chatClient).ConfigureAwait(false);
     }
