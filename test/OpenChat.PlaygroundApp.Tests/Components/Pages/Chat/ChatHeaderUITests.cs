@@ -1,12 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Playwright;
+﻿using Microsoft.Playwright;
 using Microsoft.Playwright.Xunit;
 
-using OpenChat.PlaygroundApp.Configurations;
 using OpenChat.PlaygroundApp.Connectors;
 
 namespace OpenChat.PlaygroundApp.Tests.Components.Pages.Chat;
-
 
 public class ChatHeaderUITests : PageTest
 {
