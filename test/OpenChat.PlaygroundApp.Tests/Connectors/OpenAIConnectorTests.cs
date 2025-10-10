@@ -29,8 +29,8 @@ public class OpenAIConnectorTests
     public void Given_Settings_Is_Null_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
     {
         // Arrange
-        var appSettings = new AppSettings { ConnectorType = ConnectorType.OpenAI, OpenAI = null };
-        var connector = new OpenAIConnector(appSettings);
+        var settings = new AppSettings { ConnectorType = ConnectorType.OpenAI, OpenAI = null };
+        var connector = new OpenAIConnector(settings);
 
         // Act
         Action action = () => connector.EnsureLanguageModelSettingsValid();
@@ -49,8 +49,8 @@ public class OpenAIConnectorTests
     public void Given_Invalid_ApiKey_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? apiKey, Type expectedType, string expectedMessage)
     {
         // Arrange
-        var appSettings = BuildAppSettings(apiKey: apiKey);
-        var connector = new OpenAIConnector(appSettings);
+        var settings = BuildAppSettings(apiKey: apiKey);
+        var connector = new OpenAIConnector(settings);
 
         // Act
         Action action = () => connector.EnsureLanguageModelSettingsValid();
@@ -65,8 +65,8 @@ public class OpenAIConnectorTests
     public void Given_Valid_Settings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Return_True()
     {
         // Arrange
-        var appSettings = BuildAppSettings();
-        var connector = new OpenAIConnector(appSettings);
+        var settings = BuildAppSettings();
+        var connector = new OpenAIConnector(settings);
 
         // Act
         var result = connector.EnsureLanguageModelSettingsValid();
@@ -84,8 +84,8 @@ public class OpenAIConnectorTests
     public void Given_Invalid_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? model, Type expectedType, string expectedMessage)
     {
         // Arrange
-        var appSettings = BuildAppSettings(apiKey: "valid-key", model: model);
-        var connector = new OpenAIConnector(appSettings);
+        var settings = BuildAppSettings(apiKey: "valid-key", model: model);
+        var connector = new OpenAIConnector(settings);
 
         // Act
         Action action = () => connector.EnsureLanguageModelSettingsValid();
@@ -115,8 +115,8 @@ public class OpenAIConnectorTests
     public void Given_Settings_Is_Null_When_GetChatClientAsync_Invoked_Then_It_Should_Throw()
     {
         // Arrange
-        var appSettings = new AppSettings { ConnectorType = ConnectorType.OpenAI, OpenAI = null };
-        var connector = new OpenAIConnector(appSettings);
+        var settings = new AppSettings { ConnectorType = ConnectorType.OpenAI, OpenAI = null };
+        var connector = new OpenAIConnector(settings);
 
         // Act
         Func<Task> func = async () => await connector.GetChatClientAsync();
@@ -186,7 +186,7 @@ public class OpenAIConnectorTests
 
         // Act
         var result = await LanguageModelConnector.CreateChatClientAsync(settings);
-        
+
         // Assert
         result.ShouldNotBeNull();
         result.ShouldBeAssignableTo<IChatClient>();

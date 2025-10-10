@@ -11,22 +11,37 @@
     "connectorType": {
       "value": "${CONNECTOR_TYPE}"
     },
+    "azureAIFoundryEndpoint": {
+      "value": "${AZURE_AI_FOUNDRY_ENDPOINT}"
+    },
+    "azureAIFoundryApiKey": {
+      "value": "${AZURE_AI_FOUNDRY_API_KEY}"
+    },
+    "azureAIFoundryDeploymentName": {
+      "value": "${AZURE_AI_FOUNDRY_DEPLOYMENT_NAME=gpt-4o-mini}"
+    },
     "githubModelsModel": {
-      "value": "${GH_MODELS_MODEL}"
+      "value": "${GH_MODELS_MODEL=openai/gpt-4o-mini}"
     },
     "githubModelsToken": {
       "value": "${GH_MODELS_TOKEN}"
     },
     "huggingFaceModel": {
-      "value": "${HUGGING_FACE_MODEL}"
+      "value": "${HUGGING_FACE_MODEL=hf.co/Qwen/Qwen3-0.6B-GGUF}"
+    },
+    "lgModel": {
+      "value": "${LG_MODEL=hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B-GGUF}"
     },
     "openAIModel": {
-      "value": "${OPENAI_MODEL}"
+      "value": "${OPENAI_MODEL=gpt-4.1-mini}"
     },
     "openAIApiKey": {
       "value": "${OPENAI_API_KEY}"
     },
-    "openchatPlaygroundappExists": {
+    "gpuProfileName": {
+      "value": "${GPU_PROFILE_NAME=NC8as-T4}"
+    },
+    "openchatPlaygroundAppExists": {
       "value": "${SERVICE_OPENCHAT_PLAYGROUNDAPP_RESOURCE_EXISTS=false}"
     },
     "principalId": {

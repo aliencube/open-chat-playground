@@ -9,11 +9,14 @@ param environmentName string
 @description('Primary location for all resources')
 param location string
 
-
 param connectorType string = ''
 
 // Amazon Bedrock
 // Azure AI Foundry
+param azureAIFoundryEndpoint string = ''
+@secure()
+param azureAIFoundryApiKey string = ''
+param azureAIFoundryDeploymentName string = ''
 // GitHub Models
 param githubModelsModel string = ''
 @secure()
@@ -24,8 +27,10 @@ param githubModelsToken string = ''
 // Hugging Face
 param huggingFaceModel string = ''
 // Ollama
+param ollamaModel string = ''
 // Anthropic
 // LG
+param lgModel string = ''
 // Naver
 // OpenAI
 param openAIModel string = ''
@@ -33,7 +38,14 @@ param openAIModel string = ''
 param openAIApiKey string = ''
 // Upstage
 
-param openchatPlaygroundappExists bool
+@allowed([
+  'NC24-A100'
+  'NC8as-T4'
+])
+@description('The GPU profile name for Container Apps environment when using Ollama, Hugging Face or LG connectors. Supported values are NC24-A100 and NC8as-T4.')
+param gpuProfileName string = 'NC8as-T4'
+
+param openchatPlaygroundAppExists bool
 
 @description('Id of the user or app to assign application roles')
 param principalId string
@@ -66,12 +78,18 @@ module resources 'resources.bicep' = {
     principalId: principalId
     principalType: principalType
     connectorType: connectorType
+    azureAIFoundryEndpoint: azureAIFoundryEndpoint
+    azureAIFoundryApiKey: azureAIFoundryApiKey
+    azureAIFoundryDeploymentName: azureAIFoundryDeploymentName
     githubModelsModel: githubModelsModel
     githubModelsToken: githubModelsToken
     huggingFaceModel: huggingFaceModel
+    ollamaModel: ollamaModel
+    lgModel: lgModel
     openAIModel: openAIModel
     openAIApiKey: openAIApiKey
-    openchatPlaygroundappExists: openchatPlaygroundappExists
+    gpuProfileName: gpuProfileName
+    openchatPlaygroundAppExists: openchatPlaygroundAppExists
   }
 }
 

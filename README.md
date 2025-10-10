@@ -2,10 +2,12 @@
 
 Open Chat Playground (OCP) is a web UI that is able to connect virtually any LLM from any platform.
 
+![OpenChat Playground - hero image](./images/ocp-hero.png)
+
 ## Supported platforms
 
 - [ ] [Amazon Bedrock](https://docs.aws.amazon.com/bedrock)
-- [ ] [Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/what-is-azure-ai-foundry)
+- [x] [Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/what-is-azure-ai-foundry)
 - [x] [GitHub Models](https://docs.github.com/github-models/about-github-models)
 - [ ] [Google Vertex AI](https://cloud.google.com/vertex-ai/docs)
 - [ ] [Docker Model Runner](https://docs.docker.com/ai/model-runner)
@@ -14,7 +16,7 @@ Open Chat Playground (OCP) is a web UI that is able to connect virtually any LLM
 - [ ] [Ollama](https://github.com/ollama/ollama/tree/main/docs)
 - [ ] [Anthropic](https://docs.anthropic.com)
 - [ ] [Naver](https://api.ncloud-docs.com/docs/ai-naver-clovastudio-summary)
-- [ ] [LG](https://github.com/LG-AI-EXAONE)
+- [x] [LG](https://github.com/LG-AI-EXAONE)
 - [x] [OpenAI](https://openai.com/api)
 - [ ] [Upstage](https://console.upstage.ai/docs/getting-started)
 
@@ -58,15 +60,70 @@ Open Chat Playground (OCP) is a web UI that is able to connect virtually any LLM
 
 ### Run on local machine
 
+- [Use Azure AI Foundry](./docs/azure-ai-foundry.md#run-on-local-machine)
 - [Use GitHub Models](./docs/github-models.md#run-on-local-machine)
+- [Use Hugging Face](./docs/hugging-face.md#run-on-local-machine)
+- [Use LG](./docs/lg.md#run-on-local-machine)
+- [Use OpenAI](./docs/openai.md#run-on-local-machine)
 
 ### Run in local container
 
+- [Use Azure AI Foundry](./docs/azure-ai-foundry.md#run-in-local-container)
 - [Use GitHub Models](./docs/github-models.md#run-in-local-container)
+- [Use Hugging Face](./docs/hugging-face.md#run-in-local-container)
+- [Use LG](./docs/lg.md#run-in-local-container)
+- [Use OpenAI](./docs/openai.md#run-in-local-container)
 
 ### Run on Azure
 
+- [Use Azure AI Foundry](./docs/azure-ai-foundry.md#run-on-azure)
 - [Use GitHub Models](./docs/github-models.md#run-on-azure)
+- [Use Hugging Face](./docs/hugging-face.md#run-on-azure)
+- [Use LG](./docs/lg.md#run-on-azure)
+- [Use OpenAI](./docs/openai.md#run-on-azure)
+
+### Run as API
+
+1. Run the app - either locally or remotely.
+1. Navigate to `{{APP_URL}}/openapi.json` to see the OpenAPI doc. **NOTE**: the OpenAPI doc is only able to see on a local machine, not on a remote instance.
+1. Send a `POST` request to `{{APP_URL}}/api/chat/responses` with a request payload like:
+
+    ```json
+    [
+      {
+        "role": "system",
+        "message": "You're a friendly assistant"
+      },
+      {
+        "role": "user",
+        "message": "Why is the sky blue?"
+      }
+    ]
+    ```
+
+1. Confirm the response payload like:
+
+    ```jsonc
+    [
+      {
+        "role": "assistant",
+        "message": "Because "
+      },
+      {
+        "role": "assistant",
+        "message": "It's "
+      },
+      {
+        "role": "assistant",
+        "message": "... "
+      },
+      ...
+      {
+        "role": "assistant",
+        "message": "... "
+      }
+    ]
+    ```
 
 ### Run tests
 
