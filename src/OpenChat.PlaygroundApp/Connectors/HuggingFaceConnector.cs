@@ -38,7 +38,7 @@ public class HuggingFaceConnector(AppSettings settings) : LanguageModelConnector
 
         // Accepts formats like:
         // - hf.co/{org}/{model}gguf e.g hf.co/Qwen/Qwen3-0.6B-GGUF hf.co/Qwen/Qwen3-0.6B_GGUF
-        if (IsValidModel(settings.Model) == false)
+        if (IsValidModel(settings.Model!.Trim()) == false)
         {
             throw new InvalidOperationException("Invalid configuration: HuggingFace:Model format. Expected 'hf.co/{org}/{model}gguf' format.");
         }

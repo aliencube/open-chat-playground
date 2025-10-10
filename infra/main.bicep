@@ -13,6 +13,10 @@ param connectorType string = ''
 
 // Amazon Bedrock
 // Azure AI Foundry
+param azureAIFoundryEndpoint string = ''
+@secure()
+param azureAIFoundryApiKey string = ''
+param azureAIFoundryDeploymentName string = ''
 // GitHub Models
 param githubModelsModel string = ''
 @secure()
@@ -74,6 +78,9 @@ module resources 'resources.bicep' = {
     principalId: principalId
     principalType: principalType
     connectorType: connectorType
+    azureAIFoundryEndpoint: azureAIFoundryEndpoint
+    azureAIFoundryApiKey: azureAIFoundryApiKey
+    azureAIFoundryDeploymentName: azureAIFoundryDeploymentName
     githubModelsModel: githubModelsModel
     githubModelsToken: githubModelsToken
     huggingFaceModel: huggingFaceModel
