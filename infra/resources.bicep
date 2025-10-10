@@ -26,6 +26,10 @@ param openAIModel string = ''
 @secure()
 param openAIApiKey string = ''
 // Upstage
+param upstageModel string = ''
+param upstageBaseUrl string = ''
+@secure()
+param upstageApiKey string = ''
 
 param openchatPlaygroundappExists bool
 
@@ -146,6 +150,22 @@ var envOpenAI = connectorType == 'OpenAI' ? concat(openAIModel != '' ? [
   }
 ] : []) : []
 // Upstage
+var envUpstage = connectorType == 'Upstage' ? concat(upstageModel != '' ? [
+  {
+    name: 'Upstage__Model'
+    value: upstageModel
+  }
+] : [], upstageBaseUrl != '' ? [
+  {
+    name: 'Upstage__BaseUrl'
+    value: upstageBaseUrl
+  }
+] : [], upstageApiKey != '' ? [
+  {
+    name: 'Upstage__ApiKey'
+    secretRef: 'upstage-api-key'
+  }
+] : []) : []
 
 module openchatPlaygroundapp 'br/public:avm/res/app/container-app:0.18.1' = {
   name: 'openchatPlaygroundapp'
@@ -165,6 +185,11 @@ module openchatPlaygroundapp 'br/public:avm/res/app/container-app:0.18.1' = {
       {
         name: 'openai-api-key'
         value: openAIApiKey
+      }
+    ] : [], upstageApiKey != '' ? [
+      {
+        name: 'upstage-api-key'
+        value: upstageApiKey
       }
     ] : [])
     containers: [
@@ -191,7 +216,8 @@ module openchatPlaygroundapp 'br/public:avm/res/app/container-app:0.18.1' = {
           envConnectorType,
           envGitHubModels,
           envHuggingFace,
-          envOpenAI)
+          envOpenAI,
+          envUpstage)
       }
     ]
     managedIdentities:{

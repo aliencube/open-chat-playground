@@ -26,6 +26,15 @@
     "openAIApiKey": {
       "value": "${OPENAI_API_KEY}"
     },
+    "upstageModel": {
+      "value": "${UPSTAGE_MODEL}"
+    },
+    "upstageBaseUrl": {
+      "value": "${UPSTAGE_BASE_URL}"
+    },
+    "upstageApiKey": {
+      "value": "${UPSTAGE_API_KEY}"
+    },
     "openchatPlaygroundappExists": {
       "value": "${SERVICE_OPENCHAT_PLAYGROUNDAPP_RESOURCE_EXISTS=false}"
     },

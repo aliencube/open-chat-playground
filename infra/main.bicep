@@ -32,6 +32,10 @@ param openAIModel string = ''
 @secure()
 param openAIApiKey string = ''
 // Upstage
+param upstageModel string = ''
+param upstageBaseUrl string = ''
+@secure()
+param upstageApiKey string = ''
 
 param openchatPlaygroundappExists bool
 
@@ -71,6 +75,9 @@ module resources 'resources.bicep' = {
     huggingFaceModel: huggingFaceModel
     openAIModel: openAIModel
     openAIApiKey: openAIApiKey
+    upstageModel: upstageModel
+    upstageBaseUrl: upstageBaseUrl
+    upstageApiKey: upstageApiKey
     openchatPlaygroundappExists: openchatPlaygroundappExists
   }
 }
