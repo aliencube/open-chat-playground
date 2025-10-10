@@ -9,7 +9,7 @@ namespace OpenChat.PlaygroundApp.Tests.Options;
 public class DockerModelRunnerArgumentOptionsTests
 {
     private const string BaseUrl = "http://test-docker-model-runner";
-    private const string Model = "test-model-name";
+    private const string Model = "docker-model-name";
     private const string BaseUrlConfigKey = "DockerModelRunner:BaseUrl";
     private const string ModelConfigKey = "DockerModelRunner:Model";
 
@@ -42,8 +42,7 @@ public class DockerModelRunnerArgumentOptionsTests
                        .Build();
         }
 
-        // Environment variables (medium pri
-        // ority)
+        // Environment variables (medium priority)
         var envDict = new Dictionary<string, string?>();
         if (string.IsNullOrWhiteSpace(envBaseUrl) == false)
         {
@@ -79,7 +78,7 @@ public class DockerModelRunnerArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://cli-docker-model-runner:9999")]
+    [InlineData("http://cli-docker-model-runner")]
     public void Given_CLI_BaseUrl_When_Parse_Invoked_Then_It_Should_Use_CLI_BaseUrl(string cliBaseUrl)
     {
         // Arrange
@@ -121,7 +120,7 @@ public class DockerModelRunnerArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://cli-docker-model-runner:8080", "cli-model")]
+    [InlineData("http://cli-docker-model-runner", "cli-model")]
     public void Given_All_CLI_Arguments_When_Parse_Invoked_Then_It_Should_Use_CLI(string cliBaseUrl, string cliModel)
     {
         // Arrange
@@ -200,7 +199,7 @@ public class DockerModelRunnerArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://config-docker-model-runner:7777", "config-model")]
+    [InlineData("http://config-docker-model-runner", "config-model")]
     public void Given_ConfigValues_And_No_CLI_When_Parse_Invoked_Then_It_Should_Use_Config(string configBaseUrl, string configModel)
     {
         // Arrange
@@ -218,8 +217,8 @@ public class DockerModelRunnerArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://config-docker-model-runner:1234", "config-model",
-                "http://cli-docker-model-runner:5678", "cli-model")]
+    [InlineData("http://config-docker-model-runner", "config-model",
+                "http://cli-docker-model-runner", "cli-model")]
     public void Given_ConfigValues_And_CLI_When_Parse_Invoked_Then_It_Should_Use_CLI(
         string configBaseUrl, string configModel,
         string cliBaseUrl, string cliModel)
@@ -243,7 +242,7 @@ public class DockerModelRunnerArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://env-docker-model-runner:6666", "env-model")]
+    [InlineData("http://env-docker-model-runner", "env-model")]
     public void Given_EnvironmentVariables_And_No_Config_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(
         string envBaseUrl, string envModel)
     {
@@ -265,8 +264,8 @@ public class DockerModelRunnerArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://config-docker-model-runner:1234", "config-model",
-                "http://env-docker-model-runner:5678", "env-model")]
+    [InlineData("http://config-docker-model-runner", "config-model",
+                "http://env-docker-model-runner", "env-model")]
     public void Given_ConfigValues_And_EnvironmentVariables_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(
         string configBaseUrl, string configModel,
         string envBaseUrl, string envModel)
@@ -288,9 +287,9 @@ public class DockerModelRunnerArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://config-docker-model-runner:1234", "config-model",
-                "http://env-docker-model-runner:5678", "env-model",
-                "http://cli-docker-model-runner:9090", "cli-model")]
+    [InlineData("http://config-docker-model-runner", "config-model",
+                "http://env-docker-model-runner", "env-model",
+                "http://cli-docker-model-runner", "cli-model")]
     public void Given_ConfigValues_And_EnvironmentVariables_And_CLI_When_Parse_Invoked_Then_It_Should_Use_CLI(
         string configBaseUrl, string configModel,
         string envBaseUrl, string envModel,
@@ -317,8 +316,8 @@ public class DockerModelRunnerArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://config-docker-model-runner:1234", "config-model",
-                "http://env-docker-model-runner:5678", null)]
+    [InlineData("http://config-docker-model-runner", "config-model",
+                "http://env-docker-model-runner", null)]
     public void Given_Partial_EnvironmentVariables_When_Parse_Invoked_Then_It_Should_Mix_Config_And_Environment(
         string configBaseUrl, string configModel,
         string envBaseUrl, string? envModel)
@@ -341,9 +340,9 @@ public class DockerModelRunnerArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://config-docker-model-runner:1234", "config-model",
+    [InlineData("http://config-docker-model-runner", "config-model",
                 null, "env-model",
-                "http://cli-docker-model-runner:9090", null)]
+                "http://cli-docker-model-runner", null)]
     public void Given_Mixed_Priority_Sources_When_Parse_Invoked_Then_It_Should_Respect_Priority_Order(
         string configBaseUrl, string configModel,
         string? envBaseUrl, string envModel,
@@ -370,7 +369,7 @@ public class DockerModelRunnerArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://cli-docker-model-runner:8080", "cli-model")]
+    [InlineData("http://cli-docker-model-runner", "cli-model")]
     public void Given_DockerModelRunner_With_KnownArguments_When_Parse_Invoked_Then_Help_Should_Be_False(
         string cliBaseUrl, string cliModel)
     {
@@ -408,7 +407,7 @@ public class DockerModelRunnerArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://cli-docker-model-runner:8080", "--unknown-flag")]
+    [InlineData("http://cli-docker-model-runner", "--unknown-flag")]
     public void Given_DockerModelRunner_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_Should_Be_True(
         string cliBaseUrl, string argument)
     {
@@ -430,7 +429,7 @@ public class DockerModelRunnerArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://env-docker-model-runner:6666", "env-model")]
+    [InlineData("http://env-docker-model-runner", "env-model")]
     public void Given_EnvironmentVariables_Only_When_Parse_Invoked_Then_Help_Should_Be_False(
         string envBaseUrl, string envModel)
     {
@@ -450,7 +449,7 @@ public class DockerModelRunnerArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://cli-docker-model-runner:9090", "cli-model")]
+    [InlineData("http://cli-docker-model-runner", "cli-model")]
     public void Given_CLI_Only_When_Parse_Invoked_Then_Help_Should_Be_False(string cliBaseUrl, string cliModel)
     {
         // Arrange
@@ -468,3 +467,4 @@ public class DockerModelRunnerArgumentOptionsTests
         settings.Help.ShouldBeFalse();
     }
 }
+
