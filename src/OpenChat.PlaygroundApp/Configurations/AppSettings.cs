@@ -13,6 +13,11 @@ public partial class AppSettings
     public ConnectorType ConnectorType { get; set; }
 
     /// <summary>
+    /// Gets or sets the model name to use.
+    /// </summary>
+    public string? Model { get; set; }
+
+    /// <summary>
     /// Gets or sets the value indicating whether to display help information or not.
     /// </summary>
     public bool Help { get; set; }
