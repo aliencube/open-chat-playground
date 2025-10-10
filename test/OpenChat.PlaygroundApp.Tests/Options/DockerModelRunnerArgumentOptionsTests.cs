@@ -2,58 +2,70 @@ using Microsoft.Extensions.Configuration;
 
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Connectors;
-using OpenChat.PlaygroundApp.Options;
+using OpenChat.PlaygroundApp.Constants;
 
 namespace OpenChat.PlaygroundApp.Tests.Options;
 
 public class DockerModelRunnerArgumentOptionsTests
 {
     private const string BaseUrl = "http://test-docker-model-runner";
-    private const string Model = "test-model";
+    private const string Model = "test-model-name";
+    private const string BaseUrlConfigKey = "DockerModelRunner:BaseUrl";
+    private const string ModelConfigKey = "DockerModelRunner:Model";
 
     private static IConfiguration BuildConfigWithDockerModelRunner(
         string? configBaseUrl = BaseUrl,
-        string? configModel = Model)
+        string? configModel = Model,
+        string? envBaseUrl = null,
+        string? envModel = null
+    )
     {
+        // Base configuration values (lowest priority)
         var configDict = new Dictionary<string, string?>
         {
-            ["ConnectorType"] = ConnectorType.DockerModelRunner.ToString()
+            [AppSettingConstants.ConnectorType] = ConnectorType.DockerModelRunner.ToString(),
         };
 
         if (string.IsNullOrWhiteSpace(configBaseUrl) == false)
         {
-            configDict["DockerModelRunner:BaseUrl"] = configBaseUrl;
+            configDict[BaseUrlConfigKey] = configBaseUrl;
         }
         if (string.IsNullOrWhiteSpace(configModel) == false)
         {
-            configDict["DockerModelRunner:Model"] = configModel;
+            configDict[ModelConfigKey] = configModel;
+        }
+
+        if (string.IsNullOrWhiteSpace(envBaseUrl) == true && string.IsNullOrWhiteSpace(envModel) == true)
+        {
+            return new ConfigurationBuilder()
+                       .AddInMemoryCollection(configDict!)
+                       .Build();
+        }
+
+        // Environment variables (medium pri
+        // ority)
+        var envDict = new Dictionary<string, string?>();
+        if (string.IsNullOrWhiteSpace(envBaseUrl) == false)
+        {
+            envDict[BaseUrlConfigKey] = envBaseUrl;
+        }
+        if (string.IsNullOrWhiteSpace(envModel) == false)
+        {
+            envDict[ModelConfigKey] = envModel;
         }
 
         return new ConfigurationBuilder()
-                   .AddInMemoryCollection(configDict!)
+                   .AddInMemoryCollection(configDict!)  // Base configuration (lowest priority)
+                   .AddInMemoryCollection(envDict!)     // Environment variables (medium priority)
                    .Build();
     }
 
     [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData(typeof(ArgumentOptions), typeof(DockerModelRunnerArgumentOptions), true)]
-    [InlineData(typeof(DockerModelRunnerArgumentOptions), typeof(ArgumentOptions), false)]
-    public void Given_BaseType_Then_It_Should_Be_AssignableFrom_DerivedType(Type baseType, Type derivedType, bool expected)
-    {
-        // Act
-        var result = baseType.IsAssignableFrom(derivedType);
-
-        // Assert
-        result.ShouldBe(expected);
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData("http://localhost:12434", "ai/smollm2")]
-    public void Given_Nothing_When_Parse_Invoked_Then_It_Should_Set_Config(string expectedBaseUrl, string expectedModel)
+    [Fact]
+    public void Given_Nothing_When_Parse_Invoked_Then_It_Should_Set_Config()
     {
         // Arrange
-        var config = BuildConfigWithDockerModelRunner(expectedBaseUrl, expectedModel);
+        var config = BuildConfigWithDockerModelRunner();
         var args = Array.Empty<string>();
 
         // Act
@@ -61,18 +73,21 @@ public class DockerModelRunnerArgumentOptionsTests
 
         // Assert
         settings.DockerModelRunner.ShouldNotBeNull();
-        settings.DockerModelRunner.BaseUrl.ShouldBe(expectedBaseUrl);
-        settings.DockerModelRunner.Model.ShouldBe(expectedModel);
+        settings.DockerModelRunner.BaseUrl.ShouldBe(BaseUrl);
+        settings.DockerModelRunner.Model.ShouldBe(Model);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://localhost:9999")]
+    [InlineData("http://cli-docker-model-runner:9999")]
     public void Given_CLI_BaseUrl_When_Parse_Invoked_Then_It_Should_Use_CLI_BaseUrl(string cliBaseUrl)
     {
         // Arrange
         var config = BuildConfigWithDockerModelRunner();
-        var args = new[] { "--base-url", cliBaseUrl };
+        var args = new[]
+        {
+            ArgumentOptionConstants.DockerModelRunner.BaseUrl, cliBaseUrl
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -85,12 +100,15 @@ public class DockerModelRunnerArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("ai/phi-4")]
+    [InlineData("cli-model")]
     public void Given_CLI_Model_When_Parse_Invoked_Then_It_Should_Use_CLI_Model(string cliModel)
     {
         // Arrange
         var config = BuildConfigWithDockerModelRunner();
-        var args = new[] { "--model", cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.DockerModelRunner.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -103,12 +121,16 @@ public class DockerModelRunnerArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://192.168.1.100:8080", "ai/custom-model")]
+    [InlineData("http://cli-docker-model-runner:8080", "cli-model")]
     public void Given_All_CLI_Arguments_When_Parse_Invoked_Then_It_Should_Use_CLI(string cliBaseUrl, string cliModel)
     {
         // Arrange
         var config = BuildConfigWithDockerModelRunner();
-        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.DockerModelRunner.BaseUrl, cliBaseUrl,
+            ArgumentOptionConstants.DockerModelRunner.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -121,8 +143,8 @@ public class DockerModelRunnerArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("--base-url")]
-    [InlineData("--model")]
+    [InlineData(ArgumentOptionConstants.DockerModelRunner.BaseUrl)]
+    [InlineData(ArgumentOptionConstants.DockerModelRunner.Model)]
     public void Given_CLI_ArgumentWithoutValue_When_Parse_Invoked_Then_It_Should_Use_Config(string argument)
     {
         // Arrange
@@ -155,6 +177,7 @@ public class DockerModelRunnerArgumentOptionsTests
         settings.DockerModelRunner.Model.ShouldBe(Model);
     }
 
+
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("--strange-model-name")]
@@ -162,7 +185,10 @@ public class DockerModelRunnerArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithDockerModelRunner();
-        var args = new[] { "--model", model };
+        var args = new[]
+        {
+            ArgumentOptionConstants.DockerModelRunner.Model, model
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -174,7 +200,7 @@ public class DockerModelRunnerArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://config-host:7777", "config-model")]
+    [InlineData("http://config-docker-model-runner:7777", "config-model")]
     public void Given_ConfigValues_And_No_CLI_When_Parse_Invoked_Then_It_Should_Use_Config(string configBaseUrl, string configModel)
     {
         // Arrange
@@ -192,14 +218,19 @@ public class DockerModelRunnerArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://config:1234", "config-model", "http://cli:5678", "cli-model")]
+    [InlineData("http://config-docker-model-runner:1234", "config-model",
+                "http://cli-docker-model-runner:5678", "cli-model")]
     public void Given_ConfigValues_And_CLI_When_Parse_Invoked_Then_It_Should_Use_CLI(
         string configBaseUrl, string configModel,
         string cliBaseUrl, string cliModel)
     {
         // Arrange
         var config = BuildConfigWithDockerModelRunner(configBaseUrl, configModel);
-        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.DockerModelRunner.BaseUrl, cliBaseUrl,
+            ArgumentOptionConstants.DockerModelRunner.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -212,12 +243,144 @@ public class DockerModelRunnerArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://localhost:8080", "ai/test-model")]
-    public void Given_DockerModelRunner_With_KnownArguments_When_Parse_Invoked_Then_Help_ShouldBe_False(string cliBaseUrl, string cliModel)
+    [InlineData("http://env-docker-model-runner:6666", "env-model")]
+    public void Given_EnvironmentVariables_And_No_Config_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(
+        string envBaseUrl, string envModel)
     {
         // Arrange
-        var config = BuildConfigWithDockerModelRunner(BaseUrl, Model);
-        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
+        var config = BuildConfigWithDockerModelRunner(
+            configBaseUrl: null, configModel: null,
+            envBaseUrl: envBaseUrl, envModel: envModel
+        );
+        var args = Array.Empty<string>();
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.DockerModelRunner.ShouldNotBeNull();
+        settings.DockerModelRunner.BaseUrl.ShouldBe(envBaseUrl);
+        settings.DockerModelRunner.Model.ShouldBe(envModel);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("http://config-docker-model-runner:1234", "config-model",
+                "http://env-docker-model-runner:5678", "env-model")]
+    public void Given_ConfigValues_And_EnvironmentVariables_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(
+        string configBaseUrl, string configModel,
+        string envBaseUrl, string envModel)
+    {
+        // Arrange
+        var config = BuildConfigWithDockerModelRunner(
+            configBaseUrl, configModel,
+            envBaseUrl, envModel);
+        var args = Array.Empty<string>();
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.DockerModelRunner.ShouldNotBeNull();
+        settings.DockerModelRunner.BaseUrl.ShouldBe(envBaseUrl);
+        settings.DockerModelRunner.Model.ShouldBe(envModel);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("http://config-docker-model-runner:1234", "config-model",
+                "http://env-docker-model-runner:5678", "env-model",
+                "http://cli-docker-model-runner:9090", "cli-model")]
+    public void Given_ConfigValues_And_EnvironmentVariables_And_CLI_When_Parse_Invoked_Then_It_Should_Use_CLI(
+        string configBaseUrl, string configModel,
+        string envBaseUrl, string envModel,
+        string cliBaseUrl, string cliModel)
+    {
+        // Arrange
+        var config = BuildConfigWithDockerModelRunner(
+            configBaseUrl, configModel,
+            envBaseUrl, envModel);
+        var args = new[]
+        {
+            ArgumentOptionConstants.DockerModelRunner.BaseUrl, cliBaseUrl,
+            ArgumentOptionConstants.DockerModelRunner.Model, cliModel
+        };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.DockerModelRunner.ShouldNotBeNull();
+        settings.DockerModelRunner.BaseUrl.ShouldBe(cliBaseUrl);
+        settings.DockerModelRunner.Model.ShouldBe(cliModel);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("http://config-docker-model-runner:1234", "config-model",
+                "http://env-docker-model-runner:5678", null)]
+    public void Given_Partial_EnvironmentVariables_When_Parse_Invoked_Then_It_Should_Mix_Config_And_Environment(
+        string configBaseUrl, string configModel,
+        string envBaseUrl, string? envModel)
+    {
+        // Arrange
+        var config = BuildConfigWithDockerModelRunner(
+            configBaseUrl, configModel,
+            envBaseUrl, envModel);
+        var args = Array.Empty<string>();
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.DockerModelRunner.ShouldNotBeNull();
+        settings.DockerModelRunner.BaseUrl.ShouldBe(envBaseUrl);  // From environment
+        settings.DockerModelRunner.Model.ShouldBe(configModel);   // From config (no env override)
+    }
+
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("http://config-docker-model-runner:1234", "config-model",
+                null, "env-model",
+                "http://cli-docker-model-runner:9090", null)]
+    public void Given_Mixed_Priority_Sources_When_Parse_Invoked_Then_It_Should_Respect_Priority_Order(
+        string configBaseUrl, string configModel,
+        string? envBaseUrl, string envModel,
+        string cliBaseUrl, string? cliModel)
+    {
+        // Arrange
+        var config = BuildConfigWithDockerModelRunner(
+            configBaseUrl, configModel,
+            envBaseUrl, envModel);
+        var args = new[]
+        {
+            ArgumentOptionConstants.DockerModelRunner.BaseUrl, cliBaseUrl,
+            ArgumentOptionConstants.DockerModelRunner.Model, cliModel
+        };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args!);
+
+        // Assert
+        settings.DockerModelRunner.ShouldNotBeNull();
+        settings.DockerModelRunner.BaseUrl.ShouldBe(cliBaseUrl);  // CLI wins (highest priority)
+        settings.DockerModelRunner.Model.ShouldBe(envModel);      // Env wins over config (medium priority)
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("http://cli-docker-model-runner:8080", "cli-model")]
+    public void Given_DockerModelRunner_With_KnownArguments_When_Parse_Invoked_Then_Help_Should_Be_False(
+        string cliBaseUrl, string cliModel)
+    {
+        // Arrange
+        var config = BuildConfigWithDockerModelRunner();
+        var args = new[]
+        {
+            ArgumentOptionConstants.DockerModelRunner.BaseUrl, cliBaseUrl,
+            ArgumentOptionConstants.DockerModelRunner.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -228,9 +391,9 @@ public class DockerModelRunnerArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("--base-url")]
-    [InlineData("--model")]
-    public void Given_DockerModelRunner_With_KnownArgument_WithoutValue_When_Parse_Invoked_Then_Help_ShouldBe_False(string argument)
+    [InlineData(ArgumentOptionConstants.DockerModelRunner.BaseUrl)]
+    [InlineData(ArgumentOptionConstants.DockerModelRunner.Model)]
+    public void Given_DockerModelRunner_With_KnownArgument_WithoutValue_When_Parse_Invoked_Then_Help_Should_Be_False(string argument)
     {
         // Arrange
         var config = BuildConfigWithDockerModelRunner();
@@ -245,12 +408,17 @@ public class DockerModelRunnerArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://localhost:8080", "--unknown-flag")]
-    public void Given_DockerModelRunner_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_ShouldBe_True(string cliBaseUrl, string argument)
+    [InlineData("http://cli-docker-model-runner:8080", "--unknown-flag")]
+    public void Given_DockerModelRunner_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_Should_Be_True(
+        string cliBaseUrl, string argument)
     {
         // Arrange
         var config = BuildConfigWithDockerModelRunner();
-        var args = new[] { "--base-url", cliBaseUrl, argument };
+        var args = new[]
+        {
+            ArgumentOptionConstants.DockerModelRunner.BaseUrl, cliBaseUrl,
+            argument
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -259,14 +427,18 @@ public class DockerModelRunnerArgumentOptionsTests
         settings.Help.ShouldBeTrue();
     }
 
+
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("http://localhost:9090", "ai/new-model")]
-    public void Given_CLI_Only_When_Parse_Invoked_Then_Help_Should_Be_False(string cliBaseUrl, string cliModel)
+    [InlineData("http://env-docker-model-runner:6666", "env-model")]
+    public void Given_EnvironmentVariables_Only_When_Parse_Invoked_Then_Help_Should_Be_False(
+        string envBaseUrl, string envModel)
     {
         // Arrange
-        var config = BuildConfigWithDockerModelRunner();
-        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
+        var config = BuildConfigWithDockerModelRunner(
+            configBaseUrl: null, configModel: null,
+            envBaseUrl: envBaseUrl, envModel: envModel);
+        var args = Array.Empty<string>();
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -275,19 +447,24 @@ public class DockerModelRunnerArgumentOptionsTests
         settings.Help.ShouldBeFalse();
     }
 
+
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, null, ConnectorType.Unknown, false)]
-    public void Given_DockerModelRunnerArgumentOptions_When_Creating_Instance_Then_Should_Have_Correct_Properties(string? expectedBaseUrl, string? expectedModel, ConnectorType expectedConnectorType, bool expectedHelp)
+    [InlineData("http://cli-docker-model-runner:9090", "cli-model")]
+    public void Given_CLI_Only_When_Parse_Invoked_Then_Help_Should_Be_False(string cliBaseUrl, string cliModel)
     {
+        // Arrange
+        var config = BuildConfigWithDockerModelRunner();
+        var args = new[]
+        {
+            ArgumentOptionConstants.DockerModelRunner.BaseUrl, cliBaseUrl,
+            ArgumentOptionConstants.DockerModelRunner.Model, cliModel
+        };
+
         // Act
-        var options = new DockerModelRunnerArgumentOptions();
+        var settings = ArgumentOptions.Parse(config, args);
 
         // Assert
-        options.ShouldNotBeNull();
-        options.BaseUrl.ShouldBe(expectedBaseUrl);
-        options.Model.ShouldBe(expectedModel);
-        options.ConnectorType.ShouldBe(expectedConnectorType);
-        options.Help.ShouldBe(expectedHelp);
+        settings.Help.ShouldBeFalse();
     }
 }
