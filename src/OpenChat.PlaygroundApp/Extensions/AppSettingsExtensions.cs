@@ -29,9 +29,7 @@ public static class AppSettingsExtensions
     /// <param name="configuration">The <see cref="IConfiguration"/> instance.</param>
     /// <param name="settings">The <see cref="AppSettings"/> instance.</param>
     private static void ConfigureModelName(IConfiguration configuration, AppSettings settings)
-    {
-        var section = configuration.GetSection(settings.ConnectorType.ToString());
-        
+    { 
         string? modelFromSettings = settings.ConnectorType switch
         {
             ConnectorType.AzureAIFoundry => settings.AzureAIFoundry?.DeploymentName,
@@ -43,6 +41,8 @@ public static class AppSettingsExtensions
             ConnectorType.LG => settings.LG?.Model,
             _ => throw new ArgumentException($"Unsupported ConnectorType: {settings.ConnectorType}")
         };
+
+        var section = configuration.GetSection(settings.ConnectorType.ToString());
         
         settings.Model = modelFromSettings ?? settings.ConnectorType switch
         {
