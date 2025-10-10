@@ -41,7 +41,7 @@ public static class AppSettingsExtensions
             ConnectorType.HuggingFace => settings.HuggingFace?.Model,
             ConnectorType.Anthropic => settings.Anthropic?.Model,
             ConnectorType.LG => settings.LG?.Model,
-            _ => null
+            _ => throw new ArgumentException($"Unsupported ConnectorType: {settings.ConnectorType}")
         };
         
         settings.Model = modelFromSettings ?? settings.ConnectorType switch
