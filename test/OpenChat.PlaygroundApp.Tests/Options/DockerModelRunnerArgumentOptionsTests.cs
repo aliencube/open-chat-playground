@@ -8,8 +8,8 @@ namespace OpenChat.PlaygroundApp.Tests.Options;
 
 public class DockerModelRunnerArgumentOptionsTests
 {
-    private const string BaseUrl = "http://localhost:12434";
-    private const string Model = "ai/smollm2";
+    private const string BaseUrl = "http://test-docker-model-runner";
+    private const string Model = "test-model";
 
     private static IConfiguration BuildConfigWithDockerModelRunner(
         string? configBaseUrl = BaseUrl,
