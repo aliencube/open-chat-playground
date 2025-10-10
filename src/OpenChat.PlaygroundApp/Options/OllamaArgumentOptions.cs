@@ -1,5 +1,6 @@
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Configurations;
+using OpenChat.PlaygroundApp.Constants;
 
 namespace OpenChat.PlaygroundApp.Options;
 
@@ -33,13 +34,13 @@ public class OllamaArgumentOptions : ArgumentOptions
         {
             switch (args[i])
             {
-                case "--base-url":
+                case ArgumentOptionConstants.Ollama.BaseUrl:
                     if (i + 1 < args.Length)
                     {
                         this.BaseUrl = args[++i];
                     }
                     break;
-                case "--model":
+                case ArgumentOptionConstants.Ollama.Model:
                     if (i + 1 < args.Length)
                     {
                         this.Model = args[++i];

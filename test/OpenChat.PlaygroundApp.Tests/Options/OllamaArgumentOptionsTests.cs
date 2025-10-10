@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Connectors;
+using OpenChat.PlaygroundApp.Constants;
 using OpenChat.PlaygroundApp.Options;
 
 namespace OpenChat.PlaygroundApp.Tests.Options;
@@ -10,6 +11,8 @@ public class OllamaArgumentOptionsTests
 {
     private const string BaseUrl = "http://test-ollama";
     private const string Model = "test-model";
+    private const string BaseUrlConfigKey = "Ollama:BaseUrl";
+    private const string ModelConfigKey = "Ollama:Model";
 
     private static IConfiguration BuildConfigWithOllama(
         string? configBaseUrl = BaseUrl,
@@ -21,16 +24,16 @@ public class OllamaArgumentOptionsTests
         // Base configuration values (lowest priority)
         var configDict = new Dictionary<string, string?>
         {
-            ["ConnectorType"] = ConnectorType.Ollama.ToString(),
+            [AppSettingConstants.ConnectorType] = ConnectorType.Ollama.ToString(),
         };
 
         if (string.IsNullOrWhiteSpace(configBaseUrl) == false)
         {
-            configDict["Ollama:BaseUrl"] = configBaseUrl;
+            configDict[BaseUrlConfigKey] = configBaseUrl;
         }
         if (string.IsNullOrWhiteSpace(configModel) == false)
         {
-            configDict["Ollama:Model"] = configModel;
+            configDict[ModelConfigKey] = configModel;
         }
         if (string.IsNullOrWhiteSpace(envBaseUrl) == true &&
             string.IsNullOrWhiteSpace(envModel) == true)
@@ -44,11 +47,11 @@ public class OllamaArgumentOptionsTests
         var envDict = new Dictionary<string, string?>();
         if (string.IsNullOrWhiteSpace(envBaseUrl) == false)
         {
-            envDict["Ollama:BaseUrl"] = envBaseUrl;
+            envDict[BaseUrlConfigKey] = envBaseUrl;
         }
         if (string.IsNullOrWhiteSpace(envModel) == false)
         {
-            envDict["Ollama:Model"] = envModel;
+            envDict[ModelConfigKey] = envModel;
         }
 
         return new ConfigurationBuilder()
@@ -94,7 +97,10 @@ public class OllamaArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithOllama();
-        var args = new[] { "--base-url", cliBaseUrl };
+        var args = new[]
+        {
+            ArgumentOptionConstants.Ollama.BaseUrl, cliBaseUrl
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -112,7 +118,10 @@ public class OllamaArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithOllama();
-        var args = new[] { "--model", cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.Ollama.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -130,7 +139,11 @@ public class OllamaArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithOllama();
-        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.Ollama.BaseUrl, cliBaseUrl,
+            ArgumentOptionConstants.Ollama.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -143,8 +156,8 @@ public class OllamaArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("--base-url")]
-    [InlineData("--model")]
+    [InlineData(ArgumentOptionConstants.Ollama.BaseUrl)]
+    [InlineData(ArgumentOptionConstants.Ollama.Model)]
     public void Given_CLI_ArgumentWithoutValue_When_Parse_Invoked_Then_It_Should_Use_Config(string argument)
     {
         // Arrange
@@ -184,7 +197,10 @@ public class OllamaArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithOllama();
-        var args = new[] { "--model", model };
+        var args = new[]
+        {
+            ArgumentOptionConstants.Ollama.Model, model
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -222,7 +238,11 @@ public class OllamaArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithOllama(configBaseUrl, configModel);
-        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.Ollama.BaseUrl, cliBaseUrl,
+            ArgumentOptionConstants.Ollama.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -240,7 +260,11 @@ public class OllamaArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithOllama();
-        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.Ollama.BaseUrl, cliBaseUrl,
+            ArgumentOptionConstants.Ollama.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -251,8 +275,8 @@ public class OllamaArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("--base-url")]
-    [InlineData("--model")]
+    [InlineData(ArgumentOptionConstants.Ollama.BaseUrl)]
+    [InlineData(ArgumentOptionConstants.Ollama.Model)]
     public void Given_Ollama_With_KnownArgument_WithoutValue_When_Parse_Invoked_Then_Help_Should_Be_False(string argument)
     {
         // Arrange
@@ -269,11 +293,16 @@ public class OllamaArgumentOptionsTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("http://cli-ollama", "--unknown-flag")]
-    public void Given_Ollama_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_Should_Be_True(string cliBaseUrl, string argument)
+    public void Given_Ollama_With_Known_And_Unknown_Argument_When_Parse_Invoked_Then_Help_Should_Be_True(
+        string cliBaseUrl, string argument)
     {
         // Arrange
         var config = BuildConfigWithOllama();
-        var args = new[] { "--base-url", cliBaseUrl, argument };
+        var args = new[]
+        {
+            ArgumentOptionConstants.Ollama.BaseUrl, cliBaseUrl,
+            argument
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -289,7 +318,11 @@ public class OllamaArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithOllama();
-        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.Ollama.BaseUrl, cliBaseUrl,
+            ArgumentOptionConstants.Ollama.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);
@@ -301,7 +334,8 @@ public class OllamaArgumentOptionsTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("http://env-ollama", "env-model")]
-    public void Given_EnvironmentVariables_And_No_Config_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(string envBaseUrl, string envModel)
+    public void Given_EnvironmentVariables_And_No_Config_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(
+        string envBaseUrl, string envModel)
     {
         // Arrange
         var config = BuildConfigWithOllama(
@@ -348,7 +382,11 @@ public class OllamaArgumentOptionsTests
     {
         // Arrange
         var config = BuildConfigWithOllama(configBaseUrl, configModel, envBaseUrl, envModel);
-        var args = new[] { "--base-url", cliBaseUrl, "--model", cliModel };
+        var args = new[]
+        {
+            ArgumentOptionConstants.Ollama.BaseUrl, cliBaseUrl,
+            ArgumentOptionConstants.Ollama.Model, cliModel
+        };
 
         // Act
         var settings = ArgumentOptions.Parse(config, args);

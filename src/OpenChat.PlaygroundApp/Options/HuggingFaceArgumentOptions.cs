@@ -1,5 +1,6 @@
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Configurations;
+using OpenChat.PlaygroundApp.Constants;
 
 namespace OpenChat.PlaygroundApp.Options;
 
@@ -33,14 +34,14 @@ public class HuggingFaceArgumentOptions : ArgumentOptions
         {
             switch (args[i])
             {
-                case "--base-url":
+                case ArgumentOptionConstants.HuggingFace.BaseUrl:
                     if (i + 1 < args.Length)
                     {
                         this.BaseUrl = args[++i];
                     }
                     break;
 
-                case "--model":
+                case ArgumentOptionConstants.HuggingFace.Model:
                     if (i + 1 < args.Length)
                     {
                         this.Model = args[++i];

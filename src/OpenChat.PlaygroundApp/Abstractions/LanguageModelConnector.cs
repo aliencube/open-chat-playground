@@ -36,8 +36,10 @@ public abstract class LanguageModelConnector(LanguageModelSettings? settings)
     {
         LanguageModelConnector connector = settings.ConnectorType switch
         {
+            ConnectorType.AzureAIFoundry => new AzureAIFoundryConnector(settings),
             ConnectorType.GitHubModels => new GitHubModelsConnector(settings),
             ConnectorType.HuggingFace => new HuggingFaceConnector(settings),
+            ConnectorType.LG => new LGConnector(settings),
             ConnectorType.OpenAI => new OpenAIConnector(settings),
             ConnectorType.Upstage => new UpstageConnector(settings),
             _ => throw new NotSupportedException($"Connector type '{settings.ConnectorType}' is not supported.")
