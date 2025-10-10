@@ -8,39 +8,33 @@ using OpenChat.PlaygroundApp.Configurations;
 namespace OpenChat.PlaygroundApp.Connectors;
 
 /// <summary>
-/// This represents the connector entity for Hugging Face.
+/// This represents the connector entity for LG AI EXAONE.
 /// </summary>
-/// <param name="settings"><see cref="AppSettings"/> instance.</param>
-public class HuggingFaceConnector(AppSettings settings) : LanguageModelConnector(settings.HuggingFace)
+public class LGConnector(AppSettings settings) : LanguageModelConnector(settings.LG)
 {
     private readonly AppSettings _appSettings = settings ?? throw new ArgumentNullException(nameof(settings));
-
-    private const string HuggingFaceHost = "hf.co";
-    private const string ModelSuffix = "gguf";
 
     /// <inheritdoc/>
     public override bool EnsureLanguageModelSettingsValid()
     {
-        if (this.Settings is not HuggingFaceSettings settings)
+        if (this.Settings is not LGSettings settings)
         {
-            throw new InvalidOperationException("Missing configuration: HuggingFace.");
+            throw new InvalidOperationException("Missing configuration: LG.");
         }
 
         if (string.IsNullOrWhiteSpace(settings.BaseUrl!.Trim()) == true)
         {
-            throw new InvalidOperationException("Missing configuration: HuggingFace:BaseUrl.");
+            throw new InvalidOperationException("Missing configuration: LG:BaseUrl.");
         }
 
         if (string.IsNullOrWhiteSpace(settings.Model!.Trim()) == true)
         {
-            throw new InvalidOperationException("Missing configuration: HuggingFace:Model.");
+            throw new InvalidOperationException("Missing configuration: LG:Model.");
         }
 
-        // Accepts formats like:
-        // - hf.co/{org}/{model}gguf e.g hf.co/Qwen/Qwen3-0.6B-GGUF hf.co/Qwen/Qwen3-0.6B_GGUF
-        if (IsValidModel(settings.Model!.Trim()) == false)
+        if (IsValidModel(settings.Model.Trim()) == false)
         {
-            throw new InvalidOperationException("Invalid configuration: HuggingFace:Model format. Expected 'hf.co/{org}/{model}gguf' format.");
+            throw new InvalidOperationException("Invalid configuration: Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format.");
         }
 
         return true;
@@ -49,7 +43,7 @@ public class HuggingFaceConnector(AppSettings settings) : LanguageModelConnector
     /// <inheritdoc/>
     public override async Task<IChatClient> GetChatClientAsync()
     {
-        var settings = this.Settings as HuggingFaceSettings;
+        var settings = this.Settings as LGSettings;
         var baseUrl = settings!.BaseUrl!;
         var model = settings!.Model!;
 
@@ -74,19 +68,29 @@ public class HuggingFaceConnector(AppSettings settings) : LanguageModelConnector
 
     private static bool IsValidModel(string model)
     {
-        var segments = model.Split([ '/' ], StringSplitOptions.RemoveEmptyEntries);
+        var segments = model.Split(['/'], StringSplitOptions.RemoveEmptyEntries);
 
         if (segments.Length != 3)
         {
             return false;
         }
 
-        if (segments.First().Equals(HuggingFaceHost, StringComparison.InvariantCultureIgnoreCase) == false)
+        if (segments[0].Equals("hf.co", StringComparison.InvariantCultureIgnoreCase) == false)
         {
             return false;
         }
 
-        if (segments.Last().EndsWith(ModelSuffix, StringComparison.InvariantCultureIgnoreCase) == false)
+        if (segments[1].Equals("LGAI-EXAONE", StringComparison.InvariantCultureIgnoreCase) == false)
+        {
+            return false;
+        }
+
+        if (segments[2].StartsWith("EXAONE-", StringComparison.InvariantCultureIgnoreCase) == false)
+        {
+            return false;
+        }
+
+        if (segments[2].EndsWith("-GGUF", StringComparison.InvariantCultureIgnoreCase) == false)
         {
             return false;
         }
