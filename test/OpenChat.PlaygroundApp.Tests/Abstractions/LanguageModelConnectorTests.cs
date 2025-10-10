@@ -58,7 +58,7 @@ public class LanguageModelConnectorTests
     // [InlineData(typeof(AmazonBedrockConnector))]
     // [InlineData(typeof(AzureAIFoundryConnector))]
     [InlineData(typeof(GitHubModelsConnector))]
-    // [InlineData(typeof(GoogleVertexAIConnector))]
+    [InlineData(typeof(GoogleVertexAIConnector))]
     // [InlineData(typeof(DockerModelRunnerConnector))]
     // [InlineData(typeof(FoundryLocalConnector))]
     // [InlineData(typeof(HuggingFaceConnector))]
