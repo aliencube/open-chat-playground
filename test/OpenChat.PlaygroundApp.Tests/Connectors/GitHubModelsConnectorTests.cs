@@ -5,7 +5,11 @@ namespace OpenChat.PlaygroundApp.Tests.Connectors;
 
 public class GitHubModelsConnectorTests
 {
-    private static AppSettings BuildAppSettings(string? endpoint = "https://models.github.ai/inference", string? token = "test-token", string? model = "openai/gpt-4o-mini")
+    private const string Endpoint = "https://models.github.ai/inference";
+    private const string Token = "test-token";
+    private const string Model = "openai/gpt-4o-mini";
+
+    private static AppSettings BuildAppSettings(string? endpoint = Endpoint, string? token = Token, string? model = Model)
     {
         return new AppSettings
         {
@@ -28,10 +32,11 @@ public class GitHubModelsConnectorTests
         var connector = new GitHubModelsConnector(settings);
 
         // Act
-        var ex = Assert.Throws<InvalidOperationException>(() => connector.EnsureLanguageModelSettingsValid());
+        Action action = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
-        ex.Message.ShouldContain("GitHubModels");
+        action.ShouldThrow<InvalidOperationException>()
+              .Message.ShouldContain("GitHubModels");
     }
 
     [Trait("Category", "UnitTest")]
@@ -39,6 +44,7 @@ public class GitHubModelsConnectorTests
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData("", typeof(InvalidOperationException), "GitHubModels:Endpoint")]
     [InlineData("   ", typeof(InvalidOperationException), "GitHubModels:Endpoint")]
+    [InlineData("\t\n\r", typeof(InvalidOperationException), "GitHubModels:Endpoint")]
     public void Given_Invalid_Endpoint_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? endpoint, Type expectedType, string expectedMessage)
     {
         // Arrange
@@ -46,10 +52,11 @@ public class GitHubModelsConnectorTests
         var connector = new GitHubModelsConnector(settings);
 
         // Act
-        var ex = Assert.Throws(expectedType, () => connector.EnsureLanguageModelSettingsValid());
+        Action action = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
-        ex.Message.ShouldContain(expectedMessage);
+        action.ShouldThrow(expectedType)
+              .Message.ShouldContain(expectedMessage);
     }
 
     [Trait("Category", "UnitTest")]
@@ -57,6 +64,7 @@ public class GitHubModelsConnectorTests
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData("", typeof(InvalidOperationException), "GitHubModels:Token")]
     [InlineData("   ", typeof(InvalidOperationException), "GitHubModels:Token")]
+    [InlineData("\t\n\r", typeof(InvalidOperationException), "GitHubModels:Token")]
     public void Given_Invalid_Token_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? token, Type expectedType, string expectedMessage)
     {
         // Arrange
@@ -64,10 +72,11 @@ public class GitHubModelsConnectorTests
         var connector = new GitHubModelsConnector(settings);
 
         // Act
-        var ex = Assert.Throws(expectedType, () => connector.EnsureLanguageModelSettingsValid());
+        Action action = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
-        ex.Message.ShouldContain(expectedMessage);
+        action.ShouldThrow(expectedType)
+              .Message.ShouldContain(expectedMessage);
     }
 
     [Trait("Category", "UnitTest")]
@@ -75,6 +84,7 @@ public class GitHubModelsConnectorTests
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData("", typeof(InvalidOperationException), "GitHubModels:Model")]
     [InlineData("   ", typeof(InvalidOperationException), "GitHubModels:Model")]
+    [InlineData("\t\n\r", typeof(InvalidOperationException), "GitHubModels:Model")]
     public void Given_Invalid_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? model, Type expectedType, string expectedMessage)
     {
         // Arrange
@@ -82,10 +92,11 @@ public class GitHubModelsConnectorTests
         var connector = new GitHubModelsConnector(settings);
 
         // Act
-        var ex = Assert.Throws(expectedType, () => connector.EnsureLanguageModelSettingsValid());
+        Action action = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
-        ex.Message.ShouldContain(expectedMessage);
+        action.ShouldThrow(expectedType)
+              .Message.ShouldContain(expectedMessage);
     }
 
     [Trait("Category", "UnitTest")]
@@ -129,9 +140,10 @@ public class GitHubModelsConnectorTests
         var connector = new GitHubModelsConnector(settings);
 
         // Act
-        var ex = await Assert.ThrowsAsync(expected, connector.GetChatClientAsync);
+        Func<Task> func = connector.GetChatClientAsync;
 
         // Assert
+        var ex = await func.ShouldThrowAsync(expected);
         ex.Message.ShouldContain(message);
     }
 
@@ -146,9 +158,10 @@ public class GitHubModelsConnectorTests
         var connector = new GitHubModelsConnector(settings);
 
         // Act
-        var ex = await Assert.ThrowsAsync(expected, connector.GetChatClientAsync);
+        Func<Task> func = connector.GetChatClientAsync;
 
         // Assert
+        var ex = await func.ShouldThrowAsync(expected);
         ex.Message.ShouldContain(message);
     }
 
@@ -163,9 +176,10 @@ public class GitHubModelsConnectorTests
         var connector = new GitHubModelsConnector(settings);
 
         // Act
-        var ex = await Assert.ThrowsAsync(expected, connector.GetChatClientAsync);
+        Func<Task> func = connector.GetChatClientAsync;
 
         // Assert
+        var ex = await func.ShouldThrowAsync(expected);
         ex.Message.ShouldContain(message);
     }
 }

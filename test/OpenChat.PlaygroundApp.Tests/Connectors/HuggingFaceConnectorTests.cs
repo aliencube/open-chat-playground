@@ -1,4 +1,3 @@
-using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Configurations;
 using OpenChat.PlaygroundApp.Connectors;
 
@@ -23,19 +22,6 @@ public class HuggingFaceConnectorTests
 	}
 
 	[Trait("Category", "UnitTest")]
-	[Theory]
-	[InlineData(typeof(LanguageModelConnector), typeof(HuggingFaceConnector), true)]
-	[InlineData(typeof(HuggingFaceConnector), typeof(LanguageModelConnector), false)]
-	public void Given_BaseType_Then_It_Should_Be_AssignableFrom_DerivedType(Type baseType, Type derivedType, bool expected)
-	{
-		// Act
-		var result = baseType.IsAssignableFrom(derivedType);
-
-		// Assert
-		result.ShouldBe(expected);
-	}
-
-	[Trait("Category", "UnitTest")]
 	[Fact]
 	public void Given_Settings_Is_Null_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
 	{
@@ -44,10 +30,11 @@ public class HuggingFaceConnectorTests
         var connector = new HuggingFaceConnector(settings);
 
 		// Act
-		var ex = Assert.Throws<InvalidOperationException>(() => connector.EnsureLanguageModelSettingsValid());
+		Action action = () => connector.EnsureLanguageModelSettingsValid();
 
 		// Assert
-		ex.Message.ShouldContain("HuggingFace");
+		action.ShouldThrow<InvalidOperationException>()
+			  .Message.ShouldContain("HuggingFace");
 	}
 
 	[Trait("Category", "UnitTest")]
@@ -55,6 +42,7 @@ public class HuggingFaceConnectorTests
 	[InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
 	[InlineData("", typeof(InvalidOperationException), "HuggingFace:BaseUrl")]
 	[InlineData("   ", typeof(InvalidOperationException), "HuggingFace:BaseUrl")]
+	[InlineData("\t\n\r", typeof(InvalidOperationException), "HuggingFace:BaseUrl")]
 	public void Given_Invalid_BaseUrl_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? baseUrl, Type expectedType, string expectedMessage)
 	{
 		// Arrange
@@ -62,10 +50,11 @@ public class HuggingFaceConnectorTests
 		var connector = new HuggingFaceConnector(settings);
 
 		// Act
-		var ex = Assert.Throws(expectedType, () => connector.EnsureLanguageModelSettingsValid());
+		Action action = () => connector.EnsureLanguageModelSettingsValid();
 
 		// Assert
-		ex.Message.ShouldContain(expectedMessage);
+		action.ShouldThrow(expectedType)
+			  .Message.ShouldContain(expectedMessage);
 	}
 
 	[Trait("Category", "UnitTest")]
@@ -73,6 +62,7 @@ public class HuggingFaceConnectorTests
 	[InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
 	[InlineData("", typeof(InvalidOperationException), "HuggingFace:Model")]
 	[InlineData("   ", typeof(InvalidOperationException), "HuggingFace:Model")]
+	[InlineData("\t\n\r", typeof(InvalidOperationException), "HuggingFace:Model")]
 	[InlineData("hf.co/org/model", typeof(InvalidOperationException), "HuggingFace:Model format")]
 	[InlineData("org/model-gguf", typeof(InvalidOperationException), "HuggingFace:Model format")]
 	[InlineData("hf.co//model-gguf", typeof(InvalidOperationException), "HuggingFace:Model format")]
@@ -83,10 +73,11 @@ public class HuggingFaceConnectorTests
         var connector = new HuggingFaceConnector(settings);
 
 		// Act
-		var ex = Assert.Throws(expectedType, () => connector.EnsureLanguageModelSettingsValid());
+		Action action = () => connector.EnsureLanguageModelSettingsValid();
 
 		// Assert
-		ex.Message.ShouldContain(expectedMessage);
+		action.ShouldThrow(expectedType)
+			  .Message.ShouldContain(expectedMessage);
 	}
 
 	[Trait("Category", "UnitTest")]
@@ -131,9 +122,10 @@ public class HuggingFaceConnectorTests
         var connector = new HuggingFaceConnector(settings);
 
 		// Act
-		var ex = await Assert.ThrowsAsync(expected, connector.GetChatClientAsync);
+		Func<Task> func = connector.GetChatClientAsync;
 
 		// Assert
+		var ex = await func.ShouldThrowAsync(expected);
 		ex.Message.ShouldContain(message);
 	}
 }

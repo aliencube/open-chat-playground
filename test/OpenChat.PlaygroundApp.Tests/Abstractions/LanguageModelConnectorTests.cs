@@ -39,8 +39,44 @@ public class LanguageModelConnectorTests
     }
 
     [Trait("Category", "UnitTest")]
+    [Fact]
+    public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw()
+    {
+        // Arrange
+        var settings = BuildAppSettings(endpoint: null);
+
+        // Act
+        Func<Task> func = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
+
+        // Assert
+        func.ShouldThrow<NullReferenceException>();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Fact]
+    public void Given_Null_Settings_When_CreateChatClient_Invoked_Then_It_Should_Throw()
+    {
+        // Arrange
+        AppSettings settings = null!;
+
+        // Act
+        Func<Task> func = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
+
+        // Assert
+        func.ShouldThrow<NullReferenceException>();
+    }
+
+    [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(ConnectorType.Unknown)]
+    [InlineData(ConnectorType.AmazonBedrock)]
+    [InlineData(ConnectorType.GoogleVertexAI)]
+    [InlineData(ConnectorType.DockerModelRunner)]
+    [InlineData(ConnectorType.FoundryLocal)]
+    [InlineData(ConnectorType.Ollama)]
+    [InlineData(ConnectorType.Anthropic)]
+    [InlineData(ConnectorType.Naver)]
+    [InlineData(ConnectorType.Upstage)]
     public async Task Given_Unsupported_ConnectorType_When_CreateChatClient_Invoked_Then_It_Should_Throw(ConnectorType connectorType)
     {
         // Arrange
@@ -56,7 +92,7 @@ public class LanguageModelConnectorTests
     [Trait("Category", "UnitTest")]
     [Theory]
     // [InlineData(typeof(AmazonBedrockConnector))]
-    // [InlineData(typeof(AzureAIFoundryConnector))]
+    [InlineData(typeof(AzureAIFoundryConnector))]
     [InlineData(typeof(GitHubModelsConnector))]
     // [InlineData(typeof(GoogleVertexAIConnector))]
     // [InlineData(typeof(DockerModelRunnerConnector))]
@@ -64,7 +100,7 @@ public class LanguageModelConnectorTests
     [InlineData(typeof(HuggingFaceConnector))]
     // [InlineData(typeof(OllamaConnector))]
     // [InlineData(typeof(AnthropicConnector))]
-    // [InlineData(typeof(LGConnector))]
+    [InlineData(typeof(LGConnector))]
     // [InlineData(typeof(NaverConnector))]
     [InlineData(typeof(OpenAIConnector))]
     // [InlineData(typeof(UpstageConnector))]
@@ -72,11 +108,13 @@ public class LanguageModelConnectorTests
     {
         // Arrange
         var baseType = typeof(LanguageModelConnector);
-
+        
         // Act
-        var result = baseType.IsAssignableFrom(derivedType);
+        var isBaseAssignableFromDerived = baseType.IsAssignableFrom(derivedType);
+        var isDerivedAssignableFromBase = derivedType.IsAssignableFrom(baseType);
 
         // Assert
-        result.ShouldBeTrue();
+        isBaseAssignableFromDerived.ShouldBeTrue();
+        isDerivedAssignableFromBase.ShouldBeFalse();
     }
 }
