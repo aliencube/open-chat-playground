@@ -12,13 +12,15 @@ namespace OpenChat.PlaygroundApp.Connectors;
 /// <summary>
 /// This represents the connector entity for GitHub Models.
 /// </summary>
+/// <param name="settings"><see cref="AppSettings"/> instance.</param>
 public class GitHubModelsConnector(AppSettings settings) : LanguageModelConnector(settings.GitHubModels)
 {
+    private readonly AppSettings _appSettings = settings ?? throw new ArgumentNullException(nameof(settings));
+
     /// <inheritdoc/>
     public override bool EnsureLanguageModelSettingsValid()
     {
-        var settings = this.Settings as GitHubModelsSettings;
-        if (settings is null)
+        if (this.Settings is not GitHubModelsSettings settings)
         {
             throw new InvalidOperationException("Missing configuration: GitHubModels.");
         }
@@ -55,6 +57,8 @@ public class GitHubModelsConnector(AppSettings settings) : LanguageModelConnecto
         var client = new OpenAIClient(credential, options);
         var chatClient = client.GetChatClient(settings.Model)
                                .AsIChatClient();
+
+        Console.WriteLine($"The {this._appSettings.ConnectorType} connector created with model: {settings.Model}");
 
         return await Task.FromResult(chatClient).ConfigureAwait(false);
     }

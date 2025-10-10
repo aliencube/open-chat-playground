@@ -1,6 +1,6 @@
 # OpenChat Playground with Hugging Face
 
-This page describes how to run OpenChat Playground (OCP) with Hugging Face integration.
+This page describes how to run OpenChat Playground (OCP) with [Hugging Face models](https://huggingface.co/models) integration.
 
 ## Get the repository root
 
@@ -220,6 +220,14 @@ This page describes how to run OpenChat Playground (OCP) with Hugging Face integ
 
    Make sure to follow the exact format like `hf.co/{{org}}/{{model}}` and the model MUST include `GGUF`.
 
+1. As a default, the app uses a Serverless GPU with NVIDIA T4 (`NC8as-T4`). If you want to use NVIDIA A100, set the GPU profile.
+
+    ```bash
+    azd env set GPU_PROFILE_NAME "NC24-A100"
+    ```
+
+   If you want to know more about Serverless GPU, visit [Using serverless GPUs in Azure Container Apps](https://learn.microsoft.com/azure/container-apps/gpu-serverless-overview#use-serverless-gpus).
+
 1. Run the following commands in order to provision and deploy the app.
 
     ```bash
@@ -227,6 +235,11 @@ This page describes how to run OpenChat Playground (OCP) with Hugging Face integ
     ```
 
    > **NOTE**: You will be asked to provide Azure subscription and location for deployment.
+   > **IMPORTANT**: Due to the limitation for GPU support, the available regions are limited to `Australia East`, `Sweden Central` and `West US 3`. For more details, visit [Using serverless GPUs in Azure Container Apps](https://learn.microsoft.com/azure/container-apps/gpu-serverless-overview#supported-regions).
+
+   Once deployed, you will be able to see the deployed OCP app URL.
+
+1. Open your web browser, navigate to the OCP app URL, and enter prompts.
 
 1. Clean up all the resources.
 

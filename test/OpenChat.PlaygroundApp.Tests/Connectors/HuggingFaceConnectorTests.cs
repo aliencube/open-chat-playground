@@ -39,9 +39,9 @@ public class HuggingFaceConnectorTests
 	[Fact]
 	public void Given_Settings_Is_Null_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
 	{
-		// Arrange
-		var appSettings = new AppSettings { ConnectorType = ConnectorType.HuggingFace, HuggingFace = null };
-		var connector = new HuggingFaceConnector(appSettings);
+        // Arrange
+        var settings = new AppSettings { ConnectorType = ConnectorType.HuggingFace, HuggingFace = null };
+        var connector = new HuggingFaceConnector(settings);
 
 		// Act
 		var ex = Assert.Throws<InvalidOperationException>(() => connector.EnsureLanguageModelSettingsValid());
@@ -58,8 +58,8 @@ public class HuggingFaceConnectorTests
 	public void Given_Invalid_BaseUrl_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? baseUrl, Type expectedType, string expectedMessage)
 	{
 		// Arrange
-		var appSettings = BuildAppSettings(baseUrl: baseUrl);
-		var connector = new HuggingFaceConnector(appSettings);
+		var settings = BuildAppSettings(baseUrl: baseUrl);
+		var connector = new HuggingFaceConnector(settings);
 
 		// Act
 		var ex = Assert.Throws(expectedType, () => connector.EnsureLanguageModelSettingsValid());
@@ -79,8 +79,8 @@ public class HuggingFaceConnectorTests
 	public void Given_Invalid_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? model, Type expectedType, string expectedMessage)
 	{
 		// Arrange
-		var appSettings = BuildAppSettings(model: model);
-		var connector = new HuggingFaceConnector(appSettings);
+		var settings = BuildAppSettings(model: model);
+        var connector = new HuggingFaceConnector(settings);
 
 		// Act
 		var ex = Assert.Throws(expectedType, () => connector.EnsureLanguageModelSettingsValid());
@@ -94,8 +94,8 @@ public class HuggingFaceConnectorTests
 	public void Given_Valid_Settings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Return_True()
 	{
 		// Arrange
-		var appSettings = BuildAppSettings();
-		var connector = new HuggingFaceConnector(appSettings);
+		var settings = BuildAppSettings();
+        var connector = new HuggingFaceConnector(settings);
 
 		// Act
 		var result = connector.EnsureLanguageModelSettingsValid();
@@ -104,13 +104,14 @@ public class HuggingFaceConnectorTests
 		result.ShouldBeTrue();
 	}
 
-	[Trait("Category", "UnitTest")]
+    [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "LLMRequired")]
 	[Fact]
 	public async Task Given_Valid_Settings_When_GetChatClient_Invoked_Then_It_Should_Return_ChatClient()
 	{
 		// Arrange
 		var settings = BuildAppSettings();
-		var connector = new HuggingFaceConnector(settings);
+        var connector = new HuggingFaceConnector(settings);
 
 		// Act
 		var client = await connector.GetChatClientAsync();
@@ -127,7 +128,7 @@ public class HuggingFaceConnectorTests
 	{
 		// Arrange
 		var settings = BuildAppSettings(baseUrl: baseUrl);
-		var connector = new HuggingFaceConnector(settings);
+        var connector = new HuggingFaceConnector(settings);
 
 		// Act
 		var ex = await Assert.ThrowsAsync(expected, connector.GetChatClientAsync);

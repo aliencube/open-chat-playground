@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
 using Microsoft.Extensions.AI;
+using Microsoft.JSInterop;
 
 namespace OpenChat.PlaygroundApp.Components.Pages.Chat;
 
