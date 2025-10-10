@@ -3,6 +3,7 @@ using Microsoft.Extensions.AI;
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Components;
 using OpenChat.PlaygroundApp.Endpoints;
+using OpenChat.PlaygroundApp.Extensions;
 using OpenChat.PlaygroundApp.OpenApi;
 using OpenChat.PlaygroundApp.Services;
 
@@ -16,15 +17,7 @@ if (settings.Help == true)
     return;
 }
 
-var section = config.GetSection(settings.ConnectorType.ToString());
-settings.Model = settings.ConnectorType switch
-{
-    OpenChat.PlaygroundApp.Connectors.ConnectorType.AzureAIFoundry => section.GetValue<string>("DeploymentName"),
-    OpenChat.PlaygroundApp.Connectors.ConnectorType.FoundryLocal => section.GetValue<string>("Alias"),
-    _ => section.GetValue<string>("Model")
-};
-
-builder.Services.AddSingleton(settings);
+builder.Services.AddAppSettings(config, settings);
 
 builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
