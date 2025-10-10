@@ -29,6 +29,8 @@ public abstract class ArgumentOptions
         (ConnectorType.GoogleVertexAI, ArgumentOptionConstants.GoogleVertexAI.ApiKey, false),
         (ConnectorType.GoogleVertexAI, ArgumentOptionConstants.GoogleVertexAI.Model, false),
         // Docker Model Runner
+        (ConnectorType.DockerModelRunner, "--base-url", false),
+        (ConnectorType.DockerModelRunner, "--model", false),
         // Foundry Local
         (ConnectorType.FoundryLocal, ArgumentOptionConstants.FoundryLocal.Alias, false),
         // Hugging Face
@@ -186,8 +188,11 @@ public abstract class ArgumentOptions
                 settings.GoogleVertexAI.Model = googleVertexAI.Model ?? settings.GoogleVertexAI.Model;
                 break;
 
-            // case DockerModelRunnerArgumentOptions dockerModelRunner:
-            //     break;
+            case DockerModelRunnerArgumentOptions dockerModelRunner:
+                settings.DockerModelRunner ??= new DockerModelRunnerSettings();
+                settings.DockerModelRunner.BaseUrl = dockerModelRunner.BaseUrl ?? settings.DockerModelRunner.BaseUrl;
+                settings.DockerModelRunner.Model = dockerModelRunner.Model ?? settings.DockerModelRunner.Model;
+                break;
 
             case FoundryLocalArgumentOptions foundryLocal:
                 settings.FoundryLocal ??= new FoundryLocalSettings();
@@ -357,7 +362,8 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** Docker Model Runner: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  TBD");
+        Console.WriteLine("  --base-url           The base URL for Docker Model Runner. Default to 'http://localhost:12434'");
+        Console.WriteLine("  --model              The model name. Default to 'ai/smollm2'");
         Console.WriteLine();
     }
 
