@@ -32,6 +32,10 @@ param openAIModel string = ''
 @secure()
 param openAIApiKey string = ''
 // Upstage
+param upstageModel string = ''
+param upstageBaseUrl string = ''
+@secure()
+param upstageApiKey string = ''
 
 @allowed([
   'NC24-A100'
@@ -248,6 +252,22 @@ var envOpenAI = connectorType == 'OpenAI' ? concat(openAIModel != '' ? [
   }
 ] : []) : []
 // Upstage
+var envUpstage = connectorType == 'Upstage' ? concat(upstageModel != '' ? [
+  {
+    name: 'Upstage__Model'
+    value: upstageModel
+  }
+] : [], upstageBaseUrl != '' ? [
+  {
+    name: 'Upstage__BaseUrl'
+    value: upstageBaseUrl
+  }
+] : [], upstageApiKey != '' ? [
+  {
+    name: 'Upstage__ApiKey'
+    secretRef: 'upstage-api-key'
+  }
+] : []) : []
 
 module openchatPlaygroundApp 'br/public:avm/res/app/container-app:0.18.1' = {
   name: 'openchatPlaygroundApp'
@@ -272,6 +292,11 @@ module openchatPlaygroundApp 'br/public:avm/res/app/container-app:0.18.1' = {
       {
         name: 'openai-api-key'
         value: openAIApiKey
+      }
+    ] : [], upstageApiKey != '' ? [
+      {
+        name: 'upstage-api-key'
+        value: upstageApiKey
       }
     ] : [])
     containers: [
@@ -302,7 +327,9 @@ module openchatPlaygroundApp 'br/public:avm/res/app/container-app:0.18.1' = {
         envHuggingFace,
         envOllama,
         envLG,
-        envOpenAI, useOllama == true ? [
+        envOpenAI,
+        envUpstage, 
+        useOllama == true ? [
           {
             name: connectorType == 'LG' ? 'LG__BaseUrl' : (connectorType == 'Ollama' ? 'Ollama__BaseUrl' : 'HuggingFace__BaseUrl')
             value: 'https://${ollama.outputs.fqdn}'

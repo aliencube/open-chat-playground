@@ -37,6 +37,10 @@ param openAIModel string = ''
 @secure()
 param openAIApiKey string = ''
 // Upstage
+param upstageModel string = ''
+param upstageBaseUrl string = ''
+@secure()
+param upstageApiKey string = ''
 
 @allowed([
   'NC24-A100'
@@ -88,6 +92,9 @@ module resources 'resources.bicep' = {
     lgModel: lgModel
     openAIModel: openAIModel
     openAIApiKey: openAIApiKey
+    upstageModel: upstageModel
+    upstageBaseUrl: upstageBaseUrl
+    upstageApiKey: upstageApiKey
     gpuProfileName: gpuProfileName
     openchatPlaygroundAppExists: openchatPlaygroundAppExists
   }

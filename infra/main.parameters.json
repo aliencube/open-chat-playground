@@ -38,6 +38,15 @@
     "openAIApiKey": {
       "value": "${OPENAI_API_KEY}"
     },
+    "upstageModel": {
+      "value": "${UPSTAGE_MODEL}"
+    },
+    "upstageBaseUrl": {
+      "value": "${UPSTAGE_BASE_URL}"
+    },
+    "upstageApiKey": {
+      "value": "${UPSTAGE_API_KEY}"
+    },
     "gpuProfileName": {
       "value": "${GPU_PROFILE_NAME=NC8as-T4}"
     },
