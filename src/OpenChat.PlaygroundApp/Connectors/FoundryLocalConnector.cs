@@ -5,8 +5,8 @@ using Microsoft.Extensions.AI;
 
 using OpenAI;
 
-using OpenChat.PlaygroundApp.Configurations;
 using OpenChat.PlaygroundApp.Abstractions;
+using OpenChat.PlaygroundApp.Configurations;
 
 namespace OpenChat.PlaygroundApp.Connectors;
 
