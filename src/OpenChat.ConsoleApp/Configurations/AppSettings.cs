@@ -1,4 +1,4 @@
-namespace OpenChat.ConsoleAppApp.Configurations;
+namespace OpenChat.ConsoleApp.Configurations;
 
 /// <summary>
 /// This represents the app settings entity from appsettings.json.

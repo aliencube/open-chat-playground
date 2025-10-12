@@ -5,6 +5,9 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+    <AssemblyName>OpenChat.ConsoleApp</AssemblyName>
+    <RootNamespace>OpenChat.ConsoleApp</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

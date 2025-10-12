@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Configuration;
 
-using OpenChat.ConsoleAppApp.Configurations;
+using OpenChat.ConsoleApp.Configurations;
 
 namespace OpenChat.ConsoleApp.Options;
 
