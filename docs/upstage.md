@@ -38,9 +38,9 @@ This page describes how to run OpenChat Playground (OCP) with [Upstage Solar](ht
         set Upstage:ApiKey "{{UPSTAGE_API_KEY}}"
     ```
 
-    > For more details about Upstage API Keys, refer to the doc, [Upstage Console](https://console.upstage.ai/).
+    > For more details about Upstage API Keys, refer to the doc, [Upstage API key](https://console.upstage.ai/docs/getting-started#get-an-api-key).
 
-1. Run the app. The default model OCP uses is [solar-1-mini-chat](https://developers.upstage.ai/docs/apis/chat).
+1. Run the app. The default model OCP uses is [solar-mini]( https://console.upstage.ai/docs/models/solar-mini).
 
     ```bash
     # bash/zsh
@@ -54,20 +54,20 @@ This page describes how to run OpenChat Playground (OCP) with [Upstage Solar](ht
         --connector-type Upstage
     ```
 
-   Alternatively, if you want to run with a different model, say [solar-pro](https://developers.upstage.ai/docs/apis/chat), other than the default one, you can specify it as an argument:
+   Alternatively, if you want to run with a different model, say [solar-pro2](https://console.upstage.ai/docs/models/solar-pro-2), other than the default one, you can specify it as an argument:
 
     ```bash
     # bash/zsh
     dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- \
         --connector-type Upstage \
-        --model solar-pro
+        --model solar-pro2
     ```
 
     ```powershell
     # PowerShell
     dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- `
         --connector-type Upstage `
-        --model solar-pro
+        --model solar-pro2
     ```
 
 1. Open your web browser, navigate to `http://localhost:5280`, and enter prompts.
@@ -100,7 +100,7 @@ This page describes how to run OpenChat Playground (OCP) with [Upstage Solar](ht
                 Select-String -NotMatch '^//(BEGIN|END)' | ConvertFrom-Json).'Upstage:ApiKey'
     ```
 
-1. Run the app. The default model OCP uses is [solar-1-mini-chat](https://developers.upstage.ai/docs/apis/chat).
+1. Run the app. The default model OCP uses is [solar-mini](https://console.upstage.ai/docs/models/solar-mini).
 
     ```bash
     # bash/zsh - from locally built container
@@ -128,20 +128,20 @@ This page describes how to run OpenChat Playground (OCP) with [Upstage Solar](ht
         --api-key $API_KEY
     ```
 
-   Alternatively, if you want to run with a different model, say [solar-pro](https://developers.upstage.ai/docs/apis/chat), other than the default one, you can specify it as an argument:
+   Alternatively, if you want to run with a different model, say [solar-pro2](https://console.upstage.ai/docs/models/solar-pro-2), other than the default one, you can specify it as an argument:
 
     ```bash
     # bash/zsh - from locally built container with custom model
     docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type Upstage \
         --api-key $API_KEY \
-        --model solar-pro
+        --model solar-pro2
     ```
 
     ```powershell
     # PowerShell - from locally built container with custom model
     docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type Upstage `
         --api-key $API_KEY `
-        --model solar-pro
+        --model solar-pro2
     ```
 
 1. Open your web browser, navigate to `http://localhost:8080`, and enter prompts.
@@ -194,16 +194,16 @@ This page describes how to run OpenChat Playground (OCP) with [Upstage Solar](ht
     azd env set UPSTAGE_API_KEY $API_KEY
     ```
 
-   The default model OCP uses is [solar-1-mini-chat](https://developers.upstage.ai/docs/apis/chat). If you want to run with a different model, say [solar-pro](https://developers.upstage.ai/docs/apis/chat), other than the default one, add it to azd environment variables.
+   The default model OCP uses is [solar-mini](https://console.upstage.ai/docs/models/solar-mini). If you want to run with a different model, say [solar-pro2](https://console.upstage.ai/docs/models/solar-pro-2), other than the default one, add it to azd environment variables.
 
     ```bash
-    azd env set UPSTAGE_MODEL solar-pro
+    azd env set UPSTAGE_MODEL "solar-mini"
     ```
 
 1. Set the connector type to `Upstage`.
 
     ```bash
-    azd env set CONNECTOR_TYPE Upstage
+    azd env set CONNECTOR_TYPE "Upstage"
     ```
 
 1. Run the following commands in order to provision and deploy the app.
