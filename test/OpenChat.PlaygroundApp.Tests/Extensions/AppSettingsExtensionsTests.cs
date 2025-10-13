@@ -157,7 +157,7 @@ public class AppSettingsExtensionsTests
         services.AddAppSettings(configuration, settings);
 
         // Assert
-        settings.Model.ShouldBe("commandline-model");
+        settings.Model.ShouldBe(commandLineModel);
     }
 
     [Trait("Category", "UnitTest")]
