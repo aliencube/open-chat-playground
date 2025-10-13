@@ -41,10 +41,10 @@ public class GoogleVertexAIConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(InvalidOperationException), "GoogleVertexAI:ApiKey")]
-    [InlineData("", typeof(InvalidOperationException), "GoogleVertexAI:ApiKey")]
-    [InlineData("   ", typeof(InvalidOperationException), "GoogleVertexAI:ApiKey")]
-    public void Given_Invalid_ApiKey_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? apiKey, Type expectedType, string expectedMessage)
+    [InlineData(null, "GoogleVertexAI:ApiKey")]
+    [InlineData("", "GoogleVertexAI:ApiKey")]
+    [InlineData("   ", "GoogleVertexAI:ApiKey")]
+    public void Given_Invalid_ApiKey_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? apiKey, string expectedMessage)
     {
         // Arrange
         var appSettings = BuildAppSettings(apiKey: apiKey);
@@ -60,10 +60,10 @@ public class GoogleVertexAIConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(InvalidOperationException), "GoogleVertexAI:Model")]
-    [InlineData("", typeof(InvalidOperationException), "GoogleVertexAI:Model")]
-    [InlineData("   ", typeof(InvalidOperationException), "GoogleVertexAI:Model")]
-    public void Given_Invalid_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? model, Type expectedType, string expectedMessage)
+    [InlineData(null, "GoogleVertexAI:Model")]
+    [InlineData("", "GoogleVertexAI:Model")]
+    [InlineData("   ", "GoogleVertexAI:Model")]
+    public void Given_Invalid_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? model, string expectedMessage)
     {
         // Arrange
         var appSettings = BuildAppSettings(apiKey: "valid-key", model: model);
