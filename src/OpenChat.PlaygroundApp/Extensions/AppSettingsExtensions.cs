@@ -17,9 +17,12 @@ public static class AppSettingsExtensions
     /// <returns>Returns the modified <see cref="IServiceCollection"/> instance.</returns>
     public static IServiceCollection AddAppSettings(this IServiceCollection services, IConfiguration configuration, AppSettings settings)
     {
+        ArgumentNullException.ThrowIfNull(configuration);
+        ArgumentNullException.ThrowIfNull(settings);
+
         ConfigureModelName(configuration, settings);
         services.AddSingleton(settings);
-        
+
         return services;
     }
     

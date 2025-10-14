@@ -19,6 +19,38 @@ public class AppSettingsExtensionsTests
 
     [Trait("Category", "UnitTest")]
     [Fact]
+    public void Given_Null_Configuration_When_AddAppSettings_Invoked_Then_It_Should_Throw_ArgumentNullException()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        IConfiguration configuration = null!;
+        var settings = new AppSettings { ConnectorType = ConnectorType.OpenAI };
+
+        // Act
+        Action action = () => services.AddAppSettings(configuration, settings);
+
+        // Assert
+        action.ShouldThrow<ArgumentNullException>();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Fact]
+    public void Given_Null_Settings_When_AddAppSettings_Invoked_Then_It_Should_Throw_ArgumentNullException()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        var configuration = CreateConfiguration();
+        AppSettings settings = null!;
+
+        // Act
+        Action action = () => services.AddAppSettings(configuration, settings);
+
+        // Assert
+        action.ShouldThrow<ArgumentNullException>();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Fact]
     public void Given_Valid_Parameters_When_AddAppSettings_Invoked_Then_It_Should_Return_Services()
     {
         // Arrange
