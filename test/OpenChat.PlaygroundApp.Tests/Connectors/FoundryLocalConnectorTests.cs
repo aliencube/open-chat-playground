@@ -42,10 +42,11 @@ public class FoundryLocalConnectorTests
         var connector = new FoundryLocalConnector(settings);
 
         // Act
-        var ex = Assert.Throws<InvalidOperationException>(() => connector.EnsureLanguageModelSettingsValid());
+        Action action = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
-        ex.Message.ShouldContain("FoundryLocal");
+        action.ShouldThrow<InvalidOperationException>()
+               .Message.ShouldContain("FoundryLocal");
     }
 
     [Trait("Category", "UnitTest")]
@@ -60,10 +61,11 @@ public class FoundryLocalConnectorTests
         var connector = new FoundryLocalConnector(settings);
 
         // Act
-        var ex = Assert.Throws(expectedType, () => connector.EnsureLanguageModelSettingsValid());
+        Action action = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
-        ex.Message.ShouldContain(expectedMessage);
+        action.ShouldThrow(expectedType)
+            .Message.ShouldContain(expectedMessage);
     }
 
     [Trait("Category", "UnitTest")]
