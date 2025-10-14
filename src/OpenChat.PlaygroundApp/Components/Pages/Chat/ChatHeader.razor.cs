@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+
 using OpenChat.PlaygroundApp.Configurations;
 
 namespace OpenChat.PlaygroundApp.Components.Pages.Chat;

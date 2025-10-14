@@ -3,7 +3,6 @@ using Microsoft.Extensions.AI;
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Components;
 using OpenChat.PlaygroundApp.Endpoints;
-using OpenChat.PlaygroundApp.Extensions;
 using OpenChat.PlaygroundApp.OpenApi;
 using OpenChat.PlaygroundApp.Services;
 
@@ -17,7 +16,7 @@ if (settings.Help == true)
     return;
 }
 
-builder.Services.AddAppSettings(config, settings);
+builder.Services.AddSingleton(settings!);
 
 builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
