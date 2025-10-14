@@ -9,6 +9,12 @@ namespace OpenChat.PlaygroundApp.Tests.Extensions;
 
 public class AppSettingsExtensionsTests
 {
+    private const string openaiDefaultModel = "openai-default-model";
+    private const string azureDefaultModel = "azure-default-model";
+    private const string foundryDefaultModel = "foundry-default-model";
+    private const string openaiCommandLineModel = "openai-commandline-model";
+    private const string azureCommandLineModel = "azure-commandline-model";
+    private const string foundryCommandLineModel = "foundry-commandline-model";
     private static IConfiguration CreateConfiguration(Dictionary<string, string?>? configData = null)
     {
         var data = configData ?? new Dictionary<string, string?>();
@@ -82,7 +88,7 @@ public class AppSettingsExtensionsTests
 
         // Assert
         action.ShouldThrow<ArgumentException>()
-              .Message.ShouldContain("Unsupported ConnectorType");
+                .Message.ShouldContain("Unsupported ConnectorType");
     }
 
     [Trait("Category", "UnitTest")]
@@ -128,18 +134,17 @@ public class AppSettingsExtensionsTests
         // Arrange
         var services = new ServiceCollection();
         var configuration = CreateConfiguration();
-        var commandLineModel = "openai-commandline-model";
         var settings = new AppSettings
         {
             ConnectorType = ConnectorType.OpenAI,
-            OpenAI = new OpenAISettings { Model = commandLineModel }
+            OpenAI = new OpenAISettings { Model = openaiCommandLineModel }
         };
 
         // Act
         services.AddAppSettings(configuration, settings);
 
         // Assert
-        settings.Model.ShouldBe(commandLineModel);
+        settings.Model.ShouldBe(openaiCommandLineModel);
     }
 
     [Trait("Category", "UnitTest")]
@@ -149,18 +154,17 @@ public class AppSettingsExtensionsTests
         // Arrange
         var services = new ServiceCollection();
         var configuration = CreateConfiguration();
-        var commandLineModel = "azureai-commandline-model";
         var settings = new AppSettings
         {
             ConnectorType = ConnectorType.AzureAIFoundry,
-            AzureAIFoundry = new AzureAIFoundrySettings { DeploymentName = commandLineModel }
+            AzureAIFoundry = new AzureAIFoundrySettings { DeploymentName = azureCommandLineModel }
         };
 
         // Act
         services.AddAppSettings(configuration, settings);
 
         // Assert
-        settings.Model.ShouldBe(commandLineModel);
+        settings.Model.ShouldBe(azureCommandLineModel);
     }
 
     [Trait("Category", "UnitTest")]
@@ -170,18 +174,17 @@ public class AppSettingsExtensionsTests
         // Arrange
         var services = new ServiceCollection();
         var configuration = CreateConfiguration();
-        var commandLineModel = "foundrylocal-commandline-model";
         var settings = new AppSettings
         {
             ConnectorType = ConnectorType.FoundryLocal,
-            FoundryLocal = new FoundryLocalSettings { Alias = commandLineModel }
+            FoundryLocal = new FoundryLocalSettings { Alias = foundryCommandLineModel }
         };
 
         // Act
         services.AddAppSettings(configuration, settings);
 
         // Assert
-        settings.Model.ShouldBe(commandLineModel);
+        settings.Model.ShouldBe(foundryCommandLineModel);
     }
 
     [Trait("Category", "UnitTest")]
@@ -190,10 +193,9 @@ public class AppSettingsExtensionsTests
     {
         // Arrange
         var services = new ServiceCollection();
-        var defaultModel = "openai-default-model";
         var configData = new Dictionary<string, string?>
         {
-            ["OpenAI:Model"] = defaultModel
+            ["OpenAI:Model"] = openaiDefaultModel
         };
         var configuration = CreateConfiguration(configData);
 
@@ -207,7 +209,7 @@ public class AppSettingsExtensionsTests
         services.AddAppSettings(configuration, settings);
 
         // Assert
-        settings.Model.ShouldBe(defaultModel);
+        settings.Model.ShouldBe(openaiDefaultModel);
     }
 
     [Trait("Category", "UnitTest")]
@@ -216,10 +218,9 @@ public class AppSettingsExtensionsTests
     {
         // Arrange
         var services = new ServiceCollection();
-        var defaultModel = "azure-default-model";
         var configData = new Dictionary<string, string?>
         {
-            ["AzureAIFoundry:DeploymentName"] = defaultModel
+            ["AzureAIFoundry:DeploymentName"] = azureDefaultModel
         };
         var configuration = CreateConfiguration(configData);
 
@@ -233,7 +234,7 @@ public class AppSettingsExtensionsTests
         services.AddAppSettings(configuration, settings);
 
         // Assert
-        settings.Model.ShouldBe(defaultModel);
+        settings.Model.ShouldBe(azureDefaultModel);
     }
 
     [Trait("Category", "UnitTest")]
@@ -242,10 +243,9 @@ public class AppSettingsExtensionsTests
     {
         // Arrange
         var services = new ServiceCollection();
-        var defaultModel = "foundry-default-model";
         var configData = new Dictionary<string, string?>
         {
-            ["FoundryLocal:Alias"] = defaultModel
+            ["FoundryLocal:Alias"] = foundryDefaultModel
         };
         var configuration = CreateConfiguration(configData);
 
@@ -259,7 +259,7 @@ public class AppSettingsExtensionsTests
         services.AddAppSettings(configuration, settings);
 
         // Assert
-        settings.Model.ShouldBe(defaultModel);
+        settings.Model.ShouldBe(foundryDefaultModel);
     }
 
     [Trait("Category", "UnitTest")]
@@ -268,25 +268,23 @@ public class AppSettingsExtensionsTests
     {
         // Arrange
         var services = new ServiceCollection();
-        var defaultModel = "openai-default-model";
-        var commandLineModel = "openai-commandline-model";
         var configData = new Dictionary<string, string?>
         {
-            ["OpenAI:Model"] = defaultModel
+            ["OpenAI:Model"] = openaiDefaultModel
         };
         var configuration = CreateConfiguration(configData);
 
         var settings = new AppSettings
         {
             ConnectorType = ConnectorType.OpenAI,
-            OpenAI = new OpenAISettings { Model = commandLineModel }
+            OpenAI = new OpenAISettings { Model = openaiCommandLineModel }
         };
 
         // Act
         services.AddAppSettings(configuration, settings);
 
         // Assert
-        settings.Model.ShouldBe(commandLineModel);
+        settings.Model.ShouldBe(openaiCommandLineModel);
     }
 
     [Trait("Category", "UnitTest")]
@@ -295,25 +293,23 @@ public class AppSettingsExtensionsTests
     {
         // Arrange
         var services = new ServiceCollection();
-        var defaultModel = "azure-default-model";
-        var commandLineModel = "azure-commandline-model";
         var configData = new Dictionary<string, string?>
         {
-            ["AzureAIFoundry:DeploymentName"] = defaultModel
+            ["AzureAIFoundry:DeploymentName"] = azureDefaultModel
         };
         var configuration = CreateConfiguration(configData);
 
         var settings = new AppSettings
         {
             ConnectorType = ConnectorType.AzureAIFoundry,
-            AzureAIFoundry = new AzureAIFoundrySettings { DeploymentName = commandLineModel }
+            AzureAIFoundry = new AzureAIFoundrySettings { DeploymentName = azureCommandLineModel }
         };
 
         // Act
         services.AddAppSettings(configuration, settings);
 
         // Assert
-        settings.Model.ShouldBe(commandLineModel);
+        settings.Model.ShouldBe(azureCommandLineModel);
     }
 
     [Trait("Category", "UnitTest")]
@@ -322,24 +318,22 @@ public class AppSettingsExtensionsTests
     {
         // Arrange
         var services = new ServiceCollection();
-        var defaultModel = "foundry-default-model";
-        var commandLineModel = "foundry-commandline-model";
         var configData = new Dictionary<string, string?>
         {
-            ["FoundryLocal:Alias"] = defaultModel
+            ["FoundryLocal:Alias"] = foundryDefaultModel
         };
         var configuration = CreateConfiguration(configData);
 
         var settings = new AppSettings
         {
             ConnectorType = ConnectorType.FoundryLocal,
-            FoundryLocal = new FoundryLocalSettings { Alias = commandLineModel }
+            FoundryLocal = new FoundryLocalSettings { Alias = foundryCommandLineModel }
         };
 
         // Act
         services.AddAppSettings(configuration, settings);
 
         // Assert
-        settings.Model.ShouldBe(commandLineModel);
+        settings.Model.ShouldBe(foundryCommandLineModel);
     }    
 }
