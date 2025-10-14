@@ -40,8 +40,10 @@ public class FoundryLocalConnector(AppSettings settings) : LanguageModelConnecto
         var settings = this.Settings as FoundryLocalSettings;
         var alias = settings!.Alias!;
 
-        var manager = await FoundryLocalManager.StartModelAsync(aliasOrModelId: alias);
-        var model = await manager.GetModelInfoAsync(aliasOrModelId: alias);
+        var manager = await FoundryLocalManager.StartModelAsync(aliasOrModelId: alias)
+                                .ConfigureAwait(false);
+        var model = await manager.GetModelInfoAsync(aliasOrModelId: alias)
+                                .ConfigureAwait(false);
 
         var credential = new ApiKeyCredential(manager.ApiKey);
         var options = new OpenAIClientOptions()
