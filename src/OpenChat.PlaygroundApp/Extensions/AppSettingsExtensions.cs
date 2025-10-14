@@ -17,6 +17,7 @@ public static class AppSettingsExtensions
     /// <returns>Returns the modified <see cref="IServiceCollection"/> instance.</returns>
     public static IServiceCollection AddAppSettings(this IServiceCollection services, IConfiguration configuration, AppSettings settings)
     {
+        ArgumentNullException.ThrowIfNull(services);
         ArgumentNullException.ThrowIfNull(configuration);
         ArgumentNullException.ThrowIfNull(settings);
 
