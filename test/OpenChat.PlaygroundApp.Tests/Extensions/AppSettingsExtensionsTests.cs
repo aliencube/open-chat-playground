@@ -15,6 +15,7 @@ public class AppSettingsExtensionsTests
     private const string openaiCommandLineModel = "openai-commandline-model";
     private const string azureCommandLineModel = "azure-commandline-model";
     private const string foundryCommandLineModel = "foundry-commandline-model";
+    
     private static IConfiguration CreateConfiguration(Dictionary<string, string?>? configData = null)
     {
         var data = configData ?? new Dictionary<string, string?>();
