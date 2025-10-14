@@ -30,7 +30,8 @@ public class AppSettingsExtensionsTests
         Action action = () => services.AddAppSettings(configuration, settings);
 
         // Assert
-        action.ShouldThrow<ArgumentNullException>();
+        action.ShouldThrow<ArgumentNullException>()
+                .Message.ShouldContain("Value cannot be null");
     }
 
     [Trait("Category", "UnitTest")]
@@ -46,7 +47,8 @@ public class AppSettingsExtensionsTests
         Action action = () => services.AddAppSettings(configuration, settings);
 
         // Assert
-        action.ShouldThrow<ArgumentNullException>();
+        action.ShouldThrow<ArgumentNullException>()
+                .Message.ShouldContain("Value cannot be null");
     }
 
     [Trait("Category", "UnitTest")]
@@ -62,7 +64,8 @@ public class AppSettingsExtensionsTests
         Action action = () => services.AddAppSettings(configuration, settings);
 
         // Assert
-        action.ShouldThrow<ArgumentNullException>();
+        action.ShouldThrow<ArgumentNullException>()
+                .Message.ShouldContain("Value cannot be null");
     }
 
     [Trait("Category", "UnitTest")]
