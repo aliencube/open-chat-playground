@@ -197,7 +197,7 @@ This page describes how to run OpenChat Playground (OCP) with [Upstage Solar](ht
    The default model OCP uses is [solar-mini](https://console.upstage.ai/docs/models/solar-mini). If you want to run with a different model, say [solar-pro2](https://console.upstage.ai/docs/models/solar-pro-2), other than the default one, add it to azd environment variables.
 
     ```bash
-    azd env set UPSTAGE_MODEL "solar-mini"
+    azd env set UPSTAGE_MODEL "solar-pro2"
     ```
 
 1. Set the connector type to `Upstage`.
