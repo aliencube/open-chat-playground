@@ -60,7 +60,7 @@ public class LanguageModelConnectorTests
     [InlineData(typeof(GitHubModelsConnector))]
     // [InlineData(typeof(GoogleVertexAIConnector))]
     // [InlineData(typeof(DockerModelRunnerConnector))]
-    // [InlineData(typeof(FoundryLocalConnector))]
+    [InlineData(typeof(FoundryLocalConnector))]
     [InlineData(typeof(HuggingFaceConnector))]
     // [InlineData(typeof(OllamaConnector))]
     // [InlineData(typeof(AnthropicConnector))]
