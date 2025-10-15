@@ -76,7 +76,6 @@ public class LanguageModelConnectorTests
     [InlineData(ConnectorType.Ollama)]
     [InlineData(ConnectorType.Anthropic)]
     [InlineData(ConnectorType.Naver)]
-    [InlineData(ConnectorType.Upstage)]
     public async Task Given_Unsupported_ConnectorType_When_CreateChatClient_Invoked_Then_It_Should_Throw(ConnectorType connectorType)
     {
         // Arrange
