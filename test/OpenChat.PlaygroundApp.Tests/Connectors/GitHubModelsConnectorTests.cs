@@ -1,3 +1,6 @@
+using Microsoft.Extensions.AI;
+
+using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Configurations;
 using OpenChat.PlaygroundApp.Connectors;
 
@@ -24,11 +27,54 @@ public class GitHubModelsConnectorTests
     }
 
     [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData(typeof(LanguageModelConnector), typeof(GitHubModelsConnector), true)]
+    [InlineData(typeof(GitHubModelsConnector), typeof(LanguageModelConnector), false)]
+    public void Given_BaseType_Then_It_Should_Be_AssignableFrom_DerivedType(Type baseType, Type derivedType, bool expected)
+    {
+        // Act
+        var result = baseType.IsAssignableFrom(derivedType);
+
+        // Assert
+        result.ShouldBe(expected);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Fact]
+    public void Given_Null_Settings_When_Instantiated_Then_It_Should_Throw()
+    {
+        // Act
+        Action action = () => new GitHubModelsConnector(null!);
+
+        // Assert
+        action.ShouldThrow<ArgumentNullException>()
+              .Message.ShouldContain("settings");
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Fact]
+    public void Given_Settings_When_Instantiated_Then_It_Should_Return()
+    {
+        // Arrange
+        var settings = BuildAppSettings();
+
+        // Act
+        var result = new GitHubModelsConnector(settings);
+
+        // Assert
+        result.ShouldNotBeNull();
+    }
+
+    [Trait("Category", "UnitTest")]
     [Fact]
     public void Given_Settings_Is_Null_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
     {
         // Arrange
-        var settings = new AppSettings { ConnectorType = ConnectorType.GitHubModels, GitHubModels = null };
+        var settings = new AppSettings
+        {
+            ConnectorType = ConnectorType.GitHubModels,
+            GitHubModels = null
+        };
         var connector = new GitHubModelsConnector(settings);
 
         // Act
@@ -116,24 +162,29 @@ public class GitHubModelsConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Fact]
-    public async Task Given_Valid_Settings_When_GetChatClient_Invoked_Then_It_Should_Return_ChatClient()
+    public void Given_Null_GitHubModelsSettings_When_GetChatClientAsync_Invoked_Then_It_Should_Throw()
     {
         // Arrange
-        var settings = BuildAppSettings();
+        var settings = new AppSettings
+        {
+            ConnectorType = ConnectorType.GitHubModels,
+            GitHubModels = null
+        };
         var connector = new GitHubModelsConnector(settings);
 
         // Act
-        var client = await connector.GetChatClientAsync();
+        Func<Task> func = connector.GetChatClientAsync;
 
         // Assert
-        client.ShouldNotBeNull();
+        func.ShouldThrow<InvalidOperationException>()
+            .Message.ShouldContain("Missing configuration");
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, typeof(InvalidOperationException), "GitHubModels:Token")]
     [InlineData("", typeof(ArgumentException), "key")]
-    public async Task Given_Missing_Token_When_GetChatClient_Invoked_Then_It_Should_Throw(string? token, Type expected, string message)
+    public void Given_Missing_Token_When_GetChatClient_Invoked_Then_It_Should_Throw(string? token, Type expected, string message)
     {
         // Arrange
         var settings = BuildAppSettings(token: token);
@@ -143,15 +194,15 @@ public class GitHubModelsConnectorTests
         Func<Task> func = connector.GetChatClientAsync;
 
         // Assert
-        var ex = await func.ShouldThrowAsync(expected);
-        ex.Message.ShouldContain(message);
+        func.ShouldThrow(expected)
+            .Message.ShouldContain(message);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, typeof(InvalidOperationException), "GitHubModels:Endpoint")]
     [InlineData("", typeof(UriFormatException), "empty")]
-    public async Task Given_Missing_Endpoint_When_GetChatClient_Invoked_Then_It_Should_Throw(string? endpoint, Type expected, string message)
+    public void Given_Missing_Endpoint_When_GetChatClient_Invoked_Then_It_Should_Throw(string? endpoint, Type expected, string message)
     {
         // Arrange
         var settings = BuildAppSettings(endpoint: endpoint);
@@ -161,8 +212,8 @@ public class GitHubModelsConnectorTests
         Func<Task> func = connector.GetChatClientAsync;
 
         // Assert
-        var ex = await func.ShouldThrowAsync(expected);
-        ex.Message.ShouldContain(message);
+        func.ShouldThrow(expected)
+            .Message.ShouldContain(message);
     }
 
     [Trait("Category", "UnitTest")]
@@ -179,7 +230,71 @@ public class GitHubModelsConnectorTests
         Func<Task> func = connector.GetChatClientAsync;
 
         // Assert
-        var ex = await func.ShouldThrowAsync(expected);
-        ex.Message.ShouldContain(message);
+        func.ShouldThrow(expected)
+            .Message.ShouldContain(message);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Fact]
+    public async Task Given_Valid_Settings_When_GetChatClient_Invoked_Then_It_Should_Return_ChatClient()
+    {
+        // Arrange
+        var settings = BuildAppSettings();
+        var connector = new GitHubModelsConnector(settings);
+
+        // Act
+        var client = await connector.GetChatClientAsync();
+
+        // Assert
+        client.ShouldNotBeNull();
+        client.ShouldBeAssignableTo<IChatClient>();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData(null, null, null, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
+    [InlineData("", Token, Model, typeof(InvalidOperationException), "Missing configuration: GitHubModels:Endpoint")]
+    [InlineData("   ", Token, Model, typeof(InvalidOperationException), "Missing configuration: GitHubModels:Endpoint")]
+    [InlineData(Endpoint, null, Model, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
+    [InlineData(Endpoint, "", Model, typeof(InvalidOperationException), "Missing configuration: GitHubModels:Token")]
+    [InlineData(Endpoint, "   ", Model, typeof(InvalidOperationException), "Missing configuration: GitHubModels:Token")]
+    [InlineData(Endpoint, Token, null, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
+    [InlineData(Endpoint, Token, "", typeof(InvalidOperationException), "Missing configuration: GitHubModels:Model")]
+    [InlineData(Endpoint, Token, "   ", typeof(InvalidOperationException), "Missing configuration: GitHubModels:Model")]
+    public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string? endpoint, string? token, string? model, Type expected, string expectedMessage)
+    {
+        // Arrange
+        var settings = new AppSettings
+        {
+            ConnectorType = ConnectorType.GitHubModels,
+            GitHubModels = new GitHubModelsSettings
+            {
+                Endpoint = endpoint,
+                Token = token,
+                Model = model
+            }
+        };
+
+        // Act
+        Func<Task> func = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
+
+        // Assert  
+        func.ShouldThrow(expected)
+            .Message.ShouldContain(expectedMessage);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Fact]
+    public async Task Given_Valid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Return_IChatClient()
+    {
+        // Arrange
+        var settings = BuildAppSettings();
+
+        // Act
+        var result = await LanguageModelConnector.CreateChatClientAsync(settings);
+
+        // Assert
+        result.ShouldNotBeNull();
+        result.ShouldBeAssignableTo<IChatClient>();
     }
 }
