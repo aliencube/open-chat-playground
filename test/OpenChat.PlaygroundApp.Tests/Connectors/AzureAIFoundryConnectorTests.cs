@@ -230,7 +230,7 @@ public class AzureAIFoundryConnectorTests
         var connector = new AzureAIFoundryConnector(settings);
 
         // Act
-        Func<Task> func = async () => await connector.GetChatClientAsync();
+        Func<Task> func = connector.GetChatClientAsync;
 
         // Assert  
         func.ShouldThrow<ArgumentException>()
@@ -250,6 +250,7 @@ public class AzureAIFoundryConnectorTests
 
         // Assert
         result.ShouldNotBeNull();
+        result.ShouldBeAssignableTo<IChatClient>();
     }
 
     [Trait("Category", "UnitTest")]
