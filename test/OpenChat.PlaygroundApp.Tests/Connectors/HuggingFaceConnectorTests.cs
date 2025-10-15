@@ -165,9 +165,9 @@ public class HuggingFaceConnectorTests
 	[Theory]
 	[InlineData(null, typeof(ArgumentNullException), "null")]
 	[InlineData("", typeof(UriFormatException), "empty")]
+	[InlineData("   ", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
 	[InlineData("invalid-uri-format", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
 	[InlineData("not-a-url", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
-	[InlineData("   ", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
 	public void Given_Invalid_BaseUrl_When_GetChatClient_Invoked_Then_It_Should_Throw(string? baseUrl, Type expected, string message)
 	{
 		// Arrange
