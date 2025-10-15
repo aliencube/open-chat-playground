@@ -182,8 +182,7 @@ public class HuggingFaceConnectorTests
 			.Message.ShouldContain(message);
 	}
 
-	[Trait("Category", "IntegrationTest")]
-	[Trait("Category", "LLMRequired")]
+	[Trait("Category", "UnitTest")]
 	[Theory]
 	[InlineData(null, typeof(HttpRequestException), "The requested name is valid, but no data of the requested type was found")]
 	[InlineData("", typeof(HttpRequestException), "The requested name is valid, but no data of the requested type was found")]

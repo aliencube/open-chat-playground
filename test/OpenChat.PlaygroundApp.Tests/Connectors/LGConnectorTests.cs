@@ -8,9 +8,7 @@ namespace OpenChat.PlaygroundApp.Tests.Connectors;
 
 public class LGConnectorTests
 {
-    // private const string BaseUrl = "https://test.lg-exaone/api";
-    // private const string Model = "hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B-GGUF";
-    private const string BaseUrl = "http://localhost:11434";
+    private const string BaseUrl = "https://test.lg-exaone/api";
     private const string Model = "hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B-GGUF";
 
     private static AppSettings BuildAppSettings(string? baseUrl = BaseUrl, string? model = Model)
@@ -212,8 +210,7 @@ public class LGConnectorTests
         client.ShouldBeAssignableTo<IChatClient>();
     }
 
-    [Trait("Category", "IntegrationTest")]
-    [Trait("Category", "LLMRequired")]
+    [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData(null, Model, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
