@@ -182,15 +182,16 @@ public class HuggingFaceConnectorTests
 			.Message.ShouldContain(message);
 	}
 
-	[Trait("Category", "UnitTest")]
+	[Trait("Category", "IntegrationTest")]
+	[Trait("Category", "LLMRequired")]
 	[Theory]
-	[InlineData(null, typeof(HttpRequestException), "The requested name is valid, but no data of the requested type was found")]
-	[InlineData("", typeof(HttpRequestException), "The requested name is valid, but no data of the requested type was found")]
-	[InlineData("  ", typeof(HttpRequestException), "The requested name is valid, but no data of the requested type was found")]
-	[InlineData("\t\n\r", typeof(HttpRequestException), "The requested name is valid, but no data of the requested type was found")]
-	[InlineData("hf.co/org/model", typeof(HttpRequestException), "The requested name is valid, but no data of the requested type was found")]
-	[InlineData("org/model-gguf", typeof(HttpRequestException), "The requested name is valid, but no data of the requested type was found")]
-	[InlineData("hf.co//model-gguf", typeof(HttpRequestException), "The requested name is valid, but no data of the requested type was found")]
+	[InlineData(null, typeof(HttpRequestException), "Name or service not known")]
+	[InlineData("", typeof(HttpRequestException), "Name or service not known")]
+	[InlineData("  ", typeof(HttpRequestException), "Name or service not known")]
+	[InlineData("\t\n\r", typeof(HttpRequestException), "Name or service not known")]
+	[InlineData("hf.co/org/model", typeof(HttpRequestException), "Name or service not known")]
+	[InlineData("org/model-gguf", typeof(HttpRequestException), "Name or service not known")]
+	[InlineData("hf.co//model-gguf", typeof(HttpRequestException), "Name or service not known")]
 	public void Given_Invalid_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
 	{
         // Arrange		
