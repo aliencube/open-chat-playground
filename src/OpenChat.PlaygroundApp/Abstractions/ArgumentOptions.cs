@@ -164,6 +164,8 @@ public abstract class ArgumentOptions
                 settings.AmazonBedrock.SecretAccessKey = amazonBedrock.SecretAccessKey ?? settings.AmazonBedrock.SecretAccessKey;
                 settings.AmazonBedrock.Region = amazonBedrock.Region ?? settings.AmazonBedrock.Region;
                 settings.AmazonBedrock.ModelId = amazonBedrock.ModelId ?? settings.AmazonBedrock.ModelId;
+
+                settings.Model = amazonBedrock.ModelId ?? settings.AmazonBedrock.ModelId;
                 break;
 
             case AzureAIFoundryArgumentOptions azureAIFoundry:
@@ -171,6 +173,8 @@ public abstract class ArgumentOptions
                 settings.AzureAIFoundry.Endpoint = azureAIFoundry.Endpoint ?? settings.AzureAIFoundry.Endpoint;
                 settings.AzureAIFoundry.ApiKey = azureAIFoundry.ApiKey ?? settings.AzureAIFoundry.ApiKey;
                 settings.AzureAIFoundry.DeploymentName = azureAIFoundry.DeploymentName ?? settings.AzureAIFoundry.DeploymentName;
+
+                settings.Model = azureAIFoundry.DeploymentName ?? settings.AzureAIFoundry.DeploymentName;
                 break;
 
             case GitHubModelsArgumentOptions github:
@@ -178,12 +182,16 @@ public abstract class ArgumentOptions
                 settings.GitHubModels.Endpoint = github.Endpoint ?? settings.GitHubModels.Endpoint;
                 settings.GitHubModels.Token = github.Token ?? settings.GitHubModels.Token;
                 settings.GitHubModels.Model = github.Model ?? settings.GitHubModels.Model;
+
+                settings.Model = github.Model ?? settings.GitHubModels.Model;
                 break;
 
             case GoogleVertexAIArgumentOptions googleVertexAI:
                 settings.GoogleVertexAI ??= new GoogleVertexAISettings();
                 settings.GoogleVertexAI.ApiKey = googleVertexAI.ApiKey ?? settings.GoogleVertexAI.ApiKey;
                 settings.GoogleVertexAI.Model = googleVertexAI.Model ?? settings.GoogleVertexAI.Model;
+
+                settings.Model = googleVertexAI.Model ?? settings.GoogleVertexAI.Model;
                 break;
 
             // case DockerModelRunnerArgumentOptions dockerModelRunner:
@@ -192,30 +200,40 @@ public abstract class ArgumentOptions
             case FoundryLocalArgumentOptions foundryLocal:
                 settings.FoundryLocal ??= new FoundryLocalSettings();
                 settings.FoundryLocal.Alias = foundryLocal.Alias ?? settings.FoundryLocal.Alias;
+
+                settings.Model = foundryLocal.Alias ?? settings.FoundryLocal.Alias;
                 break;
 
             case HuggingFaceArgumentOptions huggingFace:
                 settings.HuggingFace ??= new HuggingFaceSettings();
                 settings.HuggingFace.BaseUrl = huggingFace.BaseUrl ?? settings.HuggingFace.BaseUrl;
                 settings.HuggingFace.Model = huggingFace.Model ?? settings.HuggingFace.Model;
+
+                settings.Model = huggingFace.Model ?? settings.HuggingFace.Model;
                 break;
 
             case OllamaArgumentOptions ollama:
                 settings.Ollama ??= new OllamaSettings();
                 settings.Ollama.BaseUrl = ollama.BaseUrl ?? settings.Ollama.BaseUrl;
                 settings.Ollama.Model = ollama.Model ?? settings.Ollama.Model;
+
+                settings.Model = ollama.Model ?? settings.Ollama.Model;
                 break;
 
             case AnthropicArgumentOptions anthropic:
                 settings.Anthropic ??= new AnthropicSettings();
                 settings.Anthropic.ApiKey = anthropic.ApiKey ?? settings.Anthropic.ApiKey;
                 settings.Anthropic.Model = anthropic.Model ?? settings.Anthropic.Model;
+
+                settings.Model = anthropic.Model ?? settings.Anthropic.Model;
                 break;
 
             case LGArgumentOptions lg:
                 settings.LG ??= new LGSettings();
                 settings.LG.BaseUrl = lg.BaseUrl ?? settings.LG.BaseUrl;
                 settings.LG.Model = lg.Model ?? settings.LG.Model;
+
+                settings.Model = lg.Model ?? settings.LG.Model;
                 break;
 
             // case NaverArgumentOptions naver:
@@ -225,6 +243,8 @@ public abstract class ArgumentOptions
                 settings.OpenAI ??= new OpenAISettings();
                 settings.OpenAI.ApiKey = openai.ApiKey ?? settings.OpenAI.ApiKey;
                 settings.OpenAI.Model = openai.Model ?? settings.OpenAI.Model;
+
+                settings.Model = openai.Model ?? settings.OpenAI.Model;
                 break;
 
             case UpstageArgumentOptions upstage:
@@ -232,6 +252,8 @@ public abstract class ArgumentOptions
                 settings.Upstage.BaseUrl = upstage.BaseUrl ?? settings.Upstage.BaseUrl;
                 settings.Upstage.ApiKey = upstage.ApiKey ?? settings.Upstage.ApiKey;
                 settings.Upstage.Model = upstage.Model ?? settings.Upstage.Model;
+
+                settings.Model = upstage.Model ?? settings.Upstage.Model;
                 break;
 
             default:
