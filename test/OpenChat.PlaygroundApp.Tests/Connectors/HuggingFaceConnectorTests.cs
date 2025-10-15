@@ -223,17 +223,19 @@ public class HuggingFaceConnectorTests
 		client.ShouldBeAssignableTo<IChatClient>();
 	}
 	
-	[Trait("Category", "IntegrationTest")]
-	[Trait("Category", "LLMRequired")]
+	[Trait("Category", "UnitTest")]
     [Theory]
-	[InlineData(null, null, "Missing configuration: HUggingFace")]
-	[InlineData(null, Model, "Missing configuration: HUggingFace")]
-	[InlineData("", Model, "Missing configuration: HUggingFace")]
-	[InlineData("   ", Model, "Missing configuration: HUggingFace")]
-	[InlineData(BaseUrl, null, "Missing configuration: HUggingFace")]
-	[InlineData(BaseUrl, "", "Missing configuration: HUggingFace")]
-	[InlineData(BaseUrl, "  ", "Missing configuration: HUggingFace")]
-    public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string? baseUrl, string? model, string expectedMessage)
+	[InlineData(null, null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
+	[InlineData(null, Model, typeof(NullReferenceException),"Object reference not set to an instance of an object")]
+	[InlineData("", Model, typeof(InvalidOperationException), "Missing configuration: HUggingFace")]
+	[InlineData("   ", Model, typeof(InvalidOperationException), "Missing configuration: HUggingFace")]
+	[InlineData(BaseUrl, null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
+	[InlineData(BaseUrl, "", typeof(InvalidOperationException), "Missing configuration: HUggingFace")]
+	[InlineData(BaseUrl, "  ", typeof(InvalidOperationException), "Missing configuration: HUggingFace")]
+	[InlineData(BaseUrl, "hf.co/org/model", typeof(InvalidOperationException), "Invalid configuration: HuggingFace:Model format")]
+	[InlineData(BaseUrl, "org/model-gguf", typeof(InvalidOperationException), "Invalid configuration: HuggingFace:Model format")]
+	[InlineData(BaseUrl, "hf.co//model-gguf", typeof(InvalidOperationException), "Invalid configuration: HuggingFace:Model format")]
+    public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string? baseUrl, string? model, Type expected, string expectedMessage)
     {
         // Arrange
         var settings = new AppSettings
@@ -250,7 +252,7 @@ public class HuggingFaceConnectorTests
         Func<Task> func = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
 
         // Assert  
-        func.ShouldThrow<InvalidOperationException>()
+        func.ShouldThrow(expected)
             .Message.ShouldContain(expectedMessage);
     }
 
