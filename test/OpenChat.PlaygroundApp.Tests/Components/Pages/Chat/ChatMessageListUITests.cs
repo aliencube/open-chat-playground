@@ -49,13 +49,13 @@ public class ChatMessageListUITests : PageTest
 
     [Trait("Category", "IntegrationTest")]
     [Fact]
-    public async Task Given_InitialState_When_Page_Loads_Then_InProgress_Attribute_Should_Be_Null()
+    public async Task Given_InitialState_When_NoUserInteraction_Then_InProgressMessage_Should_Be_Null()
     {
-        // Act - Check initial state before any user interaction
+        // Act
         var chatMessages = Page.Locator("chat-messages");
         var inProgressAttribute = await chatMessages.GetAttributeAsync("in-progress");
         
-        // Assert - Initially no InProgressMessage, so attribute should be null
+        // Assert
         inProgressAttribute.ShouldBeNull();
     }
 
@@ -63,20 +63,18 @@ public class ChatMessageListUITests : PageTest
     [Theory]
     [InlineData("Test message for container")]
     [InlineData("Another message for verification")]
-    public async Task Given_MessageInput_When_TextEntered_Then_Container_Should_Remain_Functional(string userMessage)
+    public async Task Given_BasicTextInput_When_NoMessageSending_Then_ContainerStructure_And_InputFunction_Should_Work(string userMessage)
     {
         // Arrange
         var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
         var messageContainer = Page.Locator(".message-list-container");
         
-        // Act - Test basic text input without expecting successful message sending
+        // Act
         await textArea.FillAsync(userMessage);
-        
-        // Verify container structure remains intact
         var containerExists = await messageContainer.IsVisibleAsync();
         var inputValue = await textArea.InputValueAsync();
         
-        // Assert - Verify ChatMessageList container is functional and input works
+        // Assert
         containerExists.ShouldBeTrue();
         inputValue.ShouldBe(userMessage);
     }
@@ -98,27 +96,29 @@ public class ChatMessageListUITests : PageTest
     [Trait("Category", "IntegrationTest")]
     [Theory]
     [InlineData("To get started, try asking about anything.")]
-    [InlineData("User Message Textarea")]
-    public async Task Given_EmptyState_When_NoMessages_Then_Expected_Elements_Should_Be_Visible(string expectedElement)
+    public async Task Given_EmptyState_When_NoMessages_Then_NoMessagesContent_Should_Be_Visible(string expectedText)
     {
-        // Act - Test the empty state rendering of ChatMessageList
-        if (expectedElement == "To get started, try asking about anything.")
-        {
-            var noMessagesElement = Page.Locator(".no-messages");
-            var isVisible = await noMessagesElement.IsVisibleAsync();
-            var content = await noMessagesElement.InnerTextAsync();
-            
-            // Assert - Verify NoMessagesContent is properly rendered
-            isVisible.ShouldBeTrue();
-            content.ShouldContain(expectedElement);
-        }
-        else if (expectedElement == "User Message Textarea")
-        {
-            // Test input field exists
-            var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = expectedElement });
-            var inputExists = await textArea.IsVisibleAsync();
-            inputExists.ShouldBeTrue();
-        }
+        // Act
+        var noMessagesElement = Page.Locator(".no-messages");
+        var isVisible = await noMessagesElement.IsVisibleAsync();
+        var content = await noMessagesElement.InnerTextAsync();
+        
+        // Assert
+        isVisible.ShouldBeTrue();
+        content.ShouldContain(expectedText);
+    }
+
+    [Trait("Category", "IntegrationTest")]
+    [Theory]
+    [InlineData("User Message Textarea")]
+    public async Task Given_EmptyState_When_NoMessages_Then_InputField_Should_Be_Visible(string inputFieldName)
+    {
+        // Act
+        var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = inputFieldName });
+        var inputExists = await textArea.IsVisibleAsync();
+        
+        // Assert
+        inputExists.ShouldBeTrue();
     }
 
     public override async Task DisposeAsync()

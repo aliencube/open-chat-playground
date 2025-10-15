@@ -7,7 +7,7 @@ namespace OpenChat.PlaygroundApp.Components.Pages.Chat;
 public partial class ChatMessageList : ComponentBase
 {
     [Inject]
-    private IJSRuntime JS { get; set; } = default!;
+    public IJSRuntime? JS { get; set; }
 
     [Parameter]
     public required IEnumerable<ChatMessage> Messages { get; set; }
@@ -24,7 +24,7 @@ public partial class ChatMessageList : ComponentBase
     {
         if (firstRender)
         {
-            await JS.InvokeVoidAsync("import", "./Components/Pages/Chat/ChatMessageList.razor.js");
+            await JS!.InvokeVoidAsync("import", "./Components/Pages/Chat/ChatMessageList.razor.js");
         }
     }
 }
