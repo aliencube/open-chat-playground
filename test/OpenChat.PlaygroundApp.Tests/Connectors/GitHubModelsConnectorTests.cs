@@ -220,7 +220,7 @@ public class GitHubModelsConnectorTests
     [Theory]
     [InlineData(null, typeof(ArgumentNullException), "model")]
     [InlineData("", typeof(ArgumentException), "model")]
-    public async Task Given_Missing_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
+    public void Given_Missing_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
     {
         // Arrange
         var settings = BuildAppSettings(model: model);
