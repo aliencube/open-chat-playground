@@ -1,10 +1,10 @@
+using Microsoft.Extensions.AI;
+
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Configurations;
 using OpenChat.PlaygroundApp.Connectors;
 
 namespace OpenChat.PlaygroundApp.Tests.Connectors;
-
-
 
 public class UpstageConnectorTests
 {
@@ -41,10 +41,39 @@ public class UpstageConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Fact]
+    public void Given_Null_Settings_When_Instantiated_Then_It_Should_Throw()
+    {
+        // Act
+        Action action = () => new UpstageConnector(null!);
+
+        // Assert
+        action.ShouldThrow<NullReferenceException>()
+              .Message.ShouldContain("Object reference not set to an instance of an object");
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Fact]
+    public void Given_Settings_When_Instantiated_Then_It_Should_Return()
+    {
+        // Arrange
+        var settings = BuildAppSettings();
+
+        // Act
+        var result = new UpstageConnector(settings);
+
+        // Assert
+        result.ShouldNotBeNull();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Fact]
     public void Given_Settings_Is_Null_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
     {
         // Arrange
-        var appSettings = new AppSettings { ConnectorType = ConnectorType.Upstage, Upstage = null };
+        var appSettings = new AppSettings {
+            ConnectorType = ConnectorType.Upstage,
+            Upstage = null
+        };
         var connector = new UpstageConnector(appSettings);
 
         // Act
@@ -60,6 +89,7 @@ public class UpstageConnectorTests
     [InlineData(null, typeof(InvalidOperationException), "Upstage:BaseUrl")]
     [InlineData("", typeof(InvalidOperationException), "Upstage:BaseUrl")]
     [InlineData("   ", typeof(InvalidOperationException), "Upstage:BaseUrl")]
+    [InlineData("\t\r\n", typeof(InvalidOperationException), "Upstage:BaseUrl")]
     public void Given_Invalid_BaseUrl_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? baseUrl, Type expectedType, string expectedMessage)
     {
         // Arrange
@@ -79,6 +109,7 @@ public class UpstageConnectorTests
     [InlineData(null, typeof(InvalidOperationException), "Upstage:ApiKey")]
     [InlineData("", typeof(InvalidOperationException), "Upstage:ApiKey")]
     [InlineData("   ", typeof(InvalidOperationException), "Upstage:ApiKey")]
+    [InlineData("\t\r\n", typeof(InvalidOperationException), "Upstage:ApiKey")]
     public void Given_Invalid_ApiKey_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? apiKey, Type expectedType, string expectedMessage)
     {
         // Arrange
@@ -98,6 +129,7 @@ public class UpstageConnectorTests
     [InlineData(null, typeof(InvalidOperationException), "Upstage:Model")]
     [InlineData("", typeof(InvalidOperationException), "Upstage:Model")]
     [InlineData("   ", typeof(InvalidOperationException), "Upstage:Model")]
+    [InlineData("\t\r\n", typeof(InvalidOperationException), "Upstage:Model")]
     public void Given_Invalid_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? model, Type expectedType, string expectedMessage)
     {
         // Arrange
@@ -129,33 +161,43 @@ public class UpstageConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Fact]
-    public async Task Given_Valid_Settings_When_GetChatClient_Invoked_Then_It_Should_Return_ChatClient()
+    public void Given_Null_UpstageSettings_When_GetChatClientAsync_Invoked_Then_It_Should_Throw()
     {
         // Arrange
-        var settings = BuildAppSettings();
+        var settings = new AppSettings
+        {
+            ConnectorType = ConnectorType.Upstage,
+            Upstage = null
+        };
         var connector = new UpstageConnector(settings);
 
         // Act
-        var client = await connector.GetChatClientAsync();
-
-        // Assert
-        client.ShouldNotBeNull();
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_Settings_Is_Null_When_GetChatClientAsync_Invoked_Then_It_Should_Throw()
-    {
-        // Arrange
-        var appSettings = new AppSettings { ConnectorType = ConnectorType.Upstage, Upstage = null };
-        var connector = new UpstageConnector(appSettings);
-
-        // Act
-        Func<Task> func = async () => await connector.GetChatClientAsync();
+        Func<Task> func = connector.GetChatClientAsync;
 
         // Assert
         func.ShouldThrow<InvalidOperationException>()
-            .Message.ShouldContain("Missing configuration: Upstage:ApiKey.");
+            .Message.ShouldContain("Missing configuration");
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData(null, typeof(InvalidOperationException), "Upstage:BaseUrl")]
+    [InlineData("", typeof(UriFormatException), "empty")]
+    [InlineData("invalid-uri-format", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
+    [InlineData("not-a-url", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
+    [InlineData("   ", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
+    public void Given_Missing_BaseUrl_When_GetChatClient_Invoked_Then_It_Should_Throw(string? baseUrl, Type expected, string message)
+    {
+        // Arrange
+        var settings = BuildAppSettings(baseUrl: baseUrl);
+        var connector = new UpstageConnector(settings);
+
+        // Act
+        Func<Task> func = connector.GetChatClientAsync;
+
+        // Assert
+        func.ShouldThrow(expected)
+            .Message.ShouldContain(message);
     }
 
     [Trait("Category", "UnitTest")]
@@ -169,25 +211,7 @@ public class UpstageConnectorTests
         var connector = new UpstageConnector(settings);
 
         // Act
-        Func<Task> func = async () => await connector.GetChatClientAsync();
-
-        // Assert
-        func.ShouldThrow(expected)
-            .Message.ShouldContain(message);
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData(null, typeof(InvalidOperationException), "Upstage:BaseUrl")]
-    [InlineData("", typeof(UriFormatException), "empty")]
-    public void Given_Missing_BaseUrl_When_GetChatClient_Invoked_Then_It_Should_Throw(string? baseUrl, Type expected, string message)
-    {
-        // Arrange
-        var settings = BuildAppSettings(baseUrl: baseUrl);
-        var connector = new UpstageConnector(settings);
-
-        // Act
-        Func<Task> func = async () => await connector.GetChatClientAsync();
+        Func<Task> func = connector.GetChatClientAsync;
 
         // Assert
         func.ShouldThrow(expected)
@@ -205,7 +229,7 @@ public class UpstageConnectorTests
         var connector = new UpstageConnector(settings);
 
         // Act
-        Func<Task> func = async () => await connector.GetChatClientAsync();
+        Func<Task> func = connector.GetChatClientAsync;
 
         // Assert
         func.ShouldThrow(expected)
@@ -214,16 +238,18 @@ public class UpstageConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Fact]
-    public async Task Given_Valid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Return_ChatClient()
+    public async Task Given_Valid_Settings_When_GetChatClient_Invoked_Then_It_Should_Return_ChatClient()
     {
         // Arrange
         var settings = BuildAppSettings();
+        var connector = new UpstageConnector(settings);
 
         // Act
-        var client = await LanguageModelConnector.CreateChatClientAsync(settings);
+        var client = await connector.GetChatClientAsync();
 
         // Assert
         client.ShouldNotBeNull();
+        client.ShouldBeAssignableTo<IChatClient>();
     }
 
     [Trait("Category", "UnitTest")]
@@ -257,5 +283,20 @@ public class UpstageConnectorTests
         // Assert
         func.ShouldThrow(expectedType)
             .Message.ShouldContain(expectedMessage);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Fact]
+    public async Task Given_Valid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Return_ChatClient()
+    {
+        // Arrange
+        var settings = BuildAppSettings();
+
+        // Act
+        var client = await LanguageModelConnector.CreateChatClientAsync(settings);
+
+        // Assert
+        client.ShouldNotBeNull();
+        client.ShouldBeAssignableTo<IChatClient>();
     }
 }

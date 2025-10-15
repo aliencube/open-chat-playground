@@ -194,7 +194,7 @@ public class AzureAIFoundryConnectorTests
         var connector = new AzureAIFoundryConnector(settings);
 
         // Act
-        Func<Task> func = async () => await connector.GetChatClientAsync();
+        Func<Task> func = connector.GetChatClientAsync;
 
         // Assert
         func.ShouldThrow(expectedType)
