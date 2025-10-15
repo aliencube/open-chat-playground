@@ -88,6 +88,7 @@ public class LGConnectorTests
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData("", typeof(InvalidOperationException), "LG:BaseUrl")]
     [InlineData("   ", typeof(InvalidOperationException), "LG:BaseUrl")]
+    [InlineData("\t\n\r", typeof(InvalidOperationException), "LG:BaseUrl")]
     public void Given_Invalid_BaseUrl_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? baseUrl, Type expectedType, string expectedMessage)
     {
         // Arrange
@@ -107,6 +108,7 @@ public class LGConnectorTests
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData("", typeof(InvalidOperationException), "LG:Model")]
     [InlineData("   ", typeof(InvalidOperationException), "LG:Model")]
+    [InlineData("\t\n\r", typeof(InvalidOperationException), "LG:Model")]
     [InlineData("invalid-model-format", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
     [InlineData("random-name", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
     [InlineData("hf.co/other-org/model-GGUF", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
@@ -148,6 +150,9 @@ public class LGConnectorTests
     [Theory]
     [InlineData(null, typeof(ArgumentNullException), "null")]
     [InlineData("", typeof(UriFormatException), "empty")]
+    [InlineData("invalid-uri-format", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
+    [InlineData("not-a-url", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
+    [InlineData("   ", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
     public void Given_Invalid_BaseUrl_When_GetChatClient_Invoked_Then_It_Should_Throw(string? baseUrl, Type expectedType, string message)
     {
         // Arrange
@@ -202,9 +207,11 @@ public class LGConnectorTests
 
         // Assert
         client.ShouldNotBeNull();
+        client.ShouldBeAssignableTo<IChatClient>();
     }
 
-    [Trait("Category", "UnitTest")]
+    [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "LLMRequired")]
     [Theory]
     [InlineData(null, "hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B-GGUF", typeof(NullReferenceException))]
     [InlineData("", "hf.co/LGAI-EXAONE/EXAONE-4.0-32B-GGUF", typeof(InvalidOperationException))]

@@ -173,7 +173,7 @@ public class AzureAIFoundryConnectorTests
         var connector = new AzureAIFoundryConnector(settings);
 
         // Act
-        Func<Task> func = connector.GetChatClientAsync;
+        Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert
         func.ShouldThrow<NullReferenceException>()
@@ -194,7 +194,7 @@ public class AzureAIFoundryConnectorTests
         var connector = new AzureAIFoundryConnector(settings);
 
         // Act
-        Func<Task> func = connector.GetChatClientAsync;
+        Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert
         func.ShouldThrow(expectedType)
@@ -230,7 +230,7 @@ public class AzureAIFoundryConnectorTests
         var connector = new AzureAIFoundryConnector(settings);
 
         // Act
-        Func<Task> func = connector.GetChatClientAsync;
+        Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert  
         func.ShouldThrow<ArgumentException>()

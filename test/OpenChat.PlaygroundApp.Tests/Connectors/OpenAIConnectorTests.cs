@@ -150,7 +150,7 @@ public class OpenAIConnectorTests
         var connector = new OpenAIConnector(settings);
 
         // Act
-        Func<Task> func = connector.GetChatClientAsync;
+        Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert
         func.ShouldThrow<InvalidOperationException>()
@@ -168,7 +168,7 @@ public class OpenAIConnectorTests
         var connector = new OpenAIConnector(settings);
 
         // Act
-        Func<Task> func = connector.GetChatClientAsync;
+        Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert
         func.ShouldThrow(expected)
@@ -186,7 +186,7 @@ public class OpenAIConnectorTests
         var connector = new OpenAIConnector(settings);
 
         // Act
-        Func<Task> func = connector.GetChatClientAsync;
+        Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert
         func.ShouldThrow(expected)

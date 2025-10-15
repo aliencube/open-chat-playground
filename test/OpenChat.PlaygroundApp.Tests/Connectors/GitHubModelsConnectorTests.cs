@@ -173,7 +173,7 @@ public class GitHubModelsConnectorTests
         var connector = new GitHubModelsConnector(settings);
 
         // Act
-        Func<Task> func = connector.GetChatClientAsync;
+        Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert
         func.ShouldThrow<InvalidOperationException>()
@@ -191,7 +191,7 @@ public class GitHubModelsConnectorTests
         var connector = new GitHubModelsConnector(settings);
 
         // Act
-        Func<Task> func = connector.GetChatClientAsync;
+        Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert
         func.ShouldThrow(expected)
@@ -209,7 +209,7 @@ public class GitHubModelsConnectorTests
         var connector = new GitHubModelsConnector(settings);
 
         // Act
-        Func<Task> func = connector.GetChatClientAsync;
+        Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert
         func.ShouldThrow(expected)
@@ -227,7 +227,7 @@ public class GitHubModelsConnectorTests
         var connector = new GitHubModelsConnector(settings);
 
         // Act
-        Func<Task> func = connector.GetChatClientAsync;
+        Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert
         func.ShouldThrow(expected)

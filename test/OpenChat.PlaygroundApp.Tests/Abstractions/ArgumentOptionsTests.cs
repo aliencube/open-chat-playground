@@ -165,9 +165,10 @@ public class ArgumentOptionsTests
         var config = BuildConfig((key, value));
         var args = Array.Empty<string>();
 
-        var ex = Assert.Throws<InvalidOperationException>(() => ArgumentOptions.Parse(config, args));
+        var action = () => ArgumentOptions.Parse(config, args);
 
-        ex.Message.ShouldContain($"{value}ArgumentOptions");
+        action.ShouldThrow<InvalidOperationException>()
+            .Message.ShouldContain($"{value}ArgumentOptions");
     }
 
     [Trait("Category", "UnitTest")]

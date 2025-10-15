@@ -1,3 +1,6 @@
+using Microsoft.Extensions.AI;
+
+using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Configurations;
 using OpenChat.PlaygroundApp.Connectors;
 
@@ -22,12 +25,41 @@ public class HuggingFaceConnectorTests
 	}
 
 	[Trait("Category", "UnitTest")]
+	[Theory]
+	[InlineData(typeof(LanguageModelConnector), typeof(HuggingFaceConnector), true)]
+	[InlineData(typeof(HuggingFaceConnector), typeof(LanguageModelConnector), false)]
+	public void Given_BaseType_Then_It_Should_Be_AssignableFrom_DerivedType(Type baseType, Type derivedType, bool expected)
+	{
+		// Act
+		var result = baseType.IsAssignableFrom(derivedType);
+
+		// Assert
+		result.ShouldBe(expected);
+	}
+	
+	[Trait("Category", "UnitTest")]
+    [Fact]
+    public void Given_Null_Settings_When_Instantiated_Then_It_Should_Throw()
+    {
+        // Act
+        Action action = () => new HuggingFaceConnector(null!);
+
+        // Assert
+        action.ShouldThrow<ArgumentNullException>()
+              .Message.ShouldContain("settings");
+    }
+
+	[Trait("Category", "UnitTest")]
 	[Fact]
 	public void Given_Settings_Is_Null_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
 	{
-        // Arrange
-        var settings = new AppSettings { ConnectorType = ConnectorType.HuggingFace, HuggingFace = null };
-        var connector = new HuggingFaceConnector(settings);
+		// Arrange
+		var settings = new AppSettings
+		{
+			ConnectorType = ConnectorType.HuggingFace,
+			HuggingFace = null
+		};
+		var connector = new HuggingFaceConnector(settings);
 
 		// Act
 		Action action = () => connector.EnsureLanguageModelSettingsValid();
@@ -36,6 +68,40 @@ public class HuggingFaceConnectorTests
 		action.ShouldThrow<InvalidOperationException>()
 			  .Message.ShouldContain("HuggingFace");
 	}
+
+	[Trait("Category", "UnitTest")]
+	[Fact]
+	public void Given_Settings_When_Instantiated_Then_It_Should_Return()
+	{
+		// Arrange
+		var settings = BuildAppSettings();
+
+		// Act
+		var result = new HuggingFaceConnector(settings);
+
+		// Assert
+		result.ShouldNotBeNull();
+	}
+	
+	[Trait("Category", "UnitTest")]
+    [Fact]
+    public void Given_Null_Settings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
+    {
+        // Arrange
+        var settings = new AppSettings
+        {
+            ConnectorType = ConnectorType.HuggingFace,
+            HuggingFace = null
+        };
+        var connector = new HuggingFaceConnector(settings);
+
+        // Act
+        Action action = () => connector.EnsureLanguageModelSettingsValid();
+
+        // Assert
+        action.ShouldThrow<InvalidOperationException>()
+              .Message.ShouldContain("HuggingFace");
+    }
 
 	[Trait("Category", "UnitTest")]
 	[Theory]
@@ -86,7 +152,7 @@ public class HuggingFaceConnectorTests
 	{
 		// Arrange
 		var settings = BuildAppSettings();
-        var connector = new HuggingFaceConnector(settings);
+		var connector = new HuggingFaceConnector(settings);
 
 		// Act
 		var result = connector.EnsureLanguageModelSettingsValid();
@@ -95,37 +161,112 @@ public class HuggingFaceConnectorTests
 		result.ShouldBeTrue();
 	}
 
-    [Trait("Category", "IntegrationTest")]
-    [Trait("Category", "LLMRequired")]
+	[Trait("Category", "UnitTest")]
+	[Theory]
+	[InlineData(null, typeof(ArgumentNullException), "null")]
+	[InlineData("", typeof(UriFormatException), "empty")]
+	[InlineData("invalid-uri-format", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
+	[InlineData("not-a-url", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
+	[InlineData("   ", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
+	public void Given_Invalid_BaseUrl_When_GetChatClient_Invoked_Then_It_Should_Throw(string? baseUrl, Type expected, string message)
+	{
+		// Arrange
+		var settings = BuildAppSettings(baseUrl: baseUrl);
+		var connector = new HuggingFaceConnector(settings);
+
+		// Act
+		Func<Task> func = async () => await connector.GetChatClientAsync();
+
+		// Assert
+		func.ShouldThrow(expected)
+			.Message.ShouldContain(message);
+	}
+
+	[Trait("Category", "IntegrationTest")]
+	[Trait("Category", "LLMRequired")]
+	[Theory]
+	[InlineData(null, typeof(HttpRequestException), "The requested name is valid, but no data of the requested type was found")]
+	[InlineData("", typeof(HttpRequestException), "The requested name is valid, but no data of the requested type was found")]
+	[InlineData("  ", typeof(HttpRequestException), "The requested name is valid, but no data of the requested type was found")]
+	[InlineData("\t\n\r", typeof(HttpRequestException), "The requested name is valid, but no data of the requested type was found")]
+	[InlineData("hf.co/org/model", typeof(HttpRequestException), "The requested name is valid, but no data of the requested type was found")]
+	[InlineData("org/model-gguf", typeof(HttpRequestException), "The requested name is valid, but no data of the requested type was found")]
+	[InlineData("hf.co//model-gguf", typeof(HttpRequestException), "The requested name is valid, but no data of the requested type was found")]
+	public void Given_Invalid_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
+	{
+        // Arrange		
+		var settings = BuildAppSettings(model: model);
+		var connector = new HuggingFaceConnector(settings);
+
+		// Act
+		Func<Task> func = async () => await connector.GetChatClientAsync();
+
+		// Assert
+		func.ShouldThrow(expected)
+			.Message.ShouldContain(message);
+	}
+
+	[Trait("Category", "IntegrationTest")]
+	[Trait("Category", "LLMRequired")]
 	[Fact]
 	public async Task Given_Valid_Settings_When_GetChatClient_Invoked_Then_It_Should_Return_ChatClient()
 	{
 		// Arrange
 		var settings = BuildAppSettings();
-        var connector = new HuggingFaceConnector(settings);
+		var connector = new HuggingFaceConnector(settings);
 
 		// Act
 		var client = await connector.GetChatClientAsync();
 
 		// Assert
 		client.ShouldNotBeNull();
+		client.ShouldBeAssignableTo<IChatClient>();
 	}
+	
+	[Trait("Category", "IntegrationTest")]
+	[Trait("Category", "LLMRequired")]
+    [Theory]
+	[InlineData(null, null, "Missing configuration: HUggingFace")]
+	[InlineData(null, Model, "Missing configuration: HUggingFace")]
+	[InlineData("", Model, "Missing configuration: HUggingFace")]
+	[InlineData("   ", Model, "Missing configuration: HUggingFace")]
+	[InlineData(BaseUrl, null, "Missing configuration: HUggingFace")]
+	[InlineData(BaseUrl, "", "Missing configuration: HUggingFace")]
+	[InlineData(BaseUrl, "  ", "Missing configuration: HUggingFace")]
+    public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string? baseUrl, string? model, string expectedMessage)
+    {
+        // Arrange
+        var settings = new AppSettings
+        {
+            ConnectorType = ConnectorType.HuggingFace,
+            HuggingFace = new HuggingFaceSettings
+            {
+                BaseUrl = baseUrl,
+                Model = model
+            }
+        };
 
-	[Trait("Category", "UnitTest")]
-	[Theory]
-	[InlineData(null, typeof(ArgumentNullException), "null")]
-	[InlineData("", typeof(UriFormatException), "empty")]
-	public async Task Given_Missing_BaseUrl_When_GetChatClient_Invoked_Then_It_Should_Throw(string? baseUrl, Type expected, string message)
-	{
-		// Arrange
-		var settings = BuildAppSettings(baseUrl: baseUrl);
-        var connector = new HuggingFaceConnector(settings);
+        // Act
+        Func<Task> func = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
 
-		// Act
-		Func<Task> func = connector.GetChatClientAsync;
+        // Assert  
+        func.ShouldThrow<InvalidOperationException>()
+            .Message.ShouldContain(expectedMessage);
+    }
 
-		// Assert
-		var ex = await func.ShouldThrowAsync(expected);
-		ex.Message.ShouldContain(message);
-	}
+	[Trait("Category", "IntegrationTest")]
+	[Trait("Category", "LLMRequired")]
+    [Fact]
+    public async Task Given_Valid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Return_IChatClient()
+    {
+        // Arrange
+        var settings = BuildAppSettings();
+
+        // Act
+        var result = await LanguageModelConnector.CreateChatClientAsync(settings);
+
+        // Assert
+        result.ShouldNotBeNull();
+        result.ShouldBeAssignableTo<IChatClient>();
+    }
 }
