@@ -1,6 +1,8 @@
 ﻿using Microsoft.Playwright;
 using Microsoft.Playwright.Xunit;
 
+using OpenChat.PlaygroundApp.Connectors;
+
 namespace OpenChat.PlaygroundApp.Tests.Components.Pages.Chat;
 
 public class ChatHeaderUITests : PageTest
@@ -18,10 +20,24 @@ public class ChatHeaderUITests : PageTest
     public async Task Given_Root_Page_When_Loaded_Then_Header_Should_Be_Visible(string expected)
     {
         // Act
-        var title = await Page.Locator("h1").InnerTextAsync();
+        var title = await Page.Locator("span.app-title-text").InnerTextAsync();
 
         // Assert
         title.ShouldBe(expected);
+    }
+
+    [Trait("Category", "IntegrationTest")]
+    [Fact]
+    public async Task Given_Root_Page_When_Loaded_Then_Header_Should_Display_ConnectorType_And_Model()
+    {
+        // Act
+        var connector = await Page.Locator("span.app-connector").InnerTextAsync();
+        var model = await Page.Locator("span.app-model").InnerTextAsync();
+
+        // Assert
+        connector.ShouldNotBeNullOrEmpty();
+        Enum.IsDefined(typeof(ConnectorType), connector).ShouldBeTrue();
+        model.ShouldNotBeNullOrEmpty();
     }
 
     [Trait("Category", "IntegrationTest")]
