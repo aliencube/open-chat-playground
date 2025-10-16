@@ -1,5 +1,3 @@
-@inject IJSRuntime JS
-
 <div class="message-list-container">
     <chat-messages class="page-width message-list" in-progress="@(InProgressMessage is not null)">
         @foreach (var message in Messages)
@@ -17,25 +15,3 @@
         }
     </chat-messages>
 </div>
-
-@code {
-    [Parameter]
-    public required IEnumerable<ChatMessage> Messages { get; set; }
-
-    [Parameter]
-    public ChatMessage? InProgressMessage { get; set; }
-
-    [Parameter]
-    public RenderFragment? NoMessagesContent { get; set; }
-
-    private bool IsEmpty => !Messages.Any(m => (m.Role == ChatRole.User || m.Role == ChatRole.Assistant) && !string.IsNullOrEmpty(m.Text));
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            // Activates the auto-scrolling behavior
-            await JS.InvokeVoidAsync("import", "./Components/Pages/Chat/ChatMessageList.razor.js");
-        }
-    }
-}
