@@ -8,9 +8,9 @@ namespace OpenChat.PlaygroundApp.Tests.Connectors;
 
 public class FoundryLocalConnectorTests
 {
-    private const string Alais = "phi-4-mini";
+    private const string Alias = "phi-4-mini";
 
-    private static AppSettings BuildAppSettings(string? alias = Alais)
+    private static AppSettings BuildAppSettings(string? alias = Alias)
     {
         return new AppSettings
         {
