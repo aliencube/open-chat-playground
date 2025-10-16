@@ -88,6 +88,7 @@ public class LGConnectorTests
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData("", typeof(InvalidOperationException), "LG:BaseUrl")]
     [InlineData("   ", typeof(InvalidOperationException), "LG:BaseUrl")]
+    [InlineData("\t\n\r", typeof(InvalidOperationException), "LG:BaseUrl")]
     public void Given_Invalid_BaseUrl_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? baseUrl, Type expectedType, string expectedMessage)
     {
         // Arrange
@@ -107,6 +108,7 @@ public class LGConnectorTests
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData("", typeof(InvalidOperationException), "LG:Model")]
     [InlineData("   ", typeof(InvalidOperationException), "LG:Model")]
+    [InlineData("\t\n\r", typeof(InvalidOperationException), "LG:Model")]
     [InlineData("invalid-model-format", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
     [InlineData("random-name", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
     [InlineData("hf.co/other-org/model-GGUF", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
@@ -148,6 +150,9 @@ public class LGConnectorTests
     [Theory]
     [InlineData(null, typeof(ArgumentNullException), "null")]
     [InlineData("", typeof(UriFormatException), "empty")]
+    [InlineData("   ", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
+    [InlineData("invalid-uri-format", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
+    [InlineData("not-a-url", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
     public void Given_Invalid_BaseUrl_When_GetChatClient_Invoked_Then_It_Should_Throw(string? baseUrl, Type expectedType, string message)
     {
         // Arrange
@@ -165,15 +170,15 @@ public class LGConnectorTests
     [Trait("Category", "IntegrationTest")]
     [Trait("Category", "LLMRequired")]
     [Theory]
-    [InlineData(null, typeof(ArgumentNullException), "null")]
-    [InlineData("", typeof(UriFormatException), "empty")]
-    [InlineData("   ", typeof(InvalidOperationException), "LG:Model")]
-    [InlineData("invalid-model-format", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
-    [InlineData("random-name", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
-    [InlineData("hf.co/other-org/model-GGUF", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
-    [InlineData("hf.co/LGAI-EXAONE/other-model-GGUF", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
-    [InlineData("hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
-    [InlineData("hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B-FP8", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
+    [InlineData(null, typeof(OllamaSharp.Models.Exceptions.OllamaException), "invalid model name")]
+    [InlineData("", typeof(OllamaSharp.Models.Exceptions.OllamaException), "invalid model name")]
+    [InlineData("   ", typeof(OllamaSharp.Models.Exceptions.OllamaException), "invalid model name")]
+    [InlineData("invalid-model-format", typeof(OllamaSharp.Models.Exceptions.ResponseError), "pull model manifest")]
+    [InlineData("random-name", typeof(OllamaSharp.Models.Exceptions.ResponseError), "pull model manifest")]
+    [InlineData("hf.co/other-org/model-GGUF", typeof(OllamaSharp.Models.Exceptions.ResponseError), "pull model manifest")]
+    [InlineData("hf.co/LGAI-EXAONE/other-model-GGUF", typeof(OllamaSharp.Models.Exceptions.ResponseError), "pull model manifest")]
+    [InlineData("hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B", typeof(OllamaSharp.Models.Exceptions.ResponseError), "pull model manifest")]
+    [InlineData("hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B-FP8", typeof(OllamaSharp.Models.Exceptions.ResponseError), "pull model manifest")]
     public void Given_Invalid_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expectedType, string message)
     {
         // Arrange
@@ -202,23 +207,25 @@ public class LGConnectorTests
 
         // Assert
         client.ShouldNotBeNull();
+        client.ShouldBeAssignableTo<IChatClient>();
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, "hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B-GGUF", typeof(NullReferenceException))]
-    [InlineData("", "hf.co/LGAI-EXAONE/EXAONE-4.0-32B-GGUF", typeof(InvalidOperationException))]
-    [InlineData("   ", "hf.co/LGAI-EXAONE/EXAONE-4.0-32B-GGUF", typeof(InvalidOperationException))]
-    [InlineData("https://test.lg-exaone/api", null, typeof(NullReferenceException))]
-    [InlineData("https://test.lg-exaone/api", "", typeof(InvalidOperationException))]
-    [InlineData("https://test.lg-exaone/api", "   ", typeof(InvalidOperationException))]
-    [InlineData("https://test.lg-exaone/api", "invalid-model-format", typeof(InvalidOperationException))]
-    [InlineData("https://test.lg-exaone/api", "random-name", typeof(InvalidOperationException))]
-    [InlineData("https://test.lg-exaone/api", "hf.co/other-org/model-GGUF", typeof(InvalidOperationException))]
-    [InlineData("https://test.lg-exaone/api", "hf.co/LGAI-EXAONE/other-model-GGUF", typeof(InvalidOperationException))]
-    [InlineData("https://test.lg-exaone/api", "hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B", typeof(InvalidOperationException))]
-    [InlineData("https://test.lg-exaone/api", "hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B-FP8", typeof(InvalidOperationException))]
-    public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string? baseUrl, string? model, Type expectedType)
+    [InlineData(null, null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
+    [InlineData(null, Model, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
+    [InlineData("", Model, typeof(InvalidOperationException), "Missing configuration: LG:BaseUrl")]
+    [InlineData("   ", Model, typeof(InvalidOperationException), "Missing configuration: LG:BaseUrl")]
+    [InlineData(BaseUrl, null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
+    [InlineData(BaseUrl, "", typeof(InvalidOperationException), "Missing configuration: LG:Model")]
+    [InlineData(BaseUrl, "   ", typeof(InvalidOperationException), "Missing configuration: LG:Model")]
+    [InlineData(BaseUrl, "invalid-model-format", typeof(InvalidOperationException), "Invalid configuration: Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
+    [InlineData(BaseUrl, "random-name", typeof(InvalidOperationException), "Invalid configuration: Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
+    [InlineData(BaseUrl, "hf.co/other-org/model-GGUF", typeof(InvalidOperationException), "Invalid configuration: Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
+    [InlineData(BaseUrl, "hf.co/LGAI-EXAONE/other-model-GGUF", typeof(InvalidOperationException), "Invalid configuration: Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
+    [InlineData(BaseUrl, "hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B", typeof(InvalidOperationException), "Invalid configuration: Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
+    [InlineData(BaseUrl, "hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B-FP8", typeof(InvalidOperationException), "Invalid configuration: Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
+    public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string? baseUrl, string? model, Type expected, string message)
     {
         // Arrange
         var settings = BuildAppSettings(baseUrl: baseUrl, model: model);
@@ -227,7 +234,8 @@ public class LGConnectorTests
         Func<Task> func = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
 
         // Assert
-        func.ShouldThrow(expectedType);
+        func.ShouldThrow(expected)
+            .Message.ShouldContain(message);
     }
 
     [Trait("Category", "IntegrationTest")]

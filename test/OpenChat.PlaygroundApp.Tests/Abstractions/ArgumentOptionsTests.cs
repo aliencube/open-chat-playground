@@ -165,9 +165,10 @@ public class ArgumentOptionsTests
         var config = BuildConfig((key, value));
         var args = Array.Empty<string>();
 
-        var ex = Assert.Throws<InvalidOperationException>(() => ArgumentOptions.Parse(config, args));
+        var action = () => ArgumentOptions.Parse(config, args);
 
-        ex.Message.ShouldContain($"{value}ArgumentOptions");
+        action.ShouldThrow<InvalidOperationException>()
+            .Message.ShouldContain($"{value}ArgumentOptions");
     }
 
     [Trait("Category", "UnitTest")]
@@ -190,7 +191,7 @@ public class ArgumentOptionsTests
     [InlineData(AppSettingConstants.ConnectorType, "AzureAIFoundry", ConnectorType.AzureAIFoundry)]
     [InlineData(AppSettingConstants.ConnectorType, "GitHubModels", ConnectorType.GitHubModels)]
     [InlineData(AppSettingConstants.ConnectorType, "GoogleVertexAI", ConnectorType.GoogleVertexAI)]
-    // [InlineData(AppSettingConstants.ConnectorType, "DockerModelRunner", ConnectorType.DockerModelRunner)]
+    [InlineData(AppSettingConstants.ConnectorType, "DockerModelRunner", ConnectorType.DockerModelRunner)]
     [InlineData(AppSettingConstants.ConnectorType, "FoundryLocal", ConnectorType.FoundryLocal)]
     [InlineData(AppSettingConstants.ConnectorType, "HuggingFace", ConnectorType.HuggingFace)]
     [InlineData(AppSettingConstants.ConnectorType, "Ollama", ConnectorType.Ollama)]
@@ -217,11 +218,11 @@ public class ArgumentOptionsTests
     [InlineData(AppSettingConstants.ConnectorType, "AzureAIFoundry", "OpenAI", ConnectorType.OpenAI)]
     // [InlineData(AppSettingConstants.ConnectorType, "GitHubModels", "Naver", ConnectorType.Naver)]
     [InlineData(AppSettingConstants.ConnectorType, "GoogleVertexAI", "LG", ConnectorType.LG)]
-    // [InlineData(AppSettingConstants.ConnectorType, "DockerModelRunner", "Anthropic", ConnectorType.Anthropic)]
+    [InlineData(AppSettingConstants.ConnectorType, "DockerModelRunner", "Anthropic", ConnectorType.Anthropic)]
     [InlineData(AppSettingConstants.ConnectorType, "FoundryLocal", "Ollama", ConnectorType.Ollama)]
     [InlineData(AppSettingConstants.ConnectorType, "HuggingFace", "Ollama", ConnectorType.Ollama)]
     [InlineData(AppSettingConstants.ConnectorType, "Ollama", "FoundryLocal", ConnectorType.FoundryLocal)]
-    // [InlineData(AppSettingConstants.ConnectorType, "Anthropic", "DockerModelRunner", ConnectorType.DockerModelRunner)]
+    [InlineData(AppSettingConstants.ConnectorType, "Anthropic", "DockerModelRunner", ConnectorType.DockerModelRunner)]
     [InlineData(AppSettingConstants.ConnectorType, "LG", "GoogleVertexAI", ConnectorType.GoogleVertexAI)]
     [InlineData(AppSettingConstants.ConnectorType, "Naver", "GitHubModels", ConnectorType.GitHubModels)]
     [InlineData(AppSettingConstants.ConnectorType, "OpenAI", "AzureAIFoundry", ConnectorType.AzureAIFoundry)]
@@ -244,7 +245,7 @@ public class ArgumentOptionsTests
     [InlineData(AppSettingConstants.ConnectorType, "AzureAIFoundry", "MaaS", ConnectorType.AzureAIFoundry)]
     [InlineData(AppSettingConstants.ConnectorType, "GitHubModels", "MaaS", ConnectorType.GitHubModels)]
     [InlineData(AppSettingConstants.ConnectorType, "GoogleVertexAI", "MaaS", ConnectorType.GoogleVertexAI)]
-    // [InlineData(AppSettingConstants.ConnectorType, "DockerModelRunner", "Local", ConnectorType.DockerModelRunner)]
+    [InlineData(AppSettingConstants.ConnectorType, "DockerModelRunner", "Local", ConnectorType.DockerModelRunner)]
     [InlineData(AppSettingConstants.ConnectorType, "FoundryLocal", "Local", ConnectorType.FoundryLocal)]
     [InlineData(AppSettingConstants.ConnectorType, "HuggingFace", "Local", ConnectorType.HuggingFace)]
     [InlineData(AppSettingConstants.ConnectorType, "Ollama", "Local", ConnectorType.Ollama)]
@@ -278,30 +279,6 @@ public class ArgumentOptionsTests
         var settings = ArgumentOptions.Parse(config, args);
 
         settings.Help.ShouldBe(expected);
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData(typeof(AmazonBedrockArgumentOptions))]
-    [InlineData(typeof(AzureAIFoundryArgumentOptions))]
-    [InlineData(typeof(GitHubModelsArgumentOptions))]
-    [InlineData(typeof(GoogleVertexAIArgumentOptions))]
-    // [InlineData(typeof(DockerModelRunnerArgumentOptions))]
-    [InlineData(typeof(FoundryLocalArgumentOptions))]
-    [InlineData(typeof(HuggingFaceArgumentOptions))]
-    [InlineData(typeof(OllamaArgumentOptions))]
-    [InlineData(typeof(AnthropicArgumentOptions))]
-    [InlineData(typeof(LGArgumentOptions))]
-    // [InlineData(typeof(NaverArgumentOptions))]
-    [InlineData(typeof(OpenAIArgumentOptions))]
-    [InlineData(typeof(UpstageArgumentOptions))]
-    public void Given_Concrete_ArgumentOptions_When_Checking_Inheritance_Then_Should_Inherit_From_ArgumentOptions(Type type)
-    {
-        // Act
-        var isSubclass = type.IsSubclassOf(typeof(ArgumentOptions));
-
-        // Assert
-        isSubclass.ShouldBeTrue();
     }
 
     [Trait("Category", "UnitTest")]

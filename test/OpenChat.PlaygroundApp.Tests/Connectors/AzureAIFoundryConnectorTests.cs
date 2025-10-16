@@ -90,6 +90,7 @@ public class AzureAIFoundryConnectorTests
     [InlineData(null, typeof(InvalidOperationException), "AzureAIFoundry:Endpoint")]
     [InlineData("", typeof(InvalidOperationException), "AzureAIFoundry:Endpoint")]
     [InlineData("   ", typeof(InvalidOperationException), "AzureAIFoundry:Endpoint")]
+    [InlineData("\t\r\n", typeof(InvalidOperationException), "AzureAIFoundry:Endpoint")]
     public void Given_Invalid_Endpoint_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? endpoint, Type expectedType, string expectedMessage)
     {
         // Arrange
@@ -109,6 +110,7 @@ public class AzureAIFoundryConnectorTests
     [InlineData(null, typeof(InvalidOperationException), "AzureAIFoundry:ApiKey")]
     [InlineData("", typeof(InvalidOperationException), "AzureAIFoundry:ApiKey")]
     [InlineData("   ", typeof(InvalidOperationException), "AzureAIFoundry:ApiKey")]
+    [InlineData("\t\r\n", typeof(InvalidOperationException), "AzureAIFoundry:ApiKey")]
     public void Given_Invalid_ApiKey_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? apiKey, Type expectedType, string expectedMessage)
     {
         // Arrange
@@ -128,6 +130,7 @@ public class AzureAIFoundryConnectorTests
     [InlineData(null, typeof(InvalidOperationException), "AzureAIFoundry:DeploymentName")]
     [InlineData("", typeof(InvalidOperationException), "AzureAIFoundry:DeploymentName")]
     [InlineData("   ", typeof(InvalidOperationException), "AzureAIFoundry:DeploymentName")]
+    [InlineData("\t\r\n", typeof(InvalidOperationException), "AzureAIFoundry:DeploymentName")]
     public void Given_Invalid_DeploymentName_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? deploymentName, Type expectedType, string expectedMessage)
     {
         // Arrange
@@ -159,7 +162,7 @@ public class AzureAIFoundryConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Fact]
-    public void Given_Null_Settings_When_GetChatClientAsync_Invoked_Then_It_Should_Throw()
+    public void Given_Null_AzureAIFoundrySettings_When_GetChatClientAsync_Invoked_Then_It_Should_Throw()
     {
         // Arrange
         var settings = new AppSettings
@@ -247,6 +250,7 @@ public class AzureAIFoundryConnectorTests
 
         // Assert
         result.ShouldNotBeNull();
+        result.ShouldBeAssignableTo<IChatClient>();
     }
 
     [Trait("Category", "UnitTest")]
