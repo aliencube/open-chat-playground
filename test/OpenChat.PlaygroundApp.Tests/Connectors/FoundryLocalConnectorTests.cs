@@ -1,3 +1,5 @@
+using Microsoft.Extensions.AI;
+
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Configurations;
 using OpenChat.PlaygroundApp.Connectors;
@@ -35,10 +37,26 @@ public class FoundryLocalConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Fact]
+    public void Given_Null_Settings_When_Instantiated_Then_It_Should_Throw()
+    {
+        // Act
+        Action action = () => new FoundryLocalConnector(null!);
+
+        // Assert
+        action.ShouldThrow<ArgumentNullException>()
+              .Message.ShouldContain("settings");
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Fact]
     public void Given_Settings_Is_Null_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
     {
         // Arrange
-        var settings = new AppSettings { ConnectorType = ConnectorType.FoundryLocal, FoundryLocal = null };
+        var settings = new AppSettings
+        {
+            ConnectorType = ConnectorType.FoundryLocal,
+            FoundryLocal = null
+        };
         var connector = new FoundryLocalConnector(settings);
 
         // Act
@@ -50,10 +68,45 @@ public class FoundryLocalConnectorTests
     }
 
     [Trait("Category", "UnitTest")]
+    [Fact]
+    public void Given_Settings_When_Instantiated_Then_It_Should_Return()
+    {
+        // Arrange
+        var settings = BuildAppSettings();
+
+        // Act
+        var result = new FoundryLocalConnector(settings);
+
+        // Assert
+        result.ShouldNotBeNull();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Fact]
+    public void Given_Null_Settings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
+    {
+        // Arrange
+        var settings = new AppSettings
+        {
+            ConnectorType = ConnectorType.FoundryLocal,
+            FoundryLocal = null
+        };
+        var connector = new FoundryLocalConnector(settings);
+
+        // Act
+        Action action = () => connector.EnsureLanguageModelSettingsValid();
+
+        // Assert
+        action.ShouldThrow<InvalidOperationException>()
+              .Message.ShouldContain("FoundryLocal");
+    }
+
+    [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(InvalidOperationException), "FoundryLocal:Alias")]
+    [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData("", typeof(InvalidOperationException), "FoundryLocal:Alias")]
     [InlineData("   ", typeof(InvalidOperationException), "FoundryLocal:Alias")]
+    [InlineData("\t\n\r", typeof(InvalidOperationException), "FoundryLocal:Alias")]
     public void Given_Invalid_Alias_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? alias, Type expectedType, string expectedMessage)
     {
         // Arrange
@@ -85,6 +138,27 @@ public class FoundryLocalConnectorTests
 
     [Trait("Category", "IntegrationTest")]
     [Trait("Category", "LLMRequired")]
+    [Theory]
+    [InlineData(null, typeof(InvalidOperationException), "Model  not found in catalog.")]
+    [InlineData("", typeof(InvalidOperationException), "Model  not found in catalog.")]
+    [InlineData("   ", typeof(InvalidOperationException), "Model     not found in catalog.")]
+    [InlineData("not-a-model", typeof(InvalidOperationException), "Model not-a-model not found in catalog.")]
+    public void Given_Invalid_Alias_When_GetChatClient_Invoked_Then_It_Should_Throw(string? alias, Type expected, string message)
+    {
+        // Arrange
+        var settings = BuildAppSettings(alias: alias);
+        var connector = new FoundryLocalConnector(settings);
+
+        // Act
+        Func<Task> func = async () => await connector.GetChatClientAsync();
+
+        // Assert
+        func.ShouldThrow(expected)
+            .Message.ShouldContain(message);
+    }
+
+    [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "LLMRequired")]
     [Fact]
     public async Task Given_Valid_Settings_When_GetChatClient_Invoked_Then_It_Should_Return_ChatClient()
     {
@@ -97,5 +171,47 @@ public class FoundryLocalConnectorTests
 
         // Assert
         client.ShouldNotBeNull();
+        client.ShouldBeAssignableTo<IChatClient>();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
+    [InlineData("", typeof(InvalidOperationException), "Missing configuration: FoundryLocal")]
+    [InlineData("   ", typeof(InvalidOperationException), "Missing configuration: FoundryLocal")]
+    public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string? alias, Type expected, string expectedMessage)
+    {
+        // Arrange
+        var settings = new AppSettings
+        {
+            ConnectorType = ConnectorType.FoundryLocal,
+            FoundryLocal = new FoundryLocalSettings
+            {
+                Alias = alias
+            }
+        };
+
+        // Act
+        Func<Task> func = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
+
+        // Assert  
+        func.ShouldThrow(expected)
+            .Message.ShouldContain(expectedMessage);
+    }
+
+    [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "LLMRequired")]
+    [Fact]
+    public async Task Given_Valid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Return_IChatClient()
+    {
+        // Arrange
+        var settings = BuildAppSettings();
+
+        // Act
+        var result = await LanguageModelConnector.CreateChatClientAsync(settings);
+
+        // Assert
+        result.ShouldNotBeNull();
+        result.ShouldBeAssignableTo<IChatClient>();
     }
 }
