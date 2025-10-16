@@ -287,6 +287,7 @@ public class ArgumentOptionsTests
     [InlineData(AppSettingConstants.ConnectorType, "AzureAIFoundry", "AzureAIFoundry:DeploymentName", "test-deployment", "test-deployment")]
     [InlineData(AppSettingConstants.ConnectorType, "GitHubModels", "GitHubModels:Model", "test-github-model", "test-github-model")]
     [InlineData(AppSettingConstants.ConnectorType, "GoogleVertexAI", "GoogleVertexAI:Model", "test-vertex-model", "test-vertex-model")]
+    [InlineData(AppSettingConstants.ConnectorType, "DockerModelRunner", "DockerModelRunner:Model", "test-dmr-model", "test-dmr-model")]
     [InlineData(AppSettingConstants.ConnectorType, "FoundryLocal", "FoundryLocal:Alias", "test-alias", "test-alias")]
     [InlineData(AppSettingConstants.ConnectorType, "HuggingFace", "HuggingFace:Model", "test-hf-model", "test-hf-model")]
     [InlineData(AppSettingConstants.ConnectorType, "Ollama", "Ollama:Model", "test-ollama-model", "test-ollama-model")]
@@ -314,6 +315,7 @@ public class ArgumentOptionsTests
     [InlineData(AppSettingConstants.ConnectorType, "AzureAIFoundry")]
     [InlineData(AppSettingConstants.ConnectorType, "GitHubModels")]
     [InlineData(AppSettingConstants.ConnectorType, "GoogleVertexAI")]
+    [InlineData(AppSettingConstants.ConnectorType, "DockerModelRunner")]
     [InlineData(AppSettingConstants.ConnectorType, "FoundryLocal")]
     [InlineData(AppSettingConstants.ConnectorType, "HuggingFace")]
     [InlineData(AppSettingConstants.ConnectorType, "Ollama")]
@@ -341,6 +343,7 @@ public class ArgumentOptionsTests
     [InlineData(AppSettingConstants.ConnectorType, "AzureAIFoundry", "AzureAIFoundry:DeploymentName", "config-deployment", ArgumentOptionConstants.AzureAIFoundry.DeploymentName, "arg-deployment", "arg-deployment")]
     [InlineData(AppSettingConstants.ConnectorType, "GitHubModels", "GitHubModels:Model", "config-model", ArgumentOptionConstants.GitHubModels.Model, "arg-model", "arg-model")]
     [InlineData(AppSettingConstants.ConnectorType, "GoogleVertexAI", "GoogleVertexAI:Model", "config-model", ArgumentOptionConstants.GoogleVertexAI.Model, "arg-model", "arg-model")]
+    [InlineData(AppSettingConstants.ConnectorType, "DockerModelRunner", "DockerModelRunner:Model", "config-model", ArgumentOptionConstants.DockerModelRunner.Model, "arg-model", "arg-model")]
     [InlineData(AppSettingConstants.ConnectorType, "FoundryLocal", "FoundryLocal:Alias", "config-alias", ArgumentOptionConstants.FoundryLocal.Alias, "arg-alias", "arg-alias")]
     [InlineData(AppSettingConstants.ConnectorType, "HuggingFace", "HuggingFace:Model", "config-model", ArgumentOptionConstants.HuggingFace.Model, "arg-model", "arg-model")]
     [InlineData(AppSettingConstants.ConnectorType, "Ollama", "Ollama:Model", "config-model", ArgumentOptionConstants.Ollama.Model, "arg-model", "arg-model")]
@@ -349,7 +352,7 @@ public class ArgumentOptionsTests
     [InlineData(AppSettingConstants.ConnectorType, "OpenAI", "OpenAI:Model", "config-model", ArgumentOptionConstants.OpenAI.Model, "arg-model", "arg-model")]
     [InlineData(AppSettingConstants.ConnectorType, "Upstage", "Upstage:Model", "config-model", ArgumentOptionConstants.Upstage.Model, "arg-model", "arg-model")]
     public void Given_ConnectorType_With_ModelConfig_And_Arguments_When_Parse_Invoked_Then_Arguments_Should_Override_Config(
-        string connectorKey, string connectorValue, string configModelKey, string configModelValue, 
+        string connectorKey, string connectorValue, string configModelKey, string configModelValue,
         string argumentKey, string argumentValue, string expectedModel)
     {
         // Arrange
@@ -369,6 +372,7 @@ public class ArgumentOptionsTests
     [InlineData(AppSettingConstants.ConnectorType, "AzureAIFoundry", "AzureAIFoundry:DeploymentName", "config-deployment", "config-deployment")]
     [InlineData(AppSettingConstants.ConnectorType, "GitHubModels", "GitHubModels:Model", "config-model", "config-model")]
     [InlineData(AppSettingConstants.ConnectorType, "GoogleVertexAI", "GoogleVertexAI:Model", "config-model", "config-model")]
+    [InlineData(AppSettingConstants.ConnectorType, "DockerModelRunner", "DockerModelRunner:Model", "config-model", "config-model")]
     [InlineData(AppSettingConstants.ConnectorType, "FoundryLocal", "FoundryLocal:Alias", "config-alias", "config-alias")]
     [InlineData(AppSettingConstants.ConnectorType, "HuggingFace", "HuggingFace:Model", "config-model", "config-model")]
     [InlineData(AppSettingConstants.ConnectorType, "Ollama", "Ollama:Model", "config-model", "config-model")]
