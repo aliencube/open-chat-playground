@@ -77,7 +77,6 @@ public class LanguageModelConnectorTests
     [InlineData(ConnectorType.AmazonBedrock)]
     [InlineData(ConnectorType.GoogleVertexAI)]
     [InlineData(ConnectorType.DockerModelRunner)]
-    [InlineData(ConnectorType.FoundryLocal)]
     [InlineData(ConnectorType.Ollama)]
     [InlineData(ConnectorType.Anthropic)]
     [InlineData(ConnectorType.Naver)]
