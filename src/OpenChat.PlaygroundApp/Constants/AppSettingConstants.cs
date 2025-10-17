@@ -1,7 +1,7 @@
 namespace OpenChat.PlaygroundApp.Constants;
 
 /// <summary>
-/// This represents the app settings argument constants for all app settings arguments to reference.
+/// This represents the constant entity for app settings to reference.
 /// </summary>
 public static class AppSettingConstants
 {

@@ -25,10 +25,10 @@ public class DockerModelRunnerArgumentOptions : ArgumentOptions
         var settings = new AppSettings();
         config.Bind(settings);
 
-        var dockerModelRunner = settings.DockerModelRunner;
+        var docker = settings.DockerModelRunner;
 
-        this.BaseUrl ??= dockerModelRunner?.BaseUrl;
-        this.Model ??= dockerModelRunner?.Model;
+        this.BaseUrl ??= docker?.BaseUrl;
+        this.Model ??= docker?.Model;
 
         for (var i = 0; i < args.Length; i++)
         {
