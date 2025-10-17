@@ -77,7 +77,6 @@ public class LanguageModelConnectorTests
     [InlineData(ConnectorType.AmazonBedrock)]
     [InlineData(ConnectorType.GoogleVertexAI)]
     [InlineData(ConnectorType.DockerModelRunner)]
-    [InlineData(ConnectorType.FoundryLocal)]
     [InlineData(ConnectorType.Ollama)]
     [InlineData(ConnectorType.Anthropic)]
     [InlineData(ConnectorType.Naver)]
@@ -92,5 +91,32 @@ public class LanguageModelConnectorTests
         // Assert
         func.ShouldThrow<NotSupportedException>()
             .Message.ShouldContain($"Connector type '{connectorType}'");
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    // [InlineData(typeof(AmazonBedrockConnector))]
+    // [InlineData(typeof(AzureAIFoundryConnector))]
+    [InlineData(typeof(GitHubModelsConnector))]
+    // [InlineData(typeof(GoogleVertexAIConnector))]
+    // [InlineData(typeof(DockerModelRunnerConnector))]
+    [InlineData(typeof(FoundryLocalConnector))]
+    [InlineData(typeof(HuggingFaceConnector))]
+    // [InlineData(typeof(OllamaConnector))]
+    // [InlineData(typeof(AnthropicConnector))]
+    // [InlineData(typeof(LGConnector))]
+    // [InlineData(typeof(NaverConnector))]
+    [InlineData(typeof(OpenAIConnector))]
+    // [InlineData(typeof(UpstageConnector))]
+    public void Given_Concrete_Connectors_When_Checking_Inheritance_Then_Should_Inherit_From_LanguageModelConnector(Type derivedType)
+    {
+        // Arrange
+        var baseType = typeof(LanguageModelConnector);
+
+        // Act
+        var result = baseType.IsAssignableFrom(derivedType);
+
+        // Assert
+        result.ShouldBeTrue();
     }
 }
