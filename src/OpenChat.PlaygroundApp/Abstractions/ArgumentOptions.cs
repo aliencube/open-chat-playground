@@ -73,21 +73,21 @@ public abstract class ArgumentOptions
     /// <returns>The verified <see cref="ConnectorType"/> value.</returns>
     public static ConnectorType VerifyConnectorType(IConfiguration config, string[] args)
     {
-        var connectorType = Enum.TryParse<ConnectorType>(config[AppSettingConstants.ConnectorType], ignoreCase: true, out var result1)
-                            ? result1
+        var connectorType = Enum.TryParse<ConnectorType>(config[AppSettingConstants.ConnectorType], ignoreCase: true, out var configResult)
+                            ? configResult
                             : ConnectorType.Unknown;
-        if (Enum.TryParse<ConnectorType>(config[EnvironmentVariableConstants.ConnectorType], ignoreCase: true, out var result2))
+        if (Enum.TryParse<ConnectorType>(config[EnvironmentVariableConstants.ConnectorType], ignoreCase: true, out var environmentResult))
         {
-            connectorType = result2;
+            connectorType = environmentResult;
         }
         for (var i = 0; i < args.Length; i++)
         {
             if (string.Equals(args[i], ArgumentOptionConstants.ConnectorType, StringComparison.InvariantCultureIgnoreCase) ||
                 string.Equals(args[i], ArgumentOptionConstants.ConnectorTypeInShort, StringComparison.InvariantCultureIgnoreCase))
             {
-                if (i + 1 < args.Length && Enum.TryParse<ConnectorType>(args[i + 1], ignoreCase: true, out var result))
+                if (i + 1 < args.Length && Enum.TryParse<ConnectorType>(args[i + 1], ignoreCase: true, out var argumentResult))
                 {
-                    connectorType = result;
+                    connectorType = argumentResult;
                 }
                 break;
             }
