@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Connectors;
 using OpenChat.PlaygroundApp.Constants;
-using OpenChat.PlaygroundApp.Options;
 
 namespace OpenChat.PlaygroundApp.Tests.Abstractions;
 
@@ -58,6 +57,57 @@ public class ArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "AmazonBedrock", ConnectorType.AmazonBedrock)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "AzureAIFoundry", ConnectorType.AzureAIFoundry)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "GitHubModels", ConnectorType.GitHubModels)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "GoogleVertexAI", ConnectorType.GoogleVertexAI)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "DockerModelRunner", ConnectorType.DockerModelRunner)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "FoundryLocal", ConnectorType.FoundryLocal)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "HuggingFace", ConnectorType.HuggingFace)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "Ollama", ConnectorType.Ollama)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "Anthropic", ConnectorType.Anthropic)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "LG", ConnectorType.LG)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "Naver", ConnectorType.Naver)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "OpenAI", ConnectorType.OpenAI)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "Upstage", ConnectorType.Upstage)]
+    public void Given_ConnectorTypeAlt_When_VerifyConnectorType_Invoked_Then_It_Should_Return_Result(string key, string value, ConnectorType expected)
+    {
+        var config = BuildConfig((key, value));
+        var args = Array.Empty<string>();
+
+        var result = ArgumentOptions.VerifyConnectorType(config, args);
+
+        result.ShouldBe(expected);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData(AppSettingConstants.ConnectorType, "AmazonBedrock", EnvironmentVariableConstants.ConnectorType, "Upstage", ConnectorType.Upstage)]
+    [InlineData(AppSettingConstants.ConnectorType, "AzureAIFoundry", EnvironmentVariableConstants.ConnectorType, "OpenAI", ConnectorType.OpenAI)]
+    [InlineData(AppSettingConstants.ConnectorType, "GitHubModels", EnvironmentVariableConstants.ConnectorType, "Naver", ConnectorType.Naver)]
+    [InlineData(AppSettingConstants.ConnectorType, "GoogleVertexAI", EnvironmentVariableConstants.ConnectorType, "LG", ConnectorType.LG)]
+    [InlineData(AppSettingConstants.ConnectorType, "DockerModelRunner", EnvironmentVariableConstants.ConnectorType, "Anthropic", ConnectorType.Anthropic)]
+    [InlineData(AppSettingConstants.ConnectorType, "FoundryLocal", EnvironmentVariableConstants.ConnectorType, "Ollama", ConnectorType.Ollama)]
+    [InlineData(AppSettingConstants.ConnectorType, "HuggingFace", EnvironmentVariableConstants.ConnectorType, "DockerModelRunner", ConnectorType.DockerModelRunner)]
+    [InlineData(AppSettingConstants.ConnectorType, "Ollama", EnvironmentVariableConstants.ConnectorType, "FoundryLocal", ConnectorType.FoundryLocal)]
+    [InlineData(AppSettingConstants.ConnectorType, "Anthropic", EnvironmentVariableConstants.ConnectorType, "HuggingFace", ConnectorType.HuggingFace)]
+    [InlineData(AppSettingConstants.ConnectorType, "LG", EnvironmentVariableConstants.ConnectorType, "GoogleVertexAI", ConnectorType.GoogleVertexAI)]
+    [InlineData(AppSettingConstants.ConnectorType, "Naver", EnvironmentVariableConstants.ConnectorType, "GitHubModels", ConnectorType.GitHubModels)]
+    [InlineData(AppSettingConstants.ConnectorType, "OpenAI", EnvironmentVariableConstants.ConnectorType, "AzureAIFoundry", ConnectorType.AzureAIFoundry)]
+    [InlineData(AppSettingConstants.ConnectorType, "Upstage", EnvironmentVariableConstants.ConnectorType, "AmazonBedrock", ConnectorType.AmazonBedrock)]
+    public void Given_ConnectorType_And_ConnectorTypeAlt_When_VerifyConnectorType_Invoked_Then_It_Should_Return_ConnectorTypeAlt(
+        string key1, string value1, string key2, string value2, ConnectorType expected)
+    {
+        var config = BuildConfig((key1, value1), (key2, value2));
+        var args = Array.Empty<string>();
+
+        var result = ArgumentOptions.VerifyConnectorType(config, args);
+
+        result.ShouldBe(expected);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
     [InlineData(AppSettingConstants.ConnectorType, "AmazonBedrock", ArgumentOptionConstants.ConnectorType, "Upstage", ConnectorType.Upstage)]
     [InlineData(AppSettingConstants.ConnectorType, "AzureAIFoundry", ArgumentOptionConstants.ConnectorType, "OpenAI", ConnectorType.OpenAI)]
     [InlineData(AppSettingConstants.ConnectorType, "GitHubModels", ArgumentOptionConstants.ConnectorType, "Naver", ConnectorType.Naver)]
@@ -87,6 +137,63 @@ public class ArgumentOptionsTests
     public void Given_ConnectorType_And_Argument_When_VerifyConnectorType_Invoked_Then_It_Should_Return_Result(string key, string value, string argument1, string argument2, ConnectorType expected)
     {
         var config = BuildConfig((key, value));
+        var args = new[] { argument1, argument2 };
+
+        var result = ArgumentOptions.VerifyConnectorType(config, args);
+
+        result.ShouldBe(expected);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "AmazonBedrock", ArgumentOptionConstants.ConnectorType, "Upstage", ConnectorType.Upstage)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "AzureAIFoundry", ArgumentOptionConstants.ConnectorType, "OpenAI", ConnectorType.OpenAI)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "GitHubModels", ArgumentOptionConstants.ConnectorType, "Naver", ConnectorType.Naver)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "GoogleVertexAI", ArgumentOptionConstants.ConnectorType, "LG", ConnectorType.LG)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "DockerModelRunner", ArgumentOptionConstants.ConnectorType, "Anthropic", ConnectorType.Anthropic)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "FoundryLocal", ArgumentOptionConstants.ConnectorType, "Ollama", ConnectorType.Ollama)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "HuggingFace", ArgumentOptionConstants.ConnectorType, "DockerModelRunner", ConnectorType.DockerModelRunner)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "Ollama", ArgumentOptionConstants.ConnectorType, "FoundryLocal", ConnectorType.FoundryLocal)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "Anthropic", ArgumentOptionConstants.ConnectorType, "HuggingFace", ConnectorType.HuggingFace)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "LG", ArgumentOptionConstants.ConnectorType, "GoogleVertexAI", ConnectorType.GoogleVertexAI)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "Naver", ArgumentOptionConstants.ConnectorType, "GitHubModels", ConnectorType.GitHubModels)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "OpenAI", ArgumentOptionConstants.ConnectorType, "AzureAIFoundry", ConnectorType.AzureAIFoundry)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "Upstage", ArgumentOptionConstants.ConnectorType, "AmazonBedrock", ConnectorType.AmazonBedrock)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "AmazonBedrock", ArgumentOptionConstants.ConnectorTypeInShort, "Upstage", ConnectorType.Upstage)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "AzureAIFoundry", ArgumentOptionConstants.ConnectorTypeInShort, "OpenAI", ConnectorType.OpenAI)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "GitHubModels", ArgumentOptionConstants.ConnectorTypeInShort, "Naver", ConnectorType.Naver)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "GoogleVertexAI", ArgumentOptionConstants.ConnectorTypeInShort, "LG", ConnectorType.LG)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "DockerModelRunner", ArgumentOptionConstants.ConnectorTypeInShort, "Anthropic", ConnectorType.Anthropic)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "FoundryLocal", ArgumentOptionConstants.ConnectorTypeInShort, "Ollama", ConnectorType.Ollama)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "HuggingFace", ArgumentOptionConstants.ConnectorTypeInShort, "DockerModelRunner", ConnectorType.DockerModelRunner)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "Ollama", ArgumentOptionConstants.ConnectorTypeInShort, "FoundryLocal", ConnectorType.FoundryLocal)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "Anthropic", ArgumentOptionConstants.ConnectorTypeInShort, "HuggingFace", ConnectorType.HuggingFace)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "LG", ArgumentOptionConstants.ConnectorTypeInShort, "GoogleVertexAI", ConnectorType.GoogleVertexAI)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "Naver", ArgumentOptionConstants.ConnectorTypeInShort, "GitHubModels", ConnectorType.GitHubModels)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "OpenAI", ArgumentOptionConstants.ConnectorTypeInShort, "AzureAIFoundry", ConnectorType.AzureAIFoundry)]
+    [InlineData(EnvironmentVariableConstants.ConnectorType, "Upstage", ArgumentOptionConstants.ConnectorTypeInShort, "AmazonBedrock", ConnectorType.AmazonBedrock)]
+    public void Given_ConnectorTypeAlt_And_Argument_When_VerifyConnectorType_Invoked_Then_It_Should_Return_Result(string key, string value, string argument1, string argument2, ConnectorType expected)
+    {
+        var config = BuildConfig((key, value));
+        var args = new[] { argument1, argument2 };
+
+        var result = ArgumentOptions.VerifyConnectorType(config, args);
+
+        result.ShouldBe(expected);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData(AppSettingConstants.ConnectorType, "AmazonBedrock", EnvironmentVariableConstants.ConnectorType, "Upstage", ArgumentOptionConstants.ConnectorType, "OpenAI", ConnectorType.OpenAI)]
+    [InlineData(AppSettingConstants.ConnectorType, "AzureAIFoundry", EnvironmentVariableConstants.ConnectorType, "OpenAI", ArgumentOptionConstants.ConnectorType, "Anthropic", ConnectorType.Anthropic)]
+    [InlineData(AppSettingConstants.ConnectorType, "GitHubModels", EnvironmentVariableConstants.ConnectorType, "Naver", ArgumentOptionConstants.ConnectorType, "LG", ConnectorType.LG)]
+    [InlineData(AppSettingConstants.ConnectorType, "GoogleVertexAI", EnvironmentVariableConstants.ConnectorType, "LG", ArgumentOptionConstants.ConnectorTypeInShort, "Ollama", ConnectorType.Ollama)]
+    [InlineData(AppSettingConstants.ConnectorType, "DockerModelRunner", EnvironmentVariableConstants.ConnectorType, "Anthropic", ArgumentOptionConstants.ConnectorTypeInShort, "HuggingFace", ConnectorType.HuggingFace)]
+    [InlineData(AppSettingConstants.ConnectorType, "FoundryLocal", EnvironmentVariableConstants.ConnectorType, "Ollama", ArgumentOptionConstants.ConnectorTypeInShort, "GitHubModels", ConnectorType.GitHubModels)]
+    public void Given_ConnectorType_And_ConnectorTypeAlt_And_Argument_When_VerifyConnectorType_Invoked_Then_It_Should_Return_Argument(
+        string key1, string value1, string key2, string value2, string argument1, string argument2, ConnectorType expected)
+    {
+        var config = BuildConfig((key1, value1), (key2, value2));
         var args = new[] { argument1, argument2 };
 
         var result = ArgumentOptions.VerifyConnectorType(config, args);
