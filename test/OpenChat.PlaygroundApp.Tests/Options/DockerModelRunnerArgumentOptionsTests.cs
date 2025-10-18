@@ -253,7 +253,7 @@ public class DockerModelRunnerArgumentOptionsTests
         settings.DockerModelRunner.Model.ShouldBe(cliModel);
     }
 
-    
+    [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData("http://cli-dmr", "cli-model")]
     public void Given_DockerModelRunner_With_KnownArguments_When_Parse_Invoked_Then_Help_ShouldBe_False(string cliBaseUrl, string cliModel)
