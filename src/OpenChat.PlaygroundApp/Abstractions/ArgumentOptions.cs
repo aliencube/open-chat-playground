@@ -29,6 +29,8 @@ public abstract class ArgumentOptions
         (ConnectorType.GoogleVertexAI, ArgumentOptionConstants.GoogleVertexAI.ApiKey, false),
         (ConnectorType.GoogleVertexAI, ArgumentOptionConstants.GoogleVertexAI.Model, false),
         // Docker Model Runner
+        (ConnectorType.DockerModelRunner, ArgumentOptionConstants.DockerModelRunner.BaseUrl, false),
+        (ConnectorType.DockerModelRunner, ArgumentOptionConstants.DockerModelRunner.Model, false),
         // Foundry Local
         (ConnectorType.FoundryLocal, ArgumentOptionConstants.FoundryLocal.Alias, false),
         // Hugging Face
@@ -71,15 +73,21 @@ public abstract class ArgumentOptions
     /// <returns>The verified <see cref="ConnectorType"/> value.</returns>
     public static ConnectorType VerifyConnectorType(IConfiguration config, string[] args)
     {
-        var connectorType = Enum.TryParse<ConnectorType>(config[AppSettingConstants.ConnectorType], ignoreCase: true, out var result) ? result : ConnectorType.Unknown;
+        var connectorType = Enum.TryParse<ConnectorType>(config[AppSettingConstants.ConnectorType], ignoreCase: true, out var configResult)
+                            ? configResult
+                            : ConnectorType.Unknown;
+        if (Enum.TryParse<ConnectorType>(config[EnvironmentVariableConstants.ConnectorType], ignoreCase: true, out var environmentResult))
+        {
+            connectorType = environmentResult;
+        }
         for (var i = 0; i < args.Length; i++)
         {
             if (string.Equals(args[i], ArgumentOptionConstants.ConnectorType, StringComparison.InvariantCultureIgnoreCase) ||
                 string.Equals(args[i], ArgumentOptionConstants.ConnectorTypeInShort, StringComparison.InvariantCultureIgnoreCase))
             {
-                if (i + 1 < args.Length && Enum.TryParse<ConnectorType>(args[i + 1], ignoreCase: true, out result))
+                if (i + 1 < args.Length && Enum.TryParse<ConnectorType>(args[i + 1], ignoreCase: true, out var argumentResult))
                 {
-                    connectorType = result;
+                    connectorType = argumentResult;
                 }
                 break;
             }
@@ -164,6 +172,8 @@ public abstract class ArgumentOptions
                 settings.AmazonBedrock.SecretAccessKey = amazonBedrock.SecretAccessKey ?? settings.AmazonBedrock.SecretAccessKey;
                 settings.AmazonBedrock.Region = amazonBedrock.Region ?? settings.AmazonBedrock.Region;
                 settings.AmazonBedrock.ModelId = amazonBedrock.ModelId ?? settings.AmazonBedrock.ModelId;
+
+                settings.Model = amazonBedrock.ModelId ?? settings.AmazonBedrock.ModelId;
                 break;
 
             case AzureAIFoundryArgumentOptions azureAIFoundry:
@@ -171,6 +181,8 @@ public abstract class ArgumentOptions
                 settings.AzureAIFoundry.Endpoint = azureAIFoundry.Endpoint ?? settings.AzureAIFoundry.Endpoint;
                 settings.AzureAIFoundry.ApiKey = azureAIFoundry.ApiKey ?? settings.AzureAIFoundry.ApiKey;
                 settings.AzureAIFoundry.DeploymentName = azureAIFoundry.DeploymentName ?? settings.AzureAIFoundry.DeploymentName;
+
+                settings.Model = azureAIFoundry.DeploymentName ?? settings.AzureAIFoundry.DeploymentName;
                 break;
 
             case GitHubModelsArgumentOptions github:
@@ -178,44 +190,63 @@ public abstract class ArgumentOptions
                 settings.GitHubModels.Endpoint = github.Endpoint ?? settings.GitHubModels.Endpoint;
                 settings.GitHubModels.Token = github.Token ?? settings.GitHubModels.Token;
                 settings.GitHubModels.Model = github.Model ?? settings.GitHubModels.Model;
+
+                settings.Model = github.Model ?? settings.GitHubModels.Model;
                 break;
 
             case GoogleVertexAIArgumentOptions googleVertexAI:
                 settings.GoogleVertexAI ??= new GoogleVertexAISettings();
                 settings.GoogleVertexAI.ApiKey = googleVertexAI.ApiKey ?? settings.GoogleVertexAI.ApiKey;
                 settings.GoogleVertexAI.Model = googleVertexAI.Model ?? settings.GoogleVertexAI.Model;
+
+                settings.Model = googleVertexAI.Model ?? settings.GoogleVertexAI.Model;
                 break;
 
-            // case DockerModelRunnerArgumentOptions dockerModelRunner:
-            //     break;
+            case DockerModelRunnerArgumentOptions dockerModelRunner:
+                settings.DockerModelRunner ??= new DockerModelRunnerSettings();
+                settings.DockerModelRunner.BaseUrl = dockerModelRunner.BaseUrl ?? settings.DockerModelRunner.BaseUrl;
+                settings.DockerModelRunner.Model = dockerModelRunner.Model ?? settings.DockerModelRunner.Model;
+
+                settings.Model = dockerModelRunner.Model ?? settings.DockerModelRunner.Model;
+                break;
 
             case FoundryLocalArgumentOptions foundryLocal:
                 settings.FoundryLocal ??= new FoundryLocalSettings();
                 settings.FoundryLocal.Alias = foundryLocal.Alias ?? settings.FoundryLocal.Alias;
+
+                settings.Model = foundryLocal.Alias ?? settings.FoundryLocal.Alias;
                 break;
 
             case HuggingFaceArgumentOptions huggingFace:
                 settings.HuggingFace ??= new HuggingFaceSettings();
                 settings.HuggingFace.BaseUrl = huggingFace.BaseUrl ?? settings.HuggingFace.BaseUrl;
                 settings.HuggingFace.Model = huggingFace.Model ?? settings.HuggingFace.Model;
+
+                settings.Model = huggingFace.Model ?? settings.HuggingFace.Model;
                 break;
 
             case OllamaArgumentOptions ollama:
                 settings.Ollama ??= new OllamaSettings();
                 settings.Ollama.BaseUrl = ollama.BaseUrl ?? settings.Ollama.BaseUrl;
                 settings.Ollama.Model = ollama.Model ?? settings.Ollama.Model;
+
+                settings.Model = ollama.Model ?? settings.Ollama.Model;
                 break;
 
             case AnthropicArgumentOptions anthropic:
                 settings.Anthropic ??= new AnthropicSettings();
                 settings.Anthropic.ApiKey = anthropic.ApiKey ?? settings.Anthropic.ApiKey;
                 settings.Anthropic.Model = anthropic.Model ?? settings.Anthropic.Model;
+
+                settings.Model = anthropic.Model ?? settings.Anthropic.Model;
                 break;
 
             case LGArgumentOptions lg:
                 settings.LG ??= new LGSettings();
                 settings.LG.BaseUrl = lg.BaseUrl ?? settings.LG.BaseUrl;
                 settings.LG.Model = lg.Model ?? settings.LG.Model;
+
+                settings.Model = lg.Model ?? settings.LG.Model;
                 break;
 
             // case NaverArgumentOptions naver:
@@ -225,6 +256,8 @@ public abstract class ArgumentOptions
                 settings.OpenAI ??= new OpenAISettings();
                 settings.OpenAI.ApiKey = openai.ApiKey ?? settings.OpenAI.ApiKey;
                 settings.OpenAI.Model = openai.Model ?? settings.OpenAI.Model;
+
+                settings.Model = openai.Model ?? settings.OpenAI.Model;
                 break;
 
             case UpstageArgumentOptions upstage:
@@ -232,6 +265,8 @@ public abstract class ArgumentOptions
                 settings.Upstage.BaseUrl = upstage.BaseUrl ?? settings.Upstage.BaseUrl;
                 settings.Upstage.ApiKey = upstage.ApiKey ?? settings.Upstage.ApiKey;
                 settings.Upstage.Model = upstage.Model ?? settings.Upstage.Model;
+
+                settings.Model = upstage.Model ?? settings.Upstage.Model;
                 break;
 
             default:
@@ -357,7 +392,8 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** Docker Model Runner: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  TBD");
+        Console.WriteLine($"  {ArgumentOptionConstants.DockerModelRunner.BaseUrl}           The base URL. Default to 'http://localhost:12434'");
+        Console.WriteLine($"  {ArgumentOptionConstants.DockerModelRunner.Model}              The model name. Default to 'ai/smollm2'");
         Console.WriteLine();
     }
 

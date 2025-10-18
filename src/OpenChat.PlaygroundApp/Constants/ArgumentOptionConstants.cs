@@ -1,7 +1,7 @@
 namespace OpenChat.PlaygroundApp.Constants;
 
 /// <summary>
-/// This represents the command-line argument constants for all command-line arguments to reference.
+/// This represents the constant entity for command-line arguments to reference.
 /// </summary>
 public static class ArgumentOptionConstants
 {

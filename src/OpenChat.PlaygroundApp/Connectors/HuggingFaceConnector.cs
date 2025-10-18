@@ -10,16 +10,18 @@ namespace OpenChat.PlaygroundApp.Connectors;
 /// <summary>
 /// This represents the connector entity for Hugging Face.
 /// </summary>
+/// <param name="settings"><see cref="AppSettings"/> instance.</param>
 public class HuggingFaceConnector(AppSettings settings) : LanguageModelConnector(settings.HuggingFace)
 {
+    private readonly AppSettings _appSettings = settings ?? throw new ArgumentNullException(nameof(settings));
+
     private const string HuggingFaceHost = "hf.co";
     private const string ModelSuffix = "gguf";
 
     /// <inheritdoc/>
     public override bool EnsureLanguageModelSettingsValid()
     {
-        var settings = this.Settings as HuggingFaceSettings;
-        if (settings is null)
+        if (this.Settings is not HuggingFaceSettings settings)
         {
             throw new InvalidOperationException("Missing configuration: HuggingFace.");
         }
@@ -36,7 +38,7 @@ public class HuggingFaceConnector(AppSettings settings) : LanguageModelConnector
 
         // Accepts formats like:
         // - hf.co/{org}/{model}gguf e.g hf.co/Qwen/Qwen3-0.6B-GGUF hf.co/Qwen/Qwen3-0.6B_GGUF
-        if (IsValidModel(settings.Model) == false)
+        if (IsValidModel(settings.Model!.Trim()) == false)
         {
             throw new InvalidOperationException("Invalid configuration: HuggingFace:Model format. Expected 'hf.co/{org}/{model}gguf' format.");
         }
@@ -59,12 +61,20 @@ public class HuggingFaceConnector(AppSettings settings) : LanguageModelConnector
 
         var chatClient = new OllamaApiClient(config);
 
+        var pulls = chatClient.PullModelAsync(model);
+        await foreach (var pull in pulls)
+        {
+            Console.WriteLine($"Pull status: {pull!.Status}");
+        }
+
+        Console.WriteLine($"The {this._appSettings.ConnectorType} connector created with model: {settings.Model}");
+
         return await Task.FromResult(chatClient).ConfigureAwait(false);
     }
 
     private static bool IsValidModel(string model)
     {
-        var segments = model.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+        var segments = model.Split([ '/' ], StringSplitOptions.RemoveEmptyEntries);
 
         if (segments.Length != 3)
         {

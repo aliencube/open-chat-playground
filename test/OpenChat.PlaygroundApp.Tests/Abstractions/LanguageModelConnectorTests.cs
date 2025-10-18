@@ -1,3 +1,5 @@
+using Microsoft.Extensions.AI;
+
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Configurations;
 using OpenChat.PlaygroundApp.Connectors;
@@ -36,44 +38,59 @@ public class LanguageModelConnectorTests
 
         // Assert
         client.ShouldNotBeNull();
+        client.ShouldBeAssignableTo<IChatClient>();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Fact]
+    public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw()
+    {
+        // Arrange
+        var settings = BuildAppSettings(endpoint: null);
+
+        // Act
+        Func<Task> func = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
+
+        // Assert
+        func.ShouldThrow<NullReferenceException>()
+            .Message.ShouldContain("Object reference not set to an instance of an object.");
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Fact]
+    public void Given_Null_Settings_When_CreateChatClient_Invoked_Then_It_Should_Throw()
+    {
+        // Arrange
+        AppSettings settings = null!;
+
+        // Act
+        Func<Task> func = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
+
+        // Assert
+        func.ShouldThrow<NullReferenceException>()
+            .Message.ShouldContain("Object reference not set to an instance of an object.");
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(ConnectorType.Unknown)]
-    public async Task Given_Unsupported_ConnectorType_When_CreateChatClient_Invoked_Then_It_Should_Throw(ConnectorType connectorType)
+    [InlineData(ConnectorType.AmazonBedrock)]
+    [InlineData(ConnectorType.GoogleVertexAI)]
+    [InlineData(ConnectorType.DockerModelRunner)]
+    [InlineData(ConnectorType.FoundryLocal)]
+    [InlineData(ConnectorType.Ollama)]
+    [InlineData(ConnectorType.Anthropic)]
+    [InlineData(ConnectorType.Naver)]
+    public void Given_Unsupported_ConnectorType_When_CreateChatClient_Invoked_Then_It_Should_Throw(ConnectorType connectorType)
     {
         // Arrange
         var settings = BuildAppSettings(connectorType: connectorType);
 
         // Act
-        var ex = await Assert.ThrowsAsync<NotSupportedException>(() => LanguageModelConnector.CreateChatClientAsync(settings));
+        Func<Task> func = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
 
         // Assert
-        ex.Message.ShouldContain($"Connector type '{connectorType}'");
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    // [InlineData(typeof(AmazonBedrockConnector))]
-    // [InlineData(typeof(AzureAIFoundryConnector))]
-    [InlineData(typeof(GitHubModelsConnector))]
-    [InlineData(typeof(GoogleVertexAIConnector))]
-    // [InlineData(typeof(DockerModelRunnerConnector))]
-    // [InlineData(typeof(FoundryLocalConnector))]
-    // [InlineData(typeof(HuggingFaceConnector))]
-    // [InlineData(typeof(OllamaConnector))]
-    // [InlineData(typeof(AnthropicConnector))]
-    // [InlineData(typeof(LGConnector))]
-    // [InlineData(typeof(NaverConnector))]
-    [InlineData(typeof(OpenAIConnector))]
-    // [InlineData(typeof(UpstageConnector))]
-    public void Given_Concrete_Connectors_When_Checking_Inheritance_Then_Should_Inherit_From_LanguageModelConnector(Type type)
-    {
-        // Act
-        var isSubclass = type.IsSubclassOf(typeof(LanguageModelConnector));
-
-        // Assert
-        isSubclass.ShouldBeTrue();
+        func.ShouldThrow<NotSupportedException>()
+            .Message.ShouldContain($"Connector type '{connectorType}'");
     }
 }

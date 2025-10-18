@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Connectors;
 using OpenChat.PlaygroundApp.Constants;
+using OpenChat.PlaygroundApp.Options;
 
 namespace OpenChat.PlaygroundApp.Tests.Options;
 
@@ -56,6 +57,19 @@ public class OpenAIArgumentOptionsTests
                    .AddInMemoryCollection(configDict!)   // Base configuration (lowest priority)
                    .AddInMemoryCollection(envDict!)      // Environment variables (medium priority)
                    .Build();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData(typeof(ArgumentOptions), typeof(OpenAIArgumentOptions), true)]
+    [InlineData(typeof(OpenAIArgumentOptions), typeof(ArgumentOptions), false)]
+    public void Given_BaseType_Then_It_Should_Be_AssignableFrom_DerivedType(Type baseType, Type derivedType, bool expected)
+    {
+        // Act
+        var result = baseType.IsAssignableFrom(derivedType);
+
+        // Assert
+        result.ShouldBe(expected);
     }
 
     [Trait("Category", "UnitTest")]
