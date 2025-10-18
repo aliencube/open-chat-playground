@@ -29,6 +29,9 @@ param huggingFaceModel string = ''
 // Ollama
 param ollamaModel string = ''
 // Anthropic
+param anthropicModel string = ''
+@secure()
+param anthropicApiKey string = ''
 // LG
 param lgModel string = ''
 // Naver
@@ -89,6 +92,8 @@ module resources 'resources.bicep' = {
     githubModelsToken: githubModelsToken
     huggingFaceModel: huggingFaceModel
     ollamaModel: ollamaModel
+    anthropicModel: anthropicModel
+    anthropicApiKey: anthropicApiKey
     lgModel: lgModel
     openAIModel: openAIModel
     openAIApiKey: openAIApiKey

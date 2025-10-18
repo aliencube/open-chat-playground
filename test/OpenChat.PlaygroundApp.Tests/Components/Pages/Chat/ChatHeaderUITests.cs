@@ -1,4 +1,4 @@
-﻿using Microsoft.Playwright;
+using Microsoft.Playwright;
 using Microsoft.Playwright.Xunit;
 
 using OpenChat.PlaygroundApp.Connectors;
