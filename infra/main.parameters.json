@@ -29,6 +29,9 @@
     "huggingFaceModel": {
       "value": "${HUGGING_FACE_MODEL=hf.co/Qwen/Qwen3-0.6B-GGUF}"
     },
+    "ollamaModel": {
+      "value": "${OLLAMA_MODEL=llama3.2}"
+    },
     "lgModel": {
       "value": "${LG_MODEL=hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B-GGUF}"
     },
