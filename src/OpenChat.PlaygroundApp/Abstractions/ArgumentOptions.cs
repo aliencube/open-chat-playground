@@ -29,6 +29,8 @@ public abstract class ArgumentOptions
         (ConnectorType.GoogleVertexAI, ArgumentOptionConstants.GoogleVertexAI.ApiKey, false),
         (ConnectorType.GoogleVertexAI, ArgumentOptionConstants.GoogleVertexAI.Model, false),
         // Docker Model Runner
+        (ConnectorType.DockerModelRunner, ArgumentOptionConstants.DockerModelRunner.BaseUrl, false),
+        (ConnectorType.DockerModelRunner, ArgumentOptionConstants.DockerModelRunner.Model, false),
         // Foundry Local
         (ConnectorType.FoundryLocal, ArgumentOptionConstants.FoundryLocal.Alias, false),
         // Hugging Face
@@ -71,15 +73,21 @@ public abstract class ArgumentOptions
     /// <returns>The verified <see cref="ConnectorType"/> value.</returns>
     public static ConnectorType VerifyConnectorType(IConfiguration config, string[] args)
     {
-        var connectorType = Enum.TryParse<ConnectorType>(config[AppSettingConstants.ConnectorType], ignoreCase: true, out var result) ? result : ConnectorType.Unknown;
+        var connectorType = Enum.TryParse<ConnectorType>(config[AppSettingConstants.ConnectorType], ignoreCase: true, out var configResult)
+                            ? configResult
+                            : ConnectorType.Unknown;
+        if (Enum.TryParse<ConnectorType>(config[EnvironmentVariableConstants.ConnectorType], ignoreCase: true, out var environmentResult))
+        {
+            connectorType = environmentResult;
+        }
         for (var i = 0; i < args.Length; i++)
         {
             if (string.Equals(args[i], ArgumentOptionConstants.ConnectorType, StringComparison.InvariantCultureIgnoreCase) ||
                 string.Equals(args[i], ArgumentOptionConstants.ConnectorTypeInShort, StringComparison.InvariantCultureIgnoreCase))
             {
-                if (i + 1 < args.Length && Enum.TryParse<ConnectorType>(args[i + 1], ignoreCase: true, out result))
+                if (i + 1 < args.Length && Enum.TryParse<ConnectorType>(args[i + 1], ignoreCase: true, out var argumentResult))
                 {
-                    connectorType = result;
+                    connectorType = argumentResult;
                 }
                 break;
             }
@@ -194,8 +202,13 @@ public abstract class ArgumentOptions
                 settings.Model = googleVertexAI.Model ?? settings.GoogleVertexAI.Model;
                 break;
 
-            // case DockerModelRunnerArgumentOptions dockerModelRunner:
-            //     break;
+            case DockerModelRunnerArgumentOptions dockerModelRunner:
+                settings.DockerModelRunner ??= new DockerModelRunnerSettings();
+                settings.DockerModelRunner.BaseUrl = dockerModelRunner.BaseUrl ?? settings.DockerModelRunner.BaseUrl;
+                settings.DockerModelRunner.Model = dockerModelRunner.Model ?? settings.DockerModelRunner.Model;
+
+                settings.Model = dockerModelRunner.Model ?? settings.DockerModelRunner.Model;
+                break;
 
             case FoundryLocalArgumentOptions foundryLocal:
                 settings.FoundryLocal ??= new FoundryLocalSettings();
