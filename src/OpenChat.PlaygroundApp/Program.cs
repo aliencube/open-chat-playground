@@ -3,6 +3,7 @@ using Microsoft.Extensions.AI;
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Components;
 using OpenChat.PlaygroundApp.Endpoints;
+using OpenChat.PlaygroundApp.Helpers;
 using OpenChat.PlaygroundApp.OpenApi;
 using OpenChat.PlaygroundApp.Services;
 
@@ -10,9 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 var config = builder.Configuration;
 var settings = ArgumentOptions.Parse(config, args);
+ArgumentHelpPrinter.DisplayBanner();
 if (settings.Help == true)
 {
-    ArgumentOptions.DisplayHelp();
+    ArgumentHelpPrinter.DisplayHelp();
     return;
 }
 
