@@ -92,9 +92,20 @@ jobs:
         dotnet user-secrets --project ./src/OpenChat.PlaygroundApp \
             set GitHubModels:Token "temporary-dummy-token"
 
-        dotnet run --project ./src/OpenChat.PlaygroundApp -- --connector-type HuggingFace &
+        dotnet run --project ./src/OpenChat.PlaygroundApp --no-launch-profile --urls "http://localhost:5280" -- --connector-type HuggingFace &
 
-        sleep 30
+        # Wait for app to be ready
+        timeout=60
+        while ! curl -s http://localhost:5280 > /dev/null; do
+          sleep 1
+          timeout=$((timeout - 1))
+          if [ $timeout -le 0 ]; then
+            echo "Timeout waiting for app to start"
+            exit 1
+          fi
+        done
+        
+        echo "App is ready"
 
     - name: Run integration tests
       shell: bash
