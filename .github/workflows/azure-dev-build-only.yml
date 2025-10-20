@@ -3,7 +3,9 @@ name: Azure Dev - Build Only
 on:
   push:
     branches:
+    - 'feat/*'
     - 'feature/*'
+    - 'hotfix/*'
     paths-ignore:
     - '.github/**'
   pull_request:
