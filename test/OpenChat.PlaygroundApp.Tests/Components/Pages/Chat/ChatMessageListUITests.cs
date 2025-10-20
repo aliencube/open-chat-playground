@@ -5,6 +5,8 @@ namespace OpenChat.PlaygroundApp.Tests.Components.Pages.Chat;
 
 public class ChatMessageListUITests : PageTest
 {
+    private const int TimeoutMs = 60000;
+
     public override async Task InitializeAsync()
     {
         await base.InitializeAsync();
@@ -25,7 +27,7 @@ public class ChatMessageListUITests : PageTest
         var isVisible = await noMessagesElement.IsVisibleAsync();
         isVisible.ShouldBeTrue();
         
-        var content = await noMessagesElement.InnerTextAsync();
+        var content = await noMessagesElement.InnerTextAsync(new() { Timeout = TimeoutMs });
         content.ShouldContain(expectedText);
     }
 
@@ -39,11 +41,11 @@ public class ChatMessageListUITests : PageTest
         var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
         await textArea.FillAsync(userMessage);
         await textArea.PressAsync("Enter");
-        await Page.Locator(".user-message").First.WaitForAsync(new() { State = WaitForSelectorState.Attached });
+        await Page.Locator(".user-message").First.WaitForAsync(new() { State = WaitForSelectorState.Attached, Timeout = TimeoutMs });
         
         // Act
         var messageListContainer = Page.Locator(".message-list-container");
-        var messageListContent = await messageListContainer.InnerTextAsync();
+        var messageListContent = await messageListContainer.InnerTextAsync(new() { Timeout = TimeoutMs });
         
         // Assert
         messageListContent.ShouldContain(userMessage);
@@ -107,7 +109,7 @@ public class ChatMessageListUITests : PageTest
         // Act
         var noMessagesElement = Page.Locator(".no-messages");
         var isVisible = await noMessagesElement.IsVisibleAsync();
-        var content = await noMessagesElement.InnerTextAsync();
+        var content = await noMessagesElement.InnerTextAsync(new() { Timeout = TimeoutMs });
         
         // Assert
         isVisible.ShouldBeTrue();

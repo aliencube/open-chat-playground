@@ -78,7 +78,8 @@ jobs:
         dotnet user-secrets --project ./src/OpenChat.PlaygroundApp \
             set GitHubModels:Token "temporary-dummy-token"
 
-        dotnet run --project ./src/OpenChat.PlaygroundApp -- --connector-type HuggingFace &
+        dotnet run --project ./src/OpenChat.PlaygroundApp -- \
+            --connector-type HuggingFace &
 
         sleep 30
 

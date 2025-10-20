@@ -7,6 +7,8 @@ namespace OpenChat.PlaygroundApp.Tests.Components.Pages.Chat;
 
 public class ChatHeaderUITests : PageTest
 {
+    private const int TimeoutMs = 60000;
+
     public override async Task InitializeAsync()
     {
         await base.InitializeAsync();
@@ -21,7 +23,7 @@ public class ChatHeaderUITests : PageTest
     public async Task Given_Root_Page_When_Loaded_Then_Header_Should_Be_Visible(string expected)
     {
         // Act
-        var title = await Page.Locator("span.app-title-text").InnerTextAsync();
+        var title = await Page.Locator("span.app-title-text").InnerTextAsync(new() { Timeout = TimeoutMs });
 
         // Assert
         title.ShouldBe(expected);
@@ -33,8 +35,8 @@ public class ChatHeaderUITests : PageTest
     public async Task Given_Root_Page_When_Loaded_Then_Header_Should_Display_ConnectorType_And_Model()
     {
         // Act
-        var connector = await Page.Locator("span.app-connector").InnerTextAsync();
-        var model = await Page.Locator("span.app-model").InnerTextAsync();
+        var connector = await Page.Locator("span.app-connector").InnerTextAsync(new() { Timeout = TimeoutMs });
+        var model = await Page.Locator("span.app-model").InnerTextAsync(new() { Timeout = TimeoutMs });
 
         // Assert
         connector.ShouldNotBeNullOrEmpty();
@@ -90,7 +92,7 @@ public class ChatHeaderUITests : PageTest
         await textArea.FillAsync(userMessage);
         await sendButton.ClickAsync();
         await newChatButton.ClickAsync();
-        await noMessagesPlaceholder.WaitForAsync();
+        await noMessagesPlaceholder.WaitForAsync(new() { Timeout = TimeoutMs });
 
         // Assert
         var userMessageCount = await userMessages.CountAsync();

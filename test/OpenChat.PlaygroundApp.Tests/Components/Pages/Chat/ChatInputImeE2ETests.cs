@@ -5,6 +5,8 @@ namespace OpenChat.PlaygroundApp.Tests.Components.Pages.Chat;
 
 public class ChatInputImeE2ETests : PageTest
 {
+    private const int TimeoutMs = 60000;
+
     public override async Task InitializeAsync()
     {
         await base.InitializeAsync();
@@ -58,7 +60,7 @@ public class ChatInputImeE2ETests : PageTest
         await Page.WaitForFunctionAsync(
             "args => document.querySelectorAll(args.selector).length >= args.expected",
             new { selector = ".assistant-message-header", expected = assistantCountBefore + 1 },
-            options: new() { Timeout = 60000 }
+            options: new() { Timeout = TimeoutMs }
         );
         var userCountAfterSubmit = await Page.Locator(".user-message").CountAsync();
         userCountAfterSubmit.ShouldBe(userCountBefore + 1);
@@ -86,7 +88,7 @@ public class ChatInputImeE2ETests : PageTest
         await Page.WaitForFunctionAsync(
             "args => document.querySelectorAll(args.selector).length >= args.expected",
             new { selector = ".assistant-message-header", expected = assistantCountBefore + 1 },
-            options: new() { Timeout = 60000 }
+            options: new() { Timeout = TimeoutMs }
         );
         var userCountAfterFirst = await Page.Locator(".user-message").CountAsync();
         userCountAfterFirst.ShouldBe(userCountBefore + 1);
@@ -116,7 +118,7 @@ public class ChatInputImeE2ETests : PageTest
         await textArea.PressAsync("Shift+Enter");
 
         // Assert: value contains newline and no submission
-        var value = await textArea.InputValueAsync();
+        var value = await textArea.InputValueAsync(new() { Timeout = TimeoutMs });
         value.ShouldContain("\n");
         var userCountAfter = await Page.Locator(".user-message").CountAsync();
         userCountAfter.ShouldBe(userCountBefore);

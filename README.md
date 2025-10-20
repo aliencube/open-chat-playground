@@ -160,6 +160,13 @@ Open Chat Playground (OCP) is a web UI that is able to connect virtually any LLM
 
 #### Integration tests
 
+1. Make sure you have the Ollama server up and running on your local machine.
+
+    ```bash
+    ollama serve
+    ollama run hf.co/Qwen/Qwen3-0.6B-GGUF
+    ```
+
 1. Make sure you are at the repository root.
 
     ```bash

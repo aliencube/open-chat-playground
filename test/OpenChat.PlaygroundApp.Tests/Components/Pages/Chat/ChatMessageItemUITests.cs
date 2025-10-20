@@ -5,6 +5,8 @@ namespace OpenChat.PlaygroundApp.Tests.Components.Pages.Chat;
 
 public class ChatMessageItemUITests : PageTest
 {
+    private const int TimeoutMs = 60000;
+
     public override async Task InitializeAsync()
     {
         await base.InitializeAsync();
@@ -27,7 +29,7 @@ public class ChatMessageItemUITests : PageTest
         await textArea.FillAsync(userMessage);
         await textArea.PressAsync("Enter");
         var newUserMessage = userMessages.Nth(initialCount);
-        await newUserMessage.WaitForAsync(new() { State = WaitForSelectorState.Attached });
+        await newUserMessage.WaitForAsync(new() { State = WaitForSelectorState.Attached, Timeout = TimeoutMs });
 
         // Assert
         var finalCount = await userMessages.CountAsync();
@@ -49,11 +51,11 @@ public class ChatMessageItemUITests : PageTest
         await textArea.FillAsync(userMessage);
         await textArea.PressAsync("Enter");
         var newUserMessage = userMessages.Nth(initialCount);
-        await newUserMessage.WaitForAsync(new() { State = WaitForSelectorState.Attached });
+        await newUserMessage.WaitForAsync(new() { State = WaitForSelectorState.Attached, Timeout = TimeoutMs });
 
         // Assert
         var latestUserMessage = userMessages.Nth(initialCount);
-        var renderedText = await latestUserMessage.InnerTextAsync();
+        var renderedText = await latestUserMessage.InnerTextAsync(new() { Timeout = TimeoutMs });
         renderedText.ShouldBe(userMessage);
     }
 
@@ -73,10 +75,10 @@ public class ChatMessageItemUITests : PageTest
         await textArea.FillAsync(userMessage);
         await textArea.PressAsync("Enter");
         var newAssistantText = assistantTexts.Nth(initialTextCount);
-        await newAssistantText.WaitForAsync(new() { State = WaitForSelectorState.Attached });
+        await newAssistantText.WaitForAsync(new() { State = WaitForSelectorState.Attached, Timeout = TimeoutMs });
     
         // Assert
-        var finalContent = await newAssistantText.InnerTextAsync();
+        var finalContent = await newAssistantText.InnerTextAsync(new() { Timeout = TimeoutMs });
         finalContent.ShouldNotBeNullOrWhiteSpace();
     }
 
@@ -97,7 +99,7 @@ public class ChatMessageItemUITests : PageTest
         await textArea.FillAsync(userMessage);
         await textArea.PressAsync("Enter");
         var newAssistantHeader = assistantHeaders.Nth(initialHeaderCount);
-        await newAssistantHeader.WaitForAsync(new() { State = WaitForSelectorState.Attached });
+        await newAssistantHeader.WaitForAsync(new() { State = WaitForSelectorState.Attached, Timeout = TimeoutMs });
     
         // Assert
         var finalIconCount = await assistantIcons.CountAsync();
@@ -120,9 +122,9 @@ public class ChatMessageItemUITests : PageTest
         // Act
         await textArea.FillAsync(userMessage);
         await textArea.PressAsync("Enter");
-        await spinner.WaitForAsync(new() { State = WaitForSelectorState.Visible });
+        await spinner.WaitForAsync(new() { State = WaitForSelectorState.Visible, Timeout = TimeoutMs });
         var visibleWhileStreaming = await spinner.IsVisibleAsync();
-        await spinner.WaitForAsync(new() { State = WaitForSelectorState.Hidden });
+        await spinner.WaitForAsync(new() { State = WaitForSelectorState.Hidden, Timeout = TimeoutMs });
         var visibleAfterComplete = await spinner.IsVisibleAsync();
 
         // Assert

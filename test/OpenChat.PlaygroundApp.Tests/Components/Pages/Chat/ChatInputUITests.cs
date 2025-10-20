@@ -5,6 +5,8 @@ namespace OpenChat.PlaygroundApp.Tests.Components.Pages.Chat;
 
 public class ChatInputUITest : PageTest
 {
+    private const int TimeoutMs = 60000;
+
     public override async Task InitializeAsync()
     {
         await base.InitializeAsync();
@@ -99,7 +101,7 @@ public class ChatInputUITest : PageTest
         await Page.WaitForFunctionAsync(
             "args => document.querySelectorAll(args.selector).length >= args.expected",
             new { selector = ".assistant-message-header", expected = messageCountBefore + expectedMessageCount },
-            options: new() { Timeout = 60000 }
+            options: new() { Timeout = TimeoutMs }
         );
         var textAreaAfter = await textArea.InnerTextAsync();
         textAreaAfter.ShouldBeEmpty();
@@ -152,7 +154,7 @@ public class ChatInputUITest : PageTest
         await Page.WaitForFunctionAsync(
             "args => document.querySelectorAll(args.selector).length >= args.expected",
             new { selector = ".assistant-message-header", expected = messageCountBefore + expectedMessageCount },
-            options: new() { Timeout = 60000 }
+            options: new() { Timeout = TimeoutMs }
         );
         var textAreaAfter = await textArea.InnerTextAsync();
         textAreaAfter.ShouldBeEmpty();
