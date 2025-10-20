@@ -244,16 +244,16 @@ public class HuggingFaceConnectorTests
     
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
-    [InlineData(null, Model, typeof(NullReferenceException),"Object reference not set to an instance of an object")]
-    [InlineData("", Model, typeof(InvalidOperationException), "Missing configuration: HUggingFace")]
-    [InlineData("   ", Model, typeof(InvalidOperationException), "Missing configuration: HUggingFace")]
-    [InlineData(BaseUrl, null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
-    [InlineData(BaseUrl, "", typeof(InvalidOperationException), "Missing configuration: HUggingFace")]
-    [InlineData(BaseUrl, "  ", typeof(InvalidOperationException), "Missing configuration: HUggingFace")]
-    [InlineData(BaseUrl, "hf.co/org/model", typeof(InvalidOperationException), "Invalid configuration: HuggingFace:Model format")]
-    [InlineData(BaseUrl, "org/model-gguf", typeof(InvalidOperationException), "Invalid configuration: HuggingFace:Model format")]
-    [InlineData(BaseUrl, "hf.co//model-gguf", typeof(InvalidOperationException), "Invalid configuration: HuggingFace:Model format")]
+	[InlineData(null, null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
+	[InlineData(null, Model, typeof(NullReferenceException),"Object reference not set to an instance of an object")]
+	[InlineData("", Model, typeof(InvalidOperationException), "Missing configuration: HuggingFace")]
+	[InlineData("   ", Model, typeof(InvalidOperationException), "Missing configuration: HuggingFace")]
+	[InlineData(BaseUrl, null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
+	[InlineData(BaseUrl, "", typeof(InvalidOperationException), "Missing configuration: HuggingFace")]
+	[InlineData(BaseUrl, "  ", typeof(InvalidOperationException), "Missing configuration: HuggingFace")]
+	[InlineData(BaseUrl, "hf.co/org/model", typeof(InvalidOperationException), "Invalid configuration: HuggingFace:Model format")]
+	[InlineData(BaseUrl, "org/model-gguf", typeof(InvalidOperationException), "Invalid configuration: HuggingFace:Model format")]
+	[InlineData(BaseUrl, "hf.co//model-gguf", typeof(InvalidOperationException), "Invalid configuration: HuggingFace:Model format")]
     public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string? baseUrl, string? model, Type expected, string expectedMessage)
     {
         // Arrange
