@@ -70,7 +70,9 @@ jobs:
     - name: Run Ollama server
       shell: bash
       run: |
-        ollama run hf.co/Qwen/Qwen3-0.6B-GGUF &
+        ollama serve &
+        sleep 5
+        ollama pull hf.co/Qwen/Qwen3-0.6B-GGUF
 
     - name: Run app in background
       shell: bash
