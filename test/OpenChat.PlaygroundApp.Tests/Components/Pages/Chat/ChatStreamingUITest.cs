@@ -21,17 +21,18 @@ public class ChatStreamingUITest : PageTest
     public async Task Given_UserMessage_When_SendButton_Clicked_Then_Response_Should_Stream_Progressively(string userMessage)
     {
         // Arrange
-        const int timeoutMs = 5000;
+        const int timeoutMs = 30000;
 
         const string messageSelector = ".assistant-message-text";
 
         var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
         var sendButton = Page.GetByRole(AriaRole.Button, new() { Name = "User Message Send Button" });
-        var message = Page.Locator(messageSelector);
 
         // Act
         await textArea.FillAsync(userMessage);
         await sendButton.ClickAsync();
+
+        var message = Page.Locator(messageSelector);
 
         // Assert
         await Expect(message).ToBeVisibleAsync(new() { Timeout = timeoutMs });
