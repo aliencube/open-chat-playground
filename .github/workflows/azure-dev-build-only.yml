@@ -85,6 +85,7 @@ jobs:
         
         echo "Ollama server is ready"
         ollama pull hf.co/Qwen/Qwen3-0.6B-GGUF
+        ollama pull hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B-GGUF
 
     - name: Run app in background
       shell: bash
