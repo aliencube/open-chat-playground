@@ -71,7 +71,19 @@ jobs:
       shell: bash
       run: |
         ollama serve &
-        sleep 5
+        
+        # Wait for Ollama server to be ready
+        timeout=30
+        while ! curl -s http://localhost:11434/api/tags > /dev/null; do
+          sleep 1
+          timeout=$((timeout - 1))
+          if [ $timeout -le 0 ]; then
+            echo "Timeout waiting for Ollama server"
+            exit 1
+          fi
+        done
+        
+        echo "Ollama server is ready"
         ollama pull hf.co/Qwen/Qwen3-0.6B-GGUF
 
     - name: Run app in background
