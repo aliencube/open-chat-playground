@@ -13,6 +13,7 @@ public class ChatInputImeE2ETests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Theory]
     [InlineData("안녕하세요")]
     [InlineData("테스트")]
@@ -34,6 +35,7 @@ public class ChatInputImeE2ETests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Trait("Category", "LLMRequired")]
     [Theory]
     [InlineData("안녕하세요", "안")]
@@ -62,6 +64,7 @@ public class ChatInputImeE2ETests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Trait("Category", "LLMRequired")]
     [Theory]
     [InlineData("테스트 메시지")]
@@ -95,6 +98,7 @@ public class ChatInputImeE2ETests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Theory]
     [InlineData("첫 줄")]
     [InlineData("테스트")]

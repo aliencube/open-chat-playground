@@ -30,6 +30,14 @@ jobs:
       with:
         dotnet-version: 9.x
 
+    - name: Setup Ollama
+      uses: ai-action/setup-ollama@v1
+
+    - uses: actions/cache@v4
+      with:
+        path: ~/.ollama
+        key: ${{ runner.os }}-ollama
+
     - name: Install local certs
       shell: bash
       run: |
@@ -57,17 +65,22 @@ jobs:
         $installer = "$($playwright[0].Directory.FullName)/playwright.ps1"
         & "$installer" install
 
+    - name: Run Ollama server
+      shell: bash
+      run: |
+        ollama run hf.co/Qwen/Qwen3-0.6B-GGUF &
+
     - name: Run app in background
       shell: bash
       run: |
         dotnet user-secrets --project ./src/OpenChat.PlaygroundApp \
             set GitHubModels:Token "temporary-dummy-token"
 
-        dotnet run --project ./src/OpenChat.PlaygroundApp &
+        dotnet run --project ./src/OpenChat.PlaygroundApp -- --connector-type HuggingFace &
 
         sleep 30
 
-    - name: Run integration tests - LLM not required
+    - name: Run integration tests
       shell: bash
       run: |
-        dotnet test . --no-build --logger "trx" --collect:"XPlat Code Coverage" --filter "Category=IntegrationTest & Category!=LLMRequired"
+        dotnet test . --no-build --logger "trx" --collect:"XPlat Code Coverage" --filter "Category=IntegrationTest"

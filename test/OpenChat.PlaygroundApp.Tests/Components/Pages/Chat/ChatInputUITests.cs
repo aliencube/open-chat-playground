@@ -13,6 +13,7 @@ public class ChatInputUITest : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Fact]
     public async Task Given_Root_Page_When_Loaded_Then_Textarea_Should_Have_Correct_Placeholder()
     {
@@ -27,6 +28,7 @@ public class ChatInputUITest : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Fact]
     public async Task Given_Root_Page_When_Loaded_Then_SendButton_Should_Have_Correct_Title()
     {
@@ -41,6 +43,7 @@ public class ChatInputUITest : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Fact]
     public async Task Given_Root_Page_When_Loaded_Then_SendButton_Icon_Should_Be_Visible()
     {
@@ -55,6 +58,7 @@ public class ChatInputUITest : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Theory]
     [InlineData("Input usermessage")]
     public async Task Given_UserMessage_When_Tab_Pressed_Then_Focus_Should_Move_To_SendButton(string userMessage)
@@ -74,6 +78,7 @@ public class ChatInputUITest : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Trait("Category", "LLMRequired")]
     [Theory]
     [InlineData("하늘은 왜 푸른 색인가요?", 1)]
@@ -102,6 +107,7 @@ public class ChatInputUITest : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Theory]
     [InlineData("", 0)]
     [InlineData(" ", 0)]
@@ -125,6 +131,7 @@ public class ChatInputUITest : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Trait("Category", "LLMRequired")]
     [Theory]
     [InlineData("하늘은 왜 푸른 색인가요?", 1)]
@@ -152,6 +159,7 @@ public class ChatInputUITest : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Theory]
     [InlineData("", 0)]
     [InlineData(" ", 0)]
@@ -173,6 +181,7 @@ public class ChatInputUITest : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Theory]
     [InlineData("하늘은 왜 푸를까?", "rgb(0, 0, 0)")]
     [InlineData("Why is the sky blue?", "rgb(0, 0, 0)")]
@@ -191,6 +200,7 @@ public class ChatInputUITest : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Theory]
     [InlineData("", "rgb(170, 170, 170)")]
     [InlineData(" ", "rgb(170, 170, 170)")]
@@ -211,6 +221,7 @@ public class ChatInputUITest : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Theory]
     [InlineData("Line 1\nLine 2\nLine 3\nLine 4\nLine 5")]
     public async Task Given_Textarea_When_MultipleLines_Added_Then_Height_Should_Adjust(string multilineText)
@@ -229,6 +240,7 @@ public class ChatInputUITest : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Theory]
     [InlineData("Line 1\nLine 2\nLine 3\nLine 4\nLine 5", 5)]
     public async Task Given_Multiline_UserMessage_When_Filled_Then_TextArea_Should_Contain_Correct_LineCount(string userMessage, int expectedLineCount)

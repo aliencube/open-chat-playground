@@ -15,6 +15,7 @@ public class ChatHeaderUITests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Theory]
     [InlineData("OpenChat Playground")]
     public async Task Given_Root_Page_When_Loaded_Then_Header_Should_Be_Visible(string expected)
@@ -27,6 +28,7 @@ public class ChatHeaderUITests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Fact]
     public async Task Given_Root_Page_When_Loaded_Then_Header_Should_Display_ConnectorType_And_Model()
     {
@@ -41,6 +43,7 @@ public class ChatHeaderUITests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Fact]
     public async Task Given_Root_Page_When_Loaded_Then_NewChat_Button_Should_Be_Visible()
     {
@@ -53,6 +56,7 @@ public class ChatHeaderUITests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Fact]
     public async Task Given_Header_When_Loaded_Then_NewChat_Icon_Should_Be_Visible()
     {
@@ -65,6 +69,7 @@ public class ChatHeaderUITests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Trait("Category", "LLMRequired")]
     [Theory]
     [InlineData("1+1의 결과는 무엇인가요?")]

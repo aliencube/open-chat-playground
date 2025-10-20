@@ -13,6 +13,7 @@ public class ChatMessageListUITests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Theory]
     [InlineData("To get started, try asking about anything.")]
     public async Task Given_EmptyState_When_Page_Loads_Then_NoMessages_Content_Should_Be_Visible(string expectedText)
@@ -29,6 +30,7 @@ public class ChatMessageListUITests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Theory]
     [InlineData("Hello, how are you?")]
     public async Task Given_MessagesExist_When_Rendered_Then_MessageList_Should_Display_Messages(string userMessage)
@@ -48,6 +50,7 @@ public class ChatMessageListUITests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Fact]
     public async Task Given_InitialState_When_NoUserInteraction_Then_InProgressMessage_Should_Be_Null()
     {
@@ -60,6 +63,7 @@ public class ChatMessageListUITests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Theory]
     [InlineData("Test message for container")]
     [InlineData("Another message for verification")]
@@ -80,6 +84,7 @@ public class ChatMessageListUITests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Theory]
     [InlineData(".message-list-container")]
     [InlineData("chat-messages")]
@@ -94,6 +99,7 @@ public class ChatMessageListUITests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Theory]
     [InlineData("To get started, try asking about anything.")]
     public async Task Given_EmptyState_When_NoMessages_Then_NoMessagesContent_Should_Be_Visible(string expectedText)
@@ -109,6 +115,7 @@ public class ChatMessageListUITests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Theory]
     [InlineData("User Message Textarea")]
     public async Task Given_EmptyState_When_NoMessages_Then_InputField_Should_Be_Visible(string inputFieldName)

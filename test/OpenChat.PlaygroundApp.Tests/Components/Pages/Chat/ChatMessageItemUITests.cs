@@ -13,6 +13,7 @@ public class ChatMessageItemUITests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Theory]
     [InlineData("Input usermessage")]
     public async Task Given_UserMessage_When_Sent_Then_UserMessage_Count_Should_Increment(string userMessage)
@@ -34,6 +35,7 @@ public class ChatMessageItemUITests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Theory]
     [InlineData("Input usermessage")]
     public async Task Given_UserMessage_When_Sent_Then_Rendered_Text_Should_Match_UserMessage(string userMessage)
@@ -56,6 +58,7 @@ public class ChatMessageItemUITests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Trait("Category", "LLMRequired")]
     [Theory]
     [InlineData("Input usermessage")]
@@ -78,6 +81,7 @@ public class ChatMessageItemUITests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Trait("Category", "LLMRequired")]
     [Theory]
     [InlineData("Input usermessage")]
@@ -103,6 +107,7 @@ public class ChatMessageItemUITests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Trait("Category", "LLMRequired")]
     [Theory]
     [InlineData("Input usermessage")]

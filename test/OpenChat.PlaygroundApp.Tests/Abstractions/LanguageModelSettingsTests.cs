@@ -5,7 +5,7 @@ namespace OpenChat.PlaygroundApp.Tests.Abstractions;
 
 public class LanguageModelSettingsTests
 {
-	[Trait("Category", "UnitTest")]
+    [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(typeof(AmazonBedrockSettings))]
     [InlineData(typeof(AzureAIFoundrySettings))]

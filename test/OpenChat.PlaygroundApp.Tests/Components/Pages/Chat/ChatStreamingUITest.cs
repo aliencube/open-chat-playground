@@ -13,6 +13,7 @@ public class ChatStreamingUITest : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Trait("Category", "LLMRequired")]
     [Theory]
     [InlineData("하늘은 왜 푸른 색인가요? 다섯 개의 단락으로 자세히 설명해주세요.")]
@@ -48,6 +49,7 @@ public class ChatStreamingUITest : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Trait("Category", "LLMRequired")]
     [Theory]
     [InlineData("하늘은 왜 푸른 색인가요?")]
@@ -73,6 +75,7 @@ public class ChatStreamingUITest : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Trait("Category", "LLMRequired")]
     [Theory]
     [InlineData("하늘은 왜 푸른 색인가요?")]

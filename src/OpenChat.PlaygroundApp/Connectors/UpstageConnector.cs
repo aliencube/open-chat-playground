@@ -14,6 +14,8 @@ namespace OpenChat.PlaygroundApp.Connectors;
 /// </summary>
 public class UpstageConnector(AppSettings settings) : LanguageModelConnector(settings.Upstage)
 {
+    private readonly AppSettings _appSettings = settings ?? throw new ArgumentNullException(nameof(settings));
+
     /// <inheritdoc/>
     public override bool EnsureLanguageModelSettingsValid()
     {
@@ -46,18 +48,22 @@ public class UpstageConnector(AppSettings settings) : LanguageModelConnector(set
     {
         var settings = this.Settings as UpstageSettings;
 
-        var credential = new ApiKeyCredential(settings?.ApiKey ?? 
-            throw new InvalidOperationException("Missing configuration: Upstage:ApiKey."));
+        var baseUrl = settings!.BaseUrl!.Trim() ?? throw new InvalidOperationException("Missing configuration: Upstage:BaseUrl.");
+        var model = settings!.Model!.Trim() ?? throw new InvalidOperationException("Missing configuration: Upstage:Model.");
+        var apiKey = settings!.ApiKey!.Trim() ?? throw new InvalidOperationException("Missing configuration: Upstage:ApiKey.");
+
+        var credential = new ApiKeyCredential(apiKey);
 
         var options = new OpenAIClientOptions
         {
-            Endpoint = new Uri(settings.BaseUrl ?? 
-                throw new InvalidOperationException("Missing configuration: Upstage:BaseUrl."))
+            Endpoint = new Uri(baseUrl),
         };
 
         var client = new OpenAIClient(credential, options);
-        var chatClient = client.GetChatClient(settings.Model)
+        var chatClient = client.GetChatClient(model)
                                .AsIChatClient();
+
+        Console.WriteLine($"The {this._appSettings.ConnectorType} connector created with model: {model}");
 
         return await Task.FromResult(chatClient).ConfigureAwait(false);
     }
