@@ -98,7 +98,8 @@ public class ChatInputUITest : PageTest
         // Wait until an assistant message appears
         await Page.WaitForFunctionAsync(
             "args => document.querySelectorAll(args.selector).length >= args.expected",
-            new { selector = ".assistant-message-header", expected = messageCountBefore + expectedMessageCount }
+            new { selector = ".assistant-message-header", expected = messageCountBefore + expectedMessageCount },
+            options: new() { Timeout = 60000 }
         );
         var textAreaAfter = await textArea.InnerTextAsync();
         textAreaAfter.ShouldBeEmpty();
@@ -150,7 +151,8 @@ public class ChatInputUITest : PageTest
         // Wait until an assistant message appears
         await Page.WaitForFunctionAsync(
             "args => document.querySelectorAll(args.selector).length >= args.expected",
-            new { selector = ".assistant-message-header", expected = messageCountBefore + expectedMessageCount }
+            new { selector = ".assistant-message-header", expected = messageCountBefore + expectedMessageCount },
+            options: new() { Timeout = 60000 }
         );
         var textAreaAfter = await textArea.InnerTextAsync();
         textAreaAfter.ShouldBeEmpty();

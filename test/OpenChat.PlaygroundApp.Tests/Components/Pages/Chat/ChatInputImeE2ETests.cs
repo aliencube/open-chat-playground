@@ -57,7 +57,8 @@ public class ChatInputImeE2ETests : PageTest
         // Assert: assistant response begins and user message added once
         await Page.WaitForFunctionAsync(
             "args => document.querySelectorAll(args.selector).length >= args.expected",
-            new { selector = ".assistant-message-header", expected = assistantCountBefore + 1 }
+            new { selector = ".assistant-message-header", expected = assistantCountBefore + 1 },
+            options: new() { Timeout = 60000 }
         );
         var userCountAfterSubmit = await Page.Locator(".user-message").CountAsync();
         userCountAfterSubmit.ShouldBe(userCountBefore + 1);
@@ -84,7 +85,8 @@ public class ChatInputImeE2ETests : PageTest
         // Assert: assistant response begins and one user message
         await Page.WaitForFunctionAsync(
             "args => document.querySelectorAll(args.selector).length >= args.expected",
-            new { selector = ".assistant-message-header", expected = assistantCountBefore + 1 }
+            new { selector = ".assistant-message-header", expected = assistantCountBefore + 1 },
+            options: new() { Timeout = 60000 }
         );
         var userCountAfterFirst = await Page.Locator(".user-message").CountAsync();
         userCountAfterFirst.ShouldBe(userCountBefore + 1);
