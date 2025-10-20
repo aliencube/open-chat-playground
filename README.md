@@ -175,7 +175,7 @@ Open Chat Playground (OCP) is a web UI that is able to connect virtually any LLM
 1. Run the app.
 
     ```bash
-    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp
+    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- --connector-type HuggingFace
     ```
 
 1. Run tests.
