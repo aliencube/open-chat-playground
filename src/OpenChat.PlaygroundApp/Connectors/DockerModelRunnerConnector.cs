@@ -43,12 +43,10 @@ public class DockerModelRunnerConnector(AppSettings settings) : LanguageModelCon
     {
         var settings = this.Settings as DockerModelRunnerSettings;
 
-        var openAiBaseUrl = $"{settings?.BaseUrl?.TrimEnd('/') ?? 
-            throw new InvalidOperationException("Missing configuration: DockerModelRunner:BaseUrl.")}/engines/llama.cpp/v1";
-        
         var options = new OpenAIClientOptions
         {
-            Endpoint = new Uri(openAiBaseUrl)
+            Endpoint = new Uri(settings?.BaseUrl ??
+                throw new InvalidOperationException("Missing configuration: DockerModelRunner:BaseUrl."))
         };
 
         var credential = new ApiKeyCredential("not-used");
