@@ -1,4 +1,5 @@
 using Microsoft.Extensions.AI;
+
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Configurations;
 using OpenChat.PlaygroundApp.Connectors;
@@ -50,6 +51,20 @@ public class DockerModelRunnerConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Fact]
+    public void Given_Settings_When_Instantiated_Then_It_Should_Return()
+    {
+        // Arrange
+        var settings = BuildAppSettings();
+
+        // Act
+        var result = new DockerModelRunnerConnector(settings);
+
+        // Assert
+        result.ShouldNotBeNull();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Fact]
     public void Given_Settings_Is_Null_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
     {
         // Arrange
@@ -69,22 +84,8 @@ public class DockerModelRunnerConnectorTests
     }
 
     [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_Settings_When_Instantiated_Then_It_Should_Return()
-    {
-        // Arrange
-        var settings = BuildAppSettings();
-
-        // Act
-        var result = new DockerModelRunnerConnector(settings);
-
-        // Assert
-        result.ShouldNotBeNull();
-    }
-
-    [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
+    [InlineData(null, typeof(InvalidOperationException), "DockerModelRunner:BaseUrl")]
     [InlineData("", typeof(InvalidOperationException), "DockerModelRunner:BaseUrl")]
     [InlineData("   ", typeof(InvalidOperationException), "DockerModelRunner:BaseUrl")]
     [InlineData("\t\n\r", typeof(InvalidOperationException), "DockerModelRunner:BaseUrl")]
@@ -104,7 +105,7 @@ public class DockerModelRunnerConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
+    [InlineData(null, typeof(InvalidOperationException), "DockerModelRunner:Model")]
     [InlineData("", typeof(InvalidOperationException), "DockerModelRunner:Model")]
     [InlineData("   ", typeof(InvalidOperationException), "DockerModelRunner:Model")]
     [InlineData("\t\n\r", typeof(InvalidOperationException), "DockerModelRunner:Model")]
@@ -138,8 +139,28 @@ public class DockerModelRunnerConnectorTests
     }
 
     [Trait("Category", "UnitTest")]
+    [Fact]
+    public void Given_Null_DockerModelRunnerSettings_When_GetChatClientAsync_Invoked_Then_It_Should_Throw()
+    {
+        // Arrange
+        var settings = new AppSettings
+        {
+            ConnectorType = ConnectorType.DockerModelRunner,
+            DockerModelRunner = null
+        };
+        var connector = new DockerModelRunnerConnector(settings);
+
+        // Act
+        Func<Task> func = async () => await connector.GetChatClientAsync();
+
+        // Assert
+        func.ShouldThrow<InvalidOperationException>()
+            .Message.ShouldContain("DockerModelRunner");
+    }
+
+    [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(ArgumentNullException), "null")]
+    [InlineData(null, typeof(InvalidOperationException), "DockerModelRunner:BaseUrl")]
     [InlineData("", typeof(UriFormatException), "empty")]
     [InlineData("   ", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
     [InlineData("invalid-uri-format", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
@@ -158,13 +179,10 @@ public class DockerModelRunnerConnectorTests
             .Message.ShouldContain(message);
     }
 
-    [Trait("Category", "IntegrationTest")]
-    [Trait("Category", "LLMRequired")]
+    [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(OllamaSharp.Models.Exceptions.OllamaException), "invalid model name")]
-    [InlineData("", typeof(OllamaSharp.Models.Exceptions.OllamaException), "invalid model name")]
-    [InlineData("   ", typeof(OllamaSharp.Models.Exceptions.OllamaException), "invalid model name")]
-    [InlineData("invalid-model-format", typeof(OllamaSharp.Models.Exceptions.ResponseError), "pull model manifest")]
+    [InlineData(null, typeof(ArgumentNullException), "model")]
+    [InlineData("", typeof(ArgumentException), "model")]
     public void Given_Invalid_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expectedType, string message)
     {
         // Arrange
@@ -179,8 +197,7 @@ public class DockerModelRunnerConnectorTests
             .Message.ShouldContain(message);
     }
 
-    [Trait("Category", "IntegrationTest")]
-    [Trait("Category", "LLMRequired")]
+    [Trait("Category", "UnitTest")]
     [Fact]
     public async Task Given_Valid_Settings_When_GetChatClient_Invoked_Then_It_Should_Return_ChatClient()
     {
@@ -198,13 +215,13 @@ public class DockerModelRunnerConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
-    [InlineData(null, Model, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
-    [InlineData("", Model, typeof(InvalidOperationException), "Missing configuration: DockerModelRunner:BaseUrl")]
-    [InlineData("   ", Model, typeof(InvalidOperationException), "Missing configuration: DockerModelRunner:BaseUrl")]
-    [InlineData(BaseUrl, null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
-    [InlineData(BaseUrl, "", typeof(InvalidOperationException), "Missing configuration: DockerModelRunner:Model")]
-    [InlineData(BaseUrl, "   ", typeof(InvalidOperationException), "Missing configuration: DockerModelRunner:Model")]
+    [InlineData(null, null, typeof(InvalidOperationException), "DockerModelRunner:BaseUrl")]
+    [InlineData(null, Model, typeof(InvalidOperationException), "DockerModelRunner:BaseUrl")]
+    [InlineData("", Model, typeof(InvalidOperationException), "DockerModelRunner:BaseUrl")]
+    [InlineData("   ", Model, typeof(InvalidOperationException), "DockerModelRunner:BaseUrl")]
+    [InlineData(BaseUrl, null, typeof(InvalidOperationException), "DockerModelRunner:Model")]
+    [InlineData(BaseUrl, "", typeof(InvalidOperationException), "DockerModelRunner:Model")]
+    [InlineData(BaseUrl, "   ", typeof(InvalidOperationException), "DockerModelRunner:Model")]
     public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string? baseUrl, string? model, Type expected, string message)
     {
         // Arrange
@@ -218,8 +235,7 @@ public class DockerModelRunnerConnectorTests
             .Message.ShouldContain(message);
     }
 
-    [Trait("Category", "IntegrationTest")]
-    [Trait("Category", "LLMRequired")]
+    [Trait("Category", "UnitTest")]
     [Fact]
     public async Task Given_Valid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Return_ChatClient()
     {
