@@ -1,6 +1,8 @@
+using System.ClientModel;
+
 using Microsoft.Extensions.AI;
 
-using OllamaSharp;
+using OpenAI;
 
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Configurations;
@@ -10,7 +12,6 @@ namespace OpenChat.PlaygroundApp.Connectors;
 /// <summary>
 /// This represents the connector entity for Docker Model Runner.
 /// </summary>
-/// <param name="settings"><see cref="AppSettings"/> instance.</param>
 public class DockerModelRunnerConnector(AppSettings settings) : LanguageModelConnector(settings.DockerModelRunner)
 {
     private readonly AppSettings _appSettings = settings ?? throw new ArgumentNullException(nameof(settings));
@@ -18,7 +19,8 @@ public class DockerModelRunnerConnector(AppSettings settings) : LanguageModelCon
     /// <inheritdoc/>
     public override bool EnsureLanguageModelSettingsValid()
     {
-        if (this.Settings is not DockerModelRunnerSettings settings)
+        var settings = this.Settings as DockerModelRunnerSettings;
+        if (settings is null)
         {
             throw new InvalidOperationException("Missing configuration: DockerModelRunner.");
         }
@@ -40,22 +42,19 @@ public class DockerModelRunnerConnector(AppSettings settings) : LanguageModelCon
     public override async Task<IChatClient> GetChatClientAsync()
     {
         var settings = this.Settings as DockerModelRunnerSettings;
-        var baseUrl = settings!.BaseUrl!;
-        var model = settings!.Model!;
 
-        var config = new OllamaApiClient.Configuration
+        var openAiBaseUrl = $"{settings?.BaseUrl?.TrimEnd('/') ?? 
+            throw new InvalidOperationException("Missing configuration: DockerModelRunner:BaseUrl.")}/engines/llama.cpp/v1";
+        
+        var options = new OpenAIClientOptions
         {
-            Uri = new Uri(baseUrl),
-            Model = model,
+            Endpoint = new Uri(openAiBaseUrl)
         };
 
-        var chatClient = new OllamaApiClient(config);
-
-        var pulls = chatClient.PullModelAsync(model);
-        await foreach (var pull in pulls)
-        {
-            Console.WriteLine($"Pull status: {pull!.Status}");
-        }
+        var credential = new ApiKeyCredential("not-used");
+        var client = new OpenAIClient(credential, options);
+        var chatClient = client.GetChatClient(settings.Model)
+                               .AsIChatClient();
 
         Console.WriteLine($"The {this._appSettings.ConnectorType} connector created with model: {settings.Model}");
 
