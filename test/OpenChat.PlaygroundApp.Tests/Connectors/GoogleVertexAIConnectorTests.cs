@@ -24,6 +24,34 @@ public class GoogleVertexAIConnectorTests
     }
 
     [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData(typeof(LanguageModelConnector), typeof(GoogleVertexAIConnector), true)]
+    [InlineData(typeof(GoogleVertexAIConnector), typeof(LanguageModelConnector), false)]
+    public void Given_BaseType_Then_It_Should_Be_AssignableFrom_DerivedType(Type baseType, Type derivedType, bool expected)
+    {
+        // Act
+        var result = baseType.IsAssignableFrom(derivedType);
+
+        // Assert
+        result.ShouldBe(expected);
+    }
+
+
+    [Trait("Category", "UnitTest")]
+    [Fact]
+    public void Given_Settings_When_Instantiated_Then_It_Should_Return()
+    {
+        // Arrange
+        var settings = BuildAppSettings();
+
+        // Act
+        var result = new GoogleVertexAIConnector(settings);
+
+        // Assert
+        result.ShouldNotBeNull();
+    }
+
+    [Trait("Category", "UnitTest")]
     [Fact]
     public void Given_Settings_Is_Null_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
     {
