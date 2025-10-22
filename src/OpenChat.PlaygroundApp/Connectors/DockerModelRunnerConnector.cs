@@ -42,11 +42,14 @@ public class DockerModelRunnerConnector(AppSettings settings) : LanguageModelCon
     public override async Task<IChatClient> GetChatClientAsync()
     {
         var settings = this.Settings as DockerModelRunnerSettings;
+        var baseUrl = settings?.BaseUrl?.TrimEnd('/') 
+                  ?? throw new InvalidOperationException("Missing configuration: DockerModelRunner:BaseUrl.");
+        var endpoint = new Uri($"{baseUrl}/engines/v1");
 
         var credential = new ApiKeyCredential("not-used");
         var options = new OpenAIClientOptions
         {
-            Endpoint = new Uri(settings?.BaseUrl ?? throw new InvalidOperationException("Missing configuration: DockerModelRunner:BaseUrl."))
+            Endpoint = endpoint
         };
         
         var client = new OpenAIClient(credential, options);
