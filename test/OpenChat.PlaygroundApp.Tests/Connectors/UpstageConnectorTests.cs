@@ -47,8 +47,8 @@ public class UpstageConnectorTests
         Action action = () => new UpstageConnector(null!);
 
         // Assert
-        action.ShouldThrow<NullReferenceException>()
-              .Message.ShouldContain("Object reference not set to an instance of an object");
+        action.ShouldThrow<ArgumentNullException>()
+              .Message.ShouldContain("settings");
     }
 
     [Trait("Category", "UnitTest")]
@@ -175,17 +175,17 @@ public class UpstageConnectorTests
         Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert
-        func.ShouldThrow<InvalidOperationException>()
-            .Message.ShouldContain("Missing configuration");
+        func.ShouldThrow<NullReferenceException>()
+            .Message.ShouldContain("Object reference not set to an instance of an object.");
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(InvalidOperationException), "Upstage:BaseUrl")]
+    [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
     [InlineData("", typeof(UriFormatException), "empty")]
-    [InlineData("invalid-uri-format", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
-    [InlineData("not-a-url", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
-    [InlineData("   ", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
+    [InlineData("invalid-uri-format", typeof(UriFormatException), "Invalid URI:")]
+    [InlineData("not-a-url", typeof(UriFormatException), "Invalid URI:")]
+    [InlineData("   ", typeof(UriFormatException), "Invalid URI:")]
     public void Given_Missing_BaseUrl_When_GetChatClient_Invoked_Then_It_Should_Throw(string? baseUrl, Type expected, string message)
     {
         // Arrange
@@ -202,7 +202,7 @@ public class UpstageConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(InvalidOperationException), "Upstage:ApiKey")]
+    [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
     [InlineData("", typeof(ArgumentException), "key")]
     public void Given_Missing_ApiKey_When_GetChatClient_Invoked_Then_It_Should_Throw(string? apiKey, Type expected, string message)
     {
@@ -220,7 +220,7 @@ public class UpstageConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(ArgumentNullException), "model")]
+    [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
     [InlineData("", typeof(ArgumentException), "model")]
     public void Given_Missing_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
     {

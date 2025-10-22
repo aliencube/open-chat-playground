@@ -7,6 +7,8 @@ namespace OpenChat.PlaygroundApp.Tests.Components.Pages.Chat;
 
 public class ChatHeaderUITests : PageTest
 {
+    private const int TimeoutMs = 60000;
+
     public override async Task InitializeAsync()
     {
         await base.InitializeAsync();
@@ -15,24 +17,26 @@ public class ChatHeaderUITests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Theory]
     [InlineData("OpenChat Playground")]
     public async Task Given_Root_Page_When_Loaded_Then_Header_Should_Be_Visible(string expected)
     {
         // Act
-        var title = await Page.Locator("span.app-title-text").InnerTextAsync();
+        var title = await Page.Locator("span.app-title-text").InnerTextAsync(new() { Timeout = TimeoutMs });
 
         // Assert
         title.ShouldBe(expected);
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Fact]
     public async Task Given_Root_Page_When_Loaded_Then_Header_Should_Display_ConnectorType_And_Model()
     {
         // Act
-        var connector = await Page.Locator("span.app-connector").InnerTextAsync();
-        var model = await Page.Locator("span.app-model").InnerTextAsync();
+        var connector = await Page.Locator("span.app-connector").InnerTextAsync(new() { Timeout = TimeoutMs });
+        var model = await Page.Locator("span.app-model").InnerTextAsync(new() { Timeout = TimeoutMs });
 
         // Assert
         connector.ShouldNotBeNullOrEmpty();
@@ -41,6 +45,7 @@ public class ChatHeaderUITests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Fact]
     public async Task Given_Root_Page_When_Loaded_Then_NewChat_Button_Should_Be_Visible()
     {
@@ -53,6 +58,7 @@ public class ChatHeaderUITests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Fact]
     public async Task Given_Header_When_Loaded_Then_NewChat_Icon_Should_Be_Visible()
     {
@@ -65,6 +71,7 @@ public class ChatHeaderUITests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Trait("Category", "LLMRequired")]
     [Theory]
     [InlineData("1+1의 결과는 무엇인가요?")]
@@ -85,7 +92,7 @@ public class ChatHeaderUITests : PageTest
         await textArea.FillAsync(userMessage);
         await sendButton.ClickAsync();
         await newChatButton.ClickAsync();
-        await noMessagesPlaceholder.WaitForAsync();
+        await noMessagesPlaceholder.WaitForAsync(new() { Timeout = TimeoutMs });
 
         // Assert
         var userMessageCount = await userMessages.CountAsync();

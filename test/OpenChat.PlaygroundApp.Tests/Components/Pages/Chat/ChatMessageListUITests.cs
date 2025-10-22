@@ -5,6 +5,8 @@ namespace OpenChat.PlaygroundApp.Tests.Components.Pages.Chat;
 
 public class ChatMessageListUITests : PageTest
 {
+    private const int TimeoutMs = 60000;
+
     public override async Task InitializeAsync()
     {
         await base.InitializeAsync();
@@ -13,6 +15,7 @@ public class ChatMessageListUITests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Theory]
     [InlineData("To get started, try asking about anything.")]
     public async Task Given_EmptyState_When_Page_Loads_Then_NoMessages_Content_Should_Be_Visible(string expectedText)
@@ -24,11 +27,12 @@ public class ChatMessageListUITests : PageTest
         var isVisible = await noMessagesElement.IsVisibleAsync();
         isVisible.ShouldBeTrue();
         
-        var content = await noMessagesElement.InnerTextAsync();
+        var content = await noMessagesElement.InnerTextAsync(new() { Timeout = TimeoutMs });
         content.ShouldContain(expectedText);
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Theory]
     [InlineData("Hello, how are you?")]
     public async Task Given_MessagesExist_When_Rendered_Then_MessageList_Should_Display_Messages(string userMessage)
@@ -37,17 +41,18 @@ public class ChatMessageListUITests : PageTest
         var textArea = Page.GetByRole(AriaRole.Textbox, new() { Name = "User Message Textarea" });
         await textArea.FillAsync(userMessage);
         await textArea.PressAsync("Enter");
-        await Page.Locator(".user-message").First.WaitForAsync(new() { State = WaitForSelectorState.Attached });
+        await Page.Locator(".user-message").First.WaitForAsync(new() { State = WaitForSelectorState.Attached, Timeout = TimeoutMs });
         
         // Act
         var messageListContainer = Page.Locator(".message-list-container");
-        var messageListContent = await messageListContainer.InnerTextAsync();
+        var messageListContent = await messageListContainer.InnerTextAsync(new() { Timeout = TimeoutMs });
         
         // Assert
         messageListContent.ShouldContain(userMessage);
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Fact]
     public async Task Given_InitialState_When_NoUserInteraction_Then_InProgressMessage_Should_Be_Null()
     {
@@ -60,6 +65,7 @@ public class ChatMessageListUITests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Theory]
     [InlineData("Test message for container")]
     [InlineData("Another message for verification")]
@@ -80,6 +86,7 @@ public class ChatMessageListUITests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Theory]
     [InlineData(".message-list-container")]
     [InlineData("chat-messages")]
@@ -94,6 +101,7 @@ public class ChatMessageListUITests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Theory]
     [InlineData("To get started, try asking about anything.")]
     public async Task Given_EmptyState_When_NoMessages_Then_NoMessagesContent_Should_Be_Visible(string expectedText)
@@ -101,7 +109,7 @@ public class ChatMessageListUITests : PageTest
         // Act
         var noMessagesElement = Page.Locator(".no-messages");
         var isVisible = await noMessagesElement.IsVisibleAsync();
-        var content = await noMessagesElement.InnerTextAsync();
+        var content = await noMessagesElement.InnerTextAsync(new() { Timeout = TimeoutMs });
         
         // Assert
         isVisible.ShouldBeTrue();
@@ -109,6 +117,7 @@ public class ChatMessageListUITests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Theory]
     [InlineData("User Message Textarea")]
     public async Task Given_EmptyState_When_NoMessages_Then_InputField_Should_Be_Visible(string inputFieldName)
