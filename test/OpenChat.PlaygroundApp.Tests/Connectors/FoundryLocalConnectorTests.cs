@@ -137,6 +137,7 @@ public class FoundryLocalConnectorTests
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "IgnoreGitHubActions")]
     [Trait("Category", "LLMRequired")]
     [Theory]
     [InlineData(null, typeof(InvalidOperationException), "Model  not found in catalog.")]
@@ -158,6 +159,7 @@ public class FoundryLocalConnectorTests
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "IgnoreGitHubActions")]
     [Trait("Category", "LLMRequired")]
     [Fact]
     public async Task Given_Valid_Settings_When_GetChatClient_Invoked_Then_It_Should_Return_ChatClient()
@@ -200,6 +202,7 @@ public class FoundryLocalConnectorTests
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "IgnoreGitHubActions")]
     [Trait("Category", "LLMRequired")]
     [Fact]
     public async Task Given_Valid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Return_IChatClient()
