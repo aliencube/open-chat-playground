@@ -22,6 +22,9 @@ param githubModelsModel string = ''
 @secure()
 param githubModelsToken string = ''
 // Google Vertex AI
+param googleVertexAIModel string = ''
+@secure()
+param googleVertexAIApiKey string = ''
 // Docker Model Runner
 // Foundry Local
 // Hugging Face
@@ -87,6 +90,8 @@ module resources 'resources.bicep' = {
     azureAIFoundryDeploymentName: azureAIFoundryDeploymentName
     githubModelsModel: githubModelsModel
     githubModelsToken: githubModelsToken
+    googleVertexAIModel: googleVertexAIModel
+    googleVertexAIApiKey: googleVertexAIApiKey
     huggingFaceModel: huggingFaceModel
     ollamaModel: ollamaModel
     lgModel: lgModel
