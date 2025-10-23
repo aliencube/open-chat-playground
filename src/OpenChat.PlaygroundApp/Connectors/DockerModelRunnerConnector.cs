@@ -14,13 +14,14 @@ namespace OpenChat.PlaygroundApp.Connectors;
 /// </summary>
 public class DockerModelRunnerConnector(AppSettings settings) : LanguageModelConnector(settings.DockerModelRunner)
 {
+    private const string DockerModelRunnerApiKey = "docker-model-runner-api-key";
+
     private readonly AppSettings _appSettings = settings ?? throw new ArgumentNullException(nameof(settings));
 
     /// <inheritdoc/>
     public override bool EnsureLanguageModelSettingsValid()
     {
-        var settings = this.Settings as DockerModelRunnerSettings;
-        if (settings is null)
+        if (this.Settings is not DockerModelRunnerSettings settings)
         {
             throw new InvalidOperationException("Missing configuration: DockerModelRunner.");
         }
@@ -42,21 +43,25 @@ public class DockerModelRunnerConnector(AppSettings settings) : LanguageModelCon
     public override async Task<IChatClient> GetChatClientAsync()
     {
         var settings = this.Settings as DockerModelRunnerSettings;
-        var baseUrl = settings?.BaseUrl?.TrimEnd('/') 
-                  ?? throw new InvalidOperationException("Missing configuration: DockerModelRunner:BaseUrl.");
-        var endpoint = new Uri($"{baseUrl}/engines/v1");
 
-        var credential = new ApiKeyCredential("not-used");
+        var baseUrl = settings!.BaseUrl!.Trim() ?? throw new InvalidOperationException("Missing configuration: DockerModelRunner:BaseUrl.");
+        if (Uri.IsWellFormedUriString(baseUrl, UriKind.Absolute) == false)
+        {
+            throw new UriFormatException($"Invalid URI: The Docker Model Runner base URL '{baseUrl}' is not a valid URI.");
+        }
+        var model = settings!.Model!.Trim() ?? throw new InvalidOperationException("Missing configuration: DockerModelRunner:Model.");
+
+        var credential = new ApiKeyCredential(DockerModelRunnerApiKey);
         var options = new OpenAIClientOptions
         {
-            Endpoint = endpoint
+            Endpoint = new Uri($"{baseUrl.TrimEnd('/')}/engines/v1")
         };
         
         var client = new OpenAIClient(credential, options);
-        var chatClient = client.GetChatClient(settings.Model)
+        var chatClient = client.GetChatClient(model)
                                .AsIChatClient();
 
-        Console.WriteLine($"The {this._appSettings.ConnectorType} connector created with model: {settings.Model}");
+        Console.WriteLine($"The {this._appSettings.ConnectorType} connector created with model: {model}");
 
         return await Task.FromResult(chatClient).ConfigureAwait(false);
     }

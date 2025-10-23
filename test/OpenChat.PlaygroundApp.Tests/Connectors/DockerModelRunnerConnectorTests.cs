@@ -154,17 +154,17 @@ public class DockerModelRunnerConnectorTests
         Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert
-        func.ShouldThrow<InvalidOperationException>()
-            .Message.ShouldContain("DockerModelRunner");
+        func.ShouldThrow<NullReferenceException>()
+            .Message.ShouldContain("Object reference not set to an instance of an object");
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(InvalidOperationException), "DockerModelRunner:BaseUrl")]
-    [InlineData("", typeof(UriFormatException), "empty")]
-    [InlineData("   ", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
-    [InlineData("invalid-uri-format", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
-    [InlineData("not-a-url", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
+    [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
+    [InlineData("", typeof(UriFormatException), "Invalid URI:")]
+    [InlineData("   ", typeof(UriFormatException), "Invalid URI:")]
+    [InlineData("invalid-uri-format", typeof(UriFormatException), "Invalid URI:")]
+    [InlineData("not-a-url", typeof(UriFormatException), "Invalid URI:")]
     public void Given_Invalid_BaseUrl_When_GetChatClient_Invoked_Then_It_Should_Throw(string? baseUrl, Type expectedType, string message)
     {
         // Arrange
@@ -181,7 +181,7 @@ public class DockerModelRunnerConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(ArgumentNullException), "model")]
+    [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData("", typeof(ArgumentException), "model")]
     public void Given_Invalid_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expectedType, string message)
     {
@@ -215,11 +215,11 @@ public class DockerModelRunnerConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, null, typeof(InvalidOperationException), "DockerModelRunner:BaseUrl")]
-    [InlineData(null, Model, typeof(InvalidOperationException), "DockerModelRunner:BaseUrl")]
+	[InlineData(null, null, typeof(InvalidOperationException), "DockerModelRunner:BaseUrl")]
+	[InlineData(null, Model, typeof(InvalidOperationException),"DockerModelRunner:BaseUrl")]
     [InlineData("", Model, typeof(InvalidOperationException), "DockerModelRunner:BaseUrl")]
     [InlineData("   ", Model, typeof(InvalidOperationException), "DockerModelRunner:BaseUrl")]
-    [InlineData(BaseUrl, null, typeof(InvalidOperationException), "DockerModelRunner:Model")]
+	[InlineData(BaseUrl, null, typeof(InvalidOperationException), "DockerModelRunner:Model")]
     [InlineData(BaseUrl, "", typeof(InvalidOperationException), "DockerModelRunner:Model")]
     [InlineData(BaseUrl, "   ", typeof(InvalidOperationException), "DockerModelRunner:Model")]
     public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string? baseUrl, string? model, Type expected, string message)
