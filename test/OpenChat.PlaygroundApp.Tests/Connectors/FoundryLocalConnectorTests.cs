@@ -61,8 +61,9 @@ public class FoundryLocalConnectorTests
     }
 
     [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_Null_Settings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
+    [Theory]
+    [InlineData("FoundryLocal")]
+    public void Given_Null_Settings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string expectedMessage)
     {
         // Arrange
         var settings = new AppSettings
@@ -76,7 +77,7 @@ public class FoundryLocalConnectorTests
         Action action = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
-        action.ShouldThrow<InvalidOperationException>().Message.ShouldContain("FoundryLocal");
+        action.ShouldThrow<InvalidOperationException>().Message.ShouldContain(expectedMessage);
     }
 
     [Trait("Category", "UnitTest")]
