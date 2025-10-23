@@ -49,6 +49,8 @@ public class AmazonBedrockConnector(AppSettings settings) : LanguageModelConnect
     /// <inheritdoc/>
     public override async Task<IChatClient> GetChatClientAsync()
     {
+        this.EnsureLanguageModelSettingsValid();
+        
         var settings = this.Settings as AmazonBedrockSettings;
 
         var accessKeyId = settings!.AccessKeyId!;
