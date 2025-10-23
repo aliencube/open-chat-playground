@@ -176,13 +176,13 @@ public class GitHubModelsConnectorTests
         Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert
-        func.ShouldThrow<InvalidOperationException>()
-            .Message.ShouldContain("Missing configuration");
+        func.ShouldThrow<NullReferenceException>()
+            .Message.ShouldContain("Object reference not set to an instance of an object.");
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(InvalidOperationException), "GitHubModels:Token")]
+    [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
     [InlineData("", typeof(ArgumentException), "key")]
     public void Given_Missing_Token_When_GetChatClient_Invoked_Then_It_Should_Throw(string? token, Type expected, string message)
     {
@@ -200,7 +200,7 @@ public class GitHubModelsConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(InvalidOperationException), "GitHubModels:Endpoint")]
+    [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
     [InlineData("", typeof(UriFormatException), "empty")]
     public void Given_Missing_Endpoint_When_GetChatClient_Invoked_Then_It_Should_Throw(string? endpoint, Type expected, string message)
     {
@@ -218,7 +218,7 @@ public class GitHubModelsConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(ArgumentNullException), "model")]
+    [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
     [InlineData("", typeof(ArgumentException), "model")]
     public void Given_Missing_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
     {

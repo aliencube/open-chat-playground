@@ -48,17 +48,21 @@ public class GitHubModelsConnector(AppSettings settings) : LanguageModelConnecto
     {
         var settings = this.Settings as GitHubModelsSettings;
 
-        var credential = new ApiKeyCredential(settings?.Token ?? throw new InvalidOperationException("Missing configuration: GitHubModels:Token."));
+        var endpoint = settings!.Endpoint!.Trim() ?? throw new InvalidOperationException("Missing configuration: GitHubModels:Endpoint.");
+        var model = settings.Model!.Trim() ?? throw new InvalidOperationException("Missing configuration: GitHubModels:Model.");
+        var token = settings.Token!.Trim() ?? throw new InvalidOperationException("Missing configuration: GitHubModels:Token.");
+
+        var credential = new ApiKeyCredential(token);
         var options = new OpenAIClientOptions()
         {
-            Endpoint = new Uri(settings.Endpoint ?? throw new InvalidOperationException("Missing configuration: GitHubModels:Endpoint."))
+            Endpoint = new Uri(endpoint)
         };
 
         var client = new OpenAIClient(credential, options);
-        var chatClient = client.GetChatClient(settings.Model)
+        var chatClient = client.GetChatClient(model)
                                .AsIChatClient();
 
-        Console.WriteLine($"The {this._appSettings.ConnectorType} connector created with model: {settings.Model}");
+        Console.WriteLine($"The {this._appSettings.ConnectorType} connector created with model: {model}");
 
         return await Task.FromResult(chatClient).ConfigureAwait(false);
     }
