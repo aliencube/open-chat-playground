@@ -9,15 +9,15 @@ namespace OpenChat.PlaygroundApp.Options;
 /// </summary>
 public class DockerModelRunnerArgumentOptions : ArgumentOptions
 {
-	/// <summary>
-	/// Gets or sets the Docker Model Runner Base URL.
-	/// </summary>
-	public string? BaseUrl { get; set; }
+    /// <summary>
+    /// Gets or sets the Docker Model Runner Base URL.
+    /// </summary>
+    public string? BaseUrl { get; set; }
 
-	/// <summary>
-	/// Gets or sets the Docker Model Runner model/deployment name.
-	/// </summary>
-	public string? Model { get; set; }
+    /// <summary>
+    /// Gets or sets the Docker Model Runner model/deployment name.
+    /// </summary>
+    public string? Model { get; set; }
 
     /// <inheritdoc/>
     protected override void ParseOptions(IConfiguration config, string[] args)

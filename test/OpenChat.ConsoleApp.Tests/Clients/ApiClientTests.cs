@@ -173,7 +173,7 @@ public class ApiClientTests : IDisposable
     [InlineData(HttpStatusCode.BadRequest)]
     [InlineData(HttpStatusCode.Unauthorized)]
     [InlineData(HttpStatusCode.InternalServerError)]
-    public async Task InvokeStreamAsync_ShouldThrowHttpRequestException_WhenResponseIsNotSuccessful(HttpStatusCode statusCode)
+    public void InvokeStreamAsync_ShouldThrowHttpRequestException_WhenResponseIsNotSuccessful(HttpStatusCode statusCode)
     {
         // Arrange
         var messages = new[]

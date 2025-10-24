@@ -39,6 +39,7 @@ public abstract class LanguageModelConnector(LanguageModelSettings? settings)
             ConnectorType.AmazonBedrock => new AmazonBedrockConnector(settings),
             ConnectorType.AzureAIFoundry => new AzureAIFoundryConnector(settings),
             ConnectorType.GitHubModels => new GitHubModelsConnector(settings),
+            ConnectorType.DockerModelRunner => new DockerModelRunnerConnector(settings),
             ConnectorType.HuggingFace => new HuggingFaceConnector(settings),
             ConnectorType.LG => new LGConnector(settings),
             ConnectorType.OpenAI => new OpenAIConnector(settings),
