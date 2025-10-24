@@ -49,6 +49,10 @@ public class UpstageConnector(AppSettings settings) : LanguageModelConnector(set
         var settings = this.Settings as UpstageSettings;
 
         var baseUrl = settings!.BaseUrl!.Trim() ?? throw new InvalidOperationException("Missing configuration: Upstage:BaseUrl.");
+        if (!Uri.IsWellFormedUriString(baseUrl, UriKind.Absolute))
+        {
+            throw new UriFormatException($"Invalid URI: The Upstage endpoint '{baseUrl}' is not a valid URI.");
+        }
         var model = settings!.Model!.Trim() ?? throw new InvalidOperationException("Missing configuration: Upstage:Model.");
         var apiKey = settings!.ApiKey!.Trim() ?? throw new InvalidOperationException("Missing configuration: Upstage:ApiKey.");
 

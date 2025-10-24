@@ -49,6 +49,10 @@ public class GitHubModelsConnector(AppSettings settings) : LanguageModelConnecto
         var settings = this.Settings as GitHubModelsSettings;
 
         var endpoint = settings!.Endpoint!.Trim() ?? throw new InvalidOperationException("Missing configuration: GitHubModels:Endpoint.");
+        if (Uri.IsWellFormedUriString(endpoint, UriKind.Absolute) == false)
+        {
+            throw new UriFormatException($"Invalid URI: The GitHub Models endpoint '{endpoint}' is not a valid URI.");
+        }
         var model = settings.Model!.Trim() ?? throw new InvalidOperationException("Missing configuration: GitHubModels:Model.");
         var token = settings.Token!.Trim() ?? throw new InvalidOperationException("Missing configuration: GitHubModels:Token.");
 
