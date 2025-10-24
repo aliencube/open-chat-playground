@@ -23,22 +23,22 @@ public class AmazonBedrockConnector(AppSettings settings) : LanguageModelConnect
             throw new InvalidOperationException("Missing configuration: AmazonBedrock.");
         }
 
-        if (string.IsNullOrWhiteSpace(settings.AccessKeyId?.Trim()))
+        if (string.IsNullOrWhiteSpace(settings.AccessKeyId?.Trim()) == true)
         {
             throw new InvalidOperationException("Missing configuration: AmazonBedrock:AccessKeyId.");
         }
 
-        if (string.IsNullOrWhiteSpace(settings.SecretAccessKey?.Trim()))
+        if (string.IsNullOrWhiteSpace(settings.SecretAccessKey?.Trim()) == true)
         {
             throw new InvalidOperationException("Missing configuration: AmazonBedrock:SecretAccessKey.");
         }
 
-        if (string.IsNullOrWhiteSpace(settings.Region?.Trim()))
+        if (string.IsNullOrWhiteSpace(settings.Region?.Trim()) == true)
         {
             throw new InvalidOperationException("Missing configuration: AmazonBedrock:Region.");
         }
 
-        if (string.IsNullOrWhiteSpace(settings.ModelId?.Trim()))
+        if (string.IsNullOrWhiteSpace(settings.ModelId?.Trim()) == true)
         {
             throw new InvalidOperationException("Missing configuration: AmazonBedrock:ModelId.");
         }
@@ -53,15 +53,15 @@ public class AmazonBedrockConnector(AppSettings settings) : LanguageModelConnect
         
         var settings = this.Settings as AmazonBedrockSettings;
 
-        var accessKeyId = settings!.AccessKeyId!;
-        var secretAccessKey = settings!.SecretAccessKey!;
-        var region = settings!.Region!;
-        var modelId = settings!.ModelId!;
+        var accessKeyId = settings!.AccessKeyId!.Trim() ?? throw new InvalidOperationException("Missing configuration: AmazonBedrock:AccessKeyId.");
+        var secretAccessKey = settings!.SecretAccessKey!.Trim() ?? throw new InvalidOperationException("Missing configuration: AmazonBedrock:SecretAccessKey.");
+        var region = settings!.Region!.Trim() ?? throw new InvalidOperationException("Missing configuration: AmazonBedrock:Region.");
+        var modelId = settings!.ModelId!.Trim() ?? throw new InvalidOperationException("Missing configuration: AmazonBedrock:ModelId.");
 
-        var regionEndpoint = RegionEndpoint.GetBySystemName(region);
-        var bedrockClient = new AmazonBedrockRuntimeClient(accessKeyId, secretAccessKey, regionEndpoint);
+        var endpoint = RegionEndpoint.GetBySystemName(region);
+        var client = new AmazonBedrockRuntimeClient(accessKeyId, secretAccessKey, endpoint);
 
-        var chatClient = bedrockClient.AsIChatClient(modelId);
+        var chatClient = client.AsIChatClient(modelId);
 
         Console.WriteLine($"The {this._appSettings.ConnectorType} connector created with model: {modelId}");
 

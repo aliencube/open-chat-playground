@@ -67,7 +67,7 @@ public class GitHubModelsConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Fact]
-    public void Given_Settings_Is_Null_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
+    public void Given_Null_GitHubModelsSettings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
     {
         // Arrange
         var settings = new AppSettings
@@ -90,7 +90,7 @@ public class GitHubModelsConnectorTests
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData("", typeof(InvalidOperationException), "GitHubModels:Endpoint")]
     [InlineData("   ", typeof(InvalidOperationException), "GitHubModels:Endpoint")]
-    [InlineData("\t\n\r", typeof(InvalidOperationException), "GitHubModels:Endpoint")]
+    [InlineData("\t\r\n", typeof(InvalidOperationException), "GitHubModels:Endpoint")]
     public void Given_Invalid_Endpoint_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? endpoint, Type expectedType, string expectedMessage)
     {
         // Arrange
@@ -110,7 +110,7 @@ public class GitHubModelsConnectorTests
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData("", typeof(InvalidOperationException), "GitHubModels:Token")]
     [InlineData("   ", typeof(InvalidOperationException), "GitHubModels:Token")]
-    [InlineData("\t\n\r", typeof(InvalidOperationException), "GitHubModels:Token")]
+    [InlineData("\t\r\n", typeof(InvalidOperationException), "GitHubModels:Token")]
     public void Given_Invalid_Token_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? token, Type expectedType, string expectedMessage)
     {
         // Arrange
@@ -130,7 +130,7 @@ public class GitHubModelsConnectorTests
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData("", typeof(InvalidOperationException), "GitHubModels:Model")]
     [InlineData("   ", typeof(InvalidOperationException), "GitHubModels:Model")]
-    [InlineData("\t\n\r", typeof(InvalidOperationException), "GitHubModels:Model")]
+    [InlineData("\t\r\n", typeof(InvalidOperationException), "GitHubModels:Model")]
     public void Given_Invalid_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? model, Type expectedType, string expectedMessage)
     {
         // Arrange
@@ -183,26 +183,11 @@ public class GitHubModelsConnectorTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
-    [InlineData("", typeof(ArgumentException), "key")]
-    public void Given_Missing_Token_When_GetChatClient_Invoked_Then_It_Should_Throw(string? token, Type expected, string message)
-    {
-        // Arrange
-        var settings = BuildAppSettings(token: token);
-        var connector = new GitHubModelsConnector(settings);
-
-        // Act
-        Func<Task> func = async () => await connector.GetChatClientAsync();
-
-        // Assert
-        func.ShouldThrow(expected)
-            .Message.ShouldContain(message);
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
-    [InlineData("", typeof(UriFormatException), "empty")]
-    public void Given_Missing_Endpoint_When_GetChatClient_Invoked_Then_It_Should_Throw(string? endpoint, Type expected, string message)
+    [InlineData("", typeof(UriFormatException), "Invalid URI:")]
+    [InlineData("   ", typeof(UriFormatException), "Invalid URI:")]
+    [InlineData("\t\r\n", typeof(UriFormatException), "Invalid URI:")]
+    [InlineData("invalid-uri-format", typeof(UriFormatException), "Invalid URI:")]
+    public void Given_Invalid_Endpoint_When_GetChatClient_Invoked_Then_It_Should_Throw(string? endpoint, Type expected, string message)
     {
         // Arrange
         var settings = BuildAppSettings(endpoint: endpoint);
@@ -219,8 +204,30 @@ public class GitHubModelsConnectorTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
+    [InlineData("", typeof(ArgumentException), "key")]
+    [InlineData("   ", typeof(ArgumentException), "key")]
+    [InlineData("\t\r\n", typeof(ArgumentException), "key")]
+    public void Given_Invalid_Token_When_GetChatClient_Invoked_Then_It_Should_Throw(string? token, Type expected, string message)
+    {
+        // Arrange
+        var settings = BuildAppSettings(token: token);
+        var connector = new GitHubModelsConnector(settings);
+
+        // Act
+        Func<Task> func = async () => await connector.GetChatClientAsync();
+
+        // Assert
+        func.ShouldThrow(expected)
+            .Message.ShouldContain(message);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
     [InlineData("", typeof(ArgumentException), "model")]
-    public void Given_Missing_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
+    [InlineData("   ", typeof(ArgumentException), "model")]
+    [InlineData("\t\r\n", typeof(ArgumentException), "model")]
+    public void Given_Invalid_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
     {
         // Arrange
         var settings = BuildAppSettings(model: model);
@@ -255,12 +262,15 @@ public class GitHubModelsConnectorTests
     [InlineData(null, null, null, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
     [InlineData("", Token, Model, typeof(InvalidOperationException), "Missing configuration: GitHubModels:Endpoint")]
     [InlineData("   ", Token, Model, typeof(InvalidOperationException), "Missing configuration: GitHubModels:Endpoint")]
+    [InlineData("\t\r\n", Token, Model, typeof(InvalidOperationException), "Missing configuration: GitHubModels:Endpoint")]
     [InlineData(Endpoint, null, Model, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
     [InlineData(Endpoint, "", Model, typeof(InvalidOperationException), "Missing configuration: GitHubModels:Token")]
     [InlineData(Endpoint, "   ", Model, typeof(InvalidOperationException), "Missing configuration: GitHubModels:Token")]
+    [InlineData(Endpoint, "\t\r\n", Model, typeof(InvalidOperationException), "Missing configuration: GitHubModels:Token")]
     [InlineData(Endpoint, Token, null, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
     [InlineData(Endpoint, Token, "", typeof(InvalidOperationException), "Missing configuration: GitHubModels:Model")]
     [InlineData(Endpoint, Token, "   ", typeof(InvalidOperationException), "Missing configuration: GitHubModels:Model")]
+    [InlineData(Endpoint, Token, "\t\r\n", typeof(InvalidOperationException), "Missing configuration: GitHubModels:Model")]
     public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string? endpoint, string? token, string? model, Type expected, string expectedMessage)
     {
         // Arrange

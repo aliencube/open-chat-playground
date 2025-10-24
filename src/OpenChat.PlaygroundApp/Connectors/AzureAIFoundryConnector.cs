@@ -47,6 +47,10 @@ public class AzureAIFoundryConnector(AppSettings settings) : LanguageModelConnec
         var settings = this.Settings as AzureAIFoundrySettings;
 
         var endpoint = settings!.Endpoint!.Trim() ?? throw new InvalidOperationException("Missing configuration: AzureAIFoundry:Endpoint.");
+        if (Uri.IsWellFormedUriString(endpoint, UriKind.Absolute) == false)
+        {
+            throw new UriFormatException($"Invalid URI: The Azure AI Foundry endpoint '{endpoint}' is not a valid URI.");
+        }
         var deploymentName = settings.DeploymentName!.Trim() ?? throw new InvalidOperationException("Missing configuration: AzureAIFoundry:DeploymentName.");
         var apiKey = settings.ApiKey!.Trim() ?? throw new InvalidOperationException("Missing configuration: AzureAIFoundry:ApiKey.");
 

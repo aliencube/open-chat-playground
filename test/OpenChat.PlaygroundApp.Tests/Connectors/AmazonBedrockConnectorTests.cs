@@ -69,7 +69,7 @@ public class AmazonBedrockConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Fact]
-    public void Given_Null_Settings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
+    public void Given_Null_AmazonBedrockSettings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
     {
         // Arrange
         var settings = new AppSettings
@@ -304,15 +304,19 @@ public class AmazonBedrockConnectorTests
     [InlineData(null, SecretAccessKey, Region, ModelId, "Missing configuration: AmazonBedrock:AccessKeyId")]
     [InlineData("", SecretAccessKey, Region, ModelId, "Missing configuration: AmazonBedrock:AccessKeyId")]
     [InlineData("   ", SecretAccessKey, Region, ModelId, "Missing configuration: AmazonBedrock:AccessKeyId")]
+    [InlineData("\t\r\n", SecretAccessKey, Region, ModelId, "Missing configuration: AmazonBedrock:AccessKeyId")]
     [InlineData(AccessKeyId, null, Region, ModelId, "Missing configuration: AmazonBedrock:SecretAccessKey")]
     [InlineData(AccessKeyId, "", Region, ModelId, "Missing configuration: AmazonBedrock:SecretAccessKey")]
     [InlineData(AccessKeyId, "   ", Region, ModelId, "Missing configuration: AmazonBedrock:SecretAccessKey")]
+    [InlineData(AccessKeyId, "\t\r\n", Region, ModelId, "Missing configuration: AmazonBedrock:SecretAccessKey")]
     [InlineData(AccessKeyId, SecretAccessKey, null, ModelId, "Missing configuration: AmazonBedrock:Region")]
     [InlineData(AccessKeyId, SecretAccessKey, "", ModelId, "Missing configuration: AmazonBedrock:Region")]
     [InlineData(AccessKeyId, SecretAccessKey, "   ", ModelId, "Missing configuration: AmazonBedrock:Region")]
+    [InlineData(AccessKeyId, SecretAccessKey, "\t\r\n", ModelId, "Missing configuration: AmazonBedrock:Region")]
     [InlineData(AccessKeyId, SecretAccessKey, Region, null, "Missing configuration: AmazonBedrock:ModelId")]
     [InlineData(AccessKeyId, SecretAccessKey, Region, "", "Missing configuration: AmazonBedrock:ModelId")]
     [InlineData(AccessKeyId, SecretAccessKey, Region, "   ", "Missing configuration: AmazonBedrock:ModelId")]
+    [InlineData(AccessKeyId, SecretAccessKey, Region, "\t\r\n", "Missing configuration: AmazonBedrock:ModelId")]
     public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string? accessKeyId, string? secretAccessKey, string? region, string? modelId, string expectedMessage)
     {
         // Arrange

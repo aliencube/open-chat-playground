@@ -65,7 +65,7 @@ public class OpenAIConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Fact]
-    public void Given_Settings_Is_Null_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
+    public void Given_Null_OpenAISettings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
     {
         // Arrange
         var settings = new AppSettings {
@@ -87,7 +87,7 @@ public class OpenAIConnectorTests
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData("", typeof(InvalidOperationException), "OpenAI:ApiKey")]
     [InlineData("   ", typeof(InvalidOperationException), "OpenAI:ApiKey")]
-    [InlineData("\t\n\r", typeof(InvalidOperationException), "OpenAI:ApiKey")]
+    [InlineData("\t\r\n", typeof(InvalidOperationException), "OpenAI:ApiKey")]
     public void Given_Invalid_ApiKey_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? apiKey, Type expectedType, string expectedMessage)
     {
         // Arrange
@@ -107,7 +107,7 @@ public class OpenAIConnectorTests
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData("", typeof(InvalidOperationException), "OpenAI:Model")]
     [InlineData("   ", typeof(InvalidOperationException), "OpenAI:Model")]
-    [InlineData("\t\n\r", typeof(InvalidOperationException), "OpenAI:Model")]
+    [InlineData("\t\r\n", typeof(InvalidOperationException), "OpenAI:Model")]
     public void Given_Invalid_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? model, Type expectedType, string expectedMessage)
     {
         // Arrange
@@ -139,7 +139,7 @@ public class OpenAIConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Fact]
-    public void Given_Settings_Is_Null_When_GetChatClientAsync_Invoked_Then_It_Should_Throw()
+    public void Given_Null_OpenAISettings_When_GetChatClientAsync_Invoked_Then_It_Should_Throw()
     {
         // Arrange
         var settings = new AppSettings
@@ -161,6 +161,8 @@ public class OpenAIConnectorTests
     [Theory]
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
     [InlineData("", typeof(ArgumentException), "key")]
+    [InlineData("   ", typeof(ArgumentException), "key")]
+    [InlineData("\t\r\n", typeof(ArgumentException), "key")]
     public void Given_Missing_ApiKey_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? apiKey, Type expected, string message)
     {
         // Arrange
@@ -179,6 +181,8 @@ public class OpenAIConnectorTests
     [Theory]
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
     [InlineData("", typeof(ArgumentException), "model")]
+    [InlineData("   ", typeof(ArgumentException), "model")]
+    [InlineData("\t\r\n", typeof(ArgumentException), "model")]
     public void Given_Missing_Model_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
     {
         // Arrange
@@ -211,13 +215,14 @@ public class OpenAIConnectorTests
     
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData(null, Model, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
-    [InlineData("", Model, typeof(InvalidOperationException), "Missing configuration: OpenAI")]
-    [InlineData("  ", Model, typeof(InvalidOperationException), "Missing configuration: OpenAI")]
+    [InlineData("", Model, typeof(InvalidOperationException), "Missing configuration: OpenAI:ApiKey")]
+    [InlineData("  ", Model, typeof(InvalidOperationException), "Missing configuration: OpenAI:ApiKey")]
+    [InlineData("\t\r\n", Model, typeof(InvalidOperationException), "Missing configuration: OpenAI:ApiKey")]
     [InlineData(ApiKey, null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
-    [InlineData(ApiKey, "", typeof(InvalidOperationException), "Missing configuration: OpenAI")]
-    [InlineData(ApiKey, "  ", typeof(InvalidOperationException), "Missing configuration: OpenAI")]
+    [InlineData(ApiKey, "", typeof(InvalidOperationException), "Missing configuration: OpenAI:Model")]
+    [InlineData(ApiKey, "  ", typeof(InvalidOperationException), "Missing configuration: OpenAI:Model")]
+    [InlineData(ApiKey, "\t\r\n", typeof(InvalidOperationException), "Missing configuration: OpenAI:Model")]
     public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string? apiKey, string? model, Type expected, string expectedMessage)
     {
         // Arrange

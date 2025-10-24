@@ -67,7 +67,7 @@ public class LGConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Fact]
-    public void Given_Null_Settings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
+    public void Given_Null_LGSettings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
     {
         // Arrange
         var settings = new AppSettings
@@ -90,7 +90,7 @@ public class LGConnectorTests
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData("", typeof(InvalidOperationException), "LG:BaseUrl")]
     [InlineData("   ", typeof(InvalidOperationException), "LG:BaseUrl")]
-    [InlineData("\t\n\r", typeof(InvalidOperationException), "LG:BaseUrl")]
+    [InlineData("\t\r\n", typeof(InvalidOperationException), "LG:BaseUrl")]
     public void Given_Invalid_BaseUrl_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? baseUrl, Type expectedType, string expectedMessage)
     {
         // Arrange
@@ -110,7 +110,7 @@ public class LGConnectorTests
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData("", typeof(InvalidOperationException), "LG:Model")]
     [InlineData("   ", typeof(InvalidOperationException), "LG:Model")]
-    [InlineData("\t\n\r", typeof(InvalidOperationException), "LG:Model")]
+    [InlineData("\t\r\n", typeof(InvalidOperationException), "LG:Model")]
     [InlineData("invalid-model-format", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
     [InlineData("random-name", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
     [InlineData("hf.co/other-org/model-GGUF", typeof(InvalidOperationException), "Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
@@ -153,9 +153,8 @@ public class LGConnectorTests
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData("", typeof(UriFormatException), "empty")]
     [InlineData("   ", typeof(UriFormatException), "Invalid URI:")]
-    [InlineData("\t\n\r", typeof(UriFormatException), "Invalid URI:")]
+    [InlineData("\t\r\n", typeof(UriFormatException), "Invalid URI:")]
     [InlineData("invalid-uri-format", typeof(UriFormatException), "Invalid URI:")]
-    [InlineData("not-a-url", typeof(UriFormatException), "Invalid URI:")]
     public void Given_Invalid_BaseUrl_When_GetChatClient_Invoked_Then_It_Should_Throw(string? baseUrl, Type expectedType, string message)
     {
         // Arrange
@@ -230,13 +229,14 @@ public class LGConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData(null, Model, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData("", Model, typeof(InvalidOperationException), "Missing configuration: LG:BaseUrl")]
     [InlineData("   ", Model, typeof(InvalidOperationException), "Missing configuration: LG:BaseUrl")]
+    [InlineData("\t\r\n", Model, typeof(InvalidOperationException), "Missing configuration: LG:BaseUrl")]
     [InlineData(BaseUrl, null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData(BaseUrl, "", typeof(InvalidOperationException), "Missing configuration: LG:Model")]
     [InlineData(BaseUrl, "   ", typeof(InvalidOperationException), "Missing configuration: LG:Model")]
+    [InlineData(BaseUrl, "\t\r\n", typeof(InvalidOperationException), "Missing configuration: LG:Model")]
     [InlineData(BaseUrl, "invalid-model-format", typeof(InvalidOperationException), "Invalid configuration: Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
     [InlineData(BaseUrl, "random-name", typeof(InvalidOperationException), "Invalid configuration: Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]
     [InlineData(BaseUrl, "hf.co/other-org/model-GGUF", typeof(InvalidOperationException), "Invalid configuration: Expected 'hf.co/LGAI-EXAONE/EXAONE-*-GGUF' format")]

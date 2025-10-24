@@ -67,7 +67,7 @@ public class AzureAIFoundryConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Fact]
-    public void Given_Null_Settings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
+    public void Given_Null_AzureAIFoundrySettings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
     {
         // Arrange
         var settings = new AppSettings
@@ -184,9 +184,9 @@ public class AzureAIFoundryConnectorTests
     [Theory]
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
     [InlineData("", typeof(UriFormatException), "Invalid URI:")]
-    [InlineData("invalid-uri-format", typeof(UriFormatException), "Invalid URI:")]
-    [InlineData("not-a-url", typeof(UriFormatException), "Invalid URI:")]
     [InlineData("   ", typeof(UriFormatException), "Invalid URI:")]
+    [InlineData("\t\r\n", typeof(UriFormatException), "Invalid URI:")]
+    [InlineData("invalid-uri-format", typeof(UriFormatException), "Invalid URI:")]
     public void Given_Invalid_Endpoint_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? endpoint, Type expectedType, string message)
     {
         // Arrange
@@ -258,12 +258,15 @@ public class AzureAIFoundryConnectorTests
     [InlineData(null, null, null, "Missing configuration: AzureAIFoundry")]
     [InlineData("", ApiKey, DeploymentName, "Missing configuration: AzureAIFoundry:Endpoint")]
     [InlineData("   ", ApiKey, DeploymentName, "Missing configuration: AzureAIFoundry:Endpoint")]
+    [InlineData("\t\r\n", ApiKey, DeploymentName, "Missing configuration: AzureAIFoundry:Endpoint")]
     [InlineData(Endpoint, null, DeploymentName, "Missing configuration: AzureAIFoundry:ApiKey")]
     [InlineData(Endpoint, "", DeploymentName, "Missing configuration: AzureAIFoundry:ApiKey")]
     [InlineData(Endpoint, "   ", DeploymentName, "Missing configuration: AzureAIFoundry:ApiKey")]
+    [InlineData(Endpoint, "\t\r\n", DeploymentName, "Missing configuration: AzureAIFoundry:ApiKey")]
     [InlineData(Endpoint, ApiKey, null, "Missing configuration: AzureAIFoundry:DeploymentName")]
     [InlineData(Endpoint, ApiKey, "", "Missing configuration: AzureAIFoundry:DeploymentName")]
     [InlineData(Endpoint, ApiKey, "   ", "Missing configuration: AzureAIFoundry:DeploymentName")]
+    [InlineData(Endpoint, ApiKey, "\t\r\n", "Missing configuration: AzureAIFoundry:DeploymentName")]
     public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string? endpoint, string? apiKey, string? deploymentName, string expectedMessage)
     {
         // Arrange

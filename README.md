@@ -6,7 +6,7 @@ Open Chat Playground (OCP) is a web UI that is able to connect virtually any LLM
 
 ## Supported platforms
 
-- [ ] [Amazon Bedrock](https://docs.aws.amazon.com/bedrock)
+- [x] [Amazon Bedrock](https://docs.aws.amazon.com/bedrock)
 - [x] [Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/what-is-azure-ai-foundry)
 - [x] [GitHub Models](https://docs.github.com/github-models/about-github-models)
 - [ ] [Google Vertex AI](https://cloud.google.com/vertex-ai/docs)
@@ -60,6 +60,7 @@ Open Chat Playground (OCP) is a web UI that is able to connect virtually any LLM
 
 ### Run on local machine
 
+- [Use Amazon Bedrock](./docs/amazon-bedrock.md#run-on-local-machine)
 - [Use Azure AI Foundry](./docs/azure-ai-foundry.md#run-on-local-machine)
 - [Use GitHub Models](./docs/github-models.md#run-on-local-machine)
 - [Use Docker Model Runner](./docs/docker-model-runner.md#run-on-local-machine)
@@ -70,6 +71,7 @@ Open Chat Playground (OCP) is a web UI that is able to connect virtually any LLM
 
 ### Run in local container
 
+- [Use Amazon Bedrock](./docs/amazon-bedrock.md#run-in-local-container)
 - [Use Azure AI Foundry](./docs/azure-ai-foundry.md#run-in-local-container)
 - [Use GitHub Models](./docs/github-models.md#run-in-local-container)
 - [Use Docker Model Runner](./docs/docker-model-runner.md#run-in-local-container)
@@ -80,6 +82,7 @@ Open Chat Playground (OCP) is a web UI that is able to connect virtually any LLM
 
 ### Run on Azure
 
+- [Use Amazon Bedrock](./docs/amazon-bedrock.md#run-on-azure)
 - [Use Azure AI Foundry](./docs/azure-ai-foundry.md#run-on-azure)
 - [Use GitHub Models](./docs/github-models.md#run-on-azure)
 - ~~Use Docker Model Runner~~ 👉 NOT SUPPORTED

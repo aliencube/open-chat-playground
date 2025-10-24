@@ -67,7 +67,7 @@ public class UpstageConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Fact]
-    public void Given_Settings_Is_Null_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
+    public void Given_Null_UpstageSettings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
     {
         // Arrange
         var appSettings = new AppSettings {
@@ -182,11 +182,11 @@ public class UpstageConnectorTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
-    [InlineData("", typeof(UriFormatException), "empty")]
-    [InlineData("invalid-uri-format", typeof(UriFormatException), "Invalid URI:")]
-    [InlineData("not-a-url", typeof(UriFormatException), "Invalid URI:")]
+    [InlineData("", typeof(UriFormatException), "Invalid URI:")]
     [InlineData("   ", typeof(UriFormatException), "Invalid URI:")]
-    public void Given_Missing_BaseUrl_When_GetChatClient_Invoked_Then_It_Should_Throw(string? baseUrl, Type expected, string message)
+    [InlineData("\t\r\n", typeof(UriFormatException), "Invalid URI:")]
+    [InlineData("invalid-uri-format", typeof(UriFormatException), "Invalid URI:")]
+    public void Given_Invalid_BaseUrl_When_GetChatClient_Invoked_Then_It_Should_Throw(string? baseUrl, Type expected, string message)
     {
         // Arrange
         var settings = BuildAppSettings(baseUrl: baseUrl);
@@ -204,7 +204,9 @@ public class UpstageConnectorTests
     [Theory]
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
     [InlineData("", typeof(ArgumentException), "key")]
-    public void Given_Missing_ApiKey_When_GetChatClient_Invoked_Then_It_Should_Throw(string? apiKey, Type expected, string message)
+    [InlineData("   ", typeof(ArgumentException), "key")]
+    [InlineData("\t\r\n", typeof(ArgumentException), "key")]
+    public void Given_Invalid_ApiKey_When_GetChatClient_Invoked_Then_It_Should_Throw(string? apiKey, Type expected, string message)
     {
         // Arrange
         var settings = BuildAppSettings(apiKey: apiKey);
@@ -222,7 +224,9 @@ public class UpstageConnectorTests
     [Theory]
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
     [InlineData("", typeof(ArgumentException), "model")]
-    public void Given_Missing_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
+    [InlineData("   ", typeof(ArgumentException), "model")]
+    [InlineData("\t\r\n", typeof(ArgumentException), "model")]
+    public void Given_Invalid_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
     {
         // Arrange
         var settings = BuildAppSettings(model: model);
@@ -254,34 +258,37 @@ public class UpstageConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("apiKey", null, typeof(InvalidOperationException), "Upstage:ApiKey")]
-    [InlineData("apiKey", "", typeof(InvalidOperationException), "Upstage:ApiKey")]
-    [InlineData("apiKey", "   ", typeof(InvalidOperationException), "Upstage:ApiKey")]
-    [InlineData("apiKey", "\t\n\r", typeof(InvalidOperationException), "Upstage:ApiKey")]
-    [InlineData("baseUrl", null, typeof(InvalidOperationException), "Upstage:BaseUrl")]
-    [InlineData("baseUrl", "", typeof(InvalidOperationException), "Upstage:BaseUrl")]
-    [InlineData("baseUrl", "   ", typeof(InvalidOperationException), "Upstage:BaseUrl")]
-    [InlineData("baseUrl", "\t\n\r", typeof(InvalidOperationException), "Upstage:BaseUrl")]
-    [InlineData("model", null, typeof(InvalidOperationException), "Upstage:Model")]
-    [InlineData("model", "", typeof(InvalidOperationException), "Upstage:Model")]
-    [InlineData("model", "   ", typeof(InvalidOperationException), "Upstage:Model")]
-    [InlineData("model", "\t\n\r", typeof(InvalidOperationException), "Upstage:Model")]
-    public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string parameterName, string? invalidValue, Type expectedType, string expectedMessage)
+    [InlineData(null, ApiKey, Model, typeof(InvalidOperationException), "Missing configuration: Upstage:BaseUrl")]
+    [InlineData("", ApiKey, Model, typeof(InvalidOperationException), "Missing configuration: Upstage:BaseUrl")]
+    [InlineData("   ", ApiKey, Model, typeof(InvalidOperationException), "Missing configuration: Upstage:BaseUrl")]
+    [InlineData("\t\r\n", ApiKey, Model, typeof(InvalidOperationException), "Missing configuration: Upstage:BaseUrl")]
+    [InlineData(BaseUrl, null, Model, typeof(InvalidOperationException), "Missing configuration: Upstage:ApiKey")]
+    [InlineData(BaseUrl, "", Model, typeof(InvalidOperationException), "Missing configuration: Upstage:ApiKey")]
+    [InlineData(BaseUrl, "  ", Model, typeof(InvalidOperationException), "Missing configuration: Upstage:ApiKey")]
+    [InlineData(BaseUrl, "\t\r\n", Model, typeof(InvalidOperationException), "Missing configuration: Upstage:ApiKey")]
+    [InlineData(BaseUrl, ApiKey, null, typeof(InvalidOperationException), "Missing configuration: Upstage:Model")]
+    [InlineData(BaseUrl, ApiKey, "", typeof(InvalidOperationException), "Missing configuration: Upstage:Model")]
+    [InlineData(BaseUrl, ApiKey, "  ", typeof(InvalidOperationException), "Missing configuration: Upstage:Model")]
+    [InlineData(BaseUrl, ApiKey, "\t\r\n", typeof(InvalidOperationException), "Missing configuration: Upstage:Model")]
+    public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string? baseUrl, string? apiKey, string? model, Type expected, string expectedMessage)
     {
         // Arrange
-        var settings = parameterName switch
+        var settings = new AppSettings
         {
-            "apiKey" => BuildAppSettings(apiKey: invalidValue),
-            "baseUrl" => BuildAppSettings(baseUrl: invalidValue),
-            "model" => BuildAppSettings(model: invalidValue),
-            _ => throw new ArgumentException($"Unknown parameter: {parameterName}")
+            ConnectorType = ConnectorType.Upstage,
+            Upstage = new UpstageSettings
+            {
+                BaseUrl = baseUrl,
+                ApiKey = apiKey,
+                Model = model
+            }
         };
 
         // Act
         Func<Task> func = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
 
-        // Assert
-        func.ShouldThrow(expectedType)
+        // Assert  
+        func.ShouldThrow(expected)
             .Message.ShouldContain(expectedMessage);
     }
 

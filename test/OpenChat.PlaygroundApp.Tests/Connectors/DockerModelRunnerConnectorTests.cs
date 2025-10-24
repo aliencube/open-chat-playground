@@ -65,7 +65,7 @@ public class DockerModelRunnerConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Fact]
-    public void Given_Settings_Is_Null_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
+    public void Given_Null_DockerModelRunnerSettings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
     {
         // Arrange
         var settings = new AppSettings
@@ -88,7 +88,7 @@ public class DockerModelRunnerConnectorTests
     [InlineData(null, typeof(InvalidOperationException), "DockerModelRunner:BaseUrl")]
     [InlineData("", typeof(InvalidOperationException), "DockerModelRunner:BaseUrl")]
     [InlineData("   ", typeof(InvalidOperationException), "DockerModelRunner:BaseUrl")]
-    [InlineData("\t\n\r", typeof(InvalidOperationException), "DockerModelRunner:BaseUrl")]
+    [InlineData("\t\r\n", typeof(InvalidOperationException), "DockerModelRunner:BaseUrl")]
     public void Given_Invalid_BaseUrl_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? baseUrl, Type expectedType, string expectedMessage)
     {
         // Arrange
@@ -108,7 +108,7 @@ public class DockerModelRunnerConnectorTests
     [InlineData(null, typeof(InvalidOperationException), "DockerModelRunner:Model")]
     [InlineData("", typeof(InvalidOperationException), "DockerModelRunner:Model")]
     [InlineData("   ", typeof(InvalidOperationException), "DockerModelRunner:Model")]
-    [InlineData("\t\n\r", typeof(InvalidOperationException), "DockerModelRunner:Model")]
+    [InlineData("\t\r\n", typeof(InvalidOperationException), "DockerModelRunner:Model")]
     public void Given_Invalid_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? model, Type expectedType, string expectedMessage)
     {
         // Arrange
@@ -163,8 +163,8 @@ public class DockerModelRunnerConnectorTests
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData("", typeof(UriFormatException), "Invalid URI:")]
     [InlineData("   ", typeof(UriFormatException), "Invalid URI:")]
+    [InlineData("\t\r\n", typeof(UriFormatException), "Invalid URI:")]
     [InlineData("invalid-uri-format", typeof(UriFormatException), "Invalid URI:")]
-    [InlineData("not-a-url", typeof(UriFormatException), "Invalid URI:")]
     public void Given_Invalid_BaseUrl_When_GetChatClient_Invoked_Then_It_Should_Throw(string? baseUrl, Type expectedType, string message)
     {
         // Arrange
@@ -183,6 +183,8 @@ public class DockerModelRunnerConnectorTests
     [Theory]
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData("", typeof(ArgumentException), "model")]
+    [InlineData("   ", typeof(ArgumentException), "model")]
+    [InlineData("\t\r\n", typeof(ArgumentException), "model")]
     public void Given_Invalid_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expectedType, string message)
     {
         // Arrange
@@ -215,13 +217,14 @@ public class DockerModelRunnerConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-	[InlineData(null, null, typeof(InvalidOperationException), "DockerModelRunner:BaseUrl")]
 	[InlineData(null, Model, typeof(InvalidOperationException),"DockerModelRunner:BaseUrl")]
     [InlineData("", Model, typeof(InvalidOperationException), "DockerModelRunner:BaseUrl")]
     [InlineData("   ", Model, typeof(InvalidOperationException), "DockerModelRunner:BaseUrl")]
+    [InlineData("\t\r\n", Model, typeof(InvalidOperationException), "DockerModelRunner:BaseUrl")]
 	[InlineData(BaseUrl, null, typeof(InvalidOperationException), "DockerModelRunner:Model")]
     [InlineData(BaseUrl, "", typeof(InvalidOperationException), "DockerModelRunner:Model")]
     [InlineData(BaseUrl, "   ", typeof(InvalidOperationException), "DockerModelRunner:Model")]
+    [InlineData(BaseUrl, "\t\r\n", typeof(InvalidOperationException), "DockerModelRunner:Model")]
     public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string? baseUrl, string? model, Type expected, string message)
     {
         // Arrange

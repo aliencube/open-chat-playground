@@ -104,13 +104,15 @@ This page describes how to run OpenChat Playground (OCP) with [OpenAI models](ht
 
     ```bash
     # bash/zsh - from locally built container
-    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type OpenAI \
+    docker run -i --rm -p 8080:8080 openchat-playground:latest \
+        --connector-type OpenAI \
         --api-key $API_KEY
     ```
 
     ```powershell
     # PowerShell - from locally built container
-    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type OpenAI `
+    docker run -i --rm -p 8080:8080 openchat-playground:latest `
+        --connector-type OpenAI `
         --api-key $API_KEY
     ```
 
@@ -131,15 +133,33 @@ This page describes how to run OpenChat Playground (OCP) with [OpenAI models](ht
    Alternatively, if you want to run with a different model, say [GPT-4o](https://platform.openai.com/docs/models/gpt-4o), other than the default one, you can specify it as an argument:
 
     ```bash
-    # bash/zsh - from locally built container with custom model
-    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type OpenAI \
+    # bash/zsh - from locally built container
+    docker run -i --rm -p 8080:8080 openchat-playground:latest \
+        --connector-type OpenAI \
         --api-key $API_KEY \
         --model gpt-4o
     ```
 
     ```powershell
-    # PowerShell - from locally built container with custom model
-    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type OpenAI `
+    # PowerShell - from locally built container
+    docker run -i --rm -p 8080:8080 openchat-playground:latest `
+        --connector-type OpenAI `
+        --api-key $API_KEY `
+        --model gpt-4o
+    ```
+
+    ```bash
+    # bash/zsh - from GitHub Container Registry
+    docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest \
+        --connector-type OpenAI \
+        --api-key $API_KEY \
+        --model gpt-4o
+    ```
+
+    ```powershell
+    # PowerShell - from GitHub Container Registry
+    docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest `
+        --connector-type OpenAI `
         --api-key $API_KEY `
         --model gpt-4o
     ```
