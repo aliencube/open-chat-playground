@@ -1,6 +1,6 @@
 # OpenChat Playground with Ollama
 
-This page describes how to run OpenChat Playground (OCP) with Ollama integration.
+This page describes how to run OpenChat Playground (OCP) with [Ollama](https://ollama.com/search) integration.
 
 ## Get the repository root
 
@@ -18,32 +18,31 @@ This page describes how to run OpenChat Playground (OCP) with Ollama integration
 
 ## Run on local machine
 
-1. Make sure you are at the repository root.
-
-    ```bash
-    cd $REPOSITORY_ROOT
-    ```
-
 1. Make sure Ollama is installed and running on your local machine. If not, install Ollama from [ollama.com](https://ollama.com/) and start the service.
 
     ```bash
-    # Start Ollama service
     ollama serve
     ```
 
 1. Pull the model you want to use. The default model OCP uses is "llama3.2"
 
     ```bash
-    # Example: Pull llama3.2 model
     ollama pull llama3.2
+    ```
     
-    # Or pull other models
-    ollama pull mistral
-    ollama pull phi3
+    Alternatively, if you want to run with a different model, say [qwen](https://ollama.com/library/qwen) other than the default one, download it first by running the following command.
+
+    ```bash
     ollama pull qwen
     ```
 
-1. Run the app.
+2. Make sure you are at the repository root.
+
+    ```bash
+    cd $REPOSITORY_ROOT
+    ```
+
+3. Run the app.
 
     ```bash
     # bash/zsh
@@ -57,18 +56,27 @@ This page describes how to run OpenChat Playground (OCP) with Ollama integration
         --connector-type Ollama
     ```
 
+    Alternatively, if you want to run with a different model, say [qwen](https://ollama.com/library/qwen) other than the default one, download it first by running the following command.
 
-1. Open your web browser, navigate to `http://localhost:5280`, and enter prompts.
+    ```bash
+    # bash/zsh
+    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- \
+        --connector-type Ollama \
+        --model qwen
+    ```
+
+    ```powershell
+    # PowerShell
+    dotnet run --project $REPOSITORY_ROOT\src\OpenChat.PlaygroundApp -- `
+        --connector-type Ollama `
+        --model qwen
+    ```
+
+4. Open your web browser, navigate to `http://localhost:5280`, and enter prompts.
 
 ## Run on local container
 
 This approach runs OpenChat Playground in a container while connecting to Ollama running on the host machine.
-
-1. Make sure you are at the repository root.
-
-    ```bash
-    cd $REPOSITORY_ROOT
-    ```
 
 1. Configure Ollama to accept connections from containers.
 
@@ -76,24 +84,23 @@ This approach runs OpenChat Playground in a container while connecting to Ollama
     ollama serve
     ```
 
-1. Pull the model you want to use.
+1. Pull the model you want to use, and verify Ollama is accessible
 
     ```bash
-    # bash/zsh
     ollama pull llama3.2
-    
-    # Verify Ollama is accessible
     curl http://localhost:11434/api/version
     ```
     
     ```powershell
-    # PowerShell
     ollama pull llama3.2
-    
-    # Verify Ollama is accessible
     Invoke-RestMethod -Uri http://localhost:11434/api/version
     ```
 
+1. Make sure you are at the repository root.
+
+    ```bash
+    cd $REPOSITORY_ROOT
+    ```
 
 1. Build a container.
 
@@ -130,7 +137,8 @@ This approach runs OpenChat Playground in a container while connecting to Ollama
         --connector-type Ollama `
         --base-url http://host.docker.internal:11434
     ```
-    Alternatively, if you want to run with a different model, say [qwen], make sure you've already downloaded the model by running the `ollama pull qwen` command.
+
+    Alternatively, if you want to run with a different model, say [qwen](https://ollama.com/library/qwen), make sure you've already downloaded the model by running the `ollama pull qwen` command.
 
     ```bash
     ollama pull qwen
@@ -145,8 +153,24 @@ This approach runs OpenChat Playground in a container while connecting to Ollama
     ```
 
     ```powershell
-    # PowerShell - from locally built container (with a different model)
+    # PowerShell - from locally built container
     docker run -i --rm -p 8080:8080 openchat-playground:latest `
+        --connector-type Ollama `
+        --base-url http://host.docker.internal:11434 `
+        --model qwen
+    ```
+
+    ```bash
+    # bash/zsh - from GitHub Container Registry
+    docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest\
+        --connector-type Ollama \
+        --base-url http://host.docker.internal:11434 \
+        --model qwen
+    ```
+    
+    ```powershell
+    # PowerShell - from GitHub Container Registry
+    docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest `
         --connector-type Ollama `
         --base-url http://host.docker.internal:11434 `
         --model qwen
@@ -186,31 +210,40 @@ This approach runs OpenChat Playground in a container while connecting to Ollama
 
    > **NOTE**: You will be asked to provide environment name for provisioning.
 
-1. Set Ollama configuration to azd environment variables.
-    
-    **Azure-hosted Ollama (Automatic Deployment)**
+1. Set the connector type to `Ollama`.
 
     ```bash
-    # Set connector type to Ollama
     azd env set CONNECTOR_TYPE "Ollama"
-    
-    # Set a specific model
-    azd env set OLLAMA_MODEL "llama3.2"
-    
-    # BaseUrl is automatically configured - no need to set OLLAMA_BASE_URL
     ```
-    
-    > **NOTE**: When deploying to Azure, the Ollama server will be automatically provisioned and deployed as a container with GPU support. The BaseUrl will be automatically configured to connect to the deployed Ollama instance.
 
-1. Run the following commands in order to provision and deploy the app.
+   The default model OCP uses is [llama3.2](https://ollama.com/library/llama3.2). If you want to run with a different model, say [qwen](https://ollama.com/library/qwen) other than the default one, add it to azd environment variables.
+
+    ```bash
+    azd env set OLLAMA_MODEL "qwen"
+    ```
+
+2. As a default, the app uses a Serverless GPU with NVIDIA T4 (`NC8as-T4`). If you want to use NVIDIA A100, set the GPU profile.
+
+    ```bash
+    azd env set GPU_PROFILE_NAME "NC24-A100"
+    ```
+
+   If you want to know more about Serverless GPU, visit [Using serverless GPUs in Azure Container Apps](https://learn.microsoft.com/azure/container-apps/gpu-serverless-overview#use-serverless-gpus).
+
+3. Run the following commands in order to provision and deploy the app.
 
     ```bash
     azd up
     ```
 
    > **NOTE**: You will be asked to provide Azure subscription and location for deployment.
+   > **IMPORTANT**: Due to the limitation for GPU support, the available regions are limited to `Australia East`, `Sweden Central` and `West US 3`. For more details, visit [Using serverless GPUs in Azure Container Apps](https://learn.microsoft.com/azure/container-apps/gpu-serverless-overview#supported-regions).
 
-1. Clean up all the resources.
+   Once deployed, you will be able to see the deployed OCP app URL.
+
+4. Open your web browser, navigate to the OCP app URL, and enter prompts.
+
+5. Clean up all the resources.
 
     ```bash
     azd down --force --purge
