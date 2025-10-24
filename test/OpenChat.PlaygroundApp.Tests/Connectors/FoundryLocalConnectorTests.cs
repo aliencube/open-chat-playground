@@ -43,7 +43,8 @@ public class FoundryLocalConnectorTests
         Action action = () => new FoundryLocalConnector(null!);
 
         // Assert
-        action.ShouldThrow<ArgumentNullException>().Message.ShouldContain("settings");
+        action.ShouldThrow<ArgumentNullException>()
+              .Message.ShouldContain("settings");
     }
 
     [Trait("Category", "UnitTest")]
@@ -77,7 +78,8 @@ public class FoundryLocalConnectorTests
         Action action = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
-        action.ShouldThrow<InvalidOperationException>().Message.ShouldContain(expectedMessage);
+        action.ShouldThrow<InvalidOperationException>()
+              .Message.ShouldContain(expectedMessage);
     }
 
     [Trait("Category", "UnitTest")]
@@ -96,7 +98,8 @@ public class FoundryLocalConnectorTests
         Action action = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
-        action.ShouldThrow(expectedType).Message.ShouldContain(expectedMessage);
+        action.ShouldThrow(expectedType)
+              .Message.ShouldContain(expectedMessage);
     }
 
     [Trait("Category", "UnitTest")]
@@ -132,7 +135,8 @@ public class FoundryLocalConnectorTests
         Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert
-        func.ShouldThrow(expected).Message.ShouldContain(message);
+        func.ShouldThrow(expected)
+            .Message.ShouldContain(message);
     }
 
     [Trait("Category", "IgnoreGitHubActions")]
@@ -174,7 +178,8 @@ public class FoundryLocalConnectorTests
         Func<Task> func = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
 
         // Assert  
-        func.ShouldThrow(expected).Message.ShouldContain(expectedMessage);
+        func.ShouldThrow(expected)
+            .Message.ShouldContain(expectedMessage);
     }
 
     [Trait("Category", "IgnoreGitHubActions")]
