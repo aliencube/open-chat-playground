@@ -86,4 +86,4 @@ jobs:
     - name: Run integration tests
       shell: bash
       run: |
-        dotnet test ./test/OpenChat.PlaygroundApp.Tests --no-build --logger "trx" --collect:"XPlat Code Coverage" --filter "Category=IntegrationTest"
+        dotnet test ./test/OpenChat.PlaygroundApp.Tests --no-build --logger "trx" --collect:"XPlat Code Coverage" --filter "Category=IntegrationTest & Category!=IgnoreGitHubActions"
