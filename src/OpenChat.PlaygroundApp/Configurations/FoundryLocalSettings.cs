@@ -20,4 +20,20 @@ public class FoundryLocalSettings : LanguageModelSettings
     /// Gets or sets the alias of FoundryLocal.
     /// </summary>
     public string? Alias { get; set; }
+
+    /// <summary>
+    /// Gets or sets the Endpoint of FoundryLocal.
+    /// </summary>
+    public string? Endpoint { get; set; }
+
+    /// <summary>
+    /// Gets or sets the model ID of FoundryLocal.
+    /// </summary>
+    public string? ModelId { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to disable the automatic FoundryLocal manager and use a manually configured endpoint.
+    /// </summary>
+    public bool DisableFoundryLocalManager { get; set; }
+
 }
