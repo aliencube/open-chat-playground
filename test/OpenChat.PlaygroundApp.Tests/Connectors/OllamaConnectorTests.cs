@@ -217,7 +217,7 @@ public class OllamaConnectorTests
     }
 
     [Trait("Category", "UnitTest")]
-    [InlineData(typeof(ArgumentNullException), "Ollama")]
+    [InlineData(typeof(InvalidOperationException), "Ollama")]
     [Theory]
     public async Task Given_Null_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(Type expected, string expectedMessage)
     {
