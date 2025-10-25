@@ -12,18 +12,24 @@ param location string
 param connectorType string = ''
 
 // Amazon Bedrock
+@secure()
+param amazonBedrockAccessKeyId string = ''
+@secure()
+param amazonBedrockSecretAccessKey string = ''
+param amazonBedrockRegion string = ''
+param amazonBedrockModelId string = ''
 // Azure AI Foundry
 param azureAIFoundryEndpoint string = ''
 @secure()
 param azureAIFoundryApiKey string = ''
 param azureAIFoundryDeploymentName string = ''
 // GitHub Models
-param githubModelsModel string = ''
 @secure()
 param githubModelsToken string = ''
+param githubModelsModel string = ''
 // Google Vertex AI
-// Docker Model Runner
-// Foundry Local
+// Docker Model Runner - NOT SUPPORTED
+// Foundry Local - NOT SUPPORTED
 // Hugging Face
 param huggingFaceModel string = ''
 // Ollama
@@ -31,7 +37,7 @@ param ollamaModel string = ''
 // Anthropic
 // LG
 param lgModel string = ''
-// Naver
+// Naver - NOT SUPPORTED
 // OpenAI
 param openAIModel string = ''
 @secure()
@@ -82,12 +88,16 @@ module resources 'resources.bicep' = {
     principalId: principalId
     principalType: principalType
     connectorType: connectorType
+    amazonBedrockAccessKeyId: amazonBedrockAccessKeyId
+    amazonBedrockSecretAccessKey: amazonBedrockSecretAccessKey
+    amazonBedrockRegion: amazonBedrockRegion
+    amazonBedrockModelId: amazonBedrockModelId
     azureAIFoundryEndpoint: azureAIFoundryEndpoint
     azureAIFoundryApiKey: azureAIFoundryApiKey
     azureAIFoundryDeploymentName: azureAIFoundryDeploymentName
-    githubModelsModel: githubModelsModel
-    githubModelsToken: githubModelsToken
     huggingFaceModel: huggingFaceModel
+    githubModelsToken: githubModelsToken
+    githubModelsModel: githubModelsModel
     ollamaModel: ollamaModel
     lgModel: lgModel
     openAIModel: openAIModel

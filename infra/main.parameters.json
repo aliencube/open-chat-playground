@@ -11,6 +11,18 @@
     "connectorType": {
       "value": "${CONNECTOR_TYPE}"
     },
+    "amazonBedrockAccessKeyId": {
+      "value": "${AMAZON_BEDROCK_ACCESS_KEY_ID}"
+    },
+    "amazonBedrockSecretAccessKey": {
+      "value": "${AMAZON_BEDROCK_SECRET_ACCESS_KEY}"
+    },
+    "amazonBedrockRegion": {
+      "value": "${AMAZON_BEDROCK_REGION}"
+    },
+    "amazonBedrockModelId": {
+      "value": "${AMAZON_BEDROCK_MODEL_ID=amazon.nova-micro-v1:0}"
+    },
     "azureAIFoundryEndpoint": {
       "value": "${AZURE_AI_FOUNDRY_ENDPOINT}"
     },
@@ -20,11 +32,11 @@
     "azureAIFoundryDeploymentName": {
       "value": "${AZURE_AI_FOUNDRY_DEPLOYMENT_NAME=gpt-4o-mini}"
     },
-    "githubModelsModel": {
-      "value": "${GH_MODELS_MODEL=openai/gpt-4o-mini}"
-    },
     "githubModelsToken": {
       "value": "${GH_MODELS_TOKEN}"
+    },
+    "githubModelsModel": {
+      "value": "${GH_MODELS_MODEL=openai/gpt-4o-mini}"
     },
     "huggingFaceModel": {
       "value": "${HUGGING_FACE_MODEL=hf.co/Qwen/Qwen3-0.6B-GGUF}"

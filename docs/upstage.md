@@ -104,13 +104,15 @@ This page describes how to run OpenChat Playground (OCP) with [Upstage Solar](ht
 
     ```bash
     # bash/zsh - from locally built container
-    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type Upstage \
+    docker run -i --rm -p 8080:8080 openchat-playground:latest \
+        --connector-type Upstage \
         --api-key $API_KEY
     ```
 
     ```powershell
     # PowerShell - from locally built container
-    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type Upstage `
+    docker run -i --rm -p 8080:8080 openchat-playground:latest `
+        --connector-type Upstage `
         --api-key $API_KEY
     ```
 
@@ -131,15 +133,33 @@ This page describes how to run OpenChat Playground (OCP) with [Upstage Solar](ht
    Alternatively, if you want to run with a different model, say [solar-pro2](https://console.upstage.ai/docs/models/solar-pro-2), other than the default one, you can specify it as an argument:
 
     ```bash
-    # bash/zsh - from locally built container with custom model
-    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type Upstage \
+    # bash/zsh - from locally built container
+    docker run -i --rm -p 8080:8080 openchat-playground:latest \
+        --connector-type Upstage \
         --api-key $API_KEY \
         --model solar-pro2
     ```
 
     ```powershell
-    # PowerShell - from locally built container with custom model
-    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type Upstage `
+    # PowerShell - from locally built container
+    docker run -i --rm -p 8080:8080 openchat-playground:latest `
+        --connector-type Upstage `
+        --api-key $API_KEY `
+        --model solar-pro2
+    ```
+
+    ```bash
+    # bash/zsh - from GitHub Container Registry
+    docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest \
+        --connector-type Upstage \
+        --api-key $API_KEY \
+        --model solar-pro2
+    ```
+
+    ```powershell
+    # PowerShell - from GitHub Container Registry
+    docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest `
+        --connector-type Upstage `
         --api-key $API_KEY `
         --model solar-pro2
     ```

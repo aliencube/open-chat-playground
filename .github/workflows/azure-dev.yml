@@ -96,7 +96,9 @@ jobs:
     - name: Run integration tests
       shell: bash
       run: |
-        dotnet test ./test/OpenChat.PlaygroundApp.Tests -c Release --no-build --logger "trx" --collect:"XPlat Code Coverage" --filter "Category=IntegrationTest"
+        dotnet test ./test/OpenChat.PlaygroundApp.Tests -c Release \
+            --no-build --logger "trx" --collect:"XPlat Code Coverage" \
+            --filter "Category=IntegrationTest & Category!=IgnoreGitHubActions"
 
     - name: Log in to the Container registry
       uses: docker/login-action@v3

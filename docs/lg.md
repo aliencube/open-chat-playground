@@ -38,7 +38,7 @@ This page describes how to run OpenChat Playground (OCP) with [LG models on Hugg
 
    Make sure to follow the exact format like `hf.co/LGAI-EXAONE/EXAONE-{{MODEL}}-GGUF` and the model MUST include `GGUF`.
 
-2. Make sure you are at the repository root.
+1. Make sure you are at the repository root.
 
     ```bash
     cd $REPOSITORY_ROOT
@@ -74,7 +74,7 @@ This page describes how to run OpenChat Playground (OCP) with [LG models on Hugg
         --model hf.co/LGAI-EXAONE/EXAONE-4.0-32B-GGUF
     ```
 
-2. Open your web browser, navigate to `http://localhost:5280`, and enter prompts.
+1. Open your web browser, navigate to `http://localhost:5280`, and enter prompts.
 
 ## Run in local container
 
