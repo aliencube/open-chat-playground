@@ -77,7 +77,7 @@ Open Chat Playground (OCP) is a web UI that is able to connect virtually any LLM
 - [Use Azure AI Foundry](./docs/azure-ai-foundry.md#run-in-local-container)
 - [Use GitHub Models](./docs/github-models.md#run-in-local-container)
 - [Use Docker Model Runner](./docs/docker-model-runner.md#run-in-local-container)
-- ~~Use Foundry Local~~ 👉 NOT SUPPORTED
+- [Use Foundry Local](./docs/foundry-local.md#run-in-local-container)
 - [Use Hugging Face](./docs/hugging-face.md#run-in-local-container)
 - [Use Ollama](./docs/ollama.md#run-on-local-container)
 - [Use LG](./docs/lg.md#run-in-local-container)
