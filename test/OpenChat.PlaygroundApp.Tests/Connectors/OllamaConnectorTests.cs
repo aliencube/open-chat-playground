@@ -49,9 +49,10 @@ public class OllamaConnectorTests
               .Message.ShouldContain("settings");
     }
 
-	[Trait("Category", "UnitTest")]
-	[Fact]
-	public void Given_Settings_Is_Null_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
+    [Trait("Category", "UnitTest")]
+    [InlineData("Ollama")]
+    [Theory]
+	public void Given_Settings_Is_Null_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string expectedMessage)
 	{
 		// Arrange
 		var settings = new AppSettings
@@ -66,7 +67,7 @@ public class OllamaConnectorTests
 
 		// Assert
 		action.ShouldThrow<InvalidOperationException>()
-		      .Message.ShouldContain("Ollama");
+		      .Message.ShouldContain(expectedMessage);
 	}
 
 	[Trait("Category", "UnitTest")]
@@ -82,10 +83,11 @@ public class OllamaConnectorTests
 		// Assert
 		result.ShouldNotBeNull();
 	}
-	
-	[Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_Null_Settings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
+
+    [Trait("Category", "UnitTest")]
+    [InlineData("Ollama")]
+    [Theory]
+    public void Given_Null_Settings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string expectedMessage)
     {
         // Arrange
         var settings = new AppSettings
@@ -100,7 +102,7 @@ public class OllamaConnectorTests
 
         // Assert
         action.ShouldThrow<InvalidOperationException>()
-              .Message.ShouldContain("Ollama");
+              .Message.ShouldContain(expectedMessage);
     }
 
 	[Trait("Category", "UnitTest")]
@@ -166,7 +168,7 @@ public class OllamaConnectorTests
 	[InlineData("\t\n\r", typeof(UriFormatException), "Invalid URI:")]
 	[InlineData("invalid-uri-format", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
 	[InlineData("not-a-url", typeof(UriFormatException), "Invalid URI: The format of the URI could not be determined.")]
-	public void Given_Invalid_BaseUrl_When_GetChatClient_Invoked_Then_It_Should_Throw(string? baseUrl, Type expected, string message)
+	public void Given_Invalid_BaseUrl_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? baseUrl, Type expected, string message)
 	{
 		// Arrange
 		var settings = BuildAppSettings(baseUrl: baseUrl);
@@ -183,7 +185,7 @@ public class OllamaConnectorTests
 	[Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
-    public void Given_Null_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
+    public void Given_Null_Model_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
     {
         // Arrange        
         var settings = BuildAppSettings(model: model);
@@ -197,22 +199,42 @@ public class OllamaConnectorTests
             .Message.ShouldContain(message);
     }
 
-	[Trait("Category", "IntegrationTest")]
-	[Trait("Category", "LLMRequired")]
-	[Fact]
-	public async Task Given_Valid_Settings_When_GetChatClient_Invoked_Then_It_Should_Return_ChatClient()
-	{
-		// Arrange
-		var settings = BuildAppSettings();
-		var connector = new OllamaConnector(settings);
+    [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "LLMRequired")]
+    [Fact]
+    public async Task Given_Valid_Settings_When_GetChatClientAsync_Invoked_Then_It_Should_Return_ChatClient()
+    {
+        // Arrange
+        var settings = BuildAppSettings();
+        var connector = new OllamaConnector(settings);
 
-		// Act
-		var client = await connector.GetChatClientAsync();
+        // Act
+        var client = await connector.GetChatClientAsync();
 
-		// Assert
-		client.ShouldNotBeNull();
-		client.ShouldBeAssignableTo<IChatClient>();
-	}
+        // Assert
+        client.ShouldNotBeNull();
+        client.ShouldBeAssignableTo<IChatClient>();
+    }
+
+    [Trait("Category", "UnitTest")]
+    [InlineData(typeof(ArgumentNullException), "Ollama")]
+    [Theory]
+    public async Task Given_Null_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(Type expected, string expectedMessage)
+    {
+        // Arrange
+        var settings = new AppSettings
+        {
+            ConnectorType = ConnectorType.Ollama,
+            Ollama = null
+        };
+
+        // Act
+        Func<Task> func = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
+
+        // Assert  
+        func.ShouldThrow(expected)
+            .Message.ShouldContain(expectedMessage);
+    }
 	
 	[Trait("Category", "UnitTest")]
     [Theory]
