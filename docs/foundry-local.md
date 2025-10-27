@@ -134,7 +134,7 @@ This page describes how to run OpenChat Playground (OCP) with Foundry Local mode
     docker build -f Dockerfile -t openchat-playground:latest .
     ```
 
- 1. Run the app. The `{{Model ID}}` refers to the `Model ID` shown in the output of the `foundry service list` command.
+1. Run the app. The `{{Model ID}}` refers to the `Model ID` shown in the output of the `foundry service list` command.
 
     ```bash
     # bash/zsh - from locally built container
