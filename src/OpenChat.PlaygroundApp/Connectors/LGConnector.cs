@@ -1,6 +1,7 @@
 using Microsoft.Extensions.AI;
 
 using OllamaSharp;
+using OllamaSharp.Models.Exceptions;
 
 using OpenChat.PlaygroundApp.Abstractions;
 using OpenChat.PlaygroundApp.Configurations;
@@ -44,8 +45,13 @@ public class LGConnector(AppSettings settings) : LanguageModelConnector(settings
     public override async Task<IChatClient> GetChatClientAsync()
     {
         var settings = this.Settings as LGSettings;
-        var baseUrl = settings!.BaseUrl!;
-        var model = settings!.Model!;
+
+        var baseUrl = settings!.BaseUrl!.Trim() ?? throw new InvalidOperationException("Missing configuration: LG:BaseUrl.");
+        if (Uri.IsWellFormedUriString(baseUrl, UriKind.Absolute) == false)
+        {
+            throw new UriFormatException($"Invalid URI: The LG base URL '{baseUrl}' is not a valid URI.");
+        }
+        var model = settings!.Model!.Trim() ?? throw new InvalidOperationException("Missing configuration: LG:Model.");
 
         var config = new OllamaApiClient.Configuration
         {
@@ -61,9 +67,9 @@ public class LGConnector(AppSettings settings) : LanguageModelConnector(settings
             Console.WriteLine($"Pull status: {pull!.Status}");
         }
 
-        Console.WriteLine($"The {this._appSettings.ConnectorType} connector created with model: {settings.Model}");
+        Console.WriteLine($"The {this._appSettings.ConnectorType} connector created with model: {model}");
 
-        return await Task.FromResult(chatClient).ConfigureAwait(false);
+        return chatClient;
     }
 
     private static bool IsValidModel(string model)

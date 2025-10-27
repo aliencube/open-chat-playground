@@ -8,17 +8,17 @@ using OpenChat.PlaygroundApp.Connectors;
 
 namespace OpenChat.PlaygroundApp.Tests.Connectors;
 
-public class HuggingFaceConnectorTests
+public class OllamaConnectorTests
 {
     private const string BaseUrl = "http://localhost:11434";
-    private const string Model = "hf.co/Qwen/Qwen3-0.6B-GGUF";
+    private const string Model = "llama3.2";
 
     private static AppSettings BuildAppSettings(string? baseUrl = BaseUrl, string? model = Model)
     {
         return new AppSettings
         {
-            ConnectorType = ConnectorType.HuggingFace,
-            HuggingFace = new HuggingFaceSettings
+            ConnectorType = ConnectorType.Ollama,
+            Ollama = new OllamaSettings
             {
                 BaseUrl = baseUrl,
                 Model = model
@@ -28,8 +28,8 @@ public class HuggingFaceConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(typeof(LanguageModelConnector), typeof(HuggingFaceConnector), true)]
-    [InlineData(typeof(HuggingFaceConnector), typeof(LanguageModelConnector), false)]
+    [InlineData(typeof(LanguageModelConnector), typeof(OllamaConnector), true)]
+    [InlineData(typeof(OllamaConnector), typeof(LanguageModelConnector), false)]
     public void Given_BaseType_Then_It_Should_Be_AssignableFrom_DerivedType(Type baseType, Type derivedType, bool expected)
     {
         // Act
@@ -44,7 +44,7 @@ public class HuggingFaceConnectorTests
     public void Given_Null_Settings_When_Instantiated_Then_It_Should_Throw()
     {
         // Act
-        Action action = () => new HuggingFaceConnector(null!);
+        Action action = () => new OllamaConnector(null!);
 
         // Assert
         action.ShouldThrow<ArgumentNullException>()
@@ -59,43 +59,44 @@ public class HuggingFaceConnectorTests
         var settings = BuildAppSettings();
 
         // Act
-        var result = new HuggingFaceConnector(settings);
+        var result = new OllamaConnector(settings);
 
         // Assert
         result.ShouldNotBeNull();
     }
 
     [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_Null_HuggingFaceSettings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
+    [InlineData("Ollama")]
+    [Theory]
+    public void Given_Null_OllamaSettings_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string expectedMessage)
     {
         // Arrange
         var settings = new AppSettings
         {
-            ConnectorType = ConnectorType.HuggingFace,
-            HuggingFace = null
+            ConnectorType = ConnectorType.Ollama,
+            Ollama = null
         };
-        var connector = new HuggingFaceConnector(settings);
+        var connector = new OllamaConnector(settings);
 
         // Act
         Action action = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
         action.ShouldThrow<InvalidOperationException>()
-              .Message.ShouldContain("HuggingFace");
+              .Message.ShouldContain(expectedMessage);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
-    [InlineData("", typeof(InvalidOperationException), "HuggingFace:BaseUrl")]
-    [InlineData("   ", typeof(InvalidOperationException), "HuggingFace:BaseUrl")]
-    [InlineData("\t\r\n", typeof(InvalidOperationException), "HuggingFace:BaseUrl")]
+    [InlineData("", typeof(InvalidOperationException), "Ollama:BaseUrl")]
+    [InlineData("   ", typeof(InvalidOperationException), "Ollama:BaseUrl")]
+    [InlineData("\t\n\r", typeof(InvalidOperationException), "Ollama:BaseUrl")]
     public void Given_Invalid_BaseUrl_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? baseUrl, Type expectedType, string expectedMessage)
     {
         // Arrange
         var settings = BuildAppSettings(baseUrl: baseUrl);
-        var connector = new HuggingFaceConnector(settings);
+        var connector = new OllamaConnector(settings);
 
         // Act
         Action action = () => connector.EnsureLanguageModelSettingsValid();
@@ -108,17 +109,14 @@ public class HuggingFaceConnectorTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
-    [InlineData("", typeof(InvalidOperationException), "HuggingFace:Model")]
-    [InlineData("   ", typeof(InvalidOperationException), "HuggingFace:Model")]
-    [InlineData("\t\r\n", typeof(InvalidOperationException), "HuggingFace:Model")]
-    [InlineData("hf.co/org/model", typeof(InvalidOperationException), "HuggingFace:Model format")]
-    [InlineData("org/model-gguf", typeof(InvalidOperationException), "HuggingFace:Model format")]
-    [InlineData("hf.co//model-gguf", typeof(InvalidOperationException), "HuggingFace:Model format")]
+    [InlineData("", typeof(InvalidOperationException), "Ollama:Model")]
+    [InlineData("   ", typeof(InvalidOperationException), "Ollama:Model")]
+    [InlineData("\t\n\r", typeof(InvalidOperationException), "Ollama:Model")]
     public void Given_Invalid_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? model, Type expectedType, string expectedMessage)
     {
         // Arrange
         var settings = BuildAppSettings(model: model);
-        var connector = new HuggingFaceConnector(settings);
+        var connector = new OllamaConnector(settings);
 
         // Act
         Action action = () => connector.EnsureLanguageModelSettingsValid();
@@ -134,7 +132,7 @@ public class HuggingFaceConnectorTests
     {
         // Arrange
         var settings = BuildAppSettings();
-        var connector = new HuggingFaceConnector(settings);
+        var connector = new OllamaConnector(settings);
 
         // Act
         var result = connector.EnsureLanguageModelSettingsValid();
@@ -144,37 +142,17 @@ public class HuggingFaceConnectorTests
     }
 
     [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_Null_HuggingFaceSettings_When_GetChatClientAsync_Invoked_Then_It_Should_Throw()
-    {
-        // Arrange
-        var settings = new AppSettings
-        {
-            ConnectorType = ConnectorType.HuggingFace,
-            HuggingFace = null
-        };
-        var connector = new HuggingFaceConnector(settings);
-
-        // Act
-        Func<Task> func = async () => await connector.GetChatClientAsync();
-
-        // Assert
-        func.ShouldThrow<NullReferenceException>()
-            .Message.ShouldContain("Object reference not set to an instance of an object.");
-    }
-
-    [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     [InlineData("", typeof(UriFormatException), "Invalid URI:")]
     [InlineData("   ", typeof(UriFormatException), "Invalid URI:")]
-    [InlineData("\t\r\n", typeof(UriFormatException), "Invalid URI:")]
+    [InlineData("\t\n\r", typeof(UriFormatException), "Invalid URI:")]
     [InlineData("invalid-uri-format", typeof(UriFormatException), "Invalid URI:")]
-    public void Given_Invalid_BaseUrl_When_GetChatClient_Invoked_Then_It_Should_Throw(string? baseUrl, Type expected, string message)
+    public void Given_Invalid_BaseUrl_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? baseUrl, Type expected, string message)
     {
         // Arrange
         var settings = BuildAppSettings(baseUrl: baseUrl);
-        var connector = new HuggingFaceConnector(settings);
+        var connector = new OllamaConnector(settings);
 
         // Act
         Func<Task> func = async () => await connector.GetChatClientAsync();
@@ -183,11 +161,11 @@ public class HuggingFaceConnectorTests
         func.ShouldThrow(expected)
             .Message.ShouldContain(message);
     }
-
+    
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
-    public void Given_Null_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
+    public void Given_Null_Model_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
     {
         // Arrange        
         var settings = BuildAppSettings(model: model);
@@ -207,14 +185,11 @@ public class HuggingFaceConnectorTests
     [InlineData("", typeof(OllamaException), "invalid model name")]
     [InlineData("   ", typeof(OllamaException), "invalid model name")]
     [InlineData("\t\r\n", typeof(OllamaException), "invalid model name")]
-    [InlineData("hf.co//model-gguf", typeof(OllamaException), "invalid model name")]
-    [InlineData("hf.co/org/model", typeof(ResponseError), "pull model manifest")]
-    [InlineData("org/model-gguf", typeof(ResponseError), "pull model manifest")]
     public void Given_Invalid_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
     {
         // Arrange        
         var settings = BuildAppSettings(model: model);
-        var connector = new HuggingFaceConnector(settings);
+        var connector = new OllamaConnector(settings);
 
         // Act
         Func<Task> func = async () => await connector.GetChatClientAsync();
@@ -227,11 +202,11 @@ public class HuggingFaceConnectorTests
     [Trait("Category", "IntegrationTest")]
     [Trait("Category", "LLMRequired")]
     [Fact]
-    public async Task Given_Valid_Settings_When_GetChatClient_Invoked_Then_It_Should_Return_ChatClient()
+    public async Task Given_Valid_Settings_When_GetChatClientAsync_Invoked_Then_It_Should_Return_ChatClient()
     {
         // Arrange
         var settings = BuildAppSettings();
-        var connector = new HuggingFaceConnector(settings);
+        var connector = new OllamaConnector(settings);
 
         // Act
         var client = await connector.GetChatClientAsync();
@@ -240,27 +215,44 @@ public class HuggingFaceConnectorTests
         client.ShouldNotBeNull();
         client.ShouldBeAssignableTo<IChatClient>();
     }
+
+    [Trait("Category", "UnitTest")]
+    [InlineData(typeof(InvalidOperationException), "Ollama")]
+    [Theory]
+    public void Given_Null_OllamaSettings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(Type expected, string expectedMessage)
+    {
+        // Arrange
+        var settings = new AppSettings
+        {
+            ConnectorType = ConnectorType.Ollama,
+            Ollama = null
+        };
+
+        // Act
+        Func<Task> func = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
+
+        // Assert  
+        func.ShouldThrow(expected)
+            .Message.ShouldContain(expectedMessage);
+    }
     
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, Model, typeof(NullReferenceException),"Object reference not set to an instance of an object")]
-    [InlineData("", Model, typeof(InvalidOperationException), "Missing configuration: HuggingFace:BaseUrl")]
-    [InlineData("   ", Model, typeof(InvalidOperationException), "Missing configuration: HuggingFace:BaseUrl")]
-    [InlineData("\t\r\n", Model, typeof(InvalidOperationException), "Missing configuration: HuggingFace:BaseUrl")]
+    [InlineData(null, Model, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
+    [InlineData("", Model, typeof(InvalidOperationException), "Missing configuration: Ollama")]
+    [InlineData("   ", Model, typeof(InvalidOperationException), "Missing configuration: Ollama")]
+    [InlineData("\t\r\n", Model, typeof(InvalidOperationException), "Missing configuration: Ollama")]
     [InlineData(BaseUrl, null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
-    [InlineData(BaseUrl, "", typeof(InvalidOperationException), "Missing configuration: HuggingFace:Model")]
-    [InlineData(BaseUrl, "   ", typeof(InvalidOperationException), "Missing configuration: HuggingFace:Model")]
-    [InlineData(BaseUrl, "\t\r\n", typeof(InvalidOperationException), "Missing configuration: HuggingFace:Model")]
-    [InlineData(BaseUrl, "hf.co/org/model", typeof(InvalidOperationException), "Invalid configuration: HuggingFace:Model format")]
-    [InlineData(BaseUrl, "org/model-gguf", typeof(InvalidOperationException), "Invalid configuration: HuggingFace:Model format")]
-    [InlineData(BaseUrl, "hf.co//model-gguf", typeof(InvalidOperationException), "Invalid configuration: HuggingFace:Model format")]
+    [InlineData(BaseUrl, "", typeof(InvalidOperationException), "Missing configuration: Ollama")]
+    [InlineData(BaseUrl, "  ", typeof(InvalidOperationException), "Missing configuration: Ollama")]
+    [InlineData(BaseUrl, "\t\r\n", typeof(InvalidOperationException), "Missing configuration: Ollama")]
     public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string? baseUrl, string? model, Type expected, string expectedMessage)
     {
         // Arrange
         var settings = new AppSettings
         {
-            ConnectorType = ConnectorType.HuggingFace,
-            HuggingFace = new HuggingFaceSettings
+            ConnectorType = ConnectorType.Ollama,
+            Ollama = new OllamaSettings
             {
                 BaseUrl = baseUrl,
                 Model = model

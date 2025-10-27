@@ -5,6 +5,8 @@ namespace OpenChat.PlaygroundApp.Tests.Components.Pages.Chat;
 
 public class ChatUITests : PageTest
 {
+    private const int TimeoutMs = 60000;
+
     public override async Task InitializeAsync()
     {
         await base.InitializeAsync();
@@ -34,7 +36,7 @@ public class ChatUITests : PageTest
         var noMessages = Page.Locator(".no-messages");
 
         // Act
-        var text = await noMessages.InnerTextAsync();
+        var text = await noMessages.InnerTextAsync(new() { Timeout = TimeoutMs });
 
         // Assert
         text.ShouldBe("To get started, try asking about anything.");

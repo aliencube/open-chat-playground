@@ -46,17 +46,21 @@ public class AzureAIFoundryConnector(AppSettings settings) : LanguageModelConnec
     {
         var settings = this.Settings as AzureAIFoundrySettings;
 
-        var endpoint = new Uri(settings!.Endpoint!);
-        var deploymentName = settings.DeploymentName!;
-        var apiKey = settings.ApiKey!;
+        var endpoint = settings!.Endpoint!.Trim() ?? throw new InvalidOperationException("Missing configuration: AzureAIFoundry:Endpoint.");
+        if (Uri.IsWellFormedUriString(endpoint, UriKind.Absolute) == false)
+        {
+            throw new UriFormatException($"Invalid URI: The Azure AI Foundry endpoint '{endpoint}' is not a valid URI.");
+        }
+        var deploymentName = settings.DeploymentName!.Trim() ?? throw new InvalidOperationException("Missing configuration: AzureAIFoundry:DeploymentName.");
+        var apiKey = settings.ApiKey!.Trim() ?? throw new InvalidOperationException("Missing configuration: AzureAIFoundry:ApiKey.");
 
         var credential = new AzureKeyCredential(apiKey); 
-        var azureClient = new AzureOpenAIClient(endpoint, credential);
+        var azureClient = new AzureOpenAIClient(new Uri(endpoint), credential);
         
         var chatClient = azureClient.GetChatClient(deploymentName) 
                                     .AsIChatClient();
 
-        Console.WriteLine($"The {this._appSettings.ConnectorType} connector created with model: {settings.DeploymentName}");
+        Console.WriteLine($"The {this._appSettings.ConnectorType} connector created with model: {deploymentName}");
 
         return await Task.FromResult(chatClient).ConfigureAwait(false);
     }

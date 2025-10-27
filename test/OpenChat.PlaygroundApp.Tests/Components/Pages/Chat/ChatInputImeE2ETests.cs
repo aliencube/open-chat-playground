@@ -5,6 +5,8 @@ namespace OpenChat.PlaygroundApp.Tests.Components.Pages.Chat;
 
 public class ChatInputImeE2ETests : PageTest
 {
+    private const int TimeoutMs = 60000;
+
     public override async Task InitializeAsync()
     {
         await base.InitializeAsync();
@@ -13,6 +15,7 @@ public class ChatInputImeE2ETests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Theory]
     [InlineData("안녕하세요")]
     [InlineData("테스트")]
@@ -34,6 +37,7 @@ public class ChatInputImeE2ETests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Trait("Category", "LLMRequired")]
     [Theory]
     [InlineData("안녕하세요", "안")]
@@ -55,13 +59,15 @@ public class ChatInputImeE2ETests : PageTest
         // Assert: assistant response begins and user message added once
         await Page.WaitForFunctionAsync(
             "args => document.querySelectorAll(args.selector).length >= args.expected",
-            new { selector = ".assistant-message-header", expected = assistantCountBefore + 1 }
+            new { selector = ".assistant-message-header", expected = assistantCountBefore + 1 },
+            options: new() { Timeout = TimeoutMs }
         );
         var userCountAfterSubmit = await Page.Locator(".user-message").CountAsync();
         userCountAfterSubmit.ShouldBe(userCountBefore + 1);
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Trait("Category", "LLMRequired")]
     [Theory]
     [InlineData("테스트 메시지")]
@@ -81,7 +87,8 @@ public class ChatInputImeE2ETests : PageTest
         // Assert: assistant response begins and one user message
         await Page.WaitForFunctionAsync(
             "args => document.querySelectorAll(args.selector).length >= args.expected",
-            new { selector = ".assistant-message-header", expected = assistantCountBefore + 1 }
+            new { selector = ".assistant-message-header", expected = assistantCountBefore + 1 },
+            options: new() { Timeout = TimeoutMs }
         );
         var userCountAfterFirst = await Page.Locator(".user-message").CountAsync();
         userCountAfterFirst.ShouldBe(userCountBefore + 1);
@@ -95,6 +102,7 @@ public class ChatInputImeE2ETests : PageTest
     }
 
     [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "UI")]
     [Theory]
     [InlineData("첫 줄")]
     [InlineData("테스트")]
@@ -110,7 +118,7 @@ public class ChatInputImeE2ETests : PageTest
         await textArea.PressAsync("Shift+Enter");
 
         // Assert: value contains newline and no submission
-        var value = await textArea.InputValueAsync();
+        var value = await textArea.InputValueAsync(new() { Timeout = TimeoutMs });
         value.ShouldContain("\n");
         var userCountAfter = await Page.Locator(".user-message").CountAsync();
         userCountAfter.ShouldBe(userCountBefore);

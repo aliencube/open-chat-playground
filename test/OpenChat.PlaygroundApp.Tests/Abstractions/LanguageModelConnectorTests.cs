@@ -74,11 +74,7 @@ public class LanguageModelConnectorTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(ConnectorType.Unknown)]
-    [InlineData(ConnectorType.AmazonBedrock)]
     [InlineData(ConnectorType.GoogleVertexAI)]
-    [InlineData(ConnectorType.DockerModelRunner)]
-    [InlineData(ConnectorType.FoundryLocal)]
-    [InlineData(ConnectorType.Ollama)]
     [InlineData(ConnectorType.Anthropic)]
     [InlineData(ConnectorType.Naver)]
     public void Given_Unsupported_ConnectorType_When_CreateChatClient_Invoked_Then_It_Should_Throw(ConnectorType connectorType)

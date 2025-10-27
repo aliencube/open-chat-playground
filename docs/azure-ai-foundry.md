@@ -1,6 +1,6 @@
-# OpenChat Playground with [Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/what-is-azure-ai-foundry)
+# OpenChat Playground with Azure AI Foundry
 
-This page describes how to run OpenChat Playground (OCP) with Azure AI Foundry integration.
+This page describes how to run OpenChat Playground (OCP) with [Azure AI Foundry](https://learn.microsoft.com/azure/ai-foundry/what-is-azure-ai-foundry) integration.
 
 ## Get the repository root
 
@@ -109,14 +109,16 @@ This page describes how to run OpenChat Playground (OCP) with Azure AI Foundry i
 
     ```bash
     # bash/zsh - from locally built container
-    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type AzureAIFoundry \
+    docker run -i --rm -p 8080:8080 openchat-playground:latest \
+        --connector-type AzureAIFoundry \
         --endpoint "{{AZURE_AI_FOUNDRY_ENDPOINT}}" \
         --api-key $API_KEY
     ```
 
     ```powershell
     # PowerShell - from locally built container
-    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type AzureAIFoundry `
+    docker run -i --rm -p 8080:8080 openchat-playground:latest `
+        --connector-type AzureAIFoundry `
         --endpoint "{{AZURE_AI_FOUNDRY_ENDPOINT}}" `
         --api-key $API_KEY
     ```
@@ -141,7 +143,8 @@ This page describes how to run OpenChat Playground (OCP) with Azure AI Foundry i
 
     ```bash
     # bash/zsh - from locally built container
-    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type AzureAIFoundry \
+    docker run -i --rm -p 8080:8080 openchat-playground:latest \
+        --connector-type AzureAIFoundry \
         --endpoint "{{AZURE_AI_FOUNDRY_ENDPOINT}}" \
         --api-key $API_KEY \
         --deployment-name gpt-4
@@ -149,7 +152,8 @@ This page describes how to run OpenChat Playground (OCP) with Azure AI Foundry i
 
     ```powershell
     # PowerShell - from locally built container
-    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type AzureAIFoundry `
+    docker run -i --rm -p 8080:8080 openchat-playground:latest `
+        --connector-type AzureAIFoundry `
         --endpoint "{{AZURE_AI_FOUNDRY_ENDPOINT}}" `
         --api-key $API_KEY `
         --deployment-name gpt-4

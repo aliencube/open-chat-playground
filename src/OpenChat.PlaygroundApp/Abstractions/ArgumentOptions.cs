@@ -280,24 +280,44 @@ public abstract class ArgumentOptions
     }
 
     /// <summary>
+    /// Displays the application banner.
+    /// </summary>
+    public static void DisplayBanner()
+    {
+        string cyan = "\x1b[38;5;51m";
+        string blue = "\x1b[38;5;33m";
+        string purple = "\x1b[38;5;141m";
+        string pink = "\x1b[38;5;201m";
+        string green = "\x1b[38;5;48m";
+        string reset = "\x1b[0m";
+
+        Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+        Console.WriteLine();
+        Console.WriteLine($@"{cyan}   ██████╗ ██████╗ ███████╗███╗   ██╗   ██████╗██╗  ██╗ █████╗ ████████╗{reset}");
+        Console.WriteLine($@"{blue}  ██╔═══██╗██╔══██╗██╔════╝████╗  ██║  ██╔════╝██║  ██║██╔══██╗╚══██╔══╝{reset}");
+        Console.WriteLine($@"{purple}  ██║   ██║██████╔╝█████╗  ██╔██╗ ██║  ██║     ███████║███████║   ██║   {reset}");
+        Console.WriteLine($@"{pink}  ██║   ██║██╔═══╝ ██╔══╝  ██║╚██╗██║  ██║     ██╔══██║██╔══██║   ██║   {reset}");
+        Console.WriteLine($@"{cyan}  ╚██████╔╝██║     ███████╗██║ ╚████║  ╚██████╗██║  ██║██║  ██║   ██║   {reset}");
+        Console.WriteLine($@"{blue}   ╚═════╝ ╚═╝     ╚══════╝╚═╝  ╚═══╝   ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   {reset}");
+
+        Console.WriteLine();
+
+        Console.WriteLine($@"{green}  ██████╗ ██╗      █████╗ ██╗   ██╗ ██████╗ ██████╗  ██████╗ ██╗   ██╗███╗   ██╗██████╗ {reset}");
+        Console.WriteLine($@"{green}  ██╔══██╗██║     ██╔══██╗╚██╗ ██╔╝██╔════╝ ██╔══██╗██╔═══██╗██║   ██║████╗  ██║██╔══██╗{reset}");
+        Console.WriteLine($@"{cyan}  ██████╔╝██║     ███████║ ╚████╔╝ ██║  ███╗██████╔╝██║   ██║██║   ██║██╔██╗ ██║██║  ██║{reset}");
+        Console.WriteLine($@"{blue}  ██╔═══╝ ██║     ██╔══██║  ╚██╔╝  ██║   ██║██╔══██╗██║   ██║██║   ██║██║╚██╗██║██║  ██║{reset}");
+        Console.WriteLine($@"{purple}  ██║     ███████╗██║  ██║   ██║   ╚██████╔╝██║  ██║╚██████╔╝╚██████╔╝██║ ╚████║██████╔╝{reset}");
+        Console.WriteLine($@"{pink}  ╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚═════╝ {reset}");
+
+        Console.WriteLine();
+    }
+
+    /// <summary>
     /// Displays the help information for the command line arguments.
     /// </summary>
     public static void DisplayHelp()
     {
-        var foregroundColor = Console.ForegroundColor;
-
-        Console.ForegroundColor = ConsoleColor.Cyan;
-        Console.WriteLine("OpenChat Playground");
-        Console.ForegroundColor = foregroundColor;
-
-        Console.WriteLine("Usage: [options]");
-        Console.WriteLine();
-        Console.WriteLine("Options:");
-        Console.WriteLine($"  {ArgumentOptionConstants.ConnectorType}|{ArgumentOptionConstants.ConnectorTypeInShort}  The connector type. Supporting connectors are:");
-        Console.WriteLine("                       - AmazonBedrock, AzureAIFoundry, GitHubModels, GoogleVertexAI");
-        Console.WriteLine("                       - DockerModelRunner, FoundryLocal, HuggingFace, Ollama");
-        Console.WriteLine("                       - Anthropic, LG, Naver, OpenAI, Upstage");
-        Console.WriteLine();
         DisplayHelpForAmazonBedrock();
         DisplayHelpForAzureAIFoundry();
         DisplayHelpForGitHubModels();

@@ -7,21 +7,27 @@ param tags object = {}
 param connectorType string = ''
 
 // Amazon Bedrock
+@secure()
+param amazonBedrockAccessKeyId string = ''
+@secure()
+param amazonBedrockSecretAccessKey string = ''
+param amazonBedrockRegion string = ''
+param amazonBedrockModelId string = ''
 // Azure AI Foundry
 param azureAIFoundryEndpoint string = ''
 @secure()
 param azureAIFoundryApiKey string = ''
 param azureAIFoundryDeploymentName string = ''
 // GitHub Models
-param githubModelsModel string = ''
 @secure()
 param githubModelsToken string = ''
+param githubModelsModel string = ''
 // Google Vertex AI
-param googleVertexAIModel string = ''
 @secure()
+param googleVertexAIModel string = ''
 param googleVertexAIApiKey string = ''
-// Docker Model Runner
-// Foundry Local
+// Docker Model Runner - NOT SUPPORTED
+// Foundry Local - NOT SUPPORTED
 // Hugging Face
 param huggingFaceModel string = ''
 // Ollama
@@ -29,7 +35,7 @@ param ollamaModel string = ''
 // Anthropic
 // LG
 param lgModel string = ''
-// Naver
+// Naver - NOT SUPPORTED
 // OpenAI
 param openAIModel string = ''
 @secure()
@@ -187,6 +193,27 @@ var envConnectorType = connectorType != '' ? [
 ] : []
 
 // Amazon Bedrock
+var envAmazonBedrock = connectorType == 'AmazonBedrock' ? concat(amazonBedrockAccessKeyId != '' ? [
+  {
+    name: 'AmazonBedrock__AccessKeyId'
+    value: 'amazon-bedrock-access-key-id'
+    }
+] : [], amazonBedrockSecretAccessKey != '' ? [
+  {
+    name: 'AmazonBedrock__SecretAccessKey'
+    value: 'amazon-bedrock-secret-access-key'
+  }
+] : [], amazonBedrockRegion != '' ? [
+  {
+    name: 'AmazonBedrock__Region'
+    value: amazonBedrockRegion
+  }
+] : [], amazonBedrockModelId != '' ? [
+  {
+    name: 'AmazonBedrock__ModelId'
+    value: amazonBedrockModelId
+  }
+] : []) : []
 // Azure AI Foundry
 var envAzureAIFoundry = connectorType == 'AzureAIFoundry' ? concat(azureAIFoundryEndpoint != '' ? [
   {
@@ -228,8 +255,8 @@ var envGoogleVertexAI = (connectorType == '' || connectorType == 'GoogleVertexAI
     secretRef: 'google-vertex-ai-api-key'
   }
 ] : []) : []
-// Docker Model Runner
-// Foundry Local
+// Docker Model Runner - NOT SUPPORTED
+// Foundry Local - NOT SUPPORTED
 // Hugging Face
 var envHuggingFace = connectorType == 'HuggingFace' ? concat(huggingFaceModel != '' ? [
   {
@@ -252,7 +279,7 @@ var envLG = connectorType == 'LG' ? concat(lgModel != '' ? [
     value: lgModel
   }
 ] : []) : []
-// Naver
+// Naver - NOT SUPPORTED
 // OpenAI
 var envOpenAI = connectorType == 'OpenAI' ? concat(openAIModel != '' ? [
   {
@@ -292,7 +319,17 @@ module openchatPlaygroundApp 'br/public:avm/res/app/container-app:0.18.1' = {
       minReplicas: 1
       maxReplicas: 10
     }
-    secrets: concat(azureAIFoundryApiKey != '' ? [
+    secrets: concat(amazonBedrockAccessKeyId != '' ? [
+      {
+        name: 'amazon-bedrock-access-key-id'
+        value: amazonBedrockAccessKeyId
+      }
+    ] : [], amazonBedrockSecretAccessKey != '' ? [
+      {
+        name: 'amazon-bedrock-secret-access-key'
+        value: amazonBedrockSecretAccessKey
+      }
+    ] : [], azureAIFoundryApiKey != '' ? [
       {
         name: 'azure-ai-foundry-api-key'
         value: azureAIFoundryApiKey
@@ -336,6 +373,7 @@ module openchatPlaygroundApp 'br/public:avm/res/app/container-app:0.18.1' = {
           }
         ],
         envConnectorType,
+        envAmazonBedrock,
         envAzureAIFoundry,
         envGitHubModels,
         envHuggingFace,

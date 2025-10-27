@@ -1,6 +1,6 @@
-# OpenChat Playground with LG
+# OpenChat Playground with Ollama
 
-This page describes how to run OpenChat Playground (OCP) with [LG models on Hugging Face](https://huggingface.co/LGAI-EXAONE) integration.
+This page describes how to run OpenChat Playground (OCP) with [Ollama](https://ollama.com/search) integration.
 
 ## Get the repository root
 
@@ -18,25 +18,23 @@ This page describes how to run OpenChat Playground (OCP) with [LG models on Hugg
 
 ## Run on local machine
 
-1. Make sure the Ollama server is up and running.
+1. Make sure Ollama is installed and running on your local machine. If not, install Ollama from [ollama.com](https://ollama.com/search) and start the service.
 
     ```bash
     ollama serve
     ```
 
-1. Download the LG model from Hugging Face. The default model OCP uses is [`LGAI-EXAONE/EXAONE-4.0-1.2B-GGUF`](https://huggingface.co/LGAI-EXAONE/EXAONE-4.0-1.2B-GGUF).
+1. Pull the model you want to use. The default model OCP uses is [llama3.2](https://ollama.com/library/llama3.2).
 
     ```bash
-    ollama pull hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B-GGUF
+    ollama pull llama3.2
     ```
 
-   Alternatively, if you want to run with a different model, say [`LGAI-EXAONE/EXAONE-4.0-32B-GGUF`](https://huggingface.co/LGAI-EXAONE/EXAONE-4.0-32B-GGUF), other than the default one, download it first by running the following command.
+   Alternatively, if you want to run with a different model, say [qwen3](https://ollama.com/library/qwen3) other than the default one, download it first by running the following command.
 
     ```bash
-    ollama pull hf.co/LGAI-EXAONE/EXAONE-4.0-32B-GGUF
+    ollama pull qwen3
     ```
-
-   Make sure to follow the exact format like `hf.co/LGAI-EXAONE/EXAONE-{{MODEL}}-GGUF` and the model MUST include `GGUF`.
 
 1. Make sure you are at the repository root.
 
@@ -49,34 +47,34 @@ This page describes how to run OpenChat Playground (OCP) with [LG models on Hugg
     ```bash
     # bash/zsh
     dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- \
-        --connector-type LG
+        --connector-type Ollama
     ```
 
     ```powershell
     # PowerShell
     dotnet run --project $REPOSITORY_ROOT\src\OpenChat.PlaygroundApp -- `
-        --connector-type LG
+        --connector-type Ollama
     ```
 
-   Alternatively, if you want to run with a different model, say [`LGAI-EXAONE/EXAONE-4.0-32B-GGUF`](https://huggingface.co/LGAI-EXAONE/EXAONE-4.0-32B-GGUF), make sure you've already downloaded the model by running the `ollama pull hf.co/LGAI-EXAONE/EXAONE-4.0-32B-GGUF` command.
+   Alternatively, if you want to run with a different model, say [qwen3](https://ollama.com/library/qwen3), make sure you've already downloaded the model by running the `ollama pull qwen3` command.
 
     ```bash
     # bash/zsh
     dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- \
-        --connector-type LG \
-        --model hf.co/LGAI-EXAONE/EXAONE-4.0-32B-GGUF
+        --connector-type Ollama \
+        --model qwen3
     ```
 
     ```powershell
     # PowerShell
     dotnet run --project $REPOSITORY_ROOT\src\OpenChat.PlaygroundApp -- `
-        --connector-type LG `
-        --model hf.co/LGAI-EXAONE/EXAONE-4.0-32B-GGUF
+        --connector-type Ollama `
+        --model qwen3
     ```
 
 1. Open your web browser, navigate to `http://localhost:5280`, and enter prompts.
 
-## Run in local container
+## Run on local container
 
 1. Make sure the Ollama server is up and running.
 
@@ -84,19 +82,17 @@ This page describes how to run OpenChat Playground (OCP) with [LG models on Hugg
     ollama serve
     ```
 
-1. Download the LG model from Hugging Face. The default model OCP uses is [`LGAI-EXAONE/EXAONE-4.0-1.2B-GGUF`](https://huggingface.co/LGAI-EXAONE/EXAONE-4.0-1.2B-GGUF).
+1. Download the Ollama model. The default model OCP uses is [llama3.2](https://ollama.com/library/llama3.2).
 
     ```bash
-    ollama pull hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B-GGUF
+    ollama pull llama3.2
     ```
 
-   Alternatively, if you want to run with a different model, say [`LGAI-EXAONE/EXAONE-4.0-32B-GGUF`](https://huggingface.co/LGAI-EXAONE/EXAONE-4.0-32B-GGUF), other than the default one, download it first by running the following command.
+   Alternatively, if you want to run with a different model, say [qwen3](https://ollama.com/library/qwen3), other than the default one, download it first by running the following command.
 
     ```bash
-    ollama pull hf.co/LGAI-EXAONE/EXAONE-4.0-32B-GGUF
+    ollama pull qwen3
     ```
-
-   Make sure to follow the exact format like `hf.co/LGAI-EXAONE/EXAONE-{{MODEL}}-GGUF` and the model MUST include `GGUF`.
 
 1. Make sure you are at the repository root.
 
@@ -110,69 +106,75 @@ This page describes how to run OpenChat Playground (OCP) with [LG models on Hugg
     docker build -f Dockerfile -t openchat-playground:latest .
     ```
 
-1. Run the app. The default model OCP uses is [`LGAI-EXAONE/EXAONE-4.0-1.2B-GGUF`](https://huggingface.co/LGAI-EXAONE/EXAONE-4.0-1.2B-GGUF).
+1. Run the app.
 
     ```bash
     # bash/zsh - from locally built container
     docker run -i --rm -p 8080:8080 openchat-playground:latest \
-        --connector-type LG \
-        --base-url http://host.docker.internal:11434
+      --connector-type Ollama \
+      --base-url http://host.docker.internal:11434 \
     ```
 
     ```powershell
     # PowerShell - from locally built container
     docker run -i --rm -p 8080:8080 openchat-playground:latest `
-        --connector-type LG `
+        --connector-type Ollama `
         --base-url http://host.docker.internal:11434
     ```
 
     ```bash
     # bash/zsh - from GitHub Container Registry
     docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest \
-        --connector-type LG \
+        --connector-type Ollama \
         --base-url http://host.docker.internal:11434
     ```
 
     ```powershell
     # PowerShell - from GitHub Container Registry
     docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest `
-        --connector-type LG `
+        --connector-type Ollama `
         --base-url http://host.docker.internal:11434
     ```
 
-   Alternatively, if you want to run with a different model, say [`LGAI-EXAONE/EXAONE-4.0-32B-GGUF`](https://huggingface.co/LGAI-EXAONE/EXAONE-4.0-32B-GGUF), make sure you've already downloaded the model by running the `ollama pull hf.co/LGAI-EXAONE/EXAONE-4.0-32B-GGUF` command.
+   Alternatively, if you want to run with a different model, say [qwen3](https://ollama.com/library/qwen), make sure you've already downloaded the model by running the `ollama pull qwen3` command.
+
+    ```bash
+    ollama pull qwen3
+    ```
 
     ```bash
     # bash/zsh - from locally built container
     docker run -i --rm -p 8080:8080 openchat-playground:latest \
-        --connector-type LG \
+        --connector-type Ollama \
         --base-url http://host.docker.internal:11434 \
-        --model hf.co/LGAI-EXAONE/EXAONE-4.0-32B-GGUF
+        --model qwen3
     ```
 
     ```powershell
     # PowerShell - from locally built container
     docker run -i --rm -p 8080:8080 openchat-playground:latest `
-        --connector-type LG `
+        --connector-type Ollama `
         --base-url http://host.docker.internal:11434 `
-        --model hf.co/LGAI-EXAONE/EXAONE-4.0-32B-GGUF
+        --model qwen3
     ```
 
     ```bash
     # bash/zsh - from GitHub Container Registry
     docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest \
-        --connector-type LG \
+        --connector-type Ollama \
         --base-url http://host.docker.internal:11434 \
-        --model hf.co/LGAI-EXAONE/EXAONE-4.0-32B-GGUF
+        --model qwen3
     ```
 
     ```powershell
     # PowerShell - from GitHub Container Registry
     docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest `
-        --connector-type LG `
+        --connector-type Ollama `
         --base-url http://host.docker.internal:11434 `
-        --model hf.co/LGAI-EXAONE/EXAONE-4.0-32B-GGUF
+        --model qwen3
     ```
+
+   > **NOTE**: Use `host.docker.internal:11434` to connect to Ollama running on the host machine from inside the container.
 
 1. Open your web browser, navigate to `http://localhost:8080`, and enter prompts.
 
@@ -206,19 +208,17 @@ This page describes how to run OpenChat Playground (OCP) with [LG models on Hugg
 
    > **NOTE**: You will be asked to provide environment name for provisioning.
 
-1. Set the connector type to `LG`.
+1. Set the connector type to `Ollama`.
 
     ```bash
-    azd env set CONNECTOR_TYPE "LG"
+    azd env set CONNECTOR_TYPE "Ollama"
     ```
 
-   The default model OCP uses is [`LGAI-EXAONE/EXAONE-4.0-1.2B-GGUF`](https://huggingface.co/LGAI-EXAONE/EXAONE-4.0-1.2B-GGUF). If you want to run with a different model, say [`LGAI-EXAONE/EXAONE-4.0-32B-GGUF`](https://huggingface.co/LGAI-EXAONE/EXAONE-4.0-32B-GGUF), other than the default one, add it to azd environment variables.
+   The default model OCP uses is [llama3.2](https://ollama.com/library/llama3.2). If you want to run with a different model, say [qwen3](https://ollama.com/library/qwen3) other than the default one, add it to azd environment variables.
 
     ```bash
-    azd env set LG_MODEL "LGAI-EXAONE/EXAONE-4.0-32B-GGUF"
+    azd env set OLLAMA_MODEL "qwen3"
     ```
-
-   Make sure to follow the exact format like `LGAI-EXAONE/EXAONE-{{MODEL}}-GGUF` and the model MUST include `GGUF`.
 
 1. As a default, the app uses a Serverless GPU with NVIDIA T4 (`NC8as-T4`). If you want to use NVIDIA A100, set the GPU profile.
 
