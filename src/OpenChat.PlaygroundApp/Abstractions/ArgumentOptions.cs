@@ -423,7 +423,6 @@ public abstract class ArgumentOptions
 
     private static void DisplayHelpForFoundryLocal()
     {
-        //  --model              The OpenAI model name. Default to 'gpt-4.1-mini'
         var foregroundColor = Console.ForegroundColor;
         Console.ForegroundColor = ConsoleColor.DarkYellow;
         Console.WriteLine("  ** Foundry Local: **");

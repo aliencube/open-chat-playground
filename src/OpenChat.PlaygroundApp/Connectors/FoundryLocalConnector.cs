@@ -51,13 +51,14 @@ public class FoundryLocalConnector(AppSettings settings) : LanguageModelConnecto
 
         if (settings!.DisableFoundryLocalManager == true)
         {
-            modelId = settings.Alias!.Trim() ?? throw new InvalidOperationException("Missing configuration: FoundryLocal:Alias.");
             var settingsEndpoint = settings.Endpoint!.Trim() ?? throw new InvalidOperationException("Missing configuration: FoundryLocal:Endpoint.");
             if (Uri.IsWellFormedUriString(settingsEndpoint, UriKind.Absolute) == false)
             {
                 throw new UriFormatException($"Invalid URI: The Foundry Local endpoint '{settingsEndpoint}' is not a valid URI.");
             }
+
             endpoint = new Uri(settingsEndpoint);
+            modelId = settings.Alias!.Trim() ?? throw new InvalidOperationException("Missing configuration: FoundryLocal:Alias.");
         }
         else
         {

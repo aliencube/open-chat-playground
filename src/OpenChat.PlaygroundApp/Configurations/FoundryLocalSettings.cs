@@ -30,5 +30,4 @@ public class FoundryLocalSettings : LanguageModelSettings
     /// Gets or sets a value indicating whether to disable the automatic FoundryLocal manager and use a manually configured endpoint.
     /// </summary>
     public bool DisableFoundryLocalManager { get; set; }
-
 }
