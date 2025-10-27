@@ -170,5 +170,6 @@ This page describes how to run OpenChat Playground (OCP) with Foundry Local mode
         --alias {{Model ID}} `
         --endpoint http://host.docker.internal:55438/v1 `
         --disable-foundrylocal-manager 
+    ```
 
 1. Open your web browser, navigate to `http://localhost:8080`, and enter prompts.
