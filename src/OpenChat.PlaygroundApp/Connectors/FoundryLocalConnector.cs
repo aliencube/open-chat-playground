@@ -67,7 +67,7 @@ public class FoundryLocalConnector(AppSettings settings) : LanguageModelConnecto
             var model = await manager.GetModelInfoAsync(aliasOrModelId: alias).ConfigureAwait(false);
 
             endpoint = manager.Endpoint;
-            modelId = model?.ModelId ?? alias;
+            modelId = model!.ModelId;
         }
 
         var credential = new ApiKeyCredential(ApiKey);
