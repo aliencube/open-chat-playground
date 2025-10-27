@@ -141,11 +141,6 @@ public static class ArgumentOptionConstants
         public const string Endpoint = "--endpoint";
 
         /// <summary>
-        /// Defines the constant for '--model-id'.
-        /// </summary>
-        public const string ModelId = "--model-id";
-
-        /// <summary>
         /// Defines the constant for '--disable-foundrylocal-manager'.
         /// </summary>
         public const string DisableFoundryLocalManager = "--disable-foundrylocal-manager";

@@ -34,7 +34,6 @@ public abstract class ArgumentOptions
         // Foundry Local
         (ConnectorType.FoundryLocal, ArgumentOptionConstants.FoundryLocal.Alias, false),
         (ConnectorType.FoundryLocal, ArgumentOptionConstants.FoundryLocal.Endpoint, false),
-        (ConnectorType.FoundryLocal, ArgumentOptionConstants.FoundryLocal.ModelId, false),
         (ConnectorType.FoundryLocal, ArgumentOptionConstants.FoundryLocal.DisableFoundryLocalManager, false),
         // Hugging Face
         (ConnectorType.HuggingFace, ArgumentOptionConstants.HuggingFace.BaseUrl, false),
@@ -217,12 +216,9 @@ public abstract class ArgumentOptions
                 settings.FoundryLocal ??= new FoundryLocalSettings();
                 settings.FoundryLocal.Alias = foundryLocal.Alias ?? settings.FoundryLocal.Alias;
                 settings.FoundryLocal.Endpoint = foundryLocal.Endpoint ?? settings.FoundryLocal.Endpoint;
-                settings.FoundryLocal.ModelId = foundryLocal.ModelId ?? settings.FoundryLocal.ModelId;
                 settings.FoundryLocal.DisableFoundryLocalManager = foundryLocal.DisableFoundryLocalManager;
 
-                settings.Model = foundryLocal.DisableFoundryLocalManager
-                    ? foundryLocal.ModelId ?? settings.FoundryLocal.ModelId
-                    : foundryLocal.Alias ?? settings.FoundryLocal.Alias;
+                settings.Model = foundryLocal.Alias ?? settings.FoundryLocal.Alias;
                 break;
 
             case HuggingFaceArgumentOptions huggingFace:
@@ -435,7 +431,6 @@ public abstract class ArgumentOptions
 
         Console.WriteLine($"  {ArgumentOptionConstants.FoundryLocal.Alias}              The alias. Default to 'phi-4-mini'");
         Console.WriteLine($"  {ArgumentOptionConstants.FoundryLocal.Endpoint}           The endpoint URL. Default to 'http://127.0.0.1:55438/v1'");
-        Console.WriteLine($"  {ArgumentOptionConstants.FoundryLocal.ModelId}           The model ID. Default to 'Phi-4-mini-instruct-generic-cpu:4'");
         Console.WriteLine();
     }
 

@@ -28,24 +28,14 @@ public class FoundryLocalConnector(AppSettings settings) : LanguageModelConnecto
             throw new InvalidOperationException("Missing configuration: FoundryLocal.");
         }
 
-        if (settings.DisableFoundryLocalManager == true)
+        if (string.IsNullOrWhiteSpace(settings.Alias!.Trim()))
         {
-            if (string.IsNullOrWhiteSpace(settings.Endpoint!.Trim()) == true)
-            {
-                throw new InvalidOperationException("Missing configuration: FoundryLocal:Endpoint is required when DisableFoundryLocalManager is enabled.");
-            }
-
-            if (string.IsNullOrWhiteSpace(settings.ModelId!.Trim()) == true)
-            {
-                throw new InvalidOperationException("Missing configuration: FoundryLocal:ModelId is required when DisableFoundryLocalManager is enabled.");
-            }
+            throw new InvalidOperationException("Missing configuration: FoundryLocal:Alias.");
         }
-        else
+
+        if (settings.DisableFoundryLocalManager == true && string.IsNullOrWhiteSpace(settings.Endpoint!.Trim()) == true)
         {
-            if (string.IsNullOrWhiteSpace(settings.Alias!.Trim()))
-            {
-                throw new InvalidOperationException("Missing configuration: FoundryLocal:Alias is required when DisableFoundryLocalManager is disabled.");
-            }
+            throw new InvalidOperationException("Missing configuration: FoundryLocal:Endpoint is required when DisableFoundryLocalManager is enabled.");
         }
 
         return true;
@@ -61,13 +51,13 @@ public class FoundryLocalConnector(AppSettings settings) : LanguageModelConnecto
 
         if (settings!.DisableFoundryLocalManager == true)
         {
+            modelId = settings.Alias!.Trim() ?? throw new InvalidOperationException("Missing configuration: FoundryLocal:Alias.");
             var settingsEndpoint = settings.Endpoint!.Trim() ?? throw new InvalidOperationException("Missing configuration: FoundryLocal:Endpoint.");
             if (Uri.IsWellFormedUriString(settingsEndpoint, UriKind.Absolute) == false)
             {
                 throw new UriFormatException($"Invalid URI: The Foundry Local endpoint '{settingsEndpoint}' is not a valid URI.");
             }
             endpoint = new Uri(settingsEndpoint);
-            modelId = settings.ModelId!.Trim() ?? throw new InvalidOperationException("Missing configuration: FoundryLocal:ModelId.");
         }
         else
         {

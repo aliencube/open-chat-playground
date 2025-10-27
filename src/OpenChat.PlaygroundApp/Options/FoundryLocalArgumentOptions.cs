@@ -20,11 +20,6 @@ public class FoundryLocalArgumentOptions : ArgumentOptions
     public string? Endpoint { get; set; }
 
     /// <summary>
-    /// Gets or sets the model ID of FoundryLocal.
-    /// </summary>
-    public string? ModelId { get; set; }
-
-    /// <summary>
     /// Gets or sets a value indicating whether to disable the automatic FoundryLocal manager and use a manually configured endpoint.
     /// </summary>
     public bool DisableFoundryLocalManager { get; set; }
@@ -39,7 +34,6 @@ public class FoundryLocalArgumentOptions : ArgumentOptions
 
         this.Alias ??= foundryLocal?.Alias;
         this.Endpoint ??= foundryLocal?.Endpoint;
-        this.ModelId ??= foundryLocal?.ModelId;
         this.DisableFoundryLocalManager = foundryLocal?.DisableFoundryLocalManager ?? false;
 
         for (var i = 0; i < args.Length; i++)
@@ -57,13 +51,6 @@ public class FoundryLocalArgumentOptions : ArgumentOptions
                     if (i + 1 < args.Length)
                     {
                         this.Endpoint = args[++i];
-                    }
-                    break;
-
-                case ArgumentOptionConstants.FoundryLocal.ModelId:
-                    if (i + 1 < args.Length)
-                    {
-                        this.ModelId = args[++i];
                     }
                     break;
 
