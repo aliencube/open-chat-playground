@@ -362,6 +362,11 @@ module openchatPlaygroundApp 'br/public:avm/res/app/container-app:0.18.1' = {
         name: 'github-models-token'
         value: githubModelsToken
       }
+    ] : [], googleVertexAIApiKey != '' ? [
+      {
+        name: 'google-vertex-ai-api-key'
+        value: googleVertexAIApiKey
+      }
     ] : [], anthropicApiKey != '' ? [
       {
         name: 'anthropic-api-key'
