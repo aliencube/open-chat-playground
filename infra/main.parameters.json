@@ -44,6 +44,15 @@
     "ollamaModel": {
       "value": "${OLLAMA_MODEL=llama3.2}"
     },
+    "anthropicApiKey": {
+      "value": "${ANTHROPIC_API_KEY}"
+    },
+    "anthropicModel": {
+      "value": "${ANTHROPIC_MODEL=claude-sonnet-4-5}"
+    },
+    "anthropicMaxTokens": {
+      "value": "${ANTHROPIC_MAX_TOKENS=512}"
+    },
     "lgModel": {
       "value": "${LG_MODEL=hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B-GGUF}"
     },

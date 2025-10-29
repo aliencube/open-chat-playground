@@ -55,12 +55,9 @@ public class AnthropicArgumentOptions : ArgumentOptions
                     break;
 
                 case ArgumentOptionConstants.Anthropic.MaxTokens:
-                    if (i + 1 < args.Length)
+                    if (i + 1 < args.Length && int.TryParse(args[++i], out var maxTokens))
                     {
-                        if (int.TryParse(args[++i], out var maxTokens))
-                        {
-                            this.MaxTokens = maxTokens;
-                        }
+                        this.MaxTokens = maxTokens;
                     }
                     break;
 

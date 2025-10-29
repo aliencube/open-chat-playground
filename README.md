@@ -14,7 +14,7 @@ Open Chat Playground (OCP) is a web UI that is able to connect virtually any LLM
 - [x] [Foundry Local](https://learn.microsoft.com/azure/ai-foundry/foundry-local/what-is-foundry-local)
 - [x] [Hugging Face](https://huggingface.co/docs)
 - [x] [Ollama](https://github.com/ollama/ollama/tree/main/docs)
-- [ ] [Anthropic](https://docs.anthropic.com)
+- [x] [Anthropic](https://docs.anthropic.com)
 - [ ] [Naver](https://api.ncloud-docs.com/docs/ai-naver-clovastudio-summary)
 - [x] [LG](https://github.com/LG-AI-EXAONE)
 - [x] [OpenAI](https://openai.com/api)
@@ -67,6 +67,7 @@ Open Chat Playground (OCP) is a web UI that is able to connect virtually any LLM
 - [Use Foundry Local](./docs/foundry-local.md#run-on-local-machine)
 - [Use Hugging Face](./docs/hugging-face.md#run-on-local-machine)
 - [Use Ollama](./docs/ollama.md#run-on-local-machine)
+- [Use Anthropic](./docs/anthropic.md#run-on-local-machine)
 - [Use LG](./docs/lg.md#run-on-local-machine)
 - [Use OpenAI](./docs/openai.md#run-on-local-machine)
 - [Use Upstage](./docs/upstage.md#run-on-local-machine)
@@ -80,6 +81,7 @@ Open Chat Playground (OCP) is a web UI that is able to connect virtually any LLM
 - ~~Use Foundry Local~~ 👉 NOT SUPPORTED
 - [Use Hugging Face](./docs/hugging-face.md#run-in-local-container)
 - [Use Ollama](./docs/ollama.md#run-on-local-container)
+- [Use Anthropic](./docs/anthropic.md#run-on-local-container)
 - [Use LG](./docs/lg.md#run-in-local-container)
 - [Use OpenAI](./docs/openai.md#run-in-local-container)
 - [Use Upstage](./docs/upstage.md#run-in-local-container)
@@ -93,6 +95,7 @@ Open Chat Playground (OCP) is a web UI that is able to connect virtually any LLM
 - ~~Use Foundry Local~~ 👉 NOT SUPPORTED
 - [Use Hugging Face](./docs/hugging-face.md#run-on-azure)
 - [Use Ollama](./docs/ollama.md#run-on-azure)
+- [Use Anthropic](./docs/anthropic.md#run-on-azure)
 - [Use LG](./docs/lg.md#run-on-azure)
 - [Use OpenAI](./docs/openai.md#run-on-azure)
 - [Use Upstage](./docs/upstage.md#run-on-azure)

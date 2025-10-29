@@ -11,7 +11,7 @@ public class AnthropicArgumentOptionsTests
 {
     private const string ApiKey = "test-api-key";
     private const string Model = "test-model";
-    private const string MaxTokens = "1000";
+    private const int MaxTokens = 512;
     private const string ApiKeyConfigKey = "Anthropic:ApiKey";
     private const string ModelConfigKey = "Anthropic:Model";
     private const string MaxTokensConfigKey = "Anthropic:MaxTokens";
@@ -19,10 +19,10 @@ public class AnthropicArgumentOptionsTests
     private static IConfiguration BuildConfigWithAnthropic(
         string? configApiKey = ApiKey,
         string? configModel = Model,
-        string? configMaxTokens = MaxTokens,
+        int? configMaxTokens = MaxTokens,
         string? envApiKey = null,
         string? envModel = null,
-        string? envMaxTokens = null)
+        int? envMaxTokens = null)
     {
         // Base configuration values (lowest priority)
         var configDict = new Dictionary<string, string?>
@@ -38,13 +38,13 @@ public class AnthropicArgumentOptionsTests
         {
             configDict[ModelConfigKey] = configModel;
         }
-        if (string.IsNullOrWhiteSpace(configMaxTokens) == false)
+        if (configMaxTokens.HasValue)
         {
-            configDict[MaxTokensConfigKey] = configMaxTokens;
+            configDict[MaxTokensConfigKey] = configMaxTokens.Value.ToString();
         }
         if (string.IsNullOrWhiteSpace(envApiKey) == true &&
             string.IsNullOrWhiteSpace(envModel) == true &&
-            string.IsNullOrWhiteSpace(envMaxTokens) == true)
+            envMaxTokens == null)
         {
             return new ConfigurationBuilder()
                        .AddInMemoryCollection(configDict!)
@@ -61,9 +61,9 @@ public class AnthropicArgumentOptionsTests
         {
             envDict[ModelConfigKey] = envModel;
         }
-        if (string.IsNullOrWhiteSpace(envMaxTokens) == false)
+        if (envMaxTokens.HasValue)
         {
-            envDict[MaxTokensConfigKey] = envMaxTokens;
+            envDict[MaxTokensConfigKey] = envMaxTokens.Value.ToString();
         }
 
         return new ConfigurationBuilder()
@@ -103,7 +103,7 @@ public class AnthropicArgumentOptionsTests
         settings.Anthropic.ShouldNotBeNull();
         settings.Anthropic.ApiKey.ShouldBe(ApiKey);
         settings.Anthropic.Model.ShouldBe(Model);
-        settings.Anthropic.MaxTokens.ShouldBe(IntValueOf(MaxTokens));
+        settings.Anthropic.MaxTokens.ShouldBe(MaxTokens);
     }
 
     [Trait("Category", "UnitTest")]
@@ -125,7 +125,7 @@ public class AnthropicArgumentOptionsTests
         settings.Anthropic.ShouldNotBeNull();
         settings.Anthropic.ApiKey.ShouldBe(cliApiKey);
         settings.Anthropic.Model.ShouldBe(Model);
-        settings.Anthropic.MaxTokens.ShouldBe(IntValueOf(MaxTokens));
+        settings.Anthropic.MaxTokens.ShouldBe(MaxTokens);
     }
 
     [Trait("Category", "UnitTest")]
@@ -147,19 +147,19 @@ public class AnthropicArgumentOptionsTests
         settings.Anthropic.ShouldNotBeNull();
         settings.Anthropic.ApiKey.ShouldBe(ApiKey);
         settings.Anthropic.Model.ShouldBe(cliModel);
-        settings.Anthropic.MaxTokens.ShouldBe(IntValueOf(MaxTokens));
+        settings.Anthropic.MaxTokens.ShouldBe(MaxTokens);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("2000")]
-    public void Given_CLI_MaxTokens_When_Parse_Invoked_Then_It_Should_Use_CLI_MaxTokens(string cliMaxTokens)
+    [InlineData(1024)]
+    public void Given_CLI_MaxTokens_When_Parse_Invoked_Then_It_Should_Use_CLI_MaxTokens(int cliMaxTokens)
     {
         // Arrange
         var config = BuildConfigWithAnthropic();
         var args = new[]
         {
-            ArgumentOptionConstants.Anthropic.MaxTokens, cliMaxTokens
+            ArgumentOptionConstants.Anthropic.MaxTokens, cliMaxTokens.ToString()
         };
 
         // Act
@@ -169,13 +169,13 @@ public class AnthropicArgumentOptionsTests
         settings.Anthropic.ShouldNotBeNull();
         settings.Anthropic.ApiKey.ShouldBe(ApiKey);
         settings.Anthropic.Model.ShouldBe(Model);
-        settings.Anthropic.MaxTokens.ShouldBe(IntValueOf(cliMaxTokens));
+        settings.Anthropic.MaxTokens.ShouldBe(cliMaxTokens);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("cli-api-key", "cli-model", "2000")]
-    public void Given_All_CLI_Arguments_When_Parse_Invoked_Then_It_Should_Use_CLI(string cliApiKey, string cliModel, string cliMaxTokens)
+    [InlineData("cli-api-key", "cli-model", 1024)]
+    public void Given_All_CLI_Arguments_When_Parse_Invoked_Then_It_Should_Use_CLI(string cliApiKey, string cliModel, int cliMaxTokens)
     {
         // Arrange
         var config = BuildConfigWithAnthropic();
@@ -183,7 +183,7 @@ public class AnthropicArgumentOptionsTests
         {
             ArgumentOptionConstants.Anthropic.ApiKey, cliApiKey,
             ArgumentOptionConstants.Anthropic.Model, cliModel,
-            ArgumentOptionConstants.Anthropic.MaxTokens, cliMaxTokens
+            ArgumentOptionConstants.Anthropic.MaxTokens, cliMaxTokens.ToString()
         };
 
         // Act
@@ -193,7 +193,7 @@ public class AnthropicArgumentOptionsTests
         settings.Anthropic.ShouldNotBeNull();
         settings.Anthropic.ApiKey.ShouldBe(cliApiKey);
         settings.Anthropic.Model.ShouldBe(cliModel);
-        settings.Anthropic.MaxTokens.ShouldBe(IntValueOf(cliMaxTokens));
+        settings.Anthropic.MaxTokens.ShouldBe(cliMaxTokens);
     }
 
     [Trait("Category", "UnitTest")]
@@ -214,7 +214,7 @@ public class AnthropicArgumentOptionsTests
         settings.Anthropic.ShouldNotBeNull();
         settings.Anthropic.ApiKey.ShouldBe(ApiKey);
         settings.Anthropic.Model.ShouldBe(Model);
-        settings.Anthropic.MaxTokens.ShouldBe(IntValueOf(MaxTokens));
+        settings.Anthropic.MaxTokens.ShouldBe(MaxTokens);
     }
 
     [Trait("Category", "UnitTest")]
@@ -232,51 +232,7 @@ public class AnthropicArgumentOptionsTests
         settings.Anthropic.ShouldNotBeNull();
         settings.Anthropic.ApiKey.ShouldBe(ApiKey);
         settings.Anthropic.Model.ShouldBe(Model);
-        settings.Anthropic.MaxTokens.ShouldBe(IntValueOf(MaxTokens));
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData("--strange-model-name")]
-    public void Given_Anthropic_With_ModelName_StartingWith_Dashes_When_Parse_Invoked_Then_It_Should_Treat_As_Value(string cliModel)
-    {
-        // Arrange
-        var config = BuildConfigWithAnthropic();
-        var args = new[]
-        {
-            ArgumentOptionConstants.Anthropic.Model, cliModel
-        };
-
-        // Act
-        var settings = ArgumentOptions.Parse(config, args);
-
-        // Assert
-        settings.Anthropic.ShouldNotBeNull();
-        settings.Anthropic.ApiKey.ShouldBe(ApiKey);
-        settings.Anthropic.Model.ShouldBe(cliModel);
-        settings.Anthropic.MaxTokens.ShouldBe(IntValueOf(MaxTokens));
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData("-1")]
-    public void Given_Anthropic_With_MaxTokens_StartingWith_Dashes_When_Parse_Invoked_Then_It_Should_Treat_As_Value(string cliMaxTokens)
-    {
-        // Arrange
-        var config = BuildConfigWithAnthropic();
-        var args = new[]
-        {
-            ArgumentOptionConstants.Anthropic.MaxTokens, cliMaxTokens
-        };
-
-        // Act
-        var settings = ArgumentOptions.Parse(config, args);
-
-        // Assert
-        settings.Anthropic.ShouldNotBeNull();
-        settings.Anthropic.ApiKey.ShouldBe(ApiKey);
-        settings.Anthropic.Model.ShouldBe(Model);
-        settings.Anthropic.MaxTokens.ShouldBe(IntValueOf(cliMaxTokens));
+        settings.Anthropic.MaxTokens.ShouldBe(MaxTokens);
     }
 
     [Trait("Category", "UnitTest")]
@@ -298,13 +254,80 @@ public class AnthropicArgumentOptionsTests
         settings.Anthropic.ShouldNotBeNull();
         settings.Anthropic.ApiKey.ShouldBe(cliApiKey);
         settings.Anthropic.Model.ShouldBe(Model);
-        settings.Anthropic.MaxTokens.ShouldBe(IntValueOf(MaxTokens));
+        settings.Anthropic.MaxTokens.ShouldBe(MaxTokens);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("config-api-key", "config-model", "1000")]
-    public void Given_ConfigValues_And_No_CLI_When_Parse_Invoked_Then_It_Should_Use_Config(string configApiKey, string configModel, string configMaxTokens)
+    [InlineData("--strange-model-name")]
+    public void Given_Anthropic_With_ModelName_StartingWith_Dashes_When_Parse_Invoked_Then_It_Should_Treat_As_Value(string cliModel)
+    {
+        // Arrange
+        var config = BuildConfigWithAnthropic();
+        var args = new[]
+        {
+            ArgumentOptionConstants.Anthropic.Model, cliModel
+        };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.Anthropic.ShouldNotBeNull();
+        settings.Anthropic.ApiKey.ShouldBe(ApiKey);
+        settings.Anthropic.Model.ShouldBe(cliModel);
+        settings.Anthropic.MaxTokens.ShouldBe(MaxTokens);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData(-1)]
+    public void Given_Anthropic_With_MaxTokens_StartingWith_Dashes_When_Parse_Invoked_Then_It_Should_Treat_As_Value(int cliMaxTokens)
+    {
+        // Arrange
+        var config = BuildConfigWithAnthropic();
+        var args = new[]
+        {
+            ArgumentOptionConstants.Anthropic.MaxTokens, cliMaxTokens.ToString()
+        };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.Anthropic.ShouldNotBeNull();
+        settings.Anthropic.ApiKey.ShouldBe(ApiKey);
+        settings.Anthropic.Model.ShouldBe(Model);
+        settings.Anthropic.MaxTokens.ShouldBe(cliMaxTokens);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("not-a-number")]
+    [InlineData("512abc")]
+    public void Given_Anthropic_With_Invalid_MaxTokens_When_Parse_Invoked_Then_It_Should_Keep_Config(string cliMaxTokens)
+    {
+        // Arrange
+        var config = BuildConfigWithAnthropic();
+        var args = new[]
+        {
+            ArgumentOptionConstants.Anthropic.MaxTokens, cliMaxTokens
+        };
+
+        // Act
+        var settings = ArgumentOptions.Parse(config, args);
+
+        // Assert
+        settings.Anthropic.ShouldNotBeNull();
+        settings.Anthropic.ApiKey.ShouldBe(ApiKey);
+        settings.Anthropic.Model.ShouldBe(Model);
+        settings.Anthropic.MaxTokens.ShouldBe(MaxTokens);
+    }
+
+    [Trait("Category", "UnitTest")]
+    [Theory]
+    [InlineData("config-api-key", "config-model", 2048)]
+    public void Given_ConfigValues_And_No_CLI_When_Parse_Invoked_Then_It_Should_Use_Config(string configApiKey, string configModel, int configMaxTokens)
     {
         // Arrange
         var config = BuildConfigWithAnthropic(configApiKey, configModel, configMaxTokens);
@@ -317,15 +340,15 @@ public class AnthropicArgumentOptionsTests
         settings.Anthropic.ShouldNotBeNull();
         settings.Anthropic.ApiKey.ShouldBe(configApiKey);
         settings.Anthropic.Model.ShouldBe(configModel);
-        settings.Anthropic.MaxTokens.ShouldBe(IntValueOf(configMaxTokens));
+        settings.Anthropic.MaxTokens.ShouldBe(configMaxTokens);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("config-api-key", "config-model", "1000", "cli-api-key", "cli-model", "2000")]
+    [InlineData("config-api-key", "config-model", 2048, "cli-api-key", "cli-model", 1024)]
     public void Given_ConfigValues_And_CLI_When_Parse_Invoked_Then_It_Should_Use_CLI(
-        string configApiKey, string configModel, string configMaxTokens,
-        string cliApiKey, string cliModel, string cliMaxTokens)
+        string configApiKey, string configModel, int configMaxTokens,
+        string cliApiKey, string cliModel, int cliMaxTokens)
     {
         // Arrange
         var config = BuildConfigWithAnthropic(configApiKey, configModel, configMaxTokens);
@@ -333,7 +356,7 @@ public class AnthropicArgumentOptionsTests
         {
             ArgumentOptionConstants.Anthropic.ApiKey, cliApiKey,
             ArgumentOptionConstants.Anthropic.Model, cliModel,
-            ArgumentOptionConstants.Anthropic.MaxTokens, cliMaxTokens
+            ArgumentOptionConstants.Anthropic.MaxTokens, cliMaxTokens.ToString()
         };
 
         // Act
@@ -343,13 +366,13 @@ public class AnthropicArgumentOptionsTests
         settings.Anthropic.ShouldNotBeNull();
         settings.Anthropic.ApiKey.ShouldBe(cliApiKey);
         settings.Anthropic.Model.ShouldBe(cliModel);
-        settings.Anthropic.MaxTokens.ShouldBe(IntValueOf(cliMaxTokens));
+        settings.Anthropic.MaxTokens.ShouldBe(cliMaxTokens);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("env-api-key", "env-model", "1500")]
-    public void Given_EnvironmentVariables_And_No_Config_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(string envApiKey, string envModel, string envMaxTokens)
+    [InlineData("env-api-key", "env-model", 4096)]
+    public void Given_EnvironmentVariables_And_No_Config_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(string envApiKey, string envModel, int envMaxTokens)
     {
         // Arrange
         var config = BuildConfigWithAnthropic(
@@ -364,20 +387,18 @@ public class AnthropicArgumentOptionsTests
         settings.Anthropic.ShouldNotBeNull();
         settings.Anthropic.ApiKey.ShouldBe(envApiKey);
         settings.Anthropic.Model.ShouldBe(envModel);
-        settings.Anthropic.MaxTokens.ShouldBe(IntValueOf(envMaxTokens));
+        settings.Anthropic.MaxTokens.ShouldBe(envMaxTokens);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("config-api-key", "config-model", "1000", "env-api-key", "env-model", "1500")]
+    [InlineData("config-api-key", "config-model", 2048, "env-api-key", "env-model", 4096)]
     public void Given_ConfigValues_And_EnvironmentVariables_When_Parse_Invoked_Then_It_Should_Use_EnvironmentVariables(
-        string configApiKey, string configModel, string configMaxTokens,
-        string envApiKey, string envModel, string envMaxTokens)
+        string configApiKey, string configModel, int configMaxTokens,
+        string envApiKey, string envModel, int envMaxTokens)
     {
         // Arrange
-        var config = BuildConfigWithAnthropic(
-            configApiKey, configModel, configMaxTokens,
-            envApiKey, envModel, envMaxTokens);
+        var config = BuildConfigWithAnthropic(configApiKey, configModel, configMaxTokens, envApiKey, envModel, envMaxTokens);
         var args = Array.Empty<string>();
 
         // Act
@@ -387,26 +408,24 @@ public class AnthropicArgumentOptionsTests
         settings.Anthropic.ShouldNotBeNull();
         settings.Anthropic.ApiKey.ShouldBe(envApiKey);
         settings.Anthropic.Model.ShouldBe(envModel);
-        settings.Anthropic.MaxTokens.ShouldBe(IntValueOf(envMaxTokens));
+        settings.Anthropic.MaxTokens.ShouldBe(envMaxTokens);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("config-api-key", "config-model", "1000", "env-api-key", "env-model", "1500", "cli-api-key", "cli-model", "2000")]
+    [InlineData("config-api-key", "config-model", 2048, "env-api-key", "env-model", 4096, "cli-api-key", "cli-model", 1024)]
     public void Given_ConfigValues_And_EnvironmentVariables_And_CLI_When_Parse_Invoked_Then_It_Should_Use_CLI(
-        string configApiKey, string configModel, string configMaxTokens,
-        string envApiKey, string envModel, string envMaxTokens,
-        string cliApiKey, string cliModel, string cliMaxTokens)
+        string configApiKey, string configModel, int configMaxTokens,
+        string envApiKey, string envModel, int envMaxTokens,
+        string cliApiKey, string cliModel, int cliMaxTokens)
     {
         // Arrange
-        var config = BuildConfigWithAnthropic(
-            configApiKey, configModel, configMaxTokens,
-            envApiKey, envModel, envMaxTokens);
+        var config = BuildConfigWithAnthropic(configApiKey, configModel, configMaxTokens, envApiKey, envModel, envMaxTokens);
         var args = new[]
         {
             ArgumentOptionConstants.Anthropic.ApiKey, cliApiKey,
             ArgumentOptionConstants.Anthropic.Model, cliModel,
-            ArgumentOptionConstants.Anthropic.MaxTokens, cliMaxTokens
+            ArgumentOptionConstants.Anthropic.MaxTokens, cliMaxTokens.ToString()
         };
 
         // Act
@@ -416,20 +435,18 @@ public class AnthropicArgumentOptionsTests
         settings.Anthropic.ShouldNotBeNull();
         settings.Anthropic.ApiKey.ShouldBe(cliApiKey);
         settings.Anthropic.Model.ShouldBe(cliModel);
-        settings.Anthropic.MaxTokens.ShouldBe(IntValueOf(cliMaxTokens));
+        settings.Anthropic.MaxTokens.ShouldBe(cliMaxTokens);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("config-api-key", "config-model", "1000", null, "env-model", null)]
+    [InlineData("config-api-key", "config-model", 2048, null, "env-model", 4096)]
     public void Given_Partial_EnvironmentVariables_When_Parse_Invoked_Then_It_Should_Mix_Config_And_Environment(
-        string configApiKey, string configModel, string configMaxTokens,
-        string? envApiKey, string envModel, string? envMaxTokens)
+        string configApiKey, string configModel, int configMaxTokens,
+        string? envApiKey, string envModel, int envMaxTokens)
     {
         // Arrange
-        var config = BuildConfigWithAnthropic(
-            configApiKey, configModel, configMaxTokens,
-            envApiKey, envModel, envMaxTokens);
+        var config = BuildConfigWithAnthropic(configApiKey, configModel, configMaxTokens, envApiKey, envModel, envMaxTokens);
         var args = Array.Empty<string>();
 
         // Act
@@ -439,26 +456,24 @@ public class AnthropicArgumentOptionsTests
         settings.Anthropic.ShouldNotBeNull();
         settings.Anthropic.ApiKey.ShouldBe(configApiKey);
         settings.Anthropic.Model.ShouldBe(envModel);
-        settings.Anthropic.MaxTokens.ShouldBe(IntValueOf(configMaxTokens));
+        settings.Anthropic.MaxTokens.ShouldBe(envMaxTokens);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("config-api-key", "config-model", "1000", "env-api-key", null, null, null, "cli-model", null)]
+    [InlineData("config-api-key", "config-model", 2048, "env-api-key", null, 4096, null, "cli-model", 1024)]
     public void Given_Mixed_Priority_Sources_When_Parse_Invoked_Then_It_Should_Respect_Priority_Order(
-        string configApiKey, string configModel, string configMaxTokens,
-        string envApiKey, string? envModel, string? envMaxTokens,
-        string? cliApiKey, string cliModel, string? cliMaxTokens)
+        string configApiKey, string configModel, int configMaxTokens,
+        string envApiKey, string? envModel, int envMaxTokens,
+        string? cliApiKey, string cliModel, int cliMaxTokens)
     {
         // Arrange
-        var config = BuildConfigWithAnthropic(
-            configApiKey, configModel, configMaxTokens,
-            envApiKey, envModel, envMaxTokens);
+        var config = BuildConfigWithAnthropic(configApiKey, configModel, configMaxTokens, envApiKey, envModel, envMaxTokens);
         var args = new[]
         {
             ArgumentOptionConstants.Anthropic.ApiKey, cliApiKey,
             ArgumentOptionConstants.Anthropic.Model, cliModel,
-            ArgumentOptionConstants.Anthropic.MaxTokens, cliMaxTokens
+            ArgumentOptionConstants.Anthropic.MaxTokens, cliMaxTokens.ToString()
         };
 
         // Act
@@ -468,13 +483,13 @@ public class AnthropicArgumentOptionsTests
         settings.Anthropic.ShouldNotBeNull();
         settings.Anthropic.ApiKey.ShouldBe(envApiKey);
         settings.Anthropic.Model.ShouldBe(cliModel);
-        settings.Anthropic.MaxTokens.ShouldBe(IntValueOf(configMaxTokens));
+        settings.Anthropic.MaxTokens.ShouldBe(cliMaxTokens);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("cli-api-key", "cli-model", "2000")]
-    public void Given_Anthropic_With_KnownArguments_When_Parse_Invoked_Then_Help_Should_Be_False(string cliApiKey, string cliModel, string cliMaxTokens)
+    [InlineData("cli-api-key", "cli-model", 1024)]
+    public void Given_Anthropic_With_KnownArguments_When_Parse_Invoked_Then_Help_Should_Be_False(string cliApiKey, string cliModel, int cliMaxTokens)
     {
         // Arrange
         var config = BuildConfigWithAnthropic(ApiKey, Model, MaxTokens);
@@ -482,7 +497,7 @@ public class AnthropicArgumentOptionsTests
         {
             ArgumentOptionConstants.Anthropic.ApiKey, cliApiKey,
             ArgumentOptionConstants.Anthropic.Model, cliModel,
-            ArgumentOptionConstants.Anthropic.MaxTokens, cliMaxTokens
+            ArgumentOptionConstants.Anthropic.MaxTokens, cliMaxTokens.ToString()
         };
 
         // Act
@@ -533,50 +548,8 @@ public class AnthropicArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("cli-model", "--unknown-flag")]
-    public void Given_Anthropic_With_Known_Model_And_Unknown_Argument_When_Parse_Invoked_Then_Help_Should_Be_True(
-        string cliModel, string argument)
-    {
-        // Arrange
-        var config = BuildConfigWithAnthropic();
-        var args = new[]
-        {
-            ArgumentOptionConstants.Anthropic.Model, cliModel,
-            argument
-        };
-
-        // Act
-        var settings = ArgumentOptions.Parse(config, args);
-
-        // Assert
-        settings.Help.ShouldBeTrue();
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData("2000", "--unknown-flag")]
-    public void Given_Anthropic_With_Known_MaxTokens_And_Unknown_Argument_When_Parse_Invoked_Then_Help_Should_Be_True(
-        string cliMaxTokens, string argument)
-    {
-        // Arrange
-        var config = BuildConfigWithAnthropic();
-        var args = new[]
-        {
-            ArgumentOptionConstants.Anthropic.MaxTokens, cliMaxTokens,
-            argument
-        };
-
-        // Act
-        var settings = ArgumentOptions.Parse(config, args);
-
-        // Assert
-        settings.Help.ShouldBeTrue();
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Theory]
-    [InlineData("cli-api-key", "cli-model", "2000")]
-    public void Given_CLI_Only_When_Parse_Invoked_Then_Help_Should_Be_False(string cliApiKey, string cliModel, string cliMaxTokens)
+    [InlineData("cli-api-key", "cli-model", 1024)]
+    public void Given_CLI_Only_When_Parse_Invoked_Then_Help_Should_Be_False(string cliApiKey, string cliModel, int cliMaxTokens)
     {
         // Arrange
         var config = BuildConfigWithAnthropic();
@@ -584,7 +557,7 @@ public class AnthropicArgumentOptionsTests
         {
             ArgumentOptionConstants.Anthropic.ApiKey, cliApiKey,
             ArgumentOptionConstants.Anthropic.Model, cliModel,
-            ArgumentOptionConstants.Anthropic.MaxTokens, cliMaxTokens
+            ArgumentOptionConstants.Anthropic.MaxTokens, cliMaxTokens.ToString()
         };
 
         // Act
@@ -596,8 +569,8 @@ public class AnthropicArgumentOptionsTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData("env-api-key", "env-model", "1500")]
-    public void Given_EnvironmentVariables_Only_When_Parse_Invoked_Then_Help_Should_Be_False(string envApiKey, string envModel, string envMaxTokens)
+    [InlineData("env-api-key", "env-model", 4096)]
+    public void Given_EnvironmentVariables_Only_When_Parse_Invoked_Then_Help_Should_Be_False(string envApiKey, string envModel, int envMaxTokens)
     {
         // Arrange
         var config = BuildConfigWithAnthropic(

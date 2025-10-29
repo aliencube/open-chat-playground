@@ -462,8 +462,8 @@ public abstract class ArgumentOptions
         Console.ForegroundColor = foregroundColor;
 
         Console.WriteLine($"  {ArgumentOptionConstants.Anthropic.ApiKey}            The Anthropic API key.");
-        Console.WriteLine($"  {ArgumentOptionConstants.Anthropic.Model}             The Anthropic model name. Default to 'claude-sonnet-4-0'");
-        Console.WriteLine($"  {ArgumentOptionConstants.Anthropic.MaxTokens}         The maximum tokens (>= 1). Default to 1000");
+        Console.WriteLine($"  {ArgumentOptionConstants.Anthropic.Model}              The Anthropic model name. Default to 'claude-sonnet-4-0'");
+        Console.WriteLine($"  {ArgumentOptionConstants.Anthropic.MaxTokens}         The maximum tokens for response. Must be at least 1. Default to '512'");
         Console.WriteLine();
     }
 

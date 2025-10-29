@@ -22,20 +22,19 @@ public class AnthropicConnector(AppSettings settings) : LanguageModelConnector(s
             throw new InvalidOperationException("Missing configuration: Anthropic.");
         }
 
-        if (string.IsNullOrWhiteSpace(settings.ApiKey!.Trim()) == true)
+        if (string.IsNullOrWhiteSpace(settings.ApiKey?.Trim()) == true)
         {
             throw new InvalidOperationException("Missing configuration: Anthropic:ApiKey.");
         }
 
-        if (string.IsNullOrWhiteSpace(settings.Model!.Trim()) == true)
+        if (string.IsNullOrWhiteSpace(settings.Model?.Trim()) == true)
         {
             throw new InvalidOperationException("Missing configuration: Anthropic:Model.");
         }
 
-        if (settings.MaxTokens.HasValue == false ||
-            settings.MaxTokens.Value <= 0)
+        if (settings.MaxTokens is not int maxTokens || maxTokens < 1)
         {
-            throw new InvalidOperationException("Missing or invalid configuration: Anthropic:MaxTokens. Must be a positive integer.");
+            throw new InvalidOperationException("Invalid configuration: Anthropic:MaxTokens must be an integer >= 1.");
         }
 
         return true;
@@ -45,11 +44,13 @@ public class AnthropicConnector(AppSettings settings) : LanguageModelConnector(s
     public override async Task<IChatClient> GetChatClientAsync()
     {
         var settings = this.Settings as AnthropicSettings;
-        var apiKey = settings?.ApiKey;
-    
-        if (string.IsNullOrWhiteSpace(apiKey) == true)
+        var apiKey = settings!.ApiKey!.Trim() ?? throw new InvalidOperationException("Missing configuration: Anthropic:ApiKey.");
+        var model = settings.Model!.Trim() ?? throw new InvalidOperationException("Missing configuration: Anthropic:Model.");
+        var maxTokens = settings.MaxTokens ?? throw new InvalidOperationException("Missing configuration: Anthropic:MaxTokens.");
+
+        if (maxTokens < 1)
         {
-            throw new InvalidOperationException("Missing configuration: Anthropic:ApiKey.");
+            throw new InvalidOperationException("Invalid configuration: Anthropic:MaxTokens must be >= 1.");
         }
 
         var client = new AnthropicClient() { Auth = new APIAuthentication(apiKey) };

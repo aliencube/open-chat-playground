@@ -30,9 +30,11 @@ param huggingFaceModel string = ''
 // Ollama
 param ollamaModel string = ''
 // Anthropic
-param anthropicModel string = ''
 @secure()
 param anthropicApiKey string = ''
+param anthropicModel string = ''
+@minValue(1)
+param anthropicMaxTokens int
 // LG
 param lgModel string = ''
 // Naver - NOT SUPPORTED
@@ -262,16 +264,23 @@ var envOllama = connectorType == 'Ollama' ? concat(ollamaModel != '' ? [
 ] : []) : []
 // Anthropic
 var envAnthropic = connectorType == 'Anthropic' ? concat(anthropicModel != '' ? [
-  {
-    name: 'Anthropic__Model'
-    value: anthropicModel
-  }
-] : [], anthropicApiKey != '' ? [
-  {
-    name: 'Anthropic__ApiKey'
-    secretRef: 'anthropic-api-key'
-  }    
-] : []) : []
+    {
+      name: 'Anthropic__Model'
+      value: anthropicModel
+    }
+  ] : [], anthropicApiKey != '' ? [
+    {
+      name: 'Anthropic__ApiKey'
+      secretRef: 'anthropic-api-key'
+    }
+  ] : [],
+  [
+    {
+      name: 'Anthropic__MaxTokens'
+      value: string(anthropicMaxTokens)
+    }
+  ]
+) : []
 // LG
 var envLG = connectorType == 'LG' ? concat(lgModel != '' ? [
   {
@@ -292,6 +301,7 @@ var envOpenAI = connectorType == 'OpenAI' ? concat(openAIModel != '' ? [
     secretRef: 'openai-api-key'
   }
 ] : []) : []
+
 // Upstage
 var envUpstage = connectorType == 'Upstage' ? concat(upstageModel != '' ? [
   {

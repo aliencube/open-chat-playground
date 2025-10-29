@@ -40,7 +40,7 @@ This page describes how to run OpenChat Playground (OCP) with [Anthropic models]
 
     > For more details about Anthropic API keys, refer to the doc, [Anthropic API Documentation](https://docs.anthropic.com/claude/reference/getting-started-with-the-api).
 
-1. Run the app. The default model OCP uses is [Claude Sonnet 4](https://www-cdn.anthropic.com/6be99a52cb68eb70eb9572b4cafad13df32ed995.pdf).
+1. Run the app. The default model OCP uses is [Claude Sonnet 4.5](https://www.anthropic.com/claude/sonnet).
 
     ```bash
     # bash/zsh
@@ -68,6 +68,22 @@ This page describes how to run OpenChat Playground (OCP) with [Anthropic models]
     dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- `
         --connector-type Anthropic `
         --model claude-opus-4-1
+    ```
+
+    By default the app limits the model's response to [512 tokens](https://docs.claude.com/en/docs/about-claude/models/overview), other than the default one, you can specify it as an argument:
+
+    ```bash
+    # bash/zsh
+    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- \
+        --connector-type Anthropic \
+        --max-tokens 2048
+    ```
+
+    ```powershell
+    # PowerShell
+    dotnet run --project $REPOSITORY_ROOT/src/OpenChat.PlaygroundApp -- `
+        --connector-type Anthropic `
+        --max-tokens 2048
     ```
 
 1. Open your web browser, navigate to `http://localhost:5280`, and enter prompts.
@@ -100,7 +116,7 @@ This page describes how to run OpenChat Playground (OCP) with [Anthropic models]
                 Select-String -NotMatch '^//(BEGIN|END)' | ConvertFrom-Json).'Anthropic:ApiKey'
     ```
 
-1. Run the app. The default model OCP uses is [Claude Sonnet 4](https://www-cdn.anthropic.com/6be99a52cb68eb70eb9572b4cafad13df32ed995.pdf).
+1. Run the app. The default model OCP uses is [Claude Sonnet 4.5](https://www.anthropic.com/claude/sonnet).
 
     ```bash
     # bash/zsh - from locally built container
@@ -131,17 +147,65 @@ This page describes how to run OpenChat Playground (OCP) with [Anthropic models]
    Alternatively, if you want to run with a different model, say [Claude Opus 4.1](http://www.anthropic.com/claude-opus-4-1-system-card), other than the default one, you can specify it as an argument:
 
     ```bash
-    # bash/zsh - from locally built container with custom model
+    # bash/zsh - from locally built container
     docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type Anthropic \
-        --api-key $API_KEY \
+        --api-key $API_KEY
         --model claude-opus-4-1
     ```
 
     ```powershell
-    # PowerShell - from locally built container with custom model
+    # PowerShell - from locally built container
     docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type Anthropic `
-        --api-key $API_KEY `
+        --api-key $API_KEY
         --model claude-opus-4-1
+    ```
+
+    ```bash
+    # bash/zsh - from GitHub Container Registry
+    docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest \
+        --connector-type Anthropic \
+        --api-key $API_KEY
+        --model claude-opus-4-1
+    ```
+
+    ```powershell
+    # PowerShell - from GitHub Container Registry
+    docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest `
+        --connector-type Anthropic `
+        --api-key $API_KEY
+        --model claude-opus-4-1
+    ```
+
+    By default the app limits the model's response to [512 tokens](https://docs.claude.com/en/docs/about-claude/models/overview), other than the default one, you can specify it as an argument:
+
+    ```bash
+    # bash/zsh - from locally built container
+    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type Anthropic \
+        --api-key $API_KEY
+        --max-tokens 2048
+    ```
+
+    ```powershell
+    # PowerShell - from locally built container
+    docker run -i --rm -p 8080:8080 openchat-playground:latest --connector-type Anthropic `
+        --api-key $API_KEY
+        --max-tokens 2048
+    ```
+
+    ```bash
+    # bash/zsh - from GitHub Container Registry
+    docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest \
+        --connector-type Anthropic \
+        --api-key $API_KEY
+        --max-tokens 2048
+    ```
+
+    ```powershell
+    # PowerShell - from GitHub Container Registry
+    docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest `
+        --connector-type Anthropic `
+        --api-key $API_KEY
+        --max-tokens 2048
     ```
 
 1. Open your web browser, navigate to `http://localhost:8080`, and enter prompts.
@@ -194,10 +258,15 @@ This page describes how to run OpenChat Playground (OCP) with [Anthropic models]
     azd env set ANTHROPIC_API_KEY $API_KEY
     ```
 
-   The default model OCP uses is [Claude Sonnet 4](https://www-cdn.anthropic.com/6be99a52cb68eb70eb9572b4cafad13df32ed995.pdf). If you want to run with a different model, say [Claude Opus 4.1](http://www.anthropic.com/claude-opus-4-1-system-card), other than the default one, add it to azd environment variables.
+   The default model OCP uses is [Claude Sonnet 4.5](https://www.anthropic.com/claude/sonnet). If you want to run with a different model, say [Claude Opus 4.1](http://www.anthropic.com/claude-opus-4-1-system-card), other than the default one, add it to azd environment variables.
 
     ```bash
     azd env set ANTHROPIC_MODEL claude-opus-4-1
+    ```
+
+    By default the app limits the model's response to [512 tokens](https://docs.claude.com/en/docs/about-claude/models/overview), other than the default one, add it to azd environment variables.
+    ```bash
+    azd env set ANTHROPIC_MAX_TOKENS 2048
     ```
 
 1. Set the connector type to `Anthropic`.

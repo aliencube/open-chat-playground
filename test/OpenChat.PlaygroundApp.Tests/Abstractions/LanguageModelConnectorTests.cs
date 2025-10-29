@@ -75,7 +75,6 @@ public class LanguageModelConnectorTests
     [Theory]
     [InlineData(ConnectorType.Unknown)]
     [InlineData(ConnectorType.GoogleVertexAI)]
-    [InlineData(ConnectorType.Anthropic)]
     [InlineData(ConnectorType.Naver)]
     public void Given_Unsupported_ConnectorType_When_CreateChatClient_Invoked_Then_It_Should_Throw(ConnectorType connectorType)
     {
