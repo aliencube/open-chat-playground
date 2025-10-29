@@ -182,6 +182,11 @@ public static class ArgumentOptionConstants
         /// Defines the constant for '--model'.
         /// </summary>
         public const string Model = "--model";
+
+        /// <summary>
+        /// Defines the constant for '--max-tokens'.
+        /// </summary>
+        public const string MaxTokens = "--max-tokens";
     }
 
     /// <summary>

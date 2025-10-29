@@ -42,6 +42,7 @@ public abstract class ArgumentOptions
         // Anthropic
         (ConnectorType.Anthropic, ArgumentOptionConstants.Anthropic.ApiKey, false),
         (ConnectorType.Anthropic, ArgumentOptionConstants.Anthropic.Model, false),
+        (ConnectorType.Anthropic, ArgumentOptionConstants.Anthropic.MaxTokens, false),
         // LG
         (ConnectorType.LG, ArgumentOptionConstants.LG.BaseUrl, false),
         (ConnectorType.LG, ArgumentOptionConstants.LG.Model, false),
@@ -237,6 +238,7 @@ public abstract class ArgumentOptions
                 settings.Anthropic ??= new AnthropicSettings();
                 settings.Anthropic.ApiKey = anthropic.ApiKey ?? settings.Anthropic.ApiKey;
                 settings.Anthropic.Model = anthropic.Model ?? settings.Anthropic.Model;
+                settings.Anthropic.MaxTokens = anthropic.MaxTokens ?? settings.Anthropic.MaxTokens;
 
                 settings.Model = anthropic.Model ?? settings.Anthropic.Model;
                 break;
@@ -461,6 +463,7 @@ public abstract class ArgumentOptions
 
         Console.WriteLine($"  {ArgumentOptionConstants.Anthropic.ApiKey}            The Anthropic API key.");
         Console.WriteLine($"  {ArgumentOptionConstants.Anthropic.Model}              The Anthropic model name. Default to 'claude-sonnet-4-0'");
+        Console.WriteLine($"  {ArgumentOptionConstants.Anthropic.MaxTokens}         The maximum tokens for response. Must be at least 1. Default to '512'");
         Console.WriteLine();
     }
 

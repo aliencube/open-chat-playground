@@ -38,6 +38,11 @@ param huggingFaceModel string = ''
 // Ollama
 param ollamaModel string = ''
 // Anthropic
+@secure()
+param anthropicApiKey string = ''
+param anthropicModel string = ''
+@minValue(1)
+param anthropicMaxTokens int
 // LG
 param lgModel string = ''
 // Naver - NOT SUPPORTED
@@ -104,6 +109,9 @@ module resources 'resources.bicep' = {
     googleVertexAIModel: googleVertexAIModel
     googleVertexAIApiKey: googleVertexAIApiKey
     ollamaModel: ollamaModel
+    anthropicModel: anthropicModel
+    anthropicApiKey: anthropicApiKey
+    anthropicMaxTokens: anthropicMaxTokens
     lgModel: lgModel
     openAIModel: openAIModel
     openAIApiKey: openAIApiKey

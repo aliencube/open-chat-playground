@@ -31,6 +31,7 @@ jobs:
       AZURE_ENV_NAME: ${{ vars.AZURE_ENV_NAME }}
       AZURE_LOCATION: ${{ vars.AZURE_LOCATION }}
       GH_MODELS_TOKEN: ${{ secrets.GH_MODELS_TOKEN }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
     steps:
@@ -149,6 +150,7 @@ jobs:
       shell: bash
       env:
         GitHubModels__Token: ${{ env.GH_MODELS_TOKEN }}
+        Anthropic__ApiKey: ${{ env.ANTHROPIC_API_KEY }}
         OpenAI__ApiKey: ${{ env.OPENAI_API_KEY }}
       run: |
         azd provision --no-prompt

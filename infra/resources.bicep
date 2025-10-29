@@ -33,6 +33,11 @@ param huggingFaceModel string = ''
 // Ollama
 param ollamaModel string = ''
 // Anthropic
+@secure()
+param anthropicApiKey string = ''
+param anthropicModel string = ''
+@minValue(1)
+param anthropicMaxTokens int
 // LG
 param lgModel string = ''
 // Naver - NOT SUPPORTED
@@ -272,6 +277,24 @@ var envOllama = connectorType == 'Ollama' ? concat(ollamaModel != '' ? [
   }
 ] : []) : []
 // Anthropic
+var envAnthropic = connectorType == 'Anthropic' ? concat(anthropicModel != '' ? [
+    {
+      name: 'Anthropic__Model'
+      value: anthropicModel
+    }
+  ] : [], anthropicApiKey != '' ? [
+    {
+      name: 'Anthropic__ApiKey'
+      secretRef: 'anthropic-api-key'
+    }
+  ] : [],
+  [
+    {
+      name: 'Anthropic__MaxTokens'
+      value: string(anthropicMaxTokens)
+    }
+  ]
+) : []
 // LG
 var envLG = connectorType == 'LG' ? concat(lgModel != '' ? [
   {
@@ -339,6 +362,11 @@ module openchatPlaygroundApp 'br/public:avm/res/app/container-app:0.18.1' = {
         name: 'github-models-token'
         value: githubModelsToken
       }
+    ] : [], anthropicApiKey != '' ? [
+      {
+        name: 'anthropic-api-key'
+        value: anthropicApiKey
+      }
     ] : [], openAIApiKey != '' ? [
       {
         name: 'openai-api-key'
@@ -378,6 +406,7 @@ module openchatPlaygroundApp 'br/public:avm/res/app/container-app:0.18.1' = {
         envGitHubModels,
         envHuggingFace,
         envOllama,
+        envAnthropic,
         envLG,
         envOpenAI,
         envUpstage, 

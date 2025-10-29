@@ -44,6 +44,7 @@ public abstract class LanguageModelConnector(LanguageModelSettings? settings)
             ConnectorType.FoundryLocal => new FoundryLocalConnector(settings),
             ConnectorType.HuggingFace => new HuggingFaceConnector(settings),
             ConnectorType.Ollama => new OllamaConnector(settings),
+            ConnectorType.Anthropic => new AnthropicConnector(settings),
             ConnectorType.LG => new LGConnector(settings),
             ConnectorType.OpenAI => new OpenAIConnector(settings),
             ConnectorType.Upstage => new UpstageConnector(settings),
