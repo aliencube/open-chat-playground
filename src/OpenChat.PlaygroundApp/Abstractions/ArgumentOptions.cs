@@ -34,6 +34,7 @@ public abstract class ArgumentOptions
         // Foundry Local
         (ConnectorType.FoundryLocal, ArgumentOptionConstants.FoundryLocal.BaseUrl, false),
         (ConnectorType.FoundryLocal, ArgumentOptionConstants.FoundryLocal.Alias, false),
+        (ConnectorType.FoundryLocal, ArgumentOptionConstants.FoundryLocal.Model, false),
         (ConnectorType.FoundryLocal, ArgumentOptionConstants.FoundryLocal.DisableFoundryLocalManager, true),
         (ConnectorType.FoundryLocal, ArgumentOptionConstants.FoundryLocal.DisableFoundryLocalManagerInShort, true),
         // Hugging Face
@@ -366,10 +367,10 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** Amazon Bedrock: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine($"  {ArgumentOptionConstants.AmazonBedrock.AccessKeyId}     The AWSCredentials Access Key ID.");
-        Console.WriteLine($"  {ArgumentOptionConstants.AmazonBedrock.SecretAccessKey} The AWSCredentials Secret Access Key.");
-        Console.WriteLine($"  {ArgumentOptionConstants.AmazonBedrock.Region}            The AWS region.");
-        Console.WriteLine($"  {ArgumentOptionConstants.AmazonBedrock.ModelId}          The model ID. Default to 'anthropic.claude-sonnet-4-20250514-v1:0'");
+        Console.WriteLine($"  {ArgumentOptionConstants.AmazonBedrock.AccessKeyId}      The AWSCredentials Access Key ID.");
+        Console.WriteLine($"  {ArgumentOptionConstants.AmazonBedrock.SecretAccessKey}  The AWSCredentials Secret Access Key.");
+        Console.WriteLine($"  {ArgumentOptionConstants.AmazonBedrock.Region}             The AWS region.");
+        Console.WriteLine($"  {ArgumentOptionConstants.AmazonBedrock.ModelId}           The model ID. Default to 'anthropic.claude-sonnet-4-20250514-v1:0'");
         Console.WriteLine();
     }
 
@@ -429,10 +430,10 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** Foundry Local: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine($"  {ArgumentOptionConstants.FoundryLocal.BaseUrl}           The endpoint URL. Default to 'http://127.0.0.1:55434/'");
-        Console.WriteLine($"  {ArgumentOptionConstants.FoundryLocal.Alias}              The alias. Default to 'phi-4-mini'");
-        Console.WriteLine($"  {ArgumentOptionConstants.FoundryLocal.DisableFoundryLocalManager}|{ArgumentOptionConstants.FoundryLocal.DisableFoundryLocalManagerInShort}              Disable the built-in Foundry local manager.");
-        Console.WriteLine($"                                                            When this flag is set, you must specify '--base-url'.");
+        Console.WriteLine($"  {ArgumentOptionConstants.FoundryLocal.BaseUrl}           The endpoint URL. Default to 'http://localhost:<random_port>/'");
+        Console.WriteLine($"  {ArgumentOptionConstants.FoundryLocal.Alias}|{ArgumentOptionConstants.FoundryLocal.Model}      The alias or model ID. Default to 'phi-4-mini'");
+        Console.WriteLine($"  {ArgumentOptionConstants.FoundryLocal.DisableFoundryLocalManager}|{ArgumentOptionConstants.FoundryLocal.DisableFoundryLocalManagerInShort}    Disable the built-in Foundry local manager.");
+        Console.WriteLine($"                                                   When this flag is set, you must specify '--base-url'.");
         Console.WriteLine();
     }
 
@@ -479,7 +480,8 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** LG: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  TBD");
+        Console.WriteLine($"  {ArgumentOptionConstants.LG.BaseUrl}           The baseURL. Default to 'http://localhost:11434'");
+        Console.WriteLine($"  {ArgumentOptionConstants.LG.Model}              The model name. Default to 'hf.co/LGAI-EXAONE/EXAONE-4.0-1.2B-GGUF'");
         Console.WriteLine();
     }
 
@@ -501,7 +503,7 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** OpenAI: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine($"  {ArgumentOptionConstants.OpenAI.ApiKey}            The OpenAI API key. (Env: OPENAI_API_KEY)");
+        Console.WriteLine($"  {ArgumentOptionConstants.OpenAI.ApiKey}            The OpenAI API key.");
         Console.WriteLine($"  {ArgumentOptionConstants.OpenAI.Model}              The OpenAI model name. Default to 'gpt-4.1-mini'");
         Console.WriteLine();
     }

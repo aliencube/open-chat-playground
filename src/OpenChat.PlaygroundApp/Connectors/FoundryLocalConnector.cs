@@ -19,7 +19,7 @@ public class FoundryLocalConnector(AppSettings settings) : LanguageModelConnecto
 {
     private const string ApiKey = "OPENAI_API_KEY";
 
-    private static readonly Regex modelIdSuffix = new(@"\:[0-9]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+    private static readonly Regex modelIdSuffix = new(":[0-9]+$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     private readonly AppSettings _appSettings = settings ?? throw new ArgumentNullException(nameof(settings));
 
@@ -45,7 +45,7 @@ public class FoundryLocalConnector(AppSettings settings) : LanguageModelConnecto
         if (settings.DisableFoundryLocalManager == true &&
             modelIdSuffix.IsMatch(settings.AliasOrModel!.Trim()!) == false)
         {
-            throw new InvalidOperationException("When DisableFoundryLocalManager is enabled, FoundryLocal:AliasOrModel must be the exact model name with version suffix.");
+            throw new InvalidOperationException("When DisableFoundryLocalManager is true, FoundryLocal:AliasOrModel must be the exact model name with version suffix.");
         }
 
         return true;
@@ -87,7 +87,7 @@ public class FoundryLocalConnector(AppSettings settings) : LanguageModelConnecto
         var modelId = settings.AliasOrModel!.Trim() ?? throw new InvalidOperationException("Missing configuration: FoundryLocal:AliasOrModel.");
         if (modelIdSuffix.IsMatch(modelId) == false)
         {
-            throw new InvalidOperationException("When DisableFoundryLocalManager is enabled, FoundryLocal:AliasOrModel must be the exact model name with version suffix.");
+            throw new InvalidOperationException("When DisableFoundryLocalManager is true, FoundryLocal:AliasOrModel must be the exact model name with version suffix.");
         }
 
         return (endpoint, modelId);

@@ -1,6 +1,6 @@
 # OpenChat Playground with Foundry Local
 
-This page describes how to run OpenChat Playground (OCP) with Foundry Local models integration.
+This page describes how to run OpenChat Playground (OCP) with [Foundry Local](https://learn.microsoft.com/azure/ai-foundry/foundry-local/what-is-foundry-local) integration.
 
 ## Get the repository root
 
@@ -18,7 +18,7 @@ This page describes how to run OpenChat Playground (OCP) with Foundry Local mode
 
 ## Run on local machine
 
-1. Make sure the Foundry Local server is up and running.
+1. Make sure the Foundry Local server is up and running with the following command.
 
     ```bash
     foundry service start
@@ -78,22 +78,27 @@ This page describes how to run OpenChat Playground (OCP) with Foundry Local mode
 
 ## Run in local container
 
-1. Set the Foundry Local service port. The default port OCP uses is `55438`.
-
-    ```bash
-    foundry service set --port 55438
-    ```
-
-   Alternatively, if you want to run with a different port, say `63997`, other than the default one, set it first by running the following command.
-
-    ```bash
-    foundry service set --port 63997
-    ```
-
 1. Make sure the Foundry Local server is up and running.
 
     ```bash
     foundry service start
+    ```
+
+1. Get the Foundry Local service port.
+
+    ```bash
+    # bash/zsh
+    FL_PORT_NUMBER=$(foundry service set --show true | sed -n '/^{/,/^}/p' | jq -r ".serviceSettings.port")
+    ```
+
+    ```powershell
+    # PowerShell
+    $FL_PORT_NUMBER = (foundry service set --show true | `
+        ForEach-Object { `
+            if ($_ -match '^{') { $capture = $true } `
+            if ($capture) { $_ } `
+            if ($_ -match '^}') { $capture = $false } `
+        } | Out-String | ConvertFrom-Json).serviceSettings.port
     ```
 
 1. Download the Foundry Local model. The default model OCP uses is `phi-4-mini`.
@@ -136,12 +141,14 @@ This page describes how to run OpenChat Playground (OCP) with Foundry Local mode
 
 1. Run the app. The `{{Model ID}}` refers to the `Model ID` shown in the output of the `foundry service list` command.
 
+   > **NOTE**: Make sure it MUST be the model ID, instead of alias.
+
     ```bash
     # bash/zsh - from locally built container
     docker run -i --rm -p 8080:8080 openchat-playground:latest \
         --connector-type FoundryLocal \
-        --alias {{Model ID}} \
-        --endpoint http://host.docker.internal:55438/v1 \
+        --base-url http://host.docker.internal:$FL_PORT_NUMBER/ \
+        --model "Phi-4-mini-instruct-generic-gpu:4" \
         --disable-foundrylocal-manager
     ```
 
@@ -149,8 +156,8 @@ This page describes how to run OpenChat Playground (OCP) with Foundry Local mode
     # PowerShell - from locally built container
     docker run -i --rm -p 8080:8080 openchat-playground:latest `
         --connector-type FoundryLocal `
-        --alias {{Model ID}} `
-        --endpoint http://host.docker.internal:55438/v1 `
+        --base-url http://host.docker.internal:$FL_PORT_NUMBER/ `
+        --model {{Model ID}} `
         --disable-foundrylocal-manager 
     ```
 
@@ -158,8 +165,8 @@ This page describes how to run OpenChat Playground (OCP) with Foundry Local mode
     # bash/zsh - from GitHub Container Registry
     docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest \
         --connector-type FoundryLocal \
-        --alias {{Model ID}} \
-        --endpoint http://host.docker.internal:55438/v1 \
+        --base-url http://host.docker.internal:$FL_PORT_NUMBER/ \
+        --model {{Model ID}} \
         --disable-foundrylocal-manager
     ```
 
@@ -167,8 +174,8 @@ This page describes how to run OpenChat Playground (OCP) with Foundry Local mode
     # PowerShell - from GitHub Container Registry
     docker run -i --rm -p 8080:8080 ghcr.io/aliencube/open-chat-playground/openchat-playground:latest `
         --connector-type FoundryLocal `
-        --alias {{Model ID}} `
-        --endpoint http://host.docker.internal:55438/v1 `
+        --base-url http://host.docker.internal:$FL_PORT_NUMBER/ `
+        --model {{Model ID}} `
         --disable-foundrylocal-manager 
     ```
 
