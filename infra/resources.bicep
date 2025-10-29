@@ -249,7 +249,7 @@ var envGitHubModels = (connectorType == '' || connectorType == 'GitHubModels') ?
   }
 ] : []) : []
 // Google Vertex AI
-var envGoogleVertexAI = (connectorType == '' || connectorType == 'GoogleVertexAI') ? concat(googleVertexAIModel != '' ? [
+var envGoogleVertexAI = connectorType == 'GoogleVertexAI' ? concat(googleVertexAIModel != '' ? [
   {
     name: 'GoogleVertexAI__Model'
     value: googleVertexAIModel
@@ -404,6 +404,7 @@ module openchatPlaygroundApp 'br/public:avm/res/app/container-app:0.18.1' = {
         envAmazonBedrock,
         envAzureAIFoundry,
         envGitHubModels,
+        envGoogleVertexAI,
         envHuggingFace,
         envOllama,
         envAnthropic,
