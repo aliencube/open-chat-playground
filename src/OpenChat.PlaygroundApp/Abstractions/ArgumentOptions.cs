@@ -32,7 +32,10 @@ public abstract class ArgumentOptions
         (ConnectorType.DockerModelRunner, ArgumentOptionConstants.DockerModelRunner.BaseUrl, false),
         (ConnectorType.DockerModelRunner, ArgumentOptionConstants.DockerModelRunner.Model, false),
         // Foundry Local
+        (ConnectorType.FoundryLocal, ArgumentOptionConstants.FoundryLocal.BaseUrl, false),
         (ConnectorType.FoundryLocal, ArgumentOptionConstants.FoundryLocal.Alias, false),
+        (ConnectorType.FoundryLocal, ArgumentOptionConstants.FoundryLocal.DisableFoundryLocalManager, true),
+        (ConnectorType.FoundryLocal, ArgumentOptionConstants.FoundryLocal.DisableFoundryLocalManagerInShort, true),
         // Hugging Face
         (ConnectorType.HuggingFace, ArgumentOptionConstants.HuggingFace.BaseUrl, false),
         (ConnectorType.HuggingFace, ArgumentOptionConstants.HuggingFace.Model, false),
@@ -213,9 +216,11 @@ public abstract class ArgumentOptions
 
             case FoundryLocalArgumentOptions foundryLocal:
                 settings.FoundryLocal ??= new FoundryLocalSettings();
-                settings.FoundryLocal.Alias = foundryLocal.Alias ?? settings.FoundryLocal.Alias;
+                settings.FoundryLocal.BaseUrl = foundryLocal.BaseUrl ?? settings.FoundryLocal.BaseUrl;
+                settings.FoundryLocal.AliasOrModel = foundryLocal.AliasOrModel ?? settings.FoundryLocal.AliasOrModel;
+                settings.FoundryLocal.DisableFoundryLocalManager = foundryLocal.DisableFoundryLocalManager;
 
-                settings.Model = foundryLocal.Alias ?? settings.FoundryLocal.Alias;
+                settings.Model = foundryLocal.AliasOrModel ?? settings.FoundryLocal.AliasOrModel;
                 break;
 
             case HuggingFaceArgumentOptions huggingFace:
@@ -426,7 +431,10 @@ public abstract class ArgumentOptions
         Console.WriteLine("  ** Foundry Local: **");
         Console.ForegroundColor = foregroundColor;
 
-        Console.WriteLine("  TBD");
+        Console.WriteLine($"  {ArgumentOptionConstants.FoundryLocal.BaseUrl}           The endpoint URL. Default to 'http://127.0.0.1:55434/'");
+        Console.WriteLine($"  {ArgumentOptionConstants.FoundryLocal.Alias}              The alias. Default to 'phi-4-mini'");
+        Console.WriteLine($"  {ArgumentOptionConstants.FoundryLocal.DisableFoundryLocalManager}|{ArgumentOptionConstants.FoundryLocal.DisableFoundryLocalManagerInShort}              Disable the built-in Foundry local manager.");
+        Console.WriteLine($"                                                            When this flag is set, you must specify '--base-url'.");
         Console.WriteLine();
     }
 

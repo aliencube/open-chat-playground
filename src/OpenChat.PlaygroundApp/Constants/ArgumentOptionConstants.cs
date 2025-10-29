@@ -131,9 +131,29 @@ public static class ArgumentOptionConstants
     public static class FoundryLocal
     {
         /// <summary>
+        /// Defines the constant for '--base-url'.
+        /// </summary>
+        public const string BaseUrl = "--base-url";
+
+        /// <summary>
         /// Defines the constant for '--alias'.
         /// </summary>
         public const string Alias = "--alias";
+
+        /// <summary>
+        /// Defines the constant for '--model'.
+        /// </summary>
+        public const string Model = "--model";
+
+        /// <summary>
+        /// Defines the constant for '--disable-foundry-local-manager'.
+        /// </summary>
+        public const string DisableFoundryLocalManager = "--disable-foundry-local-manager";
+
+        /// <summary>
+        /// Defines the constant for '--disable-flm'.
+        /// </summary>
+        public const string DisableFoundryLocalManagerInShort = "--disable-flm";
     }
 
     /// <summary>
