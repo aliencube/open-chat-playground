@@ -10,14 +10,14 @@ namespace OpenChat.PlaygroundApp.Options;
 public class FoundryLocalArgumentOptions : ArgumentOptions
 {
     /// <summary>
-    /// Gets or sets the alias of Foundry Local.
+    /// Gets or sets the base URL of Foundry Local. If `DisableFoundryLocalManager` is set, this value must be provided.
     /// </summary>
-    public string? Alias { get; set; }
+    public string? BaseUrl { get; set; }
 
     /// <summary>
-    /// Gets or sets the Endpoint of FoundryLocal.
+    /// Gets or sets either alias or model ID of Foundry Local.
     /// </summary>
-    public string? Endpoint { get; set; }
+    public string? AliasOrModel { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether to disable the automatic FoundryLocal manager and use a manually configured endpoint.
@@ -32,29 +32,31 @@ public class FoundryLocalArgumentOptions : ArgumentOptions
 
         var foundryLocal = settings.FoundryLocal;
 
-        this.Alias ??= foundryLocal?.Alias;
-        this.Endpoint ??= foundryLocal?.Endpoint;
+        this.BaseUrl ??= foundryLocal?.BaseUrl;
+        this.AliasOrModel ??= foundryLocal?.AliasOrModel;
         this.DisableFoundryLocalManager = foundryLocal?.DisableFoundryLocalManager ?? false;
 
         for (var i = 0; i < args.Length; i++)
         {
             switch (args[i])
             {
-                case ArgumentOptionConstants.FoundryLocal.Alias:
+                case ArgumentOptionConstants.FoundryLocal.BaseUrl:
                     if (i + 1 < args.Length)
                     {
-                        this.Alias = args[++i];
+                        this.BaseUrl = args[++i];
                     }
                     break;
 
-                case ArgumentOptionConstants.FoundryLocal.Endpoint:
+                case ArgumentOptionConstants.FoundryLocal.Alias:
+                case ArgumentOptionConstants.FoundryLocal.Model:
                     if (i + 1 < args.Length)
                     {
-                        this.Endpoint = args[++i];
+                        this.AliasOrModel = args[++i];
                     }
                     break;
 
                 case ArgumentOptionConstants.FoundryLocal.DisableFoundryLocalManager:
+                case ArgumentOptionConstants.FoundryLocal.DisableFoundryLocalManagerInShort:
                     this.DisableFoundryLocalManager = true;
                     break;
 

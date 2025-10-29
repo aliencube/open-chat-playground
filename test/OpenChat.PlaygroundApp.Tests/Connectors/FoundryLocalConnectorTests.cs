@@ -10,20 +10,20 @@ namespace OpenChat.PlaygroundApp.Tests.Connectors;
 
 public class FoundryLocalConnectorTests
 {
-    private const string Alias = "phi-4-mini";
-    private const string Endpoint = "http://127.0.0.1:55438/v1";
+    private const string BaseUrl = "http://localhost:55434/";
+    private const string AliasOrModel = "phi-4-mini";
     private const bool DisableFoundryLocalManager = false;
 
     private static AppSettings BuildAppSettings(
-        string? alias = Alias, string? endpoint = Endpoint, bool disableFoundryLocalManager = DisableFoundryLocalManager)
+        string? baseUrl = BaseUrl, string? aliasOrModel = AliasOrModel, bool disableFoundryLocalManager = DisableFoundryLocalManager)
     {
         return new AppSettings
         {
             ConnectorType = ConnectorType.FoundryLocal,
             FoundryLocal = new FoundryLocalSettings
             {
-                Alias = alias,
-                Endpoint = endpoint,
+                BaseUrl = baseUrl,
+                AliasOrModel = aliasOrModel,
                 DisableFoundryLocalManager = disableFoundryLocalManager
             }
         };
@@ -92,13 +92,13 @@ public class FoundryLocalConnectorTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
-    [InlineData("", typeof(InvalidOperationException), "FoundryLocal:Alias")]
-    [InlineData("   ", typeof(InvalidOperationException), "FoundryLocal:Alias")]
-    [InlineData("\t\n\r", typeof(InvalidOperationException), "FoundryLocal:Alias")]
-    public void Given_Invalid_Alias_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? alias, Type expectedType, string expectedMessage)
+    [InlineData("", typeof(InvalidOperationException), "FoundryLocal:BaseUrl")]
+    [InlineData("   ", typeof(InvalidOperationException), "FoundryLocal:BaseUrl")]
+    [InlineData("\t\n\r", typeof(InvalidOperationException), "FoundryLocal:BaseUrl")]
+    public void Given_Invalid_BaseUrl_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? baseUrl, Type expectedType, string expectedMessage)
     {
         // Arrange
-        var settings = BuildAppSettings(alias: alias);
+        var settings = BuildAppSettings(baseUrl: baseUrl, disableFoundryLocalManager: true);
         var connector = new FoundryLocalConnector(settings);
 
         // Act
@@ -111,14 +111,15 @@ public class FoundryLocalConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
-    [InlineData("", typeof(InvalidOperationException), "FoundryLocal:Endpoint")]
-    [InlineData("   ", typeof(InvalidOperationException), "FoundryLocal:Endpoint")]
-    [InlineData("\t\n\r", typeof(InvalidOperationException), "FoundryLocal:Endpoint")]
-    public void Given_Invalid_Endpoint_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? endpoint, Type expectedType, string expectedMessage)
+    [InlineData(null, false, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
+    [InlineData("", false, typeof(InvalidOperationException), "FoundryLocal:AliasOrModel")]
+    [InlineData("   ", false, typeof(InvalidOperationException), "FoundryLocal:AliasOrModel")]
+    [InlineData("\t\n\r", false, typeof(InvalidOperationException), "FoundryLocal:AliasOrModel")]
+    [InlineData("invalid-model", true, typeof(InvalidOperationException), "FoundryLocal:AliasOrModel")]
+    public void Given_Invalid_Alias_With_DisableFoundryLocalManager_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? alias, bool disableFoundryLocalManager, Type expectedType, string expectedMessage)
     {
         // Arrange
-        var settings = BuildAppSettings(endpoint: endpoint, disableFoundryLocalManager: true);
+        var settings = BuildAppSettings(aliasOrModel: alias, disableFoundryLocalManager: disableFoundryLocalManager);
         var connector = new FoundryLocalConnector(settings);
 
         // Act
@@ -164,13 +165,36 @@ public class FoundryLocalConnectorTests
             .Message.ShouldContain("Object reference not set to an instance of an object.");
     }
 
+    [Trait("Category", "IntegrationTest")]
+    [Trait("Category", "LLMRequired")]
+    [Trait("Category", "IgnoreGitHubActions")]
+    [Theory]
+    [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
+    [InlineData("", typeof(UriFormatException), "Invalid URI:")]
+    [InlineData("   ", typeof(UriFormatException), "Invalid URI:")]
+    [InlineData("\t\r\n", typeof(UriFormatException), "Invalid URI:")]
+    [InlineData("invalid-uri-format", typeof(UriFormatException), "Invalid URI:")]
+    public void Given_Invalid_BaseUrl_When_GetChatClient_Invoked_Then_It_Should_Throw(string? baseUrl, Type expected, string message)
+    {
+        // Arrange
+        var settings = BuildAppSettings(baseUrl: baseUrl, disableFoundryLocalManager: true);
+        var connector = new FoundryLocalConnector(settings);
+
+        // Act
+        Func<Task> func = async () => await connector.GetChatClientAsync();
+
+        // Assert
+        func.ShouldThrow(expected)
+            .Message.ShouldContain(message);
+    }
+
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
     public void Given_Null_Alias_When_GetChatClient_Invoked_Then_It_Should_Throw(string? alias, Type expected, string message)
     {
         // Arrange
-        var settings = BuildAppSettings(alias: alias);
+        var settings = BuildAppSettings(aliasOrModel: alias);
         var connector = new FoundryLocalConnector(settings);
 
         // Act
@@ -193,30 +217,7 @@ public class FoundryLocalConnectorTests
     public void Given_Invalid_Alias_When_GetChatClient_Invoked_Then_It_Should_Throw(string? alias, Type expected, string message)
     {
         // Arrange
-        var settings = BuildAppSettings(alias: alias);
-        var connector = new FoundryLocalConnector(settings);
-
-        // Act
-        Func<Task> func = async () => await connector.GetChatClientAsync();
-
-        // Assert
-        func.ShouldThrow(expected)
-            .Message.ShouldContain(message);
-    }
-
-    [Trait("Category", "IntegrationTest")]
-    [Trait("Category", "LLMRequired")]
-    [Trait("Category", "IgnoreGitHubActions")]
-    [Theory]
-    [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object")]
-    [InlineData("", typeof(UriFormatException), "Invalid URI:")]
-    [InlineData("   ", typeof(UriFormatException), "Invalid URI:")]
-    [InlineData("\t\r\n", typeof(UriFormatException), "Invalid URI:")]
-    [InlineData("invalid-uri-format", typeof(UriFormatException), "Invalid URI:")]
-    public void Given_Invalid_Endpoint_When_GetChatClient_Invoked_Then_It_Should_Throw(string? endpoint, Type expected, string message)
-    {
-        // Arrange
-        var settings = BuildAppSettings(endpoint: endpoint, disableFoundryLocalManager: true);
+        var settings = BuildAppSettings(aliasOrModel: alias, disableFoundryLocalManager: false);
         var connector = new FoundryLocalConnector(settings);
 
         // Act
@@ -248,17 +249,17 @@ public class FoundryLocalConnectorTests
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, null, false, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
-    [InlineData(null, Endpoint, false, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
-    [InlineData("", Endpoint, false, typeof(InvalidOperationException), "Missing configuration: FoundryLocal:Alias")]
-    [InlineData("   ", Endpoint, false, typeof(InvalidOperationException), "Missing configuration: FoundryLocal:Alias")]
-    [InlineData("\t\r\n", Endpoint, false, typeof(InvalidOperationException), "Missing configuration: FoundryLocal:Alias")]
+    [InlineData(BaseUrl, null, false, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
+    [InlineData(BaseUrl, "", false, typeof(InvalidOperationException), "Missing configuration: FoundryLocal:AliasOrModel")]
+    [InlineData(BaseUrl, "   ", false, typeof(InvalidOperationException), "Missing configuration: FoundryLocal:AliasOrModel")]
+    [InlineData(BaseUrl, "\t\r\n", false, typeof(InvalidOperationException), "Missing configuration: FoundryLocal:AliasOrModel")]
     [InlineData(null, null, true, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
-    [InlineData(Alias, null, true, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
-    [InlineData(Alias, "", true, typeof(InvalidOperationException), "Missing configuration: FoundryLocal:Endpoint")]
-    [InlineData(Alias, "   ", true, typeof(InvalidOperationException), "Missing configuration: FoundryLocal:Endpoint")]
-    [InlineData(Alias, "\t\r\n", true, typeof(InvalidOperationException), "Missing configuration: FoundryLocal:Endpoint")]
+    [InlineData(null, AliasOrModel, true, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
+    [InlineData("", AliasOrModel, true, typeof(InvalidOperationException), "Missing configuration: FoundryLocal:BaseUrl")]
+    [InlineData("   ", AliasOrModel, true, typeof(InvalidOperationException), "Missing configuration: FoundryLocal:BaseUrl")]
+    [InlineData("\t\r\n", AliasOrModel, true, typeof(InvalidOperationException), "Missing configuration: FoundryLocal:BaseUrl")]
     public void Given_Invalid_Alias_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(
-        string? alias, string? endpoint, bool disableFoundryLocalManager, Type expected, string expectedMessage)
+        string? baseUrl, string? alias, bool disableFoundryLocalManager, Type expected, string expectedMessage)
     {
         // Arrange
         var settings = new AppSettings
@@ -266,8 +267,8 @@ public class FoundryLocalConnectorTests
             ConnectorType = ConnectorType.FoundryLocal,
             FoundryLocal = new FoundryLocalSettings
             {
-                Alias = alias,
-                Endpoint = endpoint,
+                BaseUrl = baseUrl,
+                AliasOrModel = alias,
                 DisableFoundryLocalManager = disableFoundryLocalManager
             }
         };

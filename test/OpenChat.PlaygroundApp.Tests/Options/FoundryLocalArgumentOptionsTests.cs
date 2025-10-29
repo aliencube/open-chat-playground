@@ -9,11 +9,11 @@ namespace OpenChat.PlaygroundApp.Tests.Options;
 
 public class FoundryLocalArgumentOptionsTests
 {
-    private const string Alias = "test-foundry-local-alias";
-    private const string AliasConfigKey = "FoundryLocal:Alias";
+    private const string AliasOrModel = "test-foundry-local-alias";
+    private const string AliasConfigKey = "FoundryLocal:AliasOrModel";
 
     private static IConfiguration BuildConfigWithFoundryLocal(
-        string? configAlias = Alias,
+        string? configAlias = AliasOrModel,
         string? envAlias = null)
     {
         // Base configuration values (lowest priority)
@@ -73,7 +73,7 @@ public class FoundryLocalArgumentOptionsTests
 
         // Assert
         settings.FoundryLocal.ShouldNotBeNull();
-        settings.FoundryLocal.Alias.ShouldBe(Alias);
+        settings.FoundryLocal.AliasOrModel.ShouldBe(AliasOrModel);
     }
 
     [Trait("Category", "UnitTest")]
@@ -93,7 +93,7 @@ public class FoundryLocalArgumentOptionsTests
 
         // Assert
         settings.FoundryLocal.ShouldNotBeNull();
-        settings.FoundryLocal.Alias.ShouldBe(cliAlias);
+        settings.FoundryLocal.AliasOrModel.ShouldBe(cliAlias);
     }
 
     [Trait("Category", "UnitTest")]
@@ -110,7 +110,7 @@ public class FoundryLocalArgumentOptionsTests
 
         // Assert
         settings.FoundryLocal.ShouldNotBeNull();
-        settings.FoundryLocal.Alias.ShouldBe(Alias);
+        settings.FoundryLocal.AliasOrModel.ShouldBe(AliasOrModel);
     }
 
     [Trait("Category", "UnitTest")]
@@ -126,7 +126,7 @@ public class FoundryLocalArgumentOptionsTests
 
         // Assert
         settings.FoundryLocal.ShouldNotBeNull();
-        settings.FoundryLocal.Alias.ShouldBe(Alias);
+        settings.FoundryLocal.AliasOrModel.ShouldBe(AliasOrModel);
     }
 
     [Trait("Category", "UnitTest")]
@@ -146,7 +146,7 @@ public class FoundryLocalArgumentOptionsTests
 
         // Assert
         settings.FoundryLocal.ShouldNotBeNull();
-        settings.FoundryLocal.Alias.ShouldBe(alias);
+        settings.FoundryLocal.AliasOrModel.ShouldBe(alias);
     }
 
     [Trait("Category", "UnitTest")]
@@ -163,7 +163,7 @@ public class FoundryLocalArgumentOptionsTests
 
         // Assert
         settings.FoundryLocal.ShouldNotBeNull();
-        settings.FoundryLocal.Alias.ShouldBe(configAlias);
+        settings.FoundryLocal.AliasOrModel.ShouldBe(configAlias);
     }
 
     [Trait("Category", "UnitTest")]
@@ -184,7 +184,7 @@ public class FoundryLocalArgumentOptionsTests
 
         // Assert
         settings.FoundryLocal.ShouldNotBeNull();
-        settings.FoundryLocal.Alias.ShouldBe(cliAlias);
+        settings.FoundryLocal.AliasOrModel.ShouldBe(cliAlias);
     }
 
     [Trait("Category", "UnitTest")]
@@ -203,7 +203,7 @@ public class FoundryLocalArgumentOptionsTests
 
         // Assert
         settings.FoundryLocal.ShouldNotBeNull();
-        settings.FoundryLocal.Alias.ShouldBe(envAlias);
+        settings.FoundryLocal.AliasOrModel.ShouldBe(envAlias);
     }
 
     [Trait("Category", "UnitTest")]
@@ -220,7 +220,7 @@ public class FoundryLocalArgumentOptionsTests
 
         // Assert
         settings.FoundryLocal.ShouldNotBeNull();
-        settings.FoundryLocal.Alias.ShouldBe(envAlias);
+        settings.FoundryLocal.AliasOrModel.ShouldBe(envAlias);
     }
 
     [Trait("Category", "UnitTest")]
@@ -241,7 +241,7 @@ public class FoundryLocalArgumentOptionsTests
 
         // Assert
         settings.FoundryLocal.ShouldNotBeNull();
-        settings.FoundryLocal.Alias.ShouldBe(cliAlias);
+        settings.FoundryLocal.AliasOrModel.ShouldBe(cliAlias);
     }
 
 

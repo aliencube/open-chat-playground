@@ -17,17 +17,17 @@ public partial class AppSettings
 public class FoundryLocalSettings : LanguageModelSettings
 {
     /// <summary>
-    /// Gets or sets the alias of FoundryLocal.
+    /// Gets or sets the Base URL of Foundry Local. If `DisableFoundryLocalManager` is set, this value must be provided.
     /// </summary>
-    public string? Alias { get; set; }
+    public string? BaseUrl { get; set; }
 
     /// <summary>
-    /// Gets or sets the Endpoint of FoundryLocal.
+    /// Gets or sets either alias or model ID of Foundry Local.
     /// </summary>
-    public string? Endpoint { get; set; }
+    public string? AliasOrModel { get; set; }
 
     /// <summary>
-    /// Gets or sets a value indicating whether to disable the automatic FoundryLocal manager and use a manually configured endpoint.
+    /// Gets or sets a value indicating whether to disable the automatic Foundry Local manager and use a manually configured endpoint.
     /// </summary>
     public bool DisableFoundryLocalManager { get; set; }
 }
