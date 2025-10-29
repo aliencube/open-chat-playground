@@ -36,6 +36,17 @@ public class GoogleVertexAIConnectorTests
         result.ShouldBe(expected);
     }
 
+    [Trait("Category", "UnitTest")]
+    [Fact]
+    public void Given_Null_Settings_When_Instantiated_Then_It_Should_Throw()
+    {
+        // Act
+        Action action = () => new GoogleVertexAIConnector(null!);
+
+        // Assert
+        action.ShouldThrow<ArgumentNullException>()
+              .Message.ShouldContain("settings");
+    }
 
     [Trait("Category", "UnitTest")]
     [Fact]
@@ -56,7 +67,11 @@ public class GoogleVertexAIConnectorTests
     public void Given_Settings_Is_Null_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw()
     {
         // Arrange
-        var appSettings = new AppSettings { ConnectorType = ConnectorType.GoogleVertexAI, GoogleVertexAI = null };
+        var appSettings = new AppSettings
+        {
+            ConnectorType = ConnectorType.GoogleVertexAI,
+            GoogleVertexAI = null
+        };
         var connector = new GoogleVertexAIConnector(appSettings);
 
         // Act
@@ -69,10 +84,11 @@ public class GoogleVertexAIConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, "GoogleVertexAI:ApiKey")]
-    [InlineData("", "GoogleVertexAI:ApiKey")]
-    [InlineData("   ", "GoogleVertexAI:ApiKey")]
-    public void Given_Invalid_ApiKey_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? apiKey, string expectedMessage)
+    [InlineData(null, typeof(InvalidOperationException), "GoogleVertexAI:ApiKey")]
+    [InlineData("", typeof(InvalidOperationException), "GoogleVertexAI:ApiKey")]
+    [InlineData("   ", typeof(InvalidOperationException), "GoogleVertexAI:ApiKey")]
+    [InlineData("\t\r\n", typeof(InvalidOperationException), "GoogleVertexAI:ApiKey")]
+    public void Given_Invalid_ApiKey_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? apiKey, Type expectedType, string expectedMessage)
     {
         // Arrange
         var appSettings = BuildAppSettings(apiKey: apiKey);
@@ -82,16 +98,17 @@ public class GoogleVertexAIConnectorTests
         Action action = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
-        action.ShouldThrow<InvalidOperationException>()
+        action.ShouldThrow(expectedType)
               .Message.ShouldContain(expectedMessage);
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, "GoogleVertexAI:Model")]
-    [InlineData("", "GoogleVertexAI:Model")]
-    [InlineData("   ", "GoogleVertexAI:Model")]
-    public void Given_Invalid_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? model, string expectedMessage)
+    [InlineData(null, typeof(InvalidOperationException), "GoogleVertexAI:Model")]
+    [InlineData("", typeof(InvalidOperationException), "GoogleVertexAI:Model")]
+    [InlineData("   ", typeof(InvalidOperationException), "GoogleVertexAI:Model")]
+    [InlineData("\t\r\n", typeof(InvalidOperationException), "GoogleVertexAI:Model")]
+    public void Given_Invalid_Model_When_EnsureLanguageModelSettingsValid_Invoked_Then_It_Should_Throw(string? model, Type expectedType, string expectedMessage)
     {
         // Arrange
         var appSettings = BuildAppSettings(apiKey: "valid-key", model: model);
@@ -101,7 +118,7 @@ public class GoogleVertexAIConnectorTests
         Action action = () => connector.EnsureLanguageModelSettingsValid();
 
         // Assert
-        action.ShouldThrow<InvalidOperationException>()
+        action.ShouldThrow(expectedType)
               .Message.ShouldContain(expectedMessage);
     }
 
@@ -122,36 +139,30 @@ public class GoogleVertexAIConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Fact]
-    public async Task Given_Valid_Settings_When_GetChatClient_Invoked_Then_It_Should_Return_ChatClient()
-    {
-        var settings = BuildAppSettings();
-        var connector = new GoogleVertexAIConnector(settings);
-
-        var client = await connector.GetChatClientAsync();
-
-        client.ShouldNotBeNull();
-    }
-
-    [Trait("Category", "UnitTest")]
-    [Fact]
     public void Given_Settings_Is_Null_When_GetChatClientAsync_Invoked_Then_It_Should_Throw()
     {
         // Arrange
-        var appSettings = new AppSettings { ConnectorType = ConnectorType.GoogleVertexAI, GoogleVertexAI = null };
+        var appSettings = new AppSettings {
+            ConnectorType = ConnectorType.GoogleVertexAI,
+            GoogleVertexAI = null
+        };
         var connector = new GoogleVertexAIConnector(appSettings);
 
         // Act
         Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert
-        func.ShouldThrow<InvalidOperationException>();
+        func.ShouldThrow<InvalidOperationException>()
+            .Message.ShouldContain("Object reference not set to an instance of an object");
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
     [InlineData(null, typeof(InvalidOperationException), "GoogleVertexAI:ApiKey")]
-    [InlineData("", typeof(ArgumentException), "key")]
-    public async Task Given_Missing_ApiKey_When_GetChatClient_Invoked_Then_It_Should_Throw(string? apiKey, Type expected, string message)
+    [InlineData("", typeof(InvalidOperationException), "GoogleVertexAI:ApiKey")]
+    [InlineData("   ", typeof(InvalidOperationException), "GoogleVertexAI:ApiKey")]
+    [InlineData("\t\r\n", typeof(InvalidOperationException), "GoogleVertexAI:ApiKey")]
+    public async Task Given_Invalid_ApiKey_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? apiKey, Type expected, string message)
     {
         // Arrange
         var settings = BuildAppSettings(apiKey: apiKey);
@@ -167,8 +178,11 @@ public class GoogleVertexAIConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(InvalidOperationException), "model")]
-    public async Task Given_Missing_Model_When_GetChatClient_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
+    [InlineData(null, typeof(InvalidOperationException), "GoogleVertexAI:Model")]
+    [InlineData("", typeof(InvalidOperationException), "GoogleVertexAI:Model")]
+    [InlineData("   ", typeof(InvalidOperationException), "GoogleVertexAI:Model")]
+    [InlineData("\t\r\n", typeof(InvalidOperationException), "GoogleVertexAI:Model")]
+    public async Task Given_Invalid_Model_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
     {
         // Arrange
         var settings = BuildAppSettings(model: model);
@@ -184,22 +198,33 @@ public class GoogleVertexAIConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Fact]
-    public async Task Given_Valid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Return_ChatClient()
+    public async Task Given_Valid_Settings_When_GetChatClientAsync_Invoked_Then_It_Should_Return_ChatClient()
     {
         // Arrange
         var settings = BuildAppSettings();
+        var connector = new GoogleVertexAIConnector(settings);
 
         // Act
-        var result = await LanguageModelConnector.CreateChatClientAsync(settings);
-        
+        var client = await connector.GetChatClientAsync();
+
         // Assert
-        result.ShouldNotBeNull();
-        result.ShouldBeAssignableTo<IChatClient>();
+        client.ShouldNotBeNull();
+        client.ShouldBeAssignableTo<IChatClient>();
     }
 
     [Trait("Category", "UnitTest")]
-    [Fact]
-    public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw()
+    [Theory]
+    
+    [InlineData(null, null, typeof(InvalidOperationException),"Missing configuration: GoogleVertexAI")]
+    [InlineData(ApiKey, null, typeof(InvalidOperationException),"Missing configuration: GoogleVertexAI:Model")]
+    [InlineData(ApiKey, "", typeof(InvalidOperationException),"Missing configuration: GoogleVertexAI:Model")]
+    [InlineData(ApiKey, "   ", typeof(InvalidOperationException),"Missing configuration: GoogleVertexAI:Model")]
+    [InlineData(ApiKey, "\t\r\n", typeof(InvalidOperationException),"Missing configuration: GoogleVertexAI:Model")]
+    [InlineData(null, Model, typeof(InvalidOperationException),"Missing configuration: GoogleVertexAI:Model")]
+    [InlineData("", Model, typeof(InvalidOperationException),"Missing configuration: GoogleVertexAI:Model")]
+    [InlineData("   ", Model, typeof(InvalidOperationException),"Missing configuration: GoogleVertexAI:Model")]
+    [InlineData("\t\r\n", Model, typeof(InvalidOperationException),"Missing configuration: GoogleVertexAI:Model")]
+    public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string? apiKey, string? model, Type expected, string expectedMessage)
     {
         // Arrange
         var settings = new AppSettings
@@ -216,6 +241,22 @@ public class GoogleVertexAIConnectorTests
         Func<Task> func = async () => await LanguageModelConnector.CreateChatClientAsync(settings);
 
         // Assert
-        func.ShouldThrow<InvalidOperationException>();
+        func.ShouldThrow(expected)
+            .Message.ShouldContain(expectedMessage);
+    }
+    
+    [Trait("Category", "UnitTest")]
+    [Fact]
+    public async Task Given_Valid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Return_ChatClient()
+    {
+        // Arrange
+        var settings = BuildAppSettings();
+
+        // Act
+        var result = await LanguageModelConnector.CreateChatClientAsync(settings);
+        
+        // Assert
+        result.ShouldNotBeNull();
+        result.ShouldBeAssignableTo<IChatClient>();
     }
 }
