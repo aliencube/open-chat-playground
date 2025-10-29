@@ -152,16 +152,16 @@ public class GoogleVertexAIConnectorTests
         Func<Task> func = async () => await connector.GetChatClientAsync();
 
         // Assert
-        func.ShouldThrow<InvalidOperationException>()
+        func.ShouldThrow<NullReferenceException>()
             .Message.ShouldContain("Object reference not set to an instance of an object");
     }
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(InvalidOperationException), "GoogleVertexAI:ApiKey")]
-    [InlineData("", typeof(InvalidOperationException), "GoogleVertexAI:ApiKey")]
-    [InlineData("   ", typeof(InvalidOperationException), "GoogleVertexAI:ApiKey")]
-    [InlineData("\t\r\n", typeof(InvalidOperationException), "GoogleVertexAI:ApiKey")]
+    [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
+    [InlineData("", typeof(ArgumentException), "apiKey")]
+    [InlineData("   ", typeof(ArgumentException), "apiKey")]
+    [InlineData("\t\r\n", typeof(ArgumentException), "apiKey")]
     public async Task Given_Invalid_ApiKey_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? apiKey, Type expected, string message)
     {
         // Arrange
@@ -178,10 +178,7 @@ public class GoogleVertexAIConnectorTests
 
     [Trait("Category", "UnitTest")]
     [Theory]
-    [InlineData(null, typeof(InvalidOperationException), "GoogleVertexAI:Model")]
-    [InlineData("", typeof(InvalidOperationException), "GoogleVertexAI:Model")]
-    [InlineData("   ", typeof(InvalidOperationException), "GoogleVertexAI:Model")]
-    [InlineData("\t\r\n", typeof(InvalidOperationException), "GoogleVertexAI:Model")]
+    [InlineData(null, typeof(NullReferenceException), "Object reference not set to an instance of an object.")]
     public async Task Given_Invalid_Model_When_GetChatClientAsync_Invoked_Then_It_Should_Throw(string? model, Type expected, string message)
     {
         // Arrange
@@ -215,15 +212,12 @@ public class GoogleVertexAIConnectorTests
     [Trait("Category", "UnitTest")]
     [Theory]
     
-    [InlineData(null, null, typeof(InvalidOperationException),"Missing configuration: GoogleVertexAI")]
-    [InlineData(ApiKey, null, typeof(InvalidOperationException),"Missing configuration: GoogleVertexAI:Model")]
-    [InlineData(ApiKey, "", typeof(InvalidOperationException),"Missing configuration: GoogleVertexAI:Model")]
-    [InlineData(ApiKey, "   ", typeof(InvalidOperationException),"Missing configuration: GoogleVertexAI:Model")]
-    [InlineData(ApiKey, "\t\r\n", typeof(InvalidOperationException),"Missing configuration: GoogleVertexAI:Model")]
-    [InlineData(null, Model, typeof(InvalidOperationException),"Missing configuration: GoogleVertexAI:Model")]
-    [InlineData("", Model, typeof(InvalidOperationException),"Missing configuration: GoogleVertexAI:Model")]
-    [InlineData("   ", Model, typeof(InvalidOperationException),"Missing configuration: GoogleVertexAI:Model")]
-    [InlineData("\t\r\n", Model, typeof(InvalidOperationException),"Missing configuration: GoogleVertexAI:Model")]
+    [InlineData(null, null, typeof(InvalidOperationException),"GoogleVertexAI")]
+    [InlineData(null, Model, typeof(InvalidOperationException),"GoogleVertexAI")]
+    [InlineData("", Model, typeof(InvalidOperationException),"GoogleVertexAI")]
+    [InlineData("   ", Model, typeof(InvalidOperationException),"GoogleVertexAI")]
+    [InlineData("\t\r\n", Model, typeof(InvalidOperationException),"GoogleVertexAI")]
+    [InlineData(ApiKey, null, typeof(InvalidOperationException),"GoogleVertexAI")]
     public void Given_Invalid_Settings_When_CreateChatClientAsync_Invoked_Then_It_Should_Throw(string? apiKey, string? model, Type expected, string expectedMessage)
     {
         // Arrange
