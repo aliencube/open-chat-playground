@@ -41,8 +41,8 @@ public class GoogleVertexAIConnector(AppSettings settings) : LanguageModelConnec
     {
         var settings = this.Settings as GoogleVertexAISettings;
 
-        var apiKey = settings?.ApiKey ?? throw new InvalidOperationException("Missing configuration: GoogleVertexAI:ApiKey.");
-        var model = settings?.Model ?? throw new InvalidOperationException("Missing configuration: GoogleVertexAI:Model.");
+        var apiKey = settings!.ApiKey!.Trim() ?? throw new InvalidOperationException("Missing configuration: GoogleVertexAI:ApiKey.");
+        var model = settings!.Model!.Trim() ?? throw new InvalidOperationException("Missing configuration: GoogleVertexAI:Model.");
 
         var chatClient = new GeminiChatClient(apiKey, model);
 
