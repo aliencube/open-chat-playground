@@ -301,7 +301,6 @@ var envOpenAI = connectorType == 'OpenAI' ? concat(openAIModel != '' ? [
     secretRef: 'openai-api-key'
   }
 ] : []) : []
-
 // Upstage
 var envUpstage = connectorType == 'Upstage' ? concat(upstageModel != '' ? [
   {
