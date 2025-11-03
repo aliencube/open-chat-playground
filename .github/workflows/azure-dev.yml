@@ -101,7 +101,7 @@ jobs:
     - name: Run LLMRequired integration tests
       shell: bash
       run: |
-        dotnet test ./test/OpenChat.PlaygroundApp.Tests \
+        dotnet test ./test/OpenChat.PlaygroundApp.Tests -c Release \
             --no-build --logger "trx" --collect:"XPlat Code Coverage" \
             --filter "Category=IntegrationTest & Category!=IgnoreGitHubActions & Category=LLMRequired"
 
