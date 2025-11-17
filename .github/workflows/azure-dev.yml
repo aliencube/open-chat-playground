@@ -139,27 +139,27 @@ jobs:
         subject-digest: ${{ steps.push.outputs.digest }}
         push-to-registry: true
 
-    - name: Install azd
-      uses: Azure/setup-azd@v2
+    # - name: Install azd
+    #   uses: Azure/setup-azd@v2
 
-    - name: Log in with Azure
-      shell: pwsh
-      run: |
-        azd auth login `
-          --client-id "$env:AZURE_CLIENT_ID" `
-          --federated-credential-provider "github" `
-          --tenant-id "$env:AZURE_TENANT_ID"
+    # - name: Log in with Azure
+    #   shell: pwsh
+    #   run: |
+    #     azd auth login `
+    #       --client-id "$env:AZURE_CLIENT_ID" `
+    #       --federated-credential-provider "github" `
+    #       --tenant-id "$env:AZURE_TENANT_ID"
 
-    - name: Provision Infrastructure
-      shell: bash
-      env:
-        GitHubModels__Token: ${{ env.GH_MODELS_TOKEN }}
-        Anthropic__ApiKey: ${{ env.ANTHROPIC_API_KEY }}
-        OpenAI__ApiKey: ${{ env.OPENAI_API_KEY }}
-      run: |
-        azd provision --no-prompt
+    # - name: Provision Infrastructure
+    #   shell: bash
+    #   env:
+    #     GitHubModels__Token: ${{ env.GH_MODELS_TOKEN }}
+    #     Anthropic__ApiKey: ${{ env.ANTHROPIC_API_KEY }}
+    #     OpenAI__ApiKey: ${{ env.OPENAI_API_KEY }}
+    #   run: |
+    #     azd provision --no-prompt
 
-    - name: Deploy Application
-      shell: bash
-      run: |
-        azd deploy --no-prompt
+    # - name: Deploy Application
+    #   shell: bash
+    #   run: |
+    #     azd deploy --no-prompt
