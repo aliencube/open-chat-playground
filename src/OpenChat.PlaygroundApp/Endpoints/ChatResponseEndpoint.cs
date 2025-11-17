@@ -29,7 +29,12 @@ public class ChatResponseEndpoint(IChatService chatService, ILogger<ChatResponse
            .Accepts<IEnumerable<ChatRequest>>(contentType: "application/json")
            .Produces<List<ChatResponse>>(statusCode: StatusCodes.Status200OK, contentType: "application/json")
            .WithName("PostChatResponses")
-           .WithOpenApi();
+           .AddOpenApiOperationTransformer((operation, context, token) =>
+           {
+               operation.Summary = "Get streaming chat responses based on the provided chat requests.";
+               operation.Description = "This endpoint accepts a list of chat requests and returns streaming chat responses.";
+               return Task.CompletedTask;
+           });
     }
 
     private async IAsyncEnumerable<ChatResponse> PostChatResponseAsync(
